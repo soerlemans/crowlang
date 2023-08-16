@@ -4,3 +4,6 @@ target_sources(${PROJECT_NAME} PRIVATE
 )
 
 # Add subdirectories
+add_subdirectory(debug)
+
+add_subdirectory(token)
