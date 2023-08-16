@@ -6,6 +6,7 @@
 #include <iterator>
 
 
+namespace container {
 // Classes:
 /*! Streams are containers that keep track of their current element.
  */
@@ -56,5 +57,6 @@ class Stream : public T {
 
   virtual ~Stream() = default;
 };
+} // namespace container
 
 #endif // NEWLANG_CONTAINER_STREAM_HPP

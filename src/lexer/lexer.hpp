@@ -8,17 +8,18 @@
 
 // Includes:
 #include "../container/file_buffer.hpp"
-#include "../token/reserved.hpp"
+#include "../token/reserved/reserved.hpp"
 #include "../token/token.hpp"
 
 
 namespace lexer {
+	// Using declarations:
 using namespace container;
 
 // Classes:
 class Lexer {
   private:
-  container::TextBufferPtr m_tb;
+  TextBufferPtr m_tb;
   token::TokenStream m_ts;
 
   // Token stream handling:
@@ -33,7 +34,7 @@ class Lexer {
   auto syntax_error(std::string_view t_msg) const -> void;
 
   public:
-  Lexer(container::TextBufferPtr t_fb);
+  Lexer(TextBufferPtr t_fb);
 
   // Name lexing:
   static auto is_keyword(std::string_view t_identifier) -> token::TokenType;

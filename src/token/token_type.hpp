@@ -3,14 +3,15 @@
 
 namespace token {
 enum class TokenType {
+	// Variables:
   IDENTIFIER = 0,
   LET,
   CONST,
 
-  // Module:
+  // Package:
   IMPORT,
-  PUBLIC,
   PRIVATE,
+  PUBLIC,
 
   // Object oriented:
   STRUCT,
@@ -19,6 +20,7 @@ enum class TokenType {
   // Control statements:
   FUNCTION,
   SWITCH,
+  CASE,
   IF,
   ELSE,
   LOOP,
@@ -57,7 +59,7 @@ enum class TokenType {
   ADD_ASSIGN,
   SUBTRACT_ASSIGN,
 
-  INIT_ASSIGN,
+  INIT_ASSIGNMENT,
   ASSIGNMENT,
 
   // Comparison Tokens:
@@ -70,9 +72,8 @@ enum class TokenType {
   GREATER_THAN,
   GREATER_THAN_EQUAL,
 
-  // Logical Tokens:
+  // Logical:
   NOT,
-
   AND,
   OR,
 
@@ -83,13 +84,14 @@ enum class TokenType {
   COLON,
   SEMICOLON,
 
-  // Single symbols (usually used for arithmetic):
+  // (Single symbols usually used for arithmetic):
   PLUS,
   MINUS,
   ASTERISK,
   SLASH,
   PERCENT_SIGN,
 
+  // Miscellaneous:
   NEWLINE,
 };
 } // namespace token

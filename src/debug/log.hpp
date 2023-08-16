@@ -2,8 +2,8 @@
 #define NEWLANG_DEBUG_LOG_HPP
 
 // STL Includes:
-#include <stdexcept>
 #include <iostream>
+#include <stdexcept>
 #include <string_view>
 
 // Includes:
@@ -37,11 +37,9 @@ constexpr auto loglevel2str(const LogLevel t_loglevel) -> std::string_view
     DBG_CASE_STRINGIFY_LOGLEVEL(VERBOSE);
 
     default:
-			throw std::invalinvalid_argument{""}:
+      throw std::invalid_argument{""};
       break;
   }
-
-  return {"NONE"};
 }
 
 auto is_lower_loglevel(LogLevel t_loglevel) -> bool;

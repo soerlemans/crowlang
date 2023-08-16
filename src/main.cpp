@@ -5,8 +5,8 @@
 
 // Includes:
 #include "debug/log.hpp"
-#include "debug/log_macros.hpp"
 #include "token/token.hpp"
+#include "lexer/lexer.hpp"
 
 // Local Includes:
 #include "version.hpp"
@@ -24,6 +24,9 @@ auto parse_args(CLI::App& t_app, const int t_argc, char* t_argv[]) -> void
   t_app.parse(t_argc, t_argv);
 }
 
+auto run() -> void
+{}
+
 auto main(int t_argc, char* t_argv[]) -> int
 {
   CLI::App app{""};
@@ -34,4 +37,6 @@ auto main(int t_argc, char* t_argv[]) -> int
   } catch(const CLI::ParseError& e) {
     return app.exit(e);
   }
+
+  run();
 }

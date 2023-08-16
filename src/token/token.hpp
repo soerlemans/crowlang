@@ -4,13 +4,24 @@
 // STL Includes:
 #include <string>
 #include <variant>
+#include <vector>
+
+// Includes:
+#include "../container/stream.hpp"
 
 // Local Includes:
 #include "token_type.hpp"
 
 
 namespace token {
+// Using declarations:
+using namespace container;
+
+// Forward Declarations:
+class Token;
+
 // Aliases:
+using TokenStream = Stream<std::vector<Token>>;
 using TokenValue = std::variant<int, double, std::string>;
 
 // Classes:

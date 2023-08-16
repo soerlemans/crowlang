@@ -6,9 +6,9 @@
 #include <sstream>
 
 
-// Only facilitate Trace if we are on the DEBUG build
-#if DEBUG
+using namespace debug;
 
+#if DEBUG
 // Methods:
 auto Trace::indent_text() -> std::string
 {
