@@ -4,6 +4,8 @@
 #include <CLI/Validators.hpp>
 
 // Includes:
+#include "debug/log.hpp"
+#include "debug/log_macros.hpp"
 #include "token/token.hpp"
 
 // Local Includes:
@@ -26,6 +28,7 @@ auto main(int t_argc, char* t_argv[]) -> int
 {
   CLI::App app{""};
 
+  DBG_SET_LOGLEVEL(INFO);
   try {
     parse_args(app, t_argc, t_argv);
   } catch(const CLI::ParseError& e) {

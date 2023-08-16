@@ -6,35 +6,15 @@
 
 // Local Includes:
 #include "log.hpp"
+#include "trace_macros.hpp"
 
 
 // Only facilitate Trace if we are on the DEBUG build
 #if DEBUG
-
-// Helper macros for TRACE:
-#define CONCAT(a, b)       CONCAT_INNER(a, b)
-#define CONCAT_INNER(a, b) a##b
-
-#define DBG_TRACE_INIT() int m_counter{0};
-
-// TRACE is intended for showing which functions call which in a tree like
-// manner
-#define DBG_TRACE(loglevel, ...)                      \
-  Trace CONCAT(trace, __COUNTER__)                    \
-  {                                                   \
-    m_counter, debug::LogLevel::loglevel, __VA_ARGS__ \
-  }
-
-
-// Creates a trace object in an enclosed scope, usefull for printing TRACE info
-// on the same level within a function
-#define DBG_TRACE_PRINT(loglevel, ...)                                     \
-  do {                                                                     \
-    Trace CONCAT(trace, __COUNTER__){m_counter, debug::LogLevel::loglevel, \
-                                     __VA_ARGS__};                         \
-  } while(false)
-
-// Trace class used for figuring out
+namespace debug {
+/*! Trace class is used for printing nested structures using a lifetime
+ *!
+ */
 class Trace {
   private:
   // Counter that denotes the indentation level
@@ -60,18 +40,7 @@ class Trace {
 
   virtual ~Trace();
 };
-
-#else
-
-// Stub the macros if we are not on the debugging build
-#define DBG_TRACE_INIT()
-#define DBG_TRACE(loglevel, ...) \
-  do {                           \
-  } while(false)
-
-#define DBG_TRACE_PRINT(loglevel, ...) \
-  do {                                 \
-  } while(false)
+} // namespace debug
 
 #endif // DEBUG
 #endif // NEWLANG_DEBUG_TRACE_HPP

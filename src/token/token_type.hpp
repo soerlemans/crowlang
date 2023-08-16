@@ -5,6 +5,12 @@ namespace token {
 enum class TokenType {
   IDENTIFIER = 0,
   LET,
+  CONST,
+
+  // Module:
+  IMPORT,
+  PUBLIC,
+  PRIVATE,
 
   // Object oriented:
   STRUCT,
