@@ -1,0 +1,12 @@
+#ifndef NEWLANG_VERSION_HPP
+#define NEWLANG_VERSION_HPP
+
+
+//! Cmake substitutes the version numbers specified in the root CMakeLists.txt
+#define NEWLANG_VERSION_MAJOR @newlang_VERSION_MAJOR@
+#define NEWLANG_VERSION_MINOR @newlang_VERSION_MINOR@
+#define NEWLANG_VERSION_PATCH @newlang_VERSION_PATCH@
+
+#define NEWLANG_VERSION "@newlang_VERSION@"
+
+#endif // NEWLANG_VERSION_HPP
