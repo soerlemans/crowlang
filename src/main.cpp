@@ -1,4 +1,5 @@
 // STL Includes:
+#include <CLI/Error.hpp>
 #include <filesystem>
 #include <fstream>
 
@@ -82,13 +83,22 @@ auto open_file(const fs::path t_path) -> container::TextBuffer
 
 auto lex(const fs::path& t_path) -> token::TokenStream
 {
-	using namespace lexer;
+  using namespace lexer;
 
   auto tb_ptr{std::make_shared<TextBuffer>(open_file(t_path))};
   Lexer lexer{tb_ptr};
 
   return lexer.tokenize();
 }
+
+auto parse(const token::TokenStream&) -> void
+{}
+
+auto interpret() -> void
+{}
+
+auto codegen() -> void
+{}
 
 auto run() -> void
 {
@@ -107,8 +117,10 @@ auto main(int t_argc, char* t_argv[]) -> int
   try {
     parse_args(app, t_argc, t_argv);
   } catch(const CLI::ParseError& e) {
-    return app.exit(e);
+    return -app.exit(e);
   }
 
   run();
+
+  return ExitCode::OK;
 }
