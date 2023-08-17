@@ -19,6 +19,7 @@ enum class TokenType {
   CONST,
 
   // Package:
+  PACKAGE,
   IMPORT,
   PRIVATE,
   PUBLIC,
@@ -69,7 +70,6 @@ enum class TokenType {
   ADD_ASSIGN,
   SUBTRACT_ASSIGN,
 
-  INIT_ASSIGNMENT,
   ASSIGNMENT,
 
   // Comparison Tokens:

@@ -270,8 +270,8 @@ auto Lexer::is_single_symbol() -> TokenTypeOpt
 {
   using namespace reserved::symbols;
 
-  const char character{m_tb->character()};
   TokenTypeOpt opt;
+  const char character{m_tb->character()};
 
   for(const auto& single : g_single_symbols)
     if(character == single.m_identifier) {

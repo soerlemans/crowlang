@@ -26,6 +26,7 @@ namespace keywords {
   DEFINE_TERMINAL(g_const, "const", CONST);
 
   // Package:
+  DEFINE_TERMINAL(g_package, "package", PACKAGE);
   DEFINE_TERMINAL(g_import, "import", IMPORT);
   DEFINE_TERMINAL(g_priv,   "priv",   PRIVATE);
   DEFINE_TERMINAL(g_pub,    "pub",    PUBLIC);
@@ -52,7 +53,7 @@ namespace keywords {
   // Then we wont need to loop through them either
   constexpr std::array g_keywords{
 		g_let, g_const,
-		g_import, g_priv, g_pub,
+		g_package, g_import, g_priv, g_pub,
 		g_struct, g_interface,
 	  g_fn,
 		g_switch, g_case,
@@ -84,7 +85,6 @@ namespace symbols {
   DEFINE_TERMINAL(g_add_assign,      "+=", ADD_ASSIGN);
   DEFINE_TERMINAL(g_subtract_assign, "-=", SUBTRACT_ASSIGN);
 
-  DEFINE_TERMINAL(g_init_assignment, ":=", INIT_ASSIGNMENT);
   DEFINE_TERMINAL(g_assignment, '=',  ASSIGNMENT);
 
 	// Comparisons:
@@ -158,8 +158,6 @@ namespace symbols {
 
 	  g_add_assign,
 	  g_subtract_assign,
-
-	  g_init_assignment,
 
 	  g_less_than_equal,
 

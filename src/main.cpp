@@ -10,6 +10,7 @@
 // Includes:
 #include "container/text_buffer.hpp"
 #include "debug/log.hpp"
+#include "debug/log_macros.hpp"
 #include "lexer/lexer.hpp"
 #include "token/token.hpp"
 
@@ -20,19 +21,38 @@
 // Aliases:
 namespace fs = std::filesystem;
 
+// Enums:
+enum ExitCode {
+  OK = 0,
+  IMPROPER_USAGE,
+  EXCEPTION = 100,
+  SIGNAL,
+};
+
+// Globals:
+struct Settings {
+  std::vector<fs::path> m_filepaths;
+} settings;
+
+// Functions:
 auto parse_args(CLI::App& t_app, const int t_argc, char* t_argv[]) -> void
 {
   t_app.failure_message(CLI::FailureMessage::help);
+
+  // Program files
+  t_app.add_option("{}", settings.m_filepaths, "Postional arguments")
+    ->check(CLI::ExistingFile);
 
   // Version flag
   std::stringstream ss;
   ss << "Version: " << NEWLANG_VERSION;
   t_app.set_version_flag("-v,--version", ss.str(), "Show compiler version");
 
+
   t_app.parse(t_argc, t_argv);
 }
 
-auto open_file(fs::path t_path) -> container::TextBuffer
+auto open_file(const fs::path t_path) -> container::TextBuffer
 {
   using namespace container;
 
@@ -65,8 +85,13 @@ auto run() -> void
 {
   using namespace container;
 
-  auto tb_ptr{std::make_shared<TextBuffer>(open_file("program.nl"))};
-  lexer::Lexer lexer{tb_ptr};
+  for(const auto& filepath : settings.m_filepaths) {
+		DBG_PRINTLN("=== LEXING ===");
+    auto tb_ptr{std::make_shared<TextBuffer>(open_file(filepath))};
+    lexer::Lexer lexer{tb_ptr};
+
+		lexer.tokenize();
+  }
 }
 
 auto main(int t_argc, char* t_argv[]) -> int
