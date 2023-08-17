@@ -171,6 +171,11 @@ namespace symbols {
 	  g_or,
 	  g_and
 	};
+
+	namespace none {
+		constexpr char g_double_quote{'"'};
+		constexpr char g_backslash{'\\'};
+	}
 } // namespace symbols
 } // namespace reserved
 // clang-format on

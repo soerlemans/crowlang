@@ -5,5 +5,8 @@ target_sources(${PROJECT_NAME} PRIVATE
 
 # Add subdirectories
 add_subdirectory(debug)
+add_subdirectory(container)
+add_subdirectory(exception)
 
+add_subdirectory(lexer)
 add_subdirectory(token)

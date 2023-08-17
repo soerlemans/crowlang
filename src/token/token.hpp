@@ -8,6 +8,7 @@
 
 // Includes:
 #include "../container/stream.hpp"
+#include "../container/text_position.hpp"
 
 // Local Includes:
 #include "token_type.hpp"
@@ -28,10 +29,15 @@ using TokenValue = std::variant<int, double, std::string>;
 class Token {
   private:
   TokenType m_type;
-  TokenValue m_value;
+  TokenValue m_tv;
+  TextPosition m_tp;
 
   public:
-  Token(TokenType t_type);
+  Token() = default;
+  Token(const Token& t_token) = default;
+
+  explicit Token(TokenType t_type, TextPosition t_tp);
+  explicit Token(TokenType t_type, TokenValue t_tv, TextPosition t_tp);
 
   virtual ~Token() = default;
 };

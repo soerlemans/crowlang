@@ -6,7 +6,7 @@
 
 using namespace container;
 
-TextPosition::TextPosition(): m_source{""}, m_line{""}, m_lineno{0}, m_columno{0}
+TextPosition::TextPosition(): m_lineno{0}, m_columno{0}
 {}
 
 // Its important to note that lines are zero indexed

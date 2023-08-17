@@ -11,7 +11,7 @@ TextBuffer::TextBuffer(): m_lineno{0}, m_columnno{0}
 
 auto TextBuffer::add_line(std::string t_line) -> void
 {
-	// Warning: We disregard carriage return's
+  // Warning: We disregard carriage return's
   if(t_line.back() != '\n') {
     t_line += '\n';
   }
@@ -81,11 +81,6 @@ auto TextBuffer::eol() const -> bool
 auto TextBuffer::eof() const -> bool
 {
   return m_lineno >= size();
-}
-
-auto TextBuffer::path() const -> fs::path
-{
-  return fs::path{""};
 }
 
 //! This method is required for token creating in the Lexer, think about how to

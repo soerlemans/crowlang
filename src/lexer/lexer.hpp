@@ -7,13 +7,13 @@
 #include <tuple>
 
 // Includes:
-#include "../container/file_buffer.hpp"
+#include "../container/text_buffer.hpp"
 #include "../token/reserved/reserved.hpp"
 #include "../token/token.hpp"
 
 
 namespace lexer {
-	// Using declarations:
+// Using declarations:
 using namespace container;
 
 // Classes:
@@ -23,7 +23,7 @@ class Lexer {
   token::TokenStream m_ts;
 
   // Token stream handling:
-  //! Create a token with a fileposition
+  //! Create a token with a TextPosition
   template<typename... Args>
   auto create_token(Args&&... t_args) -> token::Token
   {
@@ -37,9 +37,7 @@ class Lexer {
   Lexer(TextBufferPtr t_fb);
 
   // Name lexing:
-  static auto is_keyword(std::string_view t_identifier) -> token::TokenType;
-  static auto is_builtin_function(std::string_view t_identifier)
-    -> token::TokenType;
+  static auto is_keyword(std::string_view t_identifier) -> token::TokenTypeOpt;
   auto identifier() -> token::Token;
 
   // Integer literal lexing:
@@ -52,11 +50,10 @@ class Lexer {
   // Literal lexing:
   auto literal_numeric() -> token::Token;
   auto literal_string() -> token::Token;
-  auto literal_regex() -> token::Token;
 
   // Symbol lexing:
-  auto is_multi_symbol() -> token::TokenType;
-  auto is_single_symbol() -> token::TokenType;
+  auto is_multi_symbol() -> token::TokenTypeOpt;
+  auto is_single_symbol() -> token::TokenTypeOpt;
   auto symbol() -> token::Token;
 
   auto tokenize() -> token::TokenStream;
