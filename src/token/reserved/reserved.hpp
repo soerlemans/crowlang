@@ -102,12 +102,13 @@ namespace symbols {
   DEFINE_TERMINAL(g_or,  "||", OR);
   DEFINE_TERMINAL(g_and, "&&", AND);
 
-  // Single symbols:
-  DEFINE_TERMINAL(g_comma,         ',', COMMA);
-  DEFINE_TERMINAL(g_dot,           '.', DOT);
-  DEFINE_TERMINAL(g_question_mark, '?', QUESTION_MARK);
-  DEFINE_TERMINAL(g_colon,         ':', COLON);
-  DEFINE_TERMINAL(g_semicolon,     ';', SEMICOLON);
+  // Miscellaneous:
+  DEFINE_TERMINAL(g_arrow,         "->", ARROW);
+  DEFINE_TERMINAL(g_dot,           '.',  DOT);
+  DEFINE_TERMINAL(g_comma,         ',',  COMMA);
+  DEFINE_TERMINAL(g_question_mark, '?',  QUESTION_MARK);
+  DEFINE_TERMINAL(g_colon,         ':',  COLON);
+  DEFINE_TERMINAL(g_semicolon,     ';',  SEMICOLON);
 
   DEFINE_TERMINAL(g_plus,         '+', PLUS);
   DEFINE_TERMINAL(g_minus,        '-', MINUS);
@@ -115,7 +116,6 @@ namespace symbols {
   DEFINE_TERMINAL(g_slash,        '/', SLASH);
   DEFINE_TERMINAL(g_percent_sign, '%', PERCENT_SIGN);
 
-  // Miscellaneous:
   DEFINE_TERMINAL(g_newline,  '\n', NEWLINE);
 
   constexpr std::array g_single_symbols{
@@ -133,8 +133,8 @@ namespace symbols {
 
 	  g_not,
 
-	  g_comma,
 	  g_dot,
+	  g_comma,
 	  g_question_mark,
 	  g_colon,
 	  g_semicolon,
@@ -167,7 +167,9 @@ namespace symbols {
 	  g_greater_than_equal,
 
 	  g_or,
-	  g_and
+	  g_and,
+
+		g_arrow
 	};
 
 	namespace none {

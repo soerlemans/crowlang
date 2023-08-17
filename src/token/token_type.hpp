@@ -87,21 +87,21 @@ enum class TokenType {
   AND,
   OR,
 
-  // Single symbols:
-  COMMA,
+  // Miscellaneous:
+	ARROW,
   DOT,
+  COMMA,
   QUESTION_MARK,
   COLON,
   SEMICOLON,
 
-  // (Single symbols usually used for arithmetic):
+  // (these are often related to arithmetic expressions):
   PLUS,
   MINUS,
   ASTERISK,
   SLASH,
   PERCENT_SIGN,
 
-  // Miscellaneous:
   NEWLINE,
 };
 } // namespace token

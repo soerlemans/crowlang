@@ -31,7 +31,7 @@ enum ExitCode {
 
 // Globals:
 struct Settings {
-  std::vector<fs::path> m_filepaths;
+  std::vector<fs::path> m_paths;
 } settings;
 
 // Functions:
@@ -40,7 +40,7 @@ auto parse_args(CLI::App& t_app, const int t_argc, char* t_argv[]) -> void
   t_app.failure_message(CLI::FailureMessage::help);
 
   // Program files
-  t_app.add_option("{}", settings.m_filepaths, "Postional arguments")
+  t_app.add_option("{}", settings.m_paths, "Postional arguments")
     ->check(CLI::ExistingFile);
 
   // Version flag
@@ -80,17 +80,22 @@ auto open_file(const fs::path t_path) -> container::TextBuffer
   return tb;
 }
 
+auto lex(const fs::path& t_path) -> token::TokenStream
+{
+	using namespace lexer;
+
+  auto tb_ptr{std::make_shared<TextBuffer>(open_file(t_path))};
+  Lexer lexer{tb_ptr};
+
+  return lexer.tokenize();
+}
 
 auto run() -> void
 {
   using namespace container;
 
-  for(const auto& filepath : settings.m_filepaths) {
-		DBG_PRINTLN("=== LEXING ===");
-    auto tb_ptr{std::make_shared<TextBuffer>(open_file(filepath))};
-    lexer::Lexer lexer{tb_ptr};
-
-		lexer.tokenize();
+  for(const auto& path : settings.m_paths) {
+    const auto ts{lex(path)};
   }
 }
 
