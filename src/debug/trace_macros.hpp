@@ -1,5 +1,5 @@
-#ifndef NEWLANG_DEBUG_TRACE_MACROS_HPP
-#define NEWLANG_DEBUG_TRACE_MACROS_HPP
+#ifndef CROW_DEBUG_TRACE_MACROS_HPP
+#define CROW_DEBUG_TRACE_MACROS_HPP
 
 // Includes:
 #include "../macros.hpp"
@@ -37,4 +37,4 @@
   } while(false)
 
 #endif // DEBUG
-#endif // NEWLANG_DEBUG_TRACE_MACROS_HPP
+#endif // CROW_DEBUG_TRACE_MACROS_HPP

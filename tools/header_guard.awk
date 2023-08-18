@@ -10,9 +10,11 @@
 # Generate header guard
 function gen_hg()
 {
+	project_name = toupper(ENVIRON["PROJECT_NAME"])
 	guard = toupper(FILENAME)
+
 	gsub(/(\/)|(\.)/, "_", guard)
-	gsub("SRC", "NEWLANG", guard)
+	gsub("SRC", project_name, guard)
 
 	return guard
 }

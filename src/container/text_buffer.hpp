@@ -1,5 +1,5 @@
-#ifndef NEWLANG_CONTAINER_TEXT_BUFFER_HPP
-#define NEWLANG_CONTAINER_TEXT_BUFFER_HPP
+#ifndef CROW_CONTAINER_TEXT_BUFFER_HPP
+#define CROW_CONTAINER_TEXT_BUFFER_HPP
 
 // STL Includes:
 #include <filesystem>
@@ -57,4 +57,4 @@ class TextBuffer {
 };
 } // namespace container
 
-#endif // NEWLANG_CONTAINER_TEXT_BUFFER_HPP
+#endif // CROW_CONTAINER_TEXT_BUFFER_HPP

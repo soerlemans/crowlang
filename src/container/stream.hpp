@@ -1,9 +1,10 @@
-#ifndef NEWLANG_CONTAINER_STREAM_HPP
-#define NEWLANG_CONTAINER_STREAM_HPP
+#ifndef CROW_CONTAINER_STREAM_HPP
+#define CROW_CONTAINER_STREAM_HPP
 
 // STL Includes:
 #include <concepts>
 #include <iterator>
+#include <optional>
 
 
 namespace container {
@@ -16,6 +17,7 @@ class Stream : public T {
   private:
   using Iterator = typename T::iterator;
   using Value = typename T::value_type;
+  using ValueOpt = std::optional<Value>;
 
   Iterator m_iter;
 
@@ -45,6 +47,19 @@ class Stream : public T {
     return *iter;
   }
 
+  virtual auto peek() const -> ValueOpt
+  {
+		ValueOpt opt;
+    auto iter{m_iter};
+
+    iter++;
+    if(iter != this->end()) {
+			opt = *iter;
+    }
+
+		return opt;
+  }
+
   virtual auto current() const -> Value&
   {
     return *m_iter;
@@ -59,4 +74,4 @@ class Stream : public T {
 };
 } // namespace container
 
-#endif // NEWLANG_CONTAINER_STREAM_HPP
+#endif // CROW_CONTAINER_STREAM_HPP

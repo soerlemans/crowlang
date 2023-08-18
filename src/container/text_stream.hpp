@@ -1,5 +1,5 @@
-#ifndef NEWLANG_CONTAINER_TEXT_STREAM_HPP
-#define NEWLANG_CONTAINER_TEXT_STREAM_HPP
+#ifndef CROW_CONTAINER_TEXT_STREAM_HPP
+#define CROW_CONTAINER_TEXT_STREAM_HPP
 
 // Local Includes:
 #include "stream.hpp"
@@ -19,4 +19,4 @@ class TextStream : public Stream {
 };
 } // namespace container
 
-#endif // NEWLANG_CONTAINER_TEXT_STREAM_HPP
+#endif // CROW_CONTAINER_TEXT_STREAM_HPP

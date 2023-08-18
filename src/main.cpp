@@ -8,8 +8,6 @@
 #include <CLI/CLI.hpp>
 #include <CLI/Validators.hpp>
 
-#include <llvm/IR/LLVMContext.h>
-
 // Includes:
 #include "container/text_buffer.hpp"
 #include "debug/log.hpp"
@@ -48,7 +46,7 @@ auto parse_args(CLI::App& t_app, const int t_argc, char* t_argv[]) -> void
 
   // Version flag
   std::stringstream ss;
-  ss << "Version: " << NEWLANG_VERSION;
+  ss << "Version: " << CROW_VERSION;
   t_app.set_version_flag("-v,--version", ss.str(), "Show compiler version");
 
 

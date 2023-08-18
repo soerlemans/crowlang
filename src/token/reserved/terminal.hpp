@@ -1,5 +1,5 @@
-#ifndef NEWLANG_TOKEN_RESERVED_TERMINAL_HPP
-#define NEWLANG_TOKEN_RESERVED_TERMINAL_HPP
+#ifndef CROW_TOKEN_RESERVED_TERMINAL_HPP
+#define CROW_TOKEN_RESERVED_TERMINAL_HPP
 
 // STL Includes:
 #include <type_traits>
@@ -33,4 +33,4 @@ struct Terminal {
 };
 } // namespace token::reserved
 
-#endif // NEWLANG_TOKEN_RESERVED_TERMINAL_HPP
+#endif // CROW_TOKEN_RESERVED_TERMINAL_HPP

@@ -1,5 +1,5 @@
-#ifndef NEWLANG_TYPES_HPP
-#define NEWLANG_TYPES_HPP
+#ifndef CROW_TYPES_HPP
+#define CROW_TYPES_HPP
 
 // STL Includes:
 #include <cstdint>
@@ -31,4 +31,4 @@ constexpr auto enum2int(const T t_value) -> std::underlying_type_t<T>
   return static_cast<std::underlying_type_t<T>>(t_value);
 }
 
-#endif // NEWLANG_TYPES_HPP
+#endif // CROW_TYPES_HPP

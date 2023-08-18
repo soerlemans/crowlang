@@ -1,5 +1,5 @@
-#ifndef NEWLANG_EXCEPTION_SYNTAX_ERROR_HPP
-#define NEWLANG_EXCEPTION_SYNTAX_ERROR_HPP
+#ifndef CROW_EXCEPTION_SYNTAX_ERROR_HPP
+#define CROW_EXCEPTION_SYNTAX_ERROR_HPP
 
 // STL Includes:
 #include <filesystem>
@@ -23,4 +23,4 @@ class SyntaxError : public std::exception {
   auto what() const noexcept -> const char* override;
 };
 
-#endif // NEWLANG_EXCEPTION_SYNTAX_ERROR_HPP
+#endif // CROW_EXCEPTION_SYNTAX_ERROR_HPP

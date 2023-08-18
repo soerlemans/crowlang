@@ -1,5 +1,5 @@
-#ifndef NEWLANG_TOKEN_TOKEN_TYPE_HPP
-#define NEWLANG_TOKEN_TOKEN_TYPE_HPP
+#ifndef CROW_TOKEN_TOKEN_TYPE_HPP
+#define CROW_TOKEN_TOKEN_TYPE_HPP
 
 // STL Includes:
 #include <optional>
@@ -106,4 +106,4 @@ enum class TokenType {
 };
 } // namespace token
 
-#endif // NEWLANG_TOKEN_TOKEN_TYPE_HPP
+#endif // CROW_TOKEN_TOKEN_TYPE_HPP

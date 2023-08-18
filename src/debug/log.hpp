@@ -1,5 +1,5 @@
-#ifndef NEWLANG_DEBUG_LOG_HPP
-#define NEWLANG_DEBUG_LOG_HPP
+#ifndef CROW_DEBUG_LOG_HPP
+#define CROW_DEBUG_LOG_HPP
 
 // STL Includes:
 #include <iostream>
@@ -83,4 +83,4 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
 #endif // DEBUG
 } // namespace debug
 
-#endif // NEWLANG_DEBUG_LOG_HPP
+#endif // CROW_DEBUG_LOG_HPP

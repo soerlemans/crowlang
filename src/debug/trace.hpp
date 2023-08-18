@@ -1,5 +1,5 @@
-#ifndef NEWLANG_DEBUG_TRACE_HPP
-#define NEWLANG_DEBUG_TRACE_HPP
+#ifndef CROW_DEBUG_TRACE_HPP
+#define CROW_DEBUG_TRACE_HPP
 
 // STL Includes:
 #include <string>
@@ -43,4 +43,4 @@ class Trace {
 } // namespace debug
 
 #endif // DEBUG
-#endif // NEWLANG_DEBUG_TRACE_HPP
+#endif // CROW_DEBUG_TRACE_HPP

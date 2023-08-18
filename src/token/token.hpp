@@ -1,5 +1,5 @@
-#ifndef NEWLANG_TOKEN_TOKEN_HPP
-#define NEWLANG_TOKEN_TOKEN_HPP
+#ifndef CROW_TOKEN_TOKEN_HPP
+#define CROW_TOKEN_TOKEN_HPP
 
 // STL Includes:
 #include <string>
@@ -43,4 +43,4 @@ class Token {
 };
 } // namespace token
 
-#endif // NEWLANG_TOKEN_TOKEN_HPP
+#endif // CROW_TOKEN_TOKEN_HPP

@@ -3,10 +3,10 @@
 
 
 //! Cmake substitutes the version numbers specified in the root CMakeLists.txt
-#define NEWLANG_VERSION_MAJOR @newlang_VERSION_MAJOR@
-#define NEWLANG_VERSION_MINOR @newlang_VERSION_MINOR@
-#define NEWLANG_VERSION_PATCH @newlang_VERSION_PATCH@
+#define CROW_VERSION_MAJOR @crow_VERSION_MAJOR@
+#define CROW_VERSION_MINOR @crow_VERSION_MINOR@
+#define CROW_VERSION_PATCH @crow_VERSION_PATCH@
 
-#define NEWLANG_VERSION "@newlang_VERSION@"
+#define CROW_VERSION "@crow_VERSION@"
 
-#endif // NEWLANG_VERSION_HPP
+#endif // CROW_VERSION_HPP

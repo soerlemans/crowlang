@@ -10,7 +10,7 @@ set(CMAKE_C_COMPILER "gcc")
 set(CMAKE_CXX_COMPILER "g++")
 
 # Define the project
-project(newlang
+project(crow
 	VERSION 0.0.0
 	DESCRIPTION ""
 	LANGUAGES CXX C

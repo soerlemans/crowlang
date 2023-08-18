@@ -1,5 +1,5 @@
-#ifndef NEWLANG_LEXER_LEXER_HPP
-#define NEWLANG_LEXER_LEXER_HPP
+#ifndef CROW_LEXER_LEXER_HPP
+#define CROW_LEXER_LEXER_HPP
 
 // STL Includes:
 #include <string>
@@ -62,4 +62,4 @@ class Lexer {
 };
 } // namespace lexer
 
-#endif // NEWLANG_LEXER_LEXER_HPP
+#endif // CROW_LEXER_LEXER_HPP

@@ -1,5 +1,5 @@
-#ifndef NEWLANG_TOKEN_RESERVED_RESERVED_HPP
-#define NEWLANG_TOKEN_RESERVED_RESERVED_HPP
+#ifndef CROW_TOKEN_RESERVED_RESERVED_HPP
+#define CROW_TOKEN_RESERVED_RESERVED_HPP
 
 // STL Includes:
 #include <array>
@@ -180,4 +180,4 @@ namespace symbols {
 } // namespace reserved
 // clang-format on
 
-#endif // NEWLANG_TOKEN_RESERVED_RESERVED_HPP
+#endif // CROW_TOKEN_RESERVED_RESERVED_HPP

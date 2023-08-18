@@ -1,5 +1,5 @@
-#ifndef NEWLANG_CONTAINER_TEXT_POSITION_HPP
-#define NEWLANG_CONTAINER_TEXT_POSITION_HPP
+#ifndef CROW_CONTAINER_TEXT_POSITION_HPP
+#define CROW_CONTAINER_TEXT_POSITION_HPP
 
 // STL Includes:
 #include <string>
@@ -26,4 +26,4 @@ struct TextPosition {
 };
 } // namespace container
 
-#endif // NEWLANG_CONTAINER_TEXT_POSITION_HPP
+#endif // CROW_CONTAINER_TEXT_POSITION_HPP

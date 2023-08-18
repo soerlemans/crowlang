@@ -10,3 +10,6 @@ add_subdirectory(exception)
 
 add_subdirectory(lexer)
 add_subdirectory(token)
+
+add_subdirectory(ast)
+add_subdirectory(parser)
