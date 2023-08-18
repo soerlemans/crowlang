@@ -13,7 +13,7 @@ set(CMAKE_CXX_COMPILER "g++")
 project(newlang
 	VERSION 0.0.0
 	DESCRIPTION ""
-	LANGUAGES CXX
+	LANGUAGES CXX C
 )
 
 # Create version header

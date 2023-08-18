@@ -8,6 +8,8 @@
 #include <CLI/CLI.hpp>
 #include <CLI/Validators.hpp>
 
+#include <llvm/IR/LLVMContext.h>
+
 // Includes:
 #include "container/text_buffer.hpp"
 #include "debug/log.hpp"
