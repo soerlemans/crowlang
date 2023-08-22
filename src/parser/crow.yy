@@ -48,19 +48,25 @@ item_list        : /* empty */
                  | item_list item terminator
                  ;
 
-item             : package
+item             : Package IDENTIFIER
+				         | import
                  | function
                  ;
 
-package          : Package IDENTIFIER
-				         /* | Import  */
-				         /* | Private */
-				         /* | Public */
+import           : Import STRING
                  ;
 
+attribute        :
+                 ;
+
+// Function:
 function         : Fn IDENTIFIER '(' param_list ')' body
                  | Fn IDENTIFIER body
 				         ;
+
+lambda           : Fn '(' param_list ')' body
+                 | Fn body
+                 ;
 
 param_list_opt   : /* empty */
                  | param_list
@@ -70,15 +76,18 @@ param_list       : IDENTIFIER
                  | param_list ',' IDENTIFIER
                  ;
 
+// Body:
 body             : newline_opt '{' newline_opt                  '}'
                  | newline_opt '{' newline_opt statement_list   '}'
                  ;
 
+// Statements:
 statement_list   : statement
                  | statement_list statement
                  ;
 
 statement        : body
+				         | expr_statement
 				         | if_statement
 				         | switch_statement
 				         | loop_statement
@@ -105,6 +114,7 @@ switch_case      : Case body
 
 // Loop statement:
 loop_statement   : Loop expr body
+				         | Loop decl_expr ';' expr_statement expr body
                  ;
 
 // Jump statement:
@@ -115,18 +125,31 @@ jump_statement   : Continue
                  | Return expr
                  ;
 
-// TODO: Implement expressions
-expr             : bool_lit ;
+// Expressions:
+expr_statement   : expr terminator ;
 
-terminator       : terminator NEWLINE
-                 |            ';'
-                 |            NEWLINE
+expr             : ;
+
+decl_expr        : Let IDENTIFIER
+                 | decl_expr '=' expr
                  ;
 
+unary_expr       : '+' expr
+				         | '-' expr
+
+// Literals:
 bool_lit         : TRUE
 				         | FALSE
+                 ;
+
+// Miscellaneous:
+terminator       : terminator NEWLINE
+                 | ';'
+                 | NEWLINE
                  ;
 
 newline_opt      : /* empty */
                  | newline_opt NEWLINE
                  ;
+
+%%
