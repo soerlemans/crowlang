@@ -39,6 +39,9 @@ class Token {
   explicit Token(TokenType t_type, TextPosition t_tp);
   explicit Token(TokenType t_type, TokenValue t_tv, TextPosition t_tp);
 
+	auto type() const -> TokenType;
+	auto position() const -> TextPosition;
+
   virtual ~Token() = default;
 };
 } // namespace token

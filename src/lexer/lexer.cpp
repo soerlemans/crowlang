@@ -116,7 +116,7 @@ auto Lexer::handle_hex() -> Token
   DBG_LOG(INFO, "HEX: ", ss.str());
   const int number{(int)std::stoul(ss.str(), nullptr, 16)};
 
-  return create_token(TokenType::HEX, number);
+  return create_token(TokenType::INTEGER, number);
 }
 
 // t_str and t_dot have default arguments

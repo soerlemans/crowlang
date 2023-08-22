@@ -43,7 +43,7 @@ namespace keywords {
   DEFINE_TERMINAL(g_else,   "else",   ELSE);
   DEFINE_TERMINAL(g_loop,   "loop",   LOOP);
 
-  // Control flow:
+  // Jump:
   DEFINE_TERMINAL(g_break,    "break",    BREAK);
   DEFINE_TERMINAL(g_continue, "continue", CONTINUE);
   DEFINE_TERMINAL(g_defer,    "defer",    DEFER);
@@ -74,16 +74,22 @@ namespace symbols {
   DEFINE_TERMINAL(g_brace_close,    ']', BRACE_CLOSE);
 
   // Assignment variants of Arithmetic operators:
+  DEFINE_TERMINAL(g_plus,         '+', PLUS);
+  DEFINE_TERMINAL(g_minus,        '-', MINUS);
+  DEFINE_TERMINAL(g_asterisk,     '*', ASTERISK);
+  DEFINE_TERMINAL(g_slash,        '/', SLASH);
+  DEFINE_TERMINAL(g_percent_sign, '%', PERCENT_SIGN);
+
   DEFINE_TERMINAL(g_increment, "++", INCREMENT);
   DEFINE_TERMINAL(g_decrement, "--", DECREMENT);
 
   // Assignment:
-  DEFINE_TERMINAL(g_multiply_assign, "*=", MULTIPLY_ASSIGN);
-  DEFINE_TERMINAL(g_divide_assign,   "/=", DIVIDE_ASSIGN);
-  DEFINE_TERMINAL(g_modulo_assign,   "%=", MODULO_ASSIGN);
+  DEFINE_TERMINAL(g_mul_assign, "*=", MUL_ASSIGN);
+  DEFINE_TERMINAL(g_div_assign, "/=", DIV_ASSIGN);
+  DEFINE_TERMINAL(g_mod_assign, "%=", MOD_ASSIGN);
 
-  DEFINE_TERMINAL(g_add_assign,      "+=", ADD_ASSIGN);
-  DEFINE_TERMINAL(g_subtract_assign, "-=", SUBTRACT_ASSIGN);
+  DEFINE_TERMINAL(g_add_assign, "+=", ADD_ASSIGN);
+  DEFINE_TERMINAL(g_sub_assign, "-=", SUB_ASSIGN);
 
   DEFINE_TERMINAL(g_assignment, '=',  ASSIGNMENT);
 
@@ -98,6 +104,9 @@ namespace symbols {
   DEFINE_TERMINAL(g_greater_than_equal, ">=", GREATER_THAN_EQUAL);
 
   // Logic:
+  DEFINE_TERMINAL(g_true, "true",  TRUE);
+  DEFINE_TERMINAL(g_false, "false",  FALSE);
+
   DEFINE_TERMINAL(g_not, '!',  NOT);
   DEFINE_TERMINAL(g_or,  "||", OR);
   DEFINE_TERMINAL(g_and, "&&", AND);
@@ -109,12 +118,6 @@ namespace symbols {
   DEFINE_TERMINAL(g_question_mark, '?',  QUESTION_MARK);
   DEFINE_TERMINAL(g_colon,         ':',  COLON);
   DEFINE_TERMINAL(g_semicolon,     ';',  SEMICOLON);
-
-  DEFINE_TERMINAL(g_plus,         '+', PLUS);
-  DEFINE_TERMINAL(g_minus,        '-', MINUS);
-  DEFINE_TERMINAL(g_asterisk,     '*', ASTERISK);
-  DEFINE_TERMINAL(g_slash,        '/', SLASH);
-  DEFINE_TERMINAL(g_percent_sign, '%', PERCENT_SIGN);
 
   DEFINE_TERMINAL(g_newline,  '\n', NEWLINE);
 
@@ -152,12 +155,12 @@ namespace symbols {
 	  g_increment,
 	  g_decrement,
 
-	  g_multiply_assign,
-	  g_divide_assign,
-	  g_modulo_assign,
+	  g_mul_assign,
+	  g_div_assign,
+	  g_mod_assign,
 
 	  g_add_assign,
-	  g_subtract_assign,
+	  g_sub_assign,
 
 	  g_less_than_equal,
 
@@ -165,6 +168,9 @@ namespace symbols {
 	  g_not_equal,
 
 	  g_greater_than_equal,
+
+	  g_true,
+	  g_false,
 
 	  g_or,
 	  g_and,

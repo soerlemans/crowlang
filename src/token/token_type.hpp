@@ -24,7 +24,7 @@ enum class TokenType {
   PRIVATE,
   PUBLIC,
 
-  // Object oriented:
+  // Typing:
   STRUCT,
   INTERFACE,
 
@@ -36,7 +36,7 @@ enum class TokenType {
   ELSE,
   LOOP,
 
-  // Control flow:
+  // Jump:
   BREAK,
   CONTINUE,
   DEFER,
@@ -44,7 +44,6 @@ enum class TokenType {
 
   // Literals:
   INTEGER,
-  HEX,
   FLOAT,
   STRING,
 
@@ -59,16 +58,22 @@ enum class TokenType {
   BRACE_CLOSE,
 
   // Arithmetic:
+  PLUS,
+  MINUS,
+  ASTERISK,
+  SLASH,
+  PERCENT_SIGN,
+
   INCREMENT,
   DECREMENT,
 
   // Assignment:
-  MULTIPLY_ASSIGN,
-  DIVIDE_ASSIGN,
-  MODULO_ASSIGN,
+  MUL_ASSIGN,
+  DIV_ASSIGN,
+  MOD_ASSIGN,
 
   ADD_ASSIGN,
-  SUBTRACT_ASSIGN,
+  SUB_ASSIGN,
 
   ASSIGNMENT,
 
@@ -83,24 +88,20 @@ enum class TokenType {
   GREATER_THAN_EQUAL,
 
   // Logical:
+  TRUE,
+  FALSE,
+
   NOT,
   AND,
   OR,
 
   // Miscellaneous:
-	ARROW,
+  ARROW,
   DOT,
   COMMA,
   QUESTION_MARK,
   COLON,
   SEMICOLON,
-
-  // (these are often related to arithmetic expressions):
-  PLUS,
-  MINUS,
-  ASTERISK,
-  SLASH,
-  PERCENT_SIGN,
 
   NEWLINE,
 };
