@@ -113,34 +113,108 @@ switch_case      : Case body
                  ;
 
 // Loop statement:
-loop_statement   : Loop expr body
-				         | Loop decl_expr ';' expr_statement expr body
+loop_statement   : Loop body
+                 | Loop expr body
+				         | Loop decl_expr ';' expr ';' expr body
                  ;
 
 // Jump statement:
-jump_statement   : Continue
-                 | Break
+jump_statement   : Continue terminator
+                 | Break terminator
+				         | Defer expr_statement
 				         | Defer body
-                 | Return
-                 | Return expr
+                 | Return expr_opt terminator
                  ;
 
 // Expressions:
-expr_statement   : expr terminator ;
-
-expr             : ;
-
-decl_expr        : Let IDENTIFIER
-                 | decl_expr '=' expr
+expr_statement   : expr terminator
                  ;
 
-unary_expr       : '+' expr
-				         | '-' expr
+expr_list_opt    : /* empty */
+                 | expr_list
+                 ;
+
+expr_list        : expr
+                 | multiple_expr_list
+                 ;
+
+multiple_expr_list : expr ',' newline_opt expr
+                 | multiple_expr_list ',' newline_opt expr
+                 ;
+
+expr_opt         : /* empty */
+				         | expr
+                 ;
+
+expr             : unary_prefix
+                 | grouping
+                 | negation
+                 | arithmetic
+                 | comparison
+                 | logical
+				         | literal
+                 | lvalue
+                 | INCR lvalue
+                 | DECR lvalue
+                 | assignment
+                 | IDENTIFIER '(' expr_list_opt ')'
+                 ;
+
+unary_prefix     : '+' expr
+                 | '-' expr
+                 ;
+
+grouping         : '(' expr ')'
+                 ;
+
+negation         : '!' expr
+                 ;
+
+arithmetic       : expr '*' expr
+                 | expr '/' expr
+                 | expr '%' expr
+                 | expr '+' expr
+                 | expr '-' expr
+                 ;
+
+comparison       : expr LTE expr
+                 | expr LE  expr
+                 | expr EQ  expr
+                 | expr NE  expr
+                 | expr GE  expr
+                 | expr GTE expr
+                 ;
+
+logical          : expr AND newline_opt expr
+                 | expr OR  newline_opt expr
+                 ;
+
+assignment       : lvalue MUL_ASSIGN expr
+                 | lvalue DIV_ASSIGN expr
+                 | lvalue MOD_ASSIGN expr
+                 | lvalue ADD_ASSIGN expr
+                 | lvalue SUB_ASSIGN expr
+                 | lvalue '=' expr
+                 ;
+
+decl_expr        : Let IDENTIFIER
+                 | Let IDENTIFIER '=' expr
+                 | Let IDENTIFIER ':' IDENTIFIER '=' expr
+                 ;
 
 // Literals:
+literal          : NUMBER
+				         | STRING
+				         | bool_lit
+				         ;
+
 bool_lit         : TRUE
 				         | FALSE
                  ;
+
+// Lvalue:
+lvalue           : IDENTIFIER
+                 | IDENTIFIER '[' expr ']'
 
 // Miscellaneous:
 terminator       : terminator NEWLINE
