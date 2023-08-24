@@ -1,39 +1,39 @@
-/* Values */
+// Values
 %token IDENTIFIER NUMBER STRING
 
-/* Variables */
+// Variables:
 %token Let Const
 
-/* Package */
+// Package:
 %token Package Import Private Public
 
-/* Typing */
+// Typing:
 %token Struct Interface
 
-/* Control Statements*/
-%token Fn Switch Case If Else Loop
+// Control Statements:
+%token Fn Match Case If Else Loop
 
-/* Control Flow */
+// Control Flow:
 %token Break Continue Defer Return
 
-/* Arithmetic */
+// Arithmetic:
 %token '+' '-' '*' '/' '%'
 %token INCREMENT DECREMENT
 
-/* Assignment */
+// Assignment:
 %token MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN SUB_ASSIGN
 %token '='
 
-/* Logical */
+// Logical:
 %token TRUE FALSE
 
 %token '!'
 %token OR AND
 
-/* Comparison */
+// Comparison:
 %token LTE EL EQ NE GE GTE
 
-/* Miscellaneous */
+// Miscellaneous:
 %token ARROW '.' ',' '?' ':' ';'
 %token NEWLINE
 
@@ -44,13 +44,16 @@ program          : item_list
                  | item_list item
                  ;
 
-item_list        : /* empty */
+item_list        : // empty
                  | item_list item terminator
                  ;
 
-item             : Package IDENTIFIER
+item             : package
 				         | import
                  | function
+                 ;
+
+package          : Package IDENTIFIER
                  ;
 
 import           : Import STRING
@@ -64,11 +67,14 @@ function         : Fn IDENTIFIER '(' param_list ')' body
                  | Fn IDENTIFIER body
 				         ;
 
+attributes       : // Empty for now
+                 ;
+
 lambda           : Fn '(' param_list ')' body
                  | Fn body
                  ;
 
-param_list_opt   : /* empty */
+param_list_opt   : // empty
                  | param_list
                  ;
 
@@ -89,33 +95,33 @@ statement_list   : statement
 statement        : body
 				         | expr_statement
 				         | if_statement
-				         | switch_statement
+				         | match_statement
 				         | loop_statement
 				         | jump_statement
                  ;
 
 // If statement:
-if_statement     : If expr body
-				         | If expr body Else body
+if_statement     : If eval_expr body
+				         | If eval_expr body Else body
 
-// Switch statement:
-switch_statement : Switch switch_body
+// Match statement:
+match_statement : Match match_body
+                | Match eval_expr match_body
                  ;
 
-switch_body      : newline_opt '{' switch_case_list '}'
+match_body      : newline_opt '{' match_case_list '}'
                  ;
 
-switch_case_list : switch_case
-                 | switch_case_list switch_case
+match_case_list : match_case
+                 | match_case_list match_case
                  ;
 
-switch_case      : Case body
+match_case      : Case body
                  ;
 
 // Loop statement:
 loop_statement   : Loop body
-                 | Loop expr body
-				         | Loop decl_expr ';' expr ';' expr body
+				         | Loop eval_expr expr body
                  ;
 
 // Jump statement:
@@ -130,7 +136,7 @@ jump_statement   : Continue terminator
 expr_statement   : expr terminator
                  ;
 
-expr_list_opt    : /* empty */
+expr_list_opt    : // empty
                  | expr_list
                  ;
 
@@ -142,7 +148,7 @@ multiple_expr_list : expr ',' newline_opt expr
                  | multiple_expr_list ',' newline_opt expr
                  ;
 
-expr_opt         : /* empty */
+expr_opt         : // empty
 				         | expr
                  ;
 
@@ -197,6 +203,10 @@ assignment       : lvalue MUL_ASSIGN expr
                  | lvalue '=' expr
                  ;
 
+eval_expr        : expr
+                 | decl_expr ';' expr ';'
+                 ;
+
 decl_expr        : Let IDENTIFIER
                  | Let IDENTIFIER '=' expr
                  | Let IDENTIFIER ':' IDENTIFIER '=' expr
@@ -222,7 +232,7 @@ terminator       : terminator NEWLINE
                  | NEWLINE
                  ;
 
-newline_opt      : /* empty */
+newline_opt      : // empty
                  | newline_opt NEWLINE
                  ;
 

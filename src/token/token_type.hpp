@@ -30,8 +30,7 @@ enum class TokenType {
 
   // Control statements:
   FUNCTION,
-  SWITCH,
-  CASE,
+  MATCH,
   IF,
   ELSE,
   LOOP,

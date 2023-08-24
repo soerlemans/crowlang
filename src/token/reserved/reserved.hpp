@@ -36,12 +36,11 @@ namespace keywords {
   DEFINE_TERMINAL(g_interface, "interface", INTERFACE);
 
   // Control statements:
-  DEFINE_TERMINAL(g_fn,     "fn",     FUNCTION);
-  DEFINE_TERMINAL(g_switch, "switch", SWITCH);
-  DEFINE_TERMINAL(g_case,   "case",   CASE);
-  DEFINE_TERMINAL(g_if,     "if",     IF);
-  DEFINE_TERMINAL(g_else,   "else",   ELSE);
-  DEFINE_TERMINAL(g_loop,   "loop",   LOOP);
+  DEFINE_TERMINAL(g_fn,    "fn",    FUNCTION);
+  DEFINE_TERMINAL(g_match, "match", MATCH);
+  DEFINE_TERMINAL(g_if,    "if",    IF);
+  DEFINE_TERMINAL(g_else,  "else",  ELSE);
+  DEFINE_TERMINAL(g_loop,  "loop",  LOOP);
 
   // Jump:
   DEFINE_TERMINAL(g_break,    "break",    BREAK);
@@ -56,7 +55,7 @@ namespace keywords {
 		g_package, g_import, g_priv, g_pub,
 		g_struct, g_interface,
 	  g_fn,
-		g_switch, g_case,
+		g_match,
 	  g_if, g_else,
 	  g_loop,
 	  g_break, g_continue, g_defer, g_return
