@@ -57,16 +57,23 @@ auto Lexer::identifier() -> Token
   Token token;
   std::stringstream ss;
 
-  auto is_valid_identifier{[&](const char t_char) -> bool {
+  auto is_valid_id{[&](const char t_char) -> bool {
     return std::isalnum(t_char) || t_char == '_';
   }};
 
-  while(is_valid_identifier(m_tb->character()) && !m_tb->eol()) {
+	// If Peek is implemented this works
+  // ss << m_tb->character();
+
+  // while(is_valid_id(m_tb->peek()) && !m_tb->eol()) {
+  //   ss << m_tb->forward();
+  // }
+
+  while(is_valid_id(m_tb->character()) && !m_tb->eol()) {
     ss << m_tb->forward();
   }
 
-  // We go back one since we add till we find a character that does not
-  // Match so we have to unget it
+  // // We go back one since we add till we find a character that does not
+  // // Match so we have to unget it
   m_tb->backward();
 
   // Verify if it is a keyword or not
