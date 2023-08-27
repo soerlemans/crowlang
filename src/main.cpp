@@ -10,7 +10,6 @@
 
 // Includes:
 #include "container/text_buffer.hpp"
-#include "container/text_stream.hpp"
 #include "debug/log.hpp"
 #include "debug/log_macros.hpp"
 #include "lexer/lexer.hpp"
@@ -28,7 +27,7 @@ enum ExitCode {
   OK = 0,
   IMPROPER_USAGE,
   EXCEPTION = 100,
-  SIGNAL,
+  SIGNAL = 200,
 };
 
 // Globals:
@@ -58,8 +57,6 @@ auto open_file(const fs::path t_path) -> container::TextBuffer
 {
   using namespace container;
 
-  TextBuffer tb;
-
   if(!fs::exists(t_path)) {
     std::stringstream ss;
     ss << "File does not exist! ";
@@ -68,15 +65,14 @@ auto open_file(const fs::path t_path) -> container::TextBuffer
     throw std::invalid_argument{ss.str()};
   }
 
+  TextBuffer tb{t_path.string()};
+
   std::ifstream ifs{t_path};
   while(ifs.good() && !ifs.eof()) {
     std::string line;
     std::getline(ifs, line);
 
-    // Dont discard newlines
-    line += '\n';
-
-    tb.add_line(line);
+    tb.add_line(std::move(line));
   }
 
   return tb;
@@ -86,8 +82,8 @@ auto lex(const fs::path& t_path) -> token::TokenStream
 {
   using namespace lexer;
 
-  auto tb_ptr{std::make_shared<TextBuffer>(open_file(t_path))};
-  Lexer lexer{tb_ptr};
+  auto ts_ptr{std::make_shared<TextBuffer>(open_file(t_path))};
+  Lexer lexer{ts_ptr};
 
   return lexer.tokenize();
 }
@@ -121,7 +117,13 @@ auto main(int t_argc, char* t_argv[]) -> int
     return -app.exit(e);
   }
 
-  run();
+  try {
+    run();
+  } catch(std::exception& e) {
+    std::cerr << '\n' << "EXCEPTION - \n" << e.what() << '\n';
+
+    return ExitCode::EXCEPTION;
+  }
 
   return ExitCode::OK;
 }

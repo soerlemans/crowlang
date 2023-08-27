@@ -19,8 +19,8 @@ SyntaxError::SyntaxError(const std::string_view t_msg,
   lineno_ss << lineno;
   lineno_ss << "): ";
 
-  ss << "Error in file: " << '"' << path << '"' << '\n';
-  ss << "Error description: " << '"' << t_msg << '"' << "\n";
+  ss << "Error in file: " << std::quoted(path) << '\n';
+  ss << "Error description: " << std::quoted(t_msg) << "\n";
   ss << lineno_ss.str();
 
   // FIXME: If t_line does not end in a newline we have an issue!

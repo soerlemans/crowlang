@@ -7,7 +7,7 @@
 #include <tuple>
 
 // Includes:
-#include "../container/text_buffer.hpp"
+#include "../container/text_stream.hpp"
 #include "../token/reserved/reserved.hpp"
 #include "../token/token.hpp"
 
@@ -19,7 +19,7 @@ using namespace container;
 // Classes:
 class Lexer {
   private:
-  TextBufferPtr m_tb;
+  TextStreamPtr m_text;
   token::TokenStream m_ts;
 
   // Token stream handling:
@@ -27,14 +27,14 @@ class Lexer {
   template<typename... Args>
   auto create_token(Args&&... t_args) -> token::Token
   {
-    return token::Token{std::forward<Args>(t_args)..., m_tb->position()};
+    return token::Token{std::forward<Args>(t_args)..., m_text->position()};
   }
 
   // Error handling:
   auto syntax_error(std::string_view t_msg) const -> void;
 
   public:
-  Lexer(TextBufferPtr t_fb);
+  Lexer(TextStreamPtr t_text);
 
   // Name lexing:
   static auto is_keyword(std::string_view t_identifier) -> token::TokenTypeOpt;

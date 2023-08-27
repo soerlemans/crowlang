@@ -2,53 +2,40 @@
 #define CROW_CONTAINER_TEXT_BUFFER_HPP
 
 // STL Includes:
-#include <filesystem>
-#include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 // Local Includes:
-#include "text_position.hpp"
+#include "text_stream.hpp"
 
 
 namespace container {
-// Forward Declarations:
-class TextBuffer;
-
-// Aliases:
-using TextBufferPtr = std::shared_ptr<TextBuffer>;
-
-// Classes:
-class TextBuffer {
+class TextBuffer : public TextStream {
   private:
   std::vector<std::string> m_buffer;
+
+	std::string m_source;
 
   // Keep track of current position in the filebuffer
   mutable std::size_t m_lineno, m_columnno;
 
   public:
   TextBuffer();
+  TextBuffer(const std::string_view t_source);
 
   auto add_line(std::string t_line) -> void;
+  auto next_line() const -> void override;
 
-  // Line movement:
-  auto next() const -> std::string;
-  auto prev() const -> std::string;
+  auto next() const -> char override;
+  auto prev() const -> char override;
 
-  // Character movement:
-  auto forward() const -> char;
-  auto backward() const -> char;
+  auto character() const -> char override;
+  auto is_newline() const -> bool override;
 
-  // Getters:
-  auto line() const -> std::string;
-  auto character() const -> char;
+  auto eos() const -> bool override;
 
-  auto size() const -> std::size_t;
-
-  auto eol() const -> bool;
-  auto eof() const -> bool;
-
-  virtual auto position() const -> TextPosition;
+  auto position() const -> TextPosition override;
 
   friend auto operator<<(std::ostream& t_os, const TextBuffer& t_tb)
     -> std::ostream&;

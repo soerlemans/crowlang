@@ -9,6 +9,12 @@ TextBuffer::TextBuffer(): m_lineno{0}, m_columnno{0}
   m_buffer.reserve(256);
 }
 
+TextBuffer::TextBuffer(const std::string_view t_source)
+  : m_source{t_source}, m_lineno{0}, m_columnno{0}
+{
+  m_buffer.reserve(256);
+}
+
 auto TextBuffer::add_line(std::string t_line) -> void
 {
   // Warning: We disregard carriage return's
@@ -19,48 +25,39 @@ auto TextBuffer::add_line(std::string t_line) -> void
   m_buffer.push_back(std::move(t_line));
 }
 
-auto TextBuffer::next() const -> std::string
+auto TextBuffer::next_line() const -> void
 {
   // Changing lines resets the column number
   m_columnno = 0;
-
-  return m_buffer[m_lineno++];
+  m_lineno++;
 }
 
-auto TextBuffer::prev() const -> std::string
+//! Wraps to the next_line() when at the end of a line
+auto TextBuffer::next() const -> char
 {
-  std::string result{m_buffer[m_lineno]};
+  const auto& line{m_buffer[m_lineno]};
+  const char ch{line[m_columnno]};
 
-  // Changing lines resets the column number
-  m_columnno = 0;
-
-  // Logically you can go past a stream but not in front of a stream
-  if(m_lineno) {
-    m_lineno--;
+  if(m_columnno + 1 >= line.size()) {
+    next_line();
+  } else {
+    m_columnno++;
   }
 
-  return result;
+
+  return ch;
 }
 
-auto TextBuffer::forward() const -> char
+auto TextBuffer::prev() const -> char
 {
-  return m_buffer[m_lineno][m_columnno++];
-}
-
-auto TextBuffer::backward() const -> char
-{
-  const char character{m_buffer[m_lineno][m_columnno]};
+  const auto& line{m_buffer[m_lineno]};
+  const char ch{line[m_columnno]};
 
   if(m_columnno) {
     m_columnno--;
   }
 
-  return character;
-}
-
-auto TextBuffer::line() const -> std::string
-{
-  return m_buffer[m_lineno];
+  return ch;
 }
 
 auto TextBuffer::character() const -> char
@@ -68,26 +65,21 @@ auto TextBuffer::character() const -> char
   return m_buffer[m_lineno][m_columnno];
 }
 
-auto TextBuffer::size() const -> std::size_t
+auto TextBuffer::is_newline() const -> bool
 {
-  return m_buffer.size();
+  return character() == '\n';
 }
 
-auto TextBuffer::eol() const -> bool
+auto TextBuffer::eos() const -> bool
 {
-  return m_columnno >= line().size();
-}
-
-auto TextBuffer::eof() const -> bool
-{
-  return m_lineno >= size();
+  return m_lineno >= m_buffer.size();
 }
 
 //! This method is required for token creating in the Lexer, think about how to
 //! make this more elegant
 auto TextBuffer::position() const -> TextPosition
 {
-  return {"", line(), m_lineno, m_columnno};
+  return {"", m_buffer[m_lineno], m_lineno, m_columnno};
 }
 
 namespace container {
