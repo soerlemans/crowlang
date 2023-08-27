@@ -36,9 +36,9 @@ class Parser {
   auto check(token::TokenType t_tokentype) -> bool;
   auto next() -> token::Token&;
   auto next_if(token::TokenType t_tokentype) -> bool;
-  auto prev() -> token::Token&;
   auto expect(token::TokenType t_tokentype, std::string_view t_msg)
     -> token::Token&;
+  auto prev() -> token::Token&;
   auto get_token() const -> token::Token;
 
   public:

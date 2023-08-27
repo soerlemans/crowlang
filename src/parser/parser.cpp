@@ -69,18 +69,6 @@ auto Parser::next_if(const TokenType t_tokentype) -> bool
   return advance;
 }
 
-auto Parser::prev() -> Token&
-{
-  return m_tokenstream.prev();
-}
-
-auto Parser::get_token() const -> Token
-{
-  eos_error("Tried to return get token at EOS!");
-
-  return m_tokenstream.current();
-}
-
 auto Parser::expect(const TokenType t_tokentype, const std::string_view t_msg)
   -> Token&
 {
@@ -93,4 +81,16 @@ auto Parser::expect(const TokenType t_tokentype, const std::string_view t_msg)
   }
 
   return next();
+}
+
+auto Parser::prev() -> Token&
+{
+  return m_tokenstream.prev();
+}
+
+auto Parser::get_token() const -> Token
+{
+  eos_error("Tried to return get token at EOS!");
+
+  return m_tokenstream.current();
 }

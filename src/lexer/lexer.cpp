@@ -61,8 +61,9 @@ auto Lexer::identifier() -> Token
     return std::isalnum(t_char) || t_char == '_';
   }};
 
-  while(is_valid_identifier(m_tb->character()) && !m_tb->eol())
+  while(is_valid_identifier(m_tb->character()) && !m_tb->eol()) {
     ss << m_tb->forward();
+  }
 
   // We go back one since we add till we find a character that does not
   // Match so we have to unget it
@@ -84,8 +85,6 @@ auto Lexer::is_hex_literal() -> bool
 {
   bool is_hex{false};
 
-  // Octal literals are not specified in the POSIX AWK standard
-  // So just treat leading zeroes as as normal
   if(m_tb->forward() == '0' && m_tb->character() == 'x') {
     m_tb->forward(); // Discard 'x'
 

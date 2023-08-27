@@ -59,16 +59,14 @@ package          : Package IDENTIFIER
 import           : Import STRING
                  ;
 
-attribute        :
+attribute        : Private
+				         | Public
                  ;
 
 // Function:
 function         : Fn IDENTIFIER '(' param_list ')' body
                  | Fn IDENTIFIER body
 				         ;
-
-attributes       : // Empty for now
-                 ;
 
 lambda           : Fn '(' param_list ')' body
                  | Fn body
@@ -105,8 +103,8 @@ if_statement     : If eval_expr body
 				         | If eval_expr body Else body
 
 // Match statement:
-match_statement : Match match_body
-                | Match eval_expr match_body
+match_statement  : Match match_body
+                 | Match eval_expr match_body
                  ;
 
 match_body      : newline_opt '{' match_case_list '}'
@@ -121,7 +119,8 @@ match_case      : Case body
 
 // Loop statement:
 loop_statement   : Loop body
-				         | Loop eval_expr expr body
+				         | Loop eval_expr body
+				         | Loop eval_expr ';' expr body
                  ;
 
 // Jump statement:
@@ -160,8 +159,8 @@ expr             : unary_prefix
                  | logical
 				         | literal
                  | lvalue
-                 | INCR lvalue
-                 | DECR lvalue
+                 | INCREMENT lvalue
+                 | DECREMENT lvalue
                  | assignment
                  | IDENTIFIER '(' expr_list_opt ')'
                  ;
@@ -184,10 +183,10 @@ arithmetic       : expr '*' expr
                  ;
 
 comparison       : expr LTE expr
-                 | expr LE  expr
+                 | expr '<' expr
                  | expr EQ  expr
                  | expr NE  expr
-                 | expr GE  expr
+                 | expr '>' expr
                  | expr GTE expr
                  ;
 
@@ -204,7 +203,8 @@ assignment       : lvalue MUL_ASSIGN expr
                  ;
 
 eval_expr        : expr
-                 | decl_expr ';' expr ';'
+                 | expr ';' expr
+                 | decl_expr ';' expr
                  ;
 
 decl_expr        : Let IDENTIFIER
@@ -225,6 +225,12 @@ bool_lit         : TRUE
 // Lvalue:
 lvalue           : IDENTIFIER
                  | IDENTIFIER '[' expr ']'
+                 ;
+
+// Rvalue:
+rvalue           :
+				         |
+                 ;
 
 // Miscellaneous:
 terminator       : terminator NEWLINE
