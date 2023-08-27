@@ -2,8 +2,8 @@
 
 // STL Includes:
 #include <cctype>
-#include <ios>
 #include <iomanip>
+#include <ios>
 #include <sstream>
 #include <stdexcept>
 #include <utility>
@@ -14,8 +14,8 @@
 
 
 // Macros:
-#define LEX_LOG(t_str, t_quoted) \
-	DBG_LOG(INFO, t_str, std::quoted(std::string{t_quoted}))
+#define LOG_TOK(t_msg, t_str) \
+  DBG_LOG(INFO, t_msg, std::quoted(std::string{t_str}))
 
 // Using statements:
 using namespace lexer;
@@ -47,7 +47,7 @@ auto Lexer::is_keyword(std::string_view t_identifier) -> TokenTypeOpt
   // Having a centralized location for
   for(const auto& keyword : g_keywords)
     if(t_identifier == keyword.m_identifier) {
-      LEX_LOG("KEYWORD: ", t_identifier);
+      LOG_TOK("KEYWORD: ", t_identifier);
       opt = keyword.m_type;
       break;
     }
@@ -66,26 +66,24 @@ auto Lexer::identifier() -> Token
     return std::isalnum(t_char) || t_char == '_';
   }};
 
-  // If Peek is implemented this works
-  // ss << m_text->character();
-
-  // while(is_valid_id(m_text->peek()) && !m_text->eos()) {
-  //   ss << m_text->next();
-  // }
-
-  while(is_valid_id(m_text->character()) && !m_text->eos()) {
-    ss << m_text->next();
+  // Extract identifier
+  if(std::isalpha(m_text->character())) {
+    ss << m_text->character();
+    while(!m_text->eos()) {
+      if(const auto ch{m_text->peek()}; ch && is_valid_id(ch.value())) {
+        m_text->next();
+        ss << m_text->character();
+      } else {
+        break;
+      }
+    }
   }
-
-  // // We go back one since we add till we find a character that does not
-  // // Match so we have to unget it
-  m_text->prev();
 
   // Verify if it is a keyword or not
   if(const auto opt{is_keyword(ss.str())}; opt) {
     token = create_token(opt.value());
   } else {
-    LEX_LOG("IDENTIFIER: ", ss.str());
+    LOG_TOK("IDENTIFIER: ", ss.str());
     token = create_token(TokenType::IDENTIFIER, ss.str());
   }
 
@@ -97,13 +95,11 @@ auto Lexer::is_hex_literal() -> bool
 {
   bool is_hex{false};
 
-  if(m_text->next() == '0' && m_text->character() == 'x') {
+  if(m_text->character() == '0' && m_text->peek() == 'x') {
+    m_text->next(); // Discard '0'
     m_text->next(); // Discard 'x'
 
     is_hex = true;
-  } else {
-    // If we just have a zero we should go back to not discard the zero
-    m_text->prev();
   }
 
   return is_hex;
@@ -113,18 +109,22 @@ auto Lexer::handle_hex() -> Token
 {
   std::stringstream ss;
 
-  while(!m_text->eos()) {
-    const char character{m_text->character()};
-
-    if(std::isxdigit(character)) {
-      ss << m_text->next();
-    } else {
-      m_text->prev();
-      break;
+  // Extract hex
+  if(std::isxdigit(m_text->character())) {
+    ss << m_text->character();
+    while(!m_text->eos()) {
+      if(const auto ch{m_text->peek()}; ch) {
+        if(std::isxdigit(ch.value())) {
+          m_text->next();
+          ss << m_text->character();
+        } else {
+          break;
+        }
+      }
     }
   }
 
-  LEX_LOG("HEX: ", ss.str());
+  LOG_TOK("HEX: ", ss.str());
   const int number{(int)std::stoul(ss.str(), nullptr, 16)};
 
   return create_token(TokenType::INTEGER, number);
@@ -133,7 +133,7 @@ auto Lexer::handle_hex() -> Token
 // t_str and t_dot have default arguments
 // t_str contains is for if you already have part of a string to continue on
 // t_dot indicates if there is already a dot in the string
-auto Lexer::handle_float(std::string_view t_str, bool t_dot) -> Token
+auto Lexer::handle_float(std::string_view t_str) -> Token
 {
   using namespace reserved::symbols;
 
@@ -141,27 +141,21 @@ auto Lexer::handle_float(std::string_view t_str, bool t_dot) -> Token
 
   ss << t_str;
 
-  if(t_dot)
-    m_text->next();
-
   while(!m_text->eos()) {
-    const char character{m_text->character()};
-
-    if(std::isdigit(character)) {
-      ss << m_text->next();
-    } else if(character == g_dot.m_identifier) {
-      if(t_dot) {
+    const auto ch{m_text->peek()};
+    if(ch) {
+      if(std::isdigit(ch.value())) {
+        m_text->next();
+        ss << m_text->character();
+      } else if(ch.value() == g_dot.m_identifier) {
         syntax_error("Cant have a second '.' in a float literal.");
       } else {
-        t_dot = true;
+        break;
       }
-    } else {
-      m_text->prev();
-      break;
     }
   }
 
-  LEX_LOG("FLOAT: ", ss.str());
+  LOG_TOK("FLOAT: ", ss.str());
   return create_token(TokenType::FLOAT, std::stod(ss.str()));
 }
 
@@ -171,23 +165,27 @@ auto Lexer::handle_integer() -> Token
 
   std::stringstream ss;
 
-  while(!m_text->eos()) {
-    const char character{m_text->character()};
+  // Extract integer
+  if(std::isdigit(m_text->character())) {
+    ss << m_text->character();
+    while(!m_text->eos()) {
+      if(const auto ch{m_text->peek()}; ch) {
+        if(std::isdigit(ch.value())) {
+          m_text->next();
+          ss << m_text->character();
+        } else if(ch.value() == g_dot.m_identifier) {
+          m_text->next();
+          ss << m_text->character();
 
-    if(std::isdigit(character)) {
-      ss << m_text->next();
-    } else if(character == g_dot.m_identifier) {
-      ss << m_text->character();
-
-      // Handle float as a float
-      return handle_float(ss.str(), true);
-    } else {
-      m_text->prev();
-      break;
+          return handle_float(ss.str());
+        } else {
+          break;
+        }
+      }
     }
   }
 
-  LEX_LOG("INTEGER: ", ss.str());
+  LOG_TOK("INTEGER: ", ss.str());
   return create_token(TokenType::INTEGER, (int)std::stoi(ss.str()));
 }
 
@@ -212,29 +210,28 @@ auto Lexer::literal_string() -> Token
 
   std::stringstream ss;
 
-  // Discard starting " character
-  m_text->next();
-
   bool quit{false};
   while(!quit && !m_text->eos()) {
-    const char character{m_text->character()};
+    if(const auto ch{m_text->peek()}; ch) {
+      m_text->next();
+      switch(ch.value()) {
+        case g_double_quote:
+          quit = true;
+          break;
 
-    switch(character) {
-      case g_double_quote:
-        quit = true;
-        break;
+        case g_backslash:
+          ss << m_text->character();
+          m_text->next();
+          [[fallthrough]];
 
-      case g_backslash:
-        ss << m_text->next();
-        [[fallthrough]];
-
-      default:
-        ss << m_text->next();
-        break;
+        default:
+          ss << m_text->character();
+          break;
+      }
     }
   }
 
-  LEX_LOG("STRING: ", ss.str());
+  LOG_TOK("STRING: ", ss.str());
   return create_token(TokenType::STRING, ss.str());
 }
 
@@ -253,21 +250,17 @@ auto Lexer::is_multi_symbol() -> TokenTypeOpt
   // Refactor someday
   for(const auto& multi : g_multi_symbols)
     if(character == multi.m_identifier.front()) {
-      m_text->next();
-      ss << m_text->character();
+      if(const auto ch{m_text->peek()}; ch) {
+        ss << ch.value();
 
-      if(!m_text->eos())
-        for(const auto& multi : g_multi_symbols)
-          if(ss.str() == multi.m_identifier) {
-            LEX_LOG("MULTI SYMBOL: ", ss.str());
-            opt = multi.m_type;
-            break;
-          }
-
-      // If the next character is not part if a multi symbol just undo the
-      // next
-      if(!opt)
-        m_text->prev();
+        if(!m_text->eos())
+          for(const auto& multi : g_multi_symbols)
+            if(ss.str() == multi.m_identifier) {
+              LOG_TOK("MULTI SYMBOL: ", ss.str());
+              opt = multi.m_type;
+              break;
+            }
+      }
 
       // We compare against all reserverd multi symbols in the second loop
       // So there is no need to iterate againt after we found our first match
@@ -286,7 +279,7 @@ auto Lexer::is_single_symbol() -> TokenTypeOpt
 
   for(const auto& single : g_single_symbols)
     if(character == single.m_identifier) {
-      LEX_LOG("SINGLE SYMBOL: ", character);
+      LOG_TOK("SINGLE SYMBOL: ", character);
       opt = single.m_type;
       break;
     }

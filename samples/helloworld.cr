@@ -2,6 +2,10 @@ package main
 
 import "io"
 
+
 fn main() -> int {
-  io.println("Hello World!")
+  let var = 10
+  if(var != 20){
+    io.println("Hello World!")
+	}
 }

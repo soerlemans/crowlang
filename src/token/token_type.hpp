@@ -103,6 +103,7 @@ enum class TokenType {
   SEMICOLON,
 
   NEWLINE,
+	EOS
 };
 } // namespace token
 

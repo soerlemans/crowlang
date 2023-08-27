@@ -2,8 +2,9 @@
 #define CROW_CONTAINER_TEXT_STREAM_HPP
 
 // STL Includes:
-#include <string>
 #include <memory>
+#include <optional>
+#include <string>
 
 // Local Includes:
 #include "stream.hpp"
@@ -16,14 +17,17 @@ class TextStream;
 
 // Aliases:
 using TextStreamPtr = std::shared_ptr<TextStream>;
+using CharOpt = std::optional<char>;
 
 // Classes:
 class TextStream {
   public:
   virtual auto next_line() const -> void = 0;
 
-  virtual auto next() const -> char = 0;
-  virtual auto prev() const -> char = 0;
+  virtual auto next() const -> void = 0;
+  virtual auto prev() const -> void = 0;
+
+  virtual auto peek() const -> CharOpt = 0;
 
   virtual auto character() const -> char = 0;
   virtual auto is_newline() const -> bool = 0;

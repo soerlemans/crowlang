@@ -26,12 +26,16 @@ class TextBuffer : public TextStream {
 
   auto add_line(std::string t_line) -> void;
   auto next_line() const -> void override;
+  auto prev_line() const -> void;
 
-  auto next() const -> char override;
-  auto prev() const -> char override;
+  auto next() const -> void override;
+  auto prev() const -> void override;
+
+  auto peek() const -> CharOpt override;
 
   auto character() const -> char override;
   auto is_newline() const -> bool override;
+	auto line() const -> std::string;
 
   auto eos() const -> bool override;
 

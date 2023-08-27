@@ -22,6 +22,7 @@ using namespace container;
 class Token;
 
 // Aliases:
+using TokenOpt = std::optional<Token>;
 using TokenStream = Stream<std::vector<Token>>;
 using TokenValue = std::variant<int, double, std::string>;
 
@@ -39,8 +40,8 @@ class Token {
   explicit Token(TokenType t_type, TextPosition t_tp);
   explicit Token(TokenType t_type, TokenValue t_tv, TextPosition t_tp);
 
-	auto type() const -> TokenType;
-	auto position() const -> TextPosition;
+  auto type() const -> TokenType;
+  auto position() const -> TextPosition;
 
   virtual ~Token() = default;
 };

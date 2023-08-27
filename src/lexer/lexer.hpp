@@ -43,7 +43,7 @@ class Lexer {
   // Integer literal lexing:
   auto is_hex_literal() -> bool;
   auto handle_hex() -> token::Token;
-  auto handle_float(std::string_view t_str = "", bool t_dot = false)
+  auto handle_float(std::string_view t_str)
     -> token::Token;
   auto handle_integer() -> token::Token;
 

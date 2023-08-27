@@ -32,30 +32,41 @@ auto TextBuffer::next_line() const -> void
   m_lineno++;
 }
 
-//! Wraps to the next_line() when at the end of a line
-auto TextBuffer::next() const -> char
+auto TextBuffer::prev_line() const -> void
 {
-  const auto& line{m_buffer[m_lineno]};
-  const char ch{line[m_columnno]};
+  // Changing lines resets the column number
+  m_columnno = 0;
+  m_lineno--;
+}
 
-  if(m_columnno + 1 >= line.size()) {
+//! Wraps to the next_line() when at the end of a line
+auto TextBuffer::next() const -> void
+{
+  if(m_columnno + 1 >= line().size()) {
     next_line();
   } else {
     m_columnno++;
   }
-
-
-  return ch;
 }
 
-auto TextBuffer::prev() const -> char
+auto TextBuffer::prev() const -> void
 {
-  const auto& line{m_buffer[m_lineno]};
-  const char ch{line[m_columnno]};
-
-  if(m_columnno) {
+  if(m_columnno < 1) {
+    prev_line();
+  } else {
     m_columnno--;
   }
+}
+
+auto TextBuffer::peek() const -> CharOpt
+{
+  CharOpt ch;
+
+  next();
+  if(!eos()) {
+    ch = character();
+  }
+  prev();
 
   return ch;
 }
@@ -70,6 +81,11 @@ auto TextBuffer::is_newline() const -> bool
   return character() == '\n';
 }
 
+auto TextBuffer::line() const -> std::string
+{
+  return m_buffer[m_lineno];
+}
+
 auto TextBuffer::eos() const -> bool
 {
   return m_lineno >= m_buffer.size();
@@ -79,7 +95,7 @@ auto TextBuffer::eos() const -> bool
 //! make this more elegant
 auto TextBuffer::position() const -> TextPosition
 {
-  return {"", m_buffer[m_lineno], m_lineno, m_columnno};
+  return {m_source, line(), m_lineno, m_columnno};
 }
 
 namespace container {
