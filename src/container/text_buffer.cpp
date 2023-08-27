@@ -76,11 +76,6 @@ auto TextBuffer::character() const -> char
   return m_buffer[m_lineno][m_columnno];
 }
 
-auto TextBuffer::is_newline() const -> bool
-{
-  return character() == '\n';
-}
-
 auto TextBuffer::line() const -> std::string
 {
   return m_buffer[m_lineno];

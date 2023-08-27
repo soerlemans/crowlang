@@ -30,7 +30,6 @@ class TextStream {
   virtual auto peek() const -> CharOpt = 0;
 
   virtual auto character() const -> char = 0;
-  virtual auto is_newline() const -> bool = 0;
 
   virtual auto eos() const -> bool = 0;
 

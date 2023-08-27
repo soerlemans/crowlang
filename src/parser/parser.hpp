@@ -5,9 +5,9 @@
 #include <functional>
 
 // Includes:
+#include "../ast/node.hpp"
 #include "../debug/trace.hpp"
 #include "../lexer/lexer.hpp"
-// #include "../ast/node.hpp"
 
 
 namespace parser {
@@ -44,7 +44,7 @@ class Parser {
   public:
   Parser(token::TokenStream&& t_tokenstream);
 
-  // virtual auto parse() -> node::NodePtr = 0;
+  virtual auto parse() -> ast::NodePtr = 0;
 
   virtual ~Parser() = default;
 };

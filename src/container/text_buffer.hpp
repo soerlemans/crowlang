@@ -34,7 +34,6 @@ class TextBuffer : public TextStream {
   auto peek() const -> CharOpt override;
 
   auto character() const -> char override;
-  auto is_newline() const -> bool override;
 	auto line() const -> std::string;
 
   auto eos() const -> bool override;
