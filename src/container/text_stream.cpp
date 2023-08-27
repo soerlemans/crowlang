@@ -3,5 +3,10 @@
 
 using namespace container;
 
-TextStream::TextStream(TextBufferPtr t_tb): m_tb{t_tb}
-{}
+
+auto TextStream::next_line() -> void
+{
+  while(current() != '\n' && !eos()) {
+		next();
+  }
+}

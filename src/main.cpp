@@ -10,6 +10,7 @@
 
 // Includes:
 #include "container/text_buffer.hpp"
+#include "container/text_stream.hpp"
 #include "debug/log.hpp"
 #include "debug/log_macros.hpp"
 #include "lexer/lexer.hpp"
