@@ -1,11 +1,13 @@
 #ifndef CROW_AST_NODE_OPERATORS_ARITHMETIC_HPP
 #define CROW_AST_NODE_OPERATORS_ARITHMETIC_HPP
 
+// Local Includes:
 #include "binary_operator.hpp"
 #include "operators.hpp"
 
 
-namespace node::operators {
+namespace ast::node::operators {
+// Enums:
 enum class ArithmeticOp {
   POWER = 0,
 
@@ -17,6 +19,7 @@ enum class ArithmeticOp {
   SUBTRACT
 };
 
+// Classes:
 class Arithmetic : public BinaryOperator {
   private:
   ArithmeticOp m_op;
@@ -30,6 +33,6 @@ class Arithmetic : public BinaryOperator {
 
   ~Arithmetic() override = default;
 };
-} // namespace node::operators
+} // namespace ast::node::operators
 
 #endif

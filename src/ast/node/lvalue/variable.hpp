@@ -1,14 +1,17 @@
 #ifndef CROW_AST_NODE_LVALUE_VARIABLE_HPP
 #define CROW_AST_NODE_LVALUE_VARIABLE_HPP
 
+// STL Includes:
 #include <string_view>
 
+// Includes:
 #include "../node_interface.hpp"
 
+// Local Includes:
 #include "lvalue.hpp"
 
 
-namespace node::lvalue {
+namespace ast::node::lvalue {
 class Variable : public NodeInterface {
   private:
   std::string m_identifier;
@@ -22,6 +25,6 @@ class Variable : public NodeInterface {
 
   ~Variable() override = default;
 };
-} // namespace node::lvalue
+} // namespace ast::node::lvalue
 
 #endif // CROW_AST_NODE_LVALUE_VARIABLE_HPP

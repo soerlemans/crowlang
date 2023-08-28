@@ -1,9 +1,7 @@
 #include "unary_prefix.hpp"
 
 
-using namespace node::operators;
-
-using namespace visitor;
+using namespace ast::node::operators;
 using namespace token;
 
 namespace {

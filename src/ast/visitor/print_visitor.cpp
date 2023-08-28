@@ -27,10 +27,8 @@ using namespace ast::visitor;
 using namespace ast::node;
 using namespace ast::node::control;
 using namespace ast::node::functions;
-using namespace ast::node::io;
 using namespace ast::node::lvalue;
 using namespace ast::node::operators;
-using namespace ast::node::recipes;
 using namespace ast::node::rvalue;
 
 auto PrintVisitor::visit(If* t_if) -> void
@@ -54,14 +52,6 @@ auto PrintVisitor::visit([[maybe_unused]] Break* t_break) -> void
   PPRINT_INIT();
 
   PPRINT("Break");
-}
-
-auto PrintVisitor::visit(Exit* t_exit) -> void
-{
-  PPRINT_INIT();
-
-  PPRINT("Exit");
-  PPRINT_IF("Expr: ", t_exit->expr());
 }
 
 auto PrintVisitor::visit([[maybe_unused]] Return* t_return) -> void

@@ -1,9 +1,7 @@
 #include "variable.hpp"
 
 
-using namespace node::lvalue;
-
-using namespace visitor;
+using namespace ast::node::lvalue;
 
 Variable::Variable(const std::string& t_identifier)
   : m_identifier{std::move(t_identifier)}

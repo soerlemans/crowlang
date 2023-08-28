@@ -1,11 +1,12 @@
 #ifndef CROW_AST_NODE_OPERATORS_BINARY_OPERATOR_HPP
 #define CROW_AST_NODE_OPERATORS_BINARY_OPERATOR_HPP
 
+// Local Includes:
 #include "operators.hpp"
 #include "unary_operator.hpp"
 
 
-namespace node::operators {
+namespace ast::node::operators {
 class BinaryOperator : public UnaryOperator {
   private:
   NodePtr m_right;

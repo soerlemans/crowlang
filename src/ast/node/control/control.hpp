@@ -2,7 +2,7 @@
 #define CROW_AST_NODE_CONTROL_CONTROL_HPP
 
 
-namespace node::control {
+namespace ast::node::control {
 class If;
 class While;
 class DoWhile;

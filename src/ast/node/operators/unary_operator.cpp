@@ -1,12 +1,9 @@
 #include "unary_operator.hpp"
 
-using namespace node::operators;
 
-using namespace visitor;
+using namespace ast::node::operators;
 
-
-UnaryOperator::UnaryOperator(NodePtr&& t_left)
-  : m_left{std::forward<NodePtr>(t_left)}
+UnaryOperator::UnaryOperator(NodePtr&& t_left): m_left{std::move(t_left)}
 {}
 
 auto UnaryOperator::left() -> NodePtr&

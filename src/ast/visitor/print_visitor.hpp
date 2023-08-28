@@ -11,7 +11,7 @@
 #include "node_visitor.hpp"
 
 
-namespace visitor {
+namespace ast::visitor {
 /*! Visitor made for printing the AST Node per node
  * Has a unique overload for every print
  */
@@ -65,8 +65,6 @@ class PrintVisitor : public NodeVisitor {
   auto visit(node::control::If* t_if) -> void override;
   auto visit(node::control::Continue* t_continue) -> void override;
   auto visit(node::control::Break* t_break) -> void override;
-  auto visit(node::control::Next* t_next) -> void override;
-  auto visit(node::control::Exit* t_exit) -> void override;
   auto visit(node::control::Return* t_return) -> void override;
 
   auto visit(node::functions::Function* t_fn) -> void override;
@@ -77,7 +75,6 @@ class PrintVisitor : public NodeVisitor {
   auto visit(node::rvalue::Float* t_float) -> void override;
   auto visit(node::rvalue::Integer* t_int) -> void override;
   auto visit(node::rvalue::String* t_str) -> void override;
-  auto visit(node::rvalue::Regex* t_regex) -> void override;
 
   auto visit(node::operators::Arithmetic* t_arithmetic) -> void override;
   auto visit(node::operators::Assignment* t_assignment) -> void override;

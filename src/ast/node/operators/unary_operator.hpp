@@ -8,8 +8,8 @@
 #include "operators.hpp"
 
 
-namespace node {
-class operators::UnaryOperator : public NodeInterface {
+namespace ast::node::operators {
+class UnaryOperator : public NodeInterface {
   private:
   NodePtr m_left;
 
@@ -22,6 +22,6 @@ class operators::UnaryOperator : public NodeInterface {
 
   ~UnaryOperator() override = default;
 };
-} // namespace node
+} // namespace ast::node::operators
 
 #endif // CROW_AST_NODE_OPERATORS_UNARY_OPERATOR_HPP

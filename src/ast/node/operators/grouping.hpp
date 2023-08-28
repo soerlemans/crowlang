@@ -6,13 +6,13 @@
 #include "unary_operator.hpp"
 
 
-namespace node::operators {
+namespace ast::node::operators {
 class Grouping : public UnaryOperator {
   private:
   public:
   Grouping(NodePtr&& t_expr);
 
-	auto expr() -> NodePtr;
+  auto expr() -> NodePtr;
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

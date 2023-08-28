@@ -2,10 +2,11 @@
 #define CROW_AST_VISITOR_NODE_VISITOR_HPP
 
 // Includes:
-#include "../node/node.hpp"
+#include "../node/fdecl.hpp"
 
 
 namespace ast::visitor {
+// Classes:
 /*! Implementation of the Visitor design pattern for Nodes
  * This creates a recursive dependency on the different kind of nodes
  * So all nodes need to be forward declared in this header
@@ -18,7 +19,6 @@ class NodeVisitor {
   virtual auto visit(node::control::If* t_if) -> void = 0;
   virtual auto visit(node::control::Continue* t_continue) -> void = 0;
   virtual auto visit(node::control::Break* t_break) -> void = 0;
-  virtual auto visit(node::control::Exit* t_exit) -> void = 0;
   virtual auto visit(node::control::Return* t_return) -> void = 0;
 
   virtual auto visit(node::functions::Function* t_fn) -> void = 0;
@@ -53,6 +53,6 @@ class NodeVisitor {
 
   virtual ~NodeVisitor() = default;
 };
-} // namespace ast::visitor
+} // namespace visitor
 
 #endif // CROW_AST_VISITOR_NODE_VISITOR_HPP

@@ -1,14 +1,13 @@
 #ifndef CROW_AST_NODE_OPERATORS_LOGICAL_HPP
 #define CROW_AST_NODE_OPERATORS_LOGICAL_HPP
 
+// Local Includes:
 #include "binary_operator.hpp"
 #include "operators.hpp"
 
 
-namespace node::operators {
+namespace ast::node::operators {
 // Not:
-// Pay attention Not is not a BinaryOperator unlike the other Logical operators
-// Like And and Or
 class Not : public UnaryOperator {
   public:
   Not(NodePtr&& t_left);
@@ -18,7 +17,6 @@ class Not : public UnaryOperator {
   ~Not() override = default;
 };
 
-// TODO: Create one class for And and Or
 // And:
 class And : public BinaryOperator {
   public:
@@ -38,6 +36,6 @@ class Or : public BinaryOperator {
 
   ~Or() override = default;
 };
-} // namespace node::operators
+} // namespace ast::node::operators
 
 #endif // CROW_AST_NODE_OPERATORS_LOGICAL_HPP

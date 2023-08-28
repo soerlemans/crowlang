@@ -6,6 +6,8 @@
 #include "operators.hpp"
 
 
+namespace ast::node::operators {
+// Enums:
 enum class ComparisonOp {
   LESS_THAN,
   LESS_THAN_EQUAL,
@@ -17,7 +19,7 @@ enum class ComparisonOp {
   GREATER_THAN_EQUAL,
 };
 
-namespace node::operators {
+// Classes:
 class Comparison : public BinaryOperator {
   private:
   ComparisonOp m_op;

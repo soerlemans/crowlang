@@ -1,12 +1,15 @@
 #ifndef CROW_AST_NODE_FUNCTIONS_FUNCTION_HPP
 #define CROW_AST_NODE_FUNCTIONS_FUNCTION_HPP
 
+// Includes:
 #include "../list.hpp"
 #include "../node_interface.hpp"
 
+// Local Includes:
 #include "functions.hpp"
 
-namespace node::functions {
+
+namespace ast::node::functions {
 class Function : public NodeInterface {
   private:
   std::string m_identifier;

@@ -2,6 +2,7 @@
 #define CROW_AST_NODE_NIL_HPP
 
 // Local Includes:
+#include "node.hpp"
 #include "node_interface.hpp"
 
 
@@ -12,6 +13,6 @@ class Nil : public NodeInterface {
 
   virtual ~Nil() = default;
 };
-} // namespace node
+} // namespace ast::node
 
 #endif // CROW_AST_NODE_NIL_HPP

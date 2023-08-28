@@ -6,7 +6,7 @@
 #include "operators.hpp"
 
 
-namespace node::operators {
+namespace ast::node::operators {
 class Ternary : public NodeInterface {
   protected:
   NodePtr m_condition;

@@ -5,17 +5,12 @@
 #include <functional>
 
 // Includes:
-#include "../ast/node/node.hpp"
+#include "../ast/node/fdecl.hpp"
 #include "../debug/trace.hpp"
 #include "../lexer/lexer.hpp"
 
 
 namespace parser {
-// Aliases:
-//! Used for functions that need to have different parsing rules dependent on
-//! Context
-// using ParserFunc = std::function<node::NodePtr()>;
-
 // Classes:
 /*! Abstract parser class provides utilities that a parser would need to
  * implement
@@ -44,7 +39,7 @@ class Parser {
   public:
   Parser(token::TokenStream&& t_tokenstream);
 
-  virtual auto parse() -> ast::NodePtr = 0;
+  virtual auto parse() -> ast::node::NodePtr = 0;
 
   virtual ~Parser() = default;
 };

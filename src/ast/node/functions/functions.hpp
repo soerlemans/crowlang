@@ -1,17 +1,14 @@
 #ifndef CROW_AST_NODE_FUNCTIONS_FUNCTIONS_HPP
 #define CROW_AST_NODE_FUNCTIONS_FUNCTIONS_HPP
 
-// Includes:
-#include "../node.hpp"
+// STL Includes:
 #include <memory>
 
 
-namespace node::functions {
-// Forward Declarations
+namespace ast::node::functions {
+// Forward Declarations:
 class Function;
-
 class FunctionCall;
-class BuiltinFunctionCall;
 
 // Aliases:
 using NodeFuncPtr = std::shared_ptr<Function>;

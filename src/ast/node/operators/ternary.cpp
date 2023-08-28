@@ -4,9 +4,7 @@
 #include <utility>
 
 
-using namespace node::operators;
-
-using namespace visitor;
+using namespace ast::node::operators;
 
 Ternary::Ternary(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_alt)
   : m_condition{std::move(t_condition)},

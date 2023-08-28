@@ -10,7 +10,7 @@
 #include "node_interface.hpp"
 
 
-namespace node {
+namespace ast::node {
 /*! This is a list in the sense of a list of expressions or similar
  * Think a list of nodes separated by commas like function arguments
  * Or function call separated nodes
@@ -26,6 +26,6 @@ class List : public NodeInterface, public std::list<NodePtr> {
 
   ~List() override = default;
 };
-} // namespace node
+} // namespace ast::node
 
 #endif // CROW_AST_NODE_LIST_HPP

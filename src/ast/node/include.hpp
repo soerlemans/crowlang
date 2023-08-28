@@ -6,9 +6,9 @@
  */
 
 // Top level:
+#include "fdecl.hpp"
 #include "list.hpp"
 #include "nil.hpp"
-#include "node.hpp"
 #include "node_interface.hpp"
 
 // Control Statements:

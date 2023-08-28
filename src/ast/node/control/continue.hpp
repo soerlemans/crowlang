@@ -8,7 +8,7 @@
 #include "control.hpp"
 
 
-namespace node::control {
+namespace ast::node::control {
 class Continue : public NodeInterface {
   public:
   MAKE_VISITABLE(visitor::NodeVisitor);

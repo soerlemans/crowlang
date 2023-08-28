@@ -1,14 +1,15 @@
 #ifndef CROW_AST_NODE_OPERATORS_ASSIGNMENT_HPP
 #define CROW_AST_NODE_OPERATORS_ASSIGNMENT_HPP
 
+// Local Includes:
 #include "binary_operator.hpp"
 #include "operators.hpp"
 
 
+namespace ast::node::operators {
+// Enums:
 enum AssignmentOp {
-  POWER = 0,
-
-  MULTIPLY,
+  MULTIPLY = 0,
   DIVIDE,
   MODULO,
 
@@ -18,7 +19,7 @@ enum AssignmentOp {
   REGULAR
 };
 
-namespace node::operators {
+// Classes:
 class Assignment : public BinaryOperator {
   private:
   AssignmentOp m_op;

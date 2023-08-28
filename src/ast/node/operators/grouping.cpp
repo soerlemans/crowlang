@@ -1,10 +1,8 @@
 #include "grouping.hpp"
 
 
-using namespace node::operators;
-
-using namespace visitor;
+using namespace ast::node::operators;
 
 Grouping::Grouping(NodePtr&& t_expr)
-  : UnaryOperator{std::forward<NodePtr>(t_expr)}
+  : UnaryOperator{std::move(t_expr)}
 {}
