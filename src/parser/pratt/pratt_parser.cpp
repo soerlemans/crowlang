@@ -5,20 +5,17 @@
 #include <stdexcept>
 
 // Includes:
+#include "../../ast/node/include.hpp"
 #include "../../debug/log.hpp"
-// #include "../../node/include.hpp"
-
 
 // Using statements:
 using namespace parser::pratt;
-
 using namespace token;
-
-using namespace node;
-using namespace node::operators;
-using namespace node::rvalue;
-using namespace node::lvalue;
-using namespace node::functions;
+using namespace ast::node;
+using namespace ast::node::operators;
+using namespace ast::node::rvalue;
+using namespace ast::node::lvalue;
+using namespace ast::node::functions;
 
 // Methods:
 PrattParser::PrattParser(token::TokenStream&& t_tokenstream)
@@ -102,23 +99,18 @@ auto PrattParser::literal() -> NodePtr
       node = std::make_shared<Float>(token.value<double>());
       break;
 
-    case TokenType::HEX:
-      [[fallthrough]];
-    case TokenType::INTEGER:
-      DBG_TRACE_PRINT(INFO, "Found INTEGER literal: ");
-      node = std::make_shared<Integer>(token.value<int>());
-      break;
+      // TODO: Take a look at this later when dealing with typeinference
+      // case TokenType::HEX:
+      //   [[fallthrough]];
+      // case TokenType::INTEGER:
+      //   DBG_TRACE_PRINT(INFO, "Found INTEGER literal: ");
+      //   node = std::make_shared<Integer>(token.value<int>());
+      // break;
 
     case TokenType::STRING:
       DBG_TRACE_PRINT(INFO,
                       "Found STRING literal: ", token.value<std::string>());
       node = std::make_shared<String>(token.value<std::string>());
-      break;
-
-    case TokenType::REGEX:
-      DBG_TRACE_PRINT(INFO,
-                      "Found REGEX literal: ", token.value<std::string>());
-      node = std::make_shared<Regex>(token.value<std::string>());
       break;
 
     default:
@@ -139,22 +131,8 @@ auto PrattParser::lvalue() -> NodePtr
     case TokenType::IDENTIFIER: {
       const auto name{token.value<std::string>()};
       // We really dont expect these next_tokens to fail
-      if(next_if(TokenType::BRACE_OPEN)) {
-        DBG_TRACE_PRINT(INFO, "Found ARRAY SUBSCRIPT");
-        node = std::make_shared<Array>(name, expr_list());
-
-        expect(TokenType::BRACE_CLOSE, "]");
-      } else {
-        DBG_TRACE_PRINT(INFO, "Found VARIABLE: ", name);
-        node = std::make_shared<Variable>(name);
-      }
-      break;
-    }
-
-    // FIXME: Field reference with match expression prints field reference only
-    case TokenType::DOLLAR_SIGN: {
-      DBG_TRACE_PRINT(INFO, "Found FIELD REFERENCE");
-      node = std::make_shared<FieldReference>(expr());
+      DBG_TRACE_PRINT(INFO, "Found VARIABLE: ", name);
+      node = std::make_shared<Variable>(name);
       break;
     }
 
@@ -235,20 +213,7 @@ auto PrattParser::function_call() -> NodePtr
   NodePtr node;
 
   switch(const auto token{next()}; token.type()) {
-    case TokenType::BUILTIN_FUNCTION: {
-      expect(TokenType::PAREN_OPEN, "(");
-      NodeListPtr args{expr_list_opt()};
-      expect(TokenType::PAREN_CLOSE, ")");
-
-      auto name{token.value<std::string>()};
-      DBG_TRACE_PRINT(INFO, "Found a BUILTIN FUNCTION CALL: ", name);
-
-      node =
-        std::make_shared<BuiltinFunctionCall>(std::move(name), std::move(args));
-      break;
-    }
-
-    case TokenType::FUNCTION_IDENTIFIER: {
+    case TokenType::IDENTIFIER: {
       expect(TokenType::PAREN_OPEN, "(");
       NodeListPtr args{expr_list_opt()};
       expect(TokenType::PAREN_CLOSE, ")");
@@ -283,11 +248,6 @@ auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
 
   // TODO: Maybe define a macro to do this cleanly?
   switch(token.type()) {
-    case TokenType::CARET:
-      DBG_TRACE_PRINT(INFO, "Found 'POWER'");
-      lambda(ArithmeticOp::POWER);
-      break;
-
     case TokenType::ASTERISK:
       DBG_TRACE_PRINT(INFO, "Found 'MULTIPLICATION'");
       lambda(ArithmeticOp::MULTIPLY);
@@ -371,32 +331,27 @@ auto PrattParser::assignment(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
     }};
 
     switch(token.type()) {
-      case TokenType::POWER_ASSIGNMENT:
-        DBG_TRACE_PRINT(INFO, "Found '^='");
-        lambda(AssignmentOp::POWER);
-        break;
-
-      case TokenType::MULTIPLY_ASSIGNMENT:
+      case TokenType::MUL_ASSIGN:
         DBG_TRACE_PRINT(INFO, "Found '*='");
         lambda(AssignmentOp::MULTIPLY);
         break;
 
-      case TokenType::DIVIDE_ASSIGNMENT:
+      case TokenType::DIV_ASSIGN:
         DBG_TRACE_PRINT(INFO, "Found '/='");
         lambda(AssignmentOp::DIVIDE);
         break;
 
-      case TokenType::MODULO_ASSIGNMENT:
+      case TokenType::MOD_ASSIGN:
         DBG_TRACE_PRINT(INFO, "Found '%='");
         lambda(AssignmentOp::MODULO);
         break;
 
-      case TokenType::ADD_ASSIGNMENT:
+      case TokenType::ADD_ASSIGN:
         DBG_TRACE_PRINT(INFO, "Found '+='");
         lambda(AssignmentOp::ADD);
         break;
 
-      case TokenType::SUBTRACT_ASSIGNMENT:
+      case TokenType::SUB_ASSIGN:
         DBG_TRACE_PRINT(INFO, "Found '-='");
         lambda(AssignmentOp::SUBTRACT);
         break;

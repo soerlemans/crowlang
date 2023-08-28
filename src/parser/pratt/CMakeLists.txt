@@ -1,7 +1,7 @@
 # Add source files
 target_sources(${PROJECT_NAME}
 	PRIVATE
-	# pratt_parser.cpp
+	pratt_parser.cpp
 )
 
 # Add subdirectories

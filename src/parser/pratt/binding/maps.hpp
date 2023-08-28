@@ -17,9 +17,6 @@ class PrefixMap : public BindingMap {
   {
     using namespace token;
 
-    // Field reference:
-    INSERT_BINDING(DOLLAR_SIGN, 24, 24);
-
     // Precrement:
     INSERT_BINDING(INCREMENT, 22, 22);
     INSERT_BINDING(DECREMENT, 22, 22);
@@ -36,9 +33,6 @@ class InfixMap : public BindingMap {
   public:
   InfixMap()
   {
-    // Exponentation:
-    INSERT_BINDING(CARET, 21, 20);
-
     // Factor:
     INSERT_BINDING(ASTERISK, 17, 18);     // Multiplication
     INSERT_BINDING(SLASH, 17, 18);        // Division
@@ -56,13 +50,6 @@ class InfixMap : public BindingMap {
     INSERT_BINDING(GREATER_THAN, 12, 12);
     INSERT_BINDING(GREATER_THAN_EQUAL, 12, 12);
 
-    // Extended regular expression matching:
-    INSERT_BINDING(ERE_MATCH, 11, 11);
-    INSERT_BINDING(ERE_NO_MATCH, 11, 11);
-
-    // Array membership:
-    INSERT_BINDING(IN, 9, 10);
-
     // Logical
     INSERT_BINDING(AND, 7, 8);
     INSERT_BINDING(OR, 5, 6);
@@ -71,12 +58,11 @@ class InfixMap : public BindingMap {
     INSERT_BINDING(QUESTION_MARK, 4, 3);
 
     // Assignments:
-    INSERT_BINDING(POWER_ASSIGNMENT, 2, 1);
-    INSERT_BINDING(MULTIPLY_ASSIGNMENT, 2, 1);
-    INSERT_BINDING(DIVIDE_ASSIGNMENT, 2, 1);
-    INSERT_BINDING(MODULO_ASSIGNMENT, 2, 1);
-    INSERT_BINDING(ADD_ASSIGNMENT, 2, 1);
-    INSERT_BINDING(SUBTRACT_ASSIGNMENT, 2, 1);
+    INSERT_BINDING(MUL_ASSIGN, 2, 1);
+    INSERT_BINDING(DIV_ASSIGN, 2, 1);
+    INSERT_BINDING(MOD_ASSIGN, 2, 1);
+    INSERT_BINDING(ADD_ASSIGN, 2, 1);
+    INSERT_BINDING(SUB_ASSIGN, 2, 1);
     INSERT_BINDING(ASSIGNMENT, 2, 1);
   }
 

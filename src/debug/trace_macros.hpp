@@ -11,17 +11,17 @@
 // TRACE is intended for showing which functions call which in a tree like
 // manner
 #define DBG_TRACE(loglevel, ...)                      \
-  Trace CONCAT(trace, __COUNTER__)                    \
+  debug::Trace CONCAT(trace, __COUNTER__)             \
   {                                                   \
     m_counter, debug::LogLevel::loglevel, __VA_ARGS__ \
   }
 
 // Creates a trace object in an enclosed scope, usefull for printing TRACE info
 // on the same level within a function
-#define DBG_TRACE_PRINT(loglevel, ...)                                     \
-  do {                                                                     \
-    Trace CONCAT(trace, __COUNTER__){m_counter, debug::LogLevel::loglevel, \
-                                     __VA_ARGS__};                         \
+#define DBG_TRACE_PRINT(loglevel, ...)                    \
+  do {                                                    \
+    debug::Trace CONCAT(trace, __COUNTER__){              \
+      m_counter, debug::LogLevel::loglevel, __VA_ARGS__}; \
   } while(false)
 
 #else
