@@ -1,5 +1,6 @@
 # Add source files
-target_sources(${PROJECT_NAME} PRIVATE arithmetic.cpp
+target_sources(${PROJECT_NAME} PRIVATE
+	arithmetic.cpp
   assignment.cpp
   binary_operator.cpp
   comparison.cpp
