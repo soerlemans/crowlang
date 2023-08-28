@@ -26,6 +26,18 @@ using namespace ast::node::lvalue;
 using namespace ast::node::operators;
 using namespace ast::node::rvalue;
 
+namespace {
+/*! Wrapper method for std::make_shared() makes it easy to change smart pointer
+ * type later down the line
+ */
+template<typename T, typename... Args>
+inline auto make_node(Args&&... t_args) -> std::shared_ptr<T>
+{
+  return std::make_shared<T>(std::forward<Args>(t_args)...);
+}
+} // namespace
+
+
 CrowParser::CrowParser(TokenStream t_tokenstream)
   : PrattParser{std::move(t_tokenstream)}
 {}
@@ -77,8 +89,7 @@ auto CrowParser::function() -> NodePtr
 
     auto body_ptr{body()};
 
-    node =
-      std::make_shared<Function>(id, std::move(params), std::move(body_ptr));
+    node = make_node<Function>(id, std::move(params), std::move(body_ptr));
   }
 
   return node;
@@ -101,7 +112,7 @@ auto CrowParser::item() -> NodePtr
 auto CrowParser::item_list() -> NodeListPtr
 {
   DBG_TRACE(VERBOSE, "ITEM LIST");
-  NodeListPtr nodes{std::make_shared<List>()};
+  NodeListPtr nodes{make_node<List>()};
 
   while(!eos()) {
     // Remove newlines before items
