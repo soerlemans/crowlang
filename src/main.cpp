@@ -10,6 +10,7 @@
 
 // Includes:
 #include "ast/node/include.hpp"
+#include "ast/visitor/print_visitor.hpp"
 #include "container/text_buffer.hpp"
 #include "debug/log.hpp"
 #include "debug/log_macros.hpp"
@@ -84,19 +85,45 @@ auto lex(const fs::path& t_path) -> token::TokenStream
 {
   using namespace lexer;
 
+  DBG_PRINTLN("|> Lexing:");
+
   auto ts_ptr{std::make_shared<TextBuffer>(open_file(t_path))};
   Lexer lexer{ts_ptr};
+  const auto tokenstream{lexer.tokenize()};
 
-  return lexer.tokenize();
+  DBG_PRINTLN();
+
+  return tokenstream;
+}
+
+auto pprint([[maybe_unused]] const auto& t_ast) -> void
+{
+  using namespace ast::visitor;
+
+  DBG_PRINTLN("|> Pretty printing AST:");
+
+  // Pretty print the AST
+#if DEBUG
+
+  PrintVisitor pprint;
+  t_ast->accept(&pprint);
+#endif // DEBUG
+
+  DBG_PRINTLN();
 }
 
 auto parse(const token::TokenStream& t_ts) -> ast::node::NodePtr
 {
   using namespace parser::crow;
 
-  CrowParser parser{t_ts};
+  DBG_PRINTLN("|> Parsing:");
 
-  return parser.parse();
+  CrowParser parser{t_ts};
+  const auto ast{parser.parse()};
+
+  DBG_PRINTLN();
+
+  return ast;
 }
 
 auto interpret() -> void
@@ -112,6 +139,8 @@ auto run() -> void
   for(const auto& path : settings.m_paths) {
     const auto ts{lex(path)};
     const auto ast{parse(ts)};
+
+    pprint(ast);
   }
 }
 
@@ -125,6 +154,9 @@ auto main(int t_argc, char* t_argv[]) -> int
   } catch(const CLI::ParseError& e) {
     return -app.exit(e);
   }
+
+  // Set LogLevel to verbose for now
+  DBG_SET_LOGLEVEL(VERBOSE);
 
   try {
     run();

@@ -45,7 +45,8 @@ program          : item_list
                  ;
 
 item_list        : // empty
-                 | item_list item terminator
+                 | newline_opt item
+                 | item_list newlinte_opt item
                  ;
 
 item             : package

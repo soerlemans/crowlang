@@ -47,9 +47,46 @@ auto CrowParser::expr_list_opt() -> NodeListPtr
   return nodes;
 }
 
-auto CrowParser::parse() -> NodePtr
+auto CrowParser::item() -> NodePtr
 {
+  DBG_TRACE(VERBOSE, "ITEM");
   NodePtr node;
 
   return node;
+}
+
+// item list exists out of an item followed by a terminator
+// Till there are are no more items
+auto CrowParser::item_list() -> NodeListPtr
+{
+  DBG_TRACE(VERBOSE, "ITEM LIST");
+  NodeListPtr nodes{std::make_shared<List>()};
+
+  while(!eos()) {
+    // Remove newlines before items
+    newline_opt();
+    if(eos()) {
+      break;
+    }
+
+    if(auto ptr{item()}; ptr) {
+      nodes->push_back(std::move(ptr));
+    } else {
+      break;
+    }
+  }
+
+  return nodes;
+}
+
+auto CrowParser::program() -> NodeListPtr
+{
+  DBG_TRACE(VERBOSE, "PROGRAM");
+
+  return item_list();
+}
+
+auto CrowParser::parse() -> NodePtr
+{
+  return program();
 }
