@@ -1,5 +1,5 @@
-#ifndef AWX_PARSER_PRATT_BINDING_BINDING_MAP_HPP
-#define AWX_PARSER_PRATT_BINDING_BINDING_MAP_HPP
+#ifndef CROW_PARSER_PRATT_BINDING_BINDING_MAP_HPP
+#define CROW_PARSER_PRATT_BINDING_BINDING_MAP_HPP
 
 // STL Includes:
 #include <unordered_map>
@@ -37,4 +37,4 @@ class BindingMap : public std::unordered_map<token::TokenType, BindingPower> {
 } // namespace parser::pratt::binding
 
 
-#endif // AWX_PARSER_PRATT_BINDING_BINDING_MAP_HPP
+#endif // CROW_PARSER_PRATT_BINDING_BINDING_MAP_HPP

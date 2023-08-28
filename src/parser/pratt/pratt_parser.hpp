@@ -1,5 +1,5 @@
-#ifndef AWX_PARSER_PRATT_PRATT_PARSER_HPP
-#define AWX_PARSER_PRATT_PRATT_PARSER_HPP
+#ifndef CROW_PARSER_PRATT_PRATT_PARSER_HPP
+#define CROW_PARSER_PRATT_PRATT_PARSER_HPP
 
 // STL Includes:
 #include <unordered_map>
@@ -71,4 +71,4 @@ class PrattParser : public Parser {
 };
 } // namespace parser::pratt
 
-#endif // AWX_PARSER_PRATT_PRATT_PARSER_HPP
+#endif // CROW_PARSER_PRATT_PRATT_PARSER_HPP

@@ -5,7 +5,7 @@
 #include <functional>
 
 // Includes:
-#include "../ast/node.hpp"
+#include "../ast/node/node.hpp"
 #include "../debug/trace.hpp"
 #include "../lexer/lexer.hpp"
 

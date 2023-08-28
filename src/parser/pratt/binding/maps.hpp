@@ -1,5 +1,5 @@
-#ifndef AWX_PARSER_PRATT_BINDING_MAPS_HPP
-#define AWX_PARSER_PRATT_BINDING_MAPS_HPP
+#ifndef CROW_PARSER_PRATT_BINDING_MAPS_HPP
+#define CROW_PARSER_PRATT_BINDING_MAPS_HPP
 
 // Local Includes:
 #include "binding_map.hpp"
@@ -100,4 +100,4 @@ class PostfixMap : public BindingMap {
 
 } // namespace parser::pratt::binding
 
-#endif // AWX_PARSER_PRATT_BINDING_MAPS_HPP
+#endif // CROW_PARSER_PRATT_BINDING_MAPS_HPP
