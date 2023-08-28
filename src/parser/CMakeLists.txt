@@ -6,4 +6,4 @@ target_sources(${PROJECT_NAME}
 
 # Add subdirectories
 add_subdirectory(pratt)
-# add_subdirectory(crow)
+add_subdirectory(crow)

@@ -41,6 +41,14 @@ class Token {
   explicit Token(TokenType t_type, TokenValue t_tv, TextPosition t_tp);
 
   auto type() const -> TokenType;
+
+
+  template<typename T>
+  auto get() const -> T
+  {
+    return std::get<T>(m_tv);
+  }
+
   auto position() const -> TextPosition;
 
   virtual ~Token() = default;

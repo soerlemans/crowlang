@@ -63,11 +63,11 @@ class PrattParser : public Parser {
   // Expressions:
   virtual auto expr(int t_min_bp = 0) -> ast::node::NodePtr;
 
-  virtual auto multiple_expr_list() -> ast::node::NodeListPtr = 0;
-  virtual auto expr_list() -> ast::node::NodeListPtr = 0;
+  // virtual auto multiple_expr_list() -> ast::node::NodeListPtr = 0;
+  // virtual auto expr_list() -> ast::node::NodeListPtr = 0;
   virtual auto expr_list_opt() -> ast::node::NodeListPtr = 0;
 
-  virtual ~PrattParser() = default;
+  ~PrattParser() override = default;
 };
 } // namespace parser::pratt
 

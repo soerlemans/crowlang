@@ -9,10 +9,12 @@
 #include <CLI/Validators.hpp>
 
 // Includes:
+#include "ast/node/include.hpp"
 #include "container/text_buffer.hpp"
 #include "debug/log.hpp"
 #include "debug/log_macros.hpp"
 #include "lexer/lexer.hpp"
+#include "parser/crow/crow_parser.hpp"
 #include "token/token.hpp"
 
 // Local Includes:
@@ -88,8 +90,14 @@ auto lex(const fs::path& t_path) -> token::TokenStream
   return lexer.tokenize();
 }
 
-auto parse(const token::TokenStream&) -> void
-{}
+auto parse(const token::TokenStream& t_ts) -> ast::node::NodePtr
+{
+  using namespace parser::crow;
+
+  CrowParser parser{t_ts};
+
+  return parser.parse();
+}
 
 auto interpret() -> void
 {}
@@ -103,6 +111,7 @@ auto run() -> void
 
   for(const auto& path : settings.m_paths) {
     const auto ts{lex(path)};
+    const auto ast{parse(ts)};
   }
 }
 

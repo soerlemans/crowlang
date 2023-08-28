@@ -7,7 +7,7 @@
 // Includes:
 #include "../ast/node/fdecl.hpp"
 #include "../debug/trace.hpp"
-#include "../lexer/lexer.hpp"
+#include "../token/token.hpp"
 
 
 namespace parser {

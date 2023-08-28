@@ -96,7 +96,7 @@ auto PrattParser::literal() -> NodePtr
     // differently?
     case TokenType::FLOAT:
       DBG_TRACE_PRINT(INFO, "Found FLOAT literal");
-      node = std::make_shared<Float>(token.value<double>());
+      node = std::make_shared<Float>(token.get<double>());
       break;
 
       // TODO: Take a look at this later when dealing with typeinference
@@ -104,13 +104,13 @@ auto PrattParser::literal() -> NodePtr
       //   [[fallthrough]];
       // case TokenType::INTEGER:
       //   DBG_TRACE_PRINT(INFO, "Found INTEGER literal: ");
-      //   node = std::make_shared<Integer>(token.value<int>());
+      //   node = std::make_shared<Integer>(token.get<int>());
       // break;
 
     case TokenType::STRING:
       DBG_TRACE_PRINT(INFO,
-                      "Found STRING literal: ", token.value<std::string>());
-      node = std::make_shared<String>(token.value<std::string>());
+                      "Found STRING literal: ", token.get<std::string>());
+      node = std::make_shared<String>(token.get<std::string>());
       break;
 
     default:
@@ -129,7 +129,7 @@ auto PrattParser::lvalue() -> NodePtr
   const auto token{next()};
   switch(token.type()) {
     case TokenType::IDENTIFIER: {
-      const auto name{token.value<std::string>()};
+      const auto name{token.get<std::string>()};
       // We really dont expect these next_tokens to fail
       DBG_TRACE_PRINT(INFO, "Found VARIABLE: ", name);
       node = std::make_shared<Variable>(name);
@@ -218,7 +218,7 @@ auto PrattParser::function_call() -> NodePtr
       NodeListPtr args{expr_list_opt()};
       expect(TokenType::PAREN_CLOSE, ")");
 
-      auto name{token.value<std::string>()};
+      auto name{token.get<std::string>()};
       DBG_TRACE_PRINT(INFO, "Found a FUNCTION CALL: ", name);
 
       node = std::make_shared<FunctionCall>(std::move(name), std::move(args));
@@ -435,7 +435,9 @@ auto PrattParser::infix(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
       node = std::move(ptr);
     } else if(auto ptr{logical(t_lhs, t_fn)}; ptr) {
       node = std::move(ptr);
-    } else if(auto ptr{membership(t_lhs)}; ptr) {
+    } else if(auto ptr{assignment(t_lhs, t_fn)}; ptr) {
+      node = std::move(ptr);
+    } else if(auto ptr{comparison(t_lhs, t_fn)}; ptr) {
       node = std::move(ptr);
     }
   }
@@ -452,7 +454,7 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
   const auto prefix{[&](TokenType t_type) {
     const auto [lbp, rbp] = m_prefix.at(t_type);
 
-    return t_expr_fn(rbp);
+    return expr(rbp);
   }};
 
   if(auto ptr{grouping()}; ptr) {
@@ -476,7 +478,7 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
 
   // Infix:
   while(!eos()) {
-    const auto infix{[&](TokenType t_type) {
+    const auto infix_fn{[&](TokenType t_type) {
       NodePtr rhs;
 
       const auto [lbp, rbp] = m_infix.at(t_type);
@@ -493,11 +495,7 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
     }};
 
     // If we do not find the expression quit
-    if(auto ptr{infix(lhs, infix)}; ptr) {
-      lhs = std::move(ptr);
-    } else if(auto ptr{assignment(lhs, infix)}; ptr) {
-      lhs = std::move(ptr);
-    } else if(auto ptr{comparison(lhs, infix)}; ptr) {
+    if(auto ptr{infix(lhs, infix_fn)}; ptr) {
       lhs = std::move(ptr);
     } else {
       break;
