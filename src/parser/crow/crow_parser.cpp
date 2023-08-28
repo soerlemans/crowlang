@@ -47,10 +47,51 @@ auto CrowParser::expr_list_opt() -> NodeListPtr
   return nodes;
 }
 
+auto CrowParser::body() -> NodeListPtr
+{
+  DBG_TRACE(VERBOSE, "BODY");
+  NodeListPtr nodes;
+
+  return nodes;
+}
+
+auto CrowParser::param_list() -> NodeListPtr
+{
+  DBG_TRACE(VERBOSE, "PARAM LIST");
+  NodeListPtr nodes;
+
+  return nodes;
+}
+
+auto CrowParser::function() -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "FUNCTION");
+  NodePtr node;
+
+  if(next_if(TokenType::FUNCTION)) {
+    const auto tt_id{expect(TokenType::IDENTIFIER, "Function identifier")};
+    const auto id{tt_id.get<std::string>()};
+
+    NodeListPtr params;
+    GROUPING(params, param_list);
+
+    auto body_ptr{body()};
+
+    node =
+      std::make_shared<Function>(id, std::move(params), std::move(body_ptr));
+  }
+
+  return node;
+}
+
 auto CrowParser::item() -> NodePtr
 {
   DBG_TRACE(VERBOSE, "ITEM");
   NodePtr node;
+
+  if(auto ptr{function()}; ptr) {
+    node = std::move(ptr);
+  }
 
   return node;
 }

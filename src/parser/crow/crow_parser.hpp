@@ -20,6 +20,10 @@ class CrowParser : public pratt::PrattParser {
 
   auto expr_list_opt() -> ast::node::NodeListPtr override;
 
+  virtual auto body() -> ast::node::NodeListPtr;
+  virtual auto param_list() -> ast::node::NodeListPtr;
+  virtual auto function() -> ast::node::NodePtr;
+
   virtual auto item() -> ast::node::NodePtr;
   virtual auto item_list() -> ast::node::NodeListPtr;
 

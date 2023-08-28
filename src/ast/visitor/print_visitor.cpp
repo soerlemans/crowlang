@@ -66,7 +66,7 @@ auto PrintVisitor::visit(Function* t_fn) -> void
   PPRINT_INIT();
 
   PPRINT("FUNCTION");
-  PPRINT("| Name", t_fn->identifier());
+  PPRINT("| Name: ", t_fn->identifier());
   PPRINT_IF("Params", t_fn->params());
   PPRINT_IF("Body", t_fn->body());
 }

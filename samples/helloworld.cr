@@ -1,6 +1,6 @@
-package main
+#package main
 
-import "io"
+#import "io"
 
 
 fn main() -> int {
