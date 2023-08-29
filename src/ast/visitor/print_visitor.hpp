@@ -72,10 +72,6 @@ class PrintVisitor : public NodeVisitor {
 
   auto visit(node::lvalue::Variable* t_var) -> void override;
 
-  auto visit(node::rvalue::Float* t_float) -> void override;
-  auto visit(node::rvalue::Integer* t_int) -> void override;
-  auto visit(node::rvalue::String* t_str) -> void override;
-
   auto visit(node::operators::Arithmetic* t_arithmetic) -> void override;
   auto visit(node::operators::Assignment* t_assignment) -> void override;
   auto visit(node::operators::Comparison* t_comparison) -> void override;
@@ -92,11 +88,18 @@ class PrintVisitor : public NodeVisitor {
 
   auto visit(node::operators::UnaryPrefix* t_unary_prefix) -> void override;
 
+  auto visit(node::packaging::Import* t_import) -> void override;
+  auto visit(node::packaging::Package* t_pkg) -> void override;
+
+  auto visit(node::rvalue::Float* t_float) -> void override;
+  auto visit(node::rvalue::Integer* t_int) -> void override;
+  auto visit(node::rvalue::String* t_str) -> void override;
+
   auto visit(node::List* t_list) -> void override;
   auto visit(node::Nil* t_nil) -> void override;
 
   ~PrintVisitor() override = default;
 };
-} // namespace visitor
+} // namespace ast::visitor
 
 #endif // CROW_AST_VISITOR_PRINT_VISITOR_HPP

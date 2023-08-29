@@ -1,9 +1,9 @@
-#package main
+pkg main
 
-#import "io"
+import "io"
 
 
-fn main() -> int {
+fn main(args) -> int {
   let var = 10
   if(var != 20){
     io.println("Hello World!")

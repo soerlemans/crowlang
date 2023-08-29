@@ -26,10 +26,6 @@ class NodeVisitor {
 
   virtual auto visit(node::lvalue::Variable* t_var) -> void = 0;
 
-  virtual auto visit(node::rvalue::Float* t_float) -> void = 0;
-  virtual auto visit(node::rvalue::Integer* t_int) -> void = 0;
-  virtual auto visit(node::rvalue::String* t_str) -> void = 0;
-
   virtual auto visit(node::operators::Arithmetic* t_arithmetic) -> void = 0;
   virtual auto visit(node::operators::Assignment* t_assignment) -> void = 0;
   virtual auto visit(node::operators::Comparison* t_comparison) -> void = 0;
@@ -46,6 +42,13 @@ class NodeVisitor {
 
   virtual auto visit(node::operators::UnaryPrefix* t_unary_prefix) -> void = 0;
 
+  virtual auto visit(node::packaging::Import* t_import) -> void = 0;
+  virtual auto visit(node::packaging::Package* t_pkg) -> void = 0;
+
+  virtual auto visit(node::rvalue::Float* t_float) -> void = 0;
+  virtual auto visit(node::rvalue::Integer* t_int) -> void = 0;
+  virtual auto visit(node::rvalue::String* t_str) -> void = 0;
+
   virtual auto visit(node::List* t_list) -> void = 0;
   virtual auto visit(node::Nil* t_nil) -> void = 0;
 
@@ -53,6 +56,6 @@ class NodeVisitor {
 
   virtual ~NodeVisitor() = default;
 };
-} // namespace visitor
+} // namespace ast::visitor
 
 #endif // CROW_AST_VISITOR_NODE_VISITOR_HPP

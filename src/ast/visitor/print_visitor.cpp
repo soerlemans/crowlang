@@ -29,6 +29,7 @@ using namespace ast::node::control;
 using namespace ast::node::functions;
 using namespace ast::node::lvalue;
 using namespace ast::node::operators;
+using namespace ast::node::packaging;
 using namespace ast::node::rvalue;
 
 auto PrintVisitor::visit(If* t_if) -> void
@@ -66,7 +67,7 @@ auto PrintVisitor::visit(Function* t_fn) -> void
   PPRINT_INIT();
 
   PPRINT("FUNCTION");
-  PPRINT("| Name: ", t_fn->identifier());
+  PPRINT("| Identifier: ", t_fn->identifier());
   PPRINT_IF("Params", t_fn->params());
   PPRINT_IF("Body", t_fn->body());
 }
@@ -76,7 +77,7 @@ auto PrintVisitor::visit(FunctionCall* t_fn_call) -> void
   PPRINT_INIT();
 
   PPRINT("Function call");
-  PPRINT("| Name: ", t_fn_call->identifier());
+  PPRINT("| Identifier: ", t_fn_call->identifier());
   PPRINT_IF("Arguments: ", t_fn_call->args());
 }
 
@@ -85,27 +86,6 @@ auto PrintVisitor::visit(Variable* t_var) -> void
   PPRINT_INIT();
 
   PPRINT("Variable: ", t_var->identifier());
-}
-
-auto PrintVisitor::visit(Float* t_float) -> void
-{
-  PPRINT_INIT();
-
-  PPRINT("Float: ", t_float->get());
-}
-
-auto PrintVisitor::visit(Integer* t_int) -> void
-{
-  PPRINT_INIT();
-
-  PPRINT("Integer: ", t_int->get());
-}
-
-auto PrintVisitor::visit(String* t_str) -> void
-{
-  PPRINT_INIT();
-
-  PPRINT("String: ", t_str->get());
 }
 
 auto PrintVisitor::visit(Arithmetic* t_arithmetic) -> void
@@ -191,6 +171,43 @@ auto PrintVisitor::visit(UnaryPrefix* t_unary_prefix) -> void
   PPRINT("Unary prefix");
   PPRINT_UNOP("Unary prefix", t_unary_prefix)
   PPRINT("| OP: TODO");
+}
+
+auto PrintVisitor::visit(Import* t_import) -> void
+{
+  PPRINT_INIT();
+
+  PPRINT("Import");
+  PPRINT("| Identifier: ", t_import->identifier());
+}
+
+auto PrintVisitor::visit(Package* t_pkg) -> void
+{
+  PPRINT_INIT();
+
+  PPRINT("Package");
+  PPRINT("| Identifier: ", t_pkg->identifier());
+}
+
+auto PrintVisitor::visit(Float* t_float) -> void
+{
+  PPRINT_INIT();
+
+  PPRINT("Float: ", t_float->get());
+}
+
+auto PrintVisitor::visit(Integer* t_int) -> void
+{
+  PPRINT_INIT();
+
+  PPRINT("Integer: ", t_int->get());
+}
+
+auto PrintVisitor::visit(String* t_str) -> void
+{
+  PPRINT_INIT();
+
+  PPRINT("String: ", t_str->get());
 }
 
 auto PrintVisitor::visit(List* t_list) -> void

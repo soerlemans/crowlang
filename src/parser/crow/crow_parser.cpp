@@ -24,6 +24,7 @@ using namespace ast::node::control;
 using namespace ast::node::functions;
 using namespace ast::node::lvalue;
 using namespace ast::node::operators;
+using namespace ast::node::packaging;
 using namespace ast::node::rvalue;
 
 namespace {
@@ -70,7 +71,29 @@ auto CrowParser::body() -> NodeListPtr
 auto CrowParser::param_list() -> NodeListPtr
 {
   DBG_TRACE(VERBOSE, "PARAM LIST");
-  NodeListPtr nodes;
+  NodeListPtr nodes{make_node<List>()};
+
+  if(check(TokenType::IDENTIFIER)) {
+    DBG_TRACE_PRINT(INFO, "Found 'IDENTIFIER'");
+
+    const auto id{get_token().get<std::string>()};
+    next();
+
+    nodes->push_back(make_node<Variable>(id));
+  }
+
+  while(!eos()) {
+    if(next_if(TokenType::COMMA)) {
+      DBG_TRACE_PRINT(INFO, "Found ',' 'IDENTIFIER'");
+
+      const auto token{expect(TokenType::IDENTIFIER, "IDENTIFIER")};
+      const auto id{token.get<std::string>()};
+
+      nodes->push_back(make_node<Variable>(id));
+    } else {
+      break;
+    }
+  }
 
   return nodes;
 }
@@ -95,12 +118,46 @@ auto CrowParser::function() -> NodePtr
   return node;
 }
 
+auto CrowParser::import_() -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "IMPORT");
+  NodePtr node;
+
+  if(next_if(TokenType::IMPORT)) {
+    DBG_TRACE(INFO, "Found 'IMPORT'");
+    const auto id{expect(TokenType::STRING, "STRING")};
+
+    node = make_node<Import>(id.get<std::string>());
+  }
+
+  return node;
+}
+
+auto CrowParser::package() -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "PACKAGE");
+  NodePtr node;
+
+  if(next_if(TokenType::PACKAGE)) {
+    DBG_TRACE(INFO, "Found 'PACKAGE'");
+    const auto id{expect(TokenType::IDENTIFIER, "IDENTIFIER")};
+
+    node = make_node<Package>(id.get<std::string>());
+  }
+
+  return node;
+}
+
 auto CrowParser::item() -> NodePtr
 {
   DBG_TRACE(VERBOSE, "ITEM");
   NodePtr node;
 
-  if(auto ptr{function()}; ptr) {
+  if(auto ptr{package()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{import_()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{function()}; ptr) {
     node = std::move(ptr);
   }
 

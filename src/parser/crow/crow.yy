@@ -58,6 +58,7 @@ package          : Package IDENTIFIER
                  ;
 
 import           : Import STRING
+                 | Import '(' ')'
                  ;
 
 attribute        : Private
