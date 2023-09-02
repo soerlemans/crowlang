@@ -11,6 +11,9 @@
 
 
 namespace parser {
+// Namespace aliases:
+namespace n = ast::node;
+
 // Classes:
 /*! Abstract parser class provides utilities that a parser would need to
  * implement
@@ -56,12 +59,12 @@ class Parser {
   auto prev() -> token::Token&;
   auto get_token() const -> token::Token&;
 
-	auto after_newline_list(token::TokenType t_type) -> bool;
+  auto after_newline_list(token::TokenType t_type) -> bool;
 
   public:
   Parser(token::TokenStream&& t_tokenstream);
 
-  virtual auto parse() -> ast::node::NodePtr = 0;
+  virtual auto parse() -> n::NodePtr = 0;
 
   virtual ~Parser() = default;
 };

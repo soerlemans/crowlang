@@ -3,7 +3,7 @@
 // Includes:
 #include "../../ast/node/include.hpp"
 #include "../../debug/trace.hpp"
-#include <algorithm>
+
 
 // Using statements:
 using namespace parser::crow;
@@ -18,6 +18,7 @@ using namespace ast::node::operators;
 using namespace ast::node::packaging;
 using namespace ast::node::rvalue;
 
+// Methods:
 CrowParser::CrowParser(TokenStream t_tokenstream)
   : PrattParser{std::move(t_tokenstream)}
 {}
@@ -68,18 +69,66 @@ auto CrowParser::loop_statement() -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::LOOP)) {
+    auto [init, cond] = eval_expr();
+
+
+    NodePtr expr_ptr;
+    if(next_if(TokenType::SEMICOLON)) {
+      expr_ptr = expr();
+    }
+
     auto body_ptr{body()};
+
+    node = make_node<Loop>(std::move(init), std::move(cond),
+                           std::move(expr_ptr), std::move(body_ptr));
   }
 
   return node;
 }
 
-auto CrowParser::eval_expr() -> NodePtr
+auto CrowParser::decl_expr() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
+  if(next_if(TokenType::LET)) {
+    const auto id{expect(TokenType::IDENTIFIER)};
+
+    if(next_if(TokenType::SEMICOLON)) {
+      expect(TokenType::IDENTIFIER);
+
+      // TODO: Implement type inference
+    }
+
+    NodePtr expr_ptr;
+    if(next_if(TokenType::ASSIGNMENT)) {
+      expr_ptr = expr();
+    }
+
+    node = make_node<Let>(id.get<std::string>(), std::move(expr_ptr));
+  }
+
   return node;
+}
+
+auto CrowParser::eval_expr() -> NodePair
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePair pair;
+
+  if(auto ptr{decl_expr()}; ptr) {
+    expect(TokenType::SEMICOLON);
+
+    pair = {std::move(ptr), expr()};
+  } else if(auto ptr{expr()}; ptr) {
+    if(next_if(TokenType::SEMICOLON)) {
+      pair = {std::move(ptr), expr()};
+    } else {
+      pair.second = std::move(ptr);
+    }
+  }
+
+  return pair;
 }
 
 auto CrowParser::if_statement() -> NodePtr
@@ -88,6 +137,20 @@ auto CrowParser::if_statement() -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::IF)) {
+    auto [init, cond] = eval_expr();
+    if(!cond) {
+      syntax_error("Expected a conditional");
+    }
+
+    auto then_ptr{body()};
+
+    NodeListPtr alt_ptr;
+    if(next_if(TokenType::ELSE)) {
+      alt_ptr = body();
+    }
+
+    node = make_node<If>(std::move(init), std::move(cond), std::move(then_ptr),
+                         std::move(alt_ptr));
   }
 
   return node;
@@ -110,7 +173,7 @@ auto CrowParser::statement() -> NodePtr
 auto CrowParser::statement_list() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodeListPtr nodes;
+  NodeListPtr nodes{make_node<List>()};
 
   while(!eos()) {
     if(auto ptr{statement()}; ptr) {
@@ -118,6 +181,8 @@ auto CrowParser::statement_list() -> NodeListPtr
     } else {
       break;
     }
+
+		newline_opt();
   }
 
   return nodes;
@@ -141,7 +206,6 @@ auto CrowParser::body() -> NodeListPtr
       nodes = std::move(ptr);
     }
 
-    newline_opt();
     expect(TokenType::ACCOLADE_CLOSE);
   } else {
     syntax_error("Expected a body");

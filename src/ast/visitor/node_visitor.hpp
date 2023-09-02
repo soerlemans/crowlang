@@ -17,6 +17,7 @@ class NodeVisitor {
   NodeVisitor() = default;
 
   virtual auto visit(node::control::If* t_if) -> void = 0;
+  virtual auto visit(node::control::Loop* t_loop) -> void = 0;
   virtual auto visit(node::control::Continue* t_continue) -> void = 0;
   virtual auto visit(node::control::Break* t_break) -> void = 0;
   virtual auto visit(node::control::Return* t_return) -> void = 0;
@@ -24,6 +25,7 @@ class NodeVisitor {
   virtual auto visit(node::functions::Function* t_fn) -> void = 0;
   virtual auto visit(node::functions::FunctionCall* t_fn_call) -> void = 0;
 
+  virtual auto visit(node::lvalue::Let* t_let) -> void = 0;
   virtual auto visit(node::lvalue::Variable* t_var) -> void = 0;
 
   virtual auto visit(node::operators::Arithmetic* t_arithmetic) -> void = 0;

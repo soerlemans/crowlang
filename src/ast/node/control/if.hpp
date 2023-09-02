@@ -11,17 +11,19 @@
 namespace ast::node::control {
 class If : public NodeInterface {
   private:
+  NodePtr m_init;
   NodePtr m_condition;
-  NodePtr m_then;
-  NodePtr m_alt;
+  NodeListPtr m_then;
+  NodeListPtr m_alt;
 
   public:
-  If(NodePtr&& t_condition, NodePtr&& t_then);
-  If(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_alt);
+  If(NodePtr&& t_init, NodePtr&& t_condition, NodeListPtr&& t_then,
+     NodeListPtr&& t_alt);
 
+  auto init() -> NodePtr&;
   auto condition() -> NodePtr&;
-  auto then() -> NodePtr&;
-  auto alt() -> NodePtr&;
+  auto then() -> NodeListPtr&;
+  auto alt() -> NodeListPtr&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

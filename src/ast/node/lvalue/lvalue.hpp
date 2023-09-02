@@ -3,6 +3,7 @@
 
 
 namespace ast::node::lvalue {
+class Let;
 class Variable;
 } // namespace node::lvalue
 

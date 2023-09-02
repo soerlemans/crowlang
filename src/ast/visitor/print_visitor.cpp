@@ -2,6 +2,7 @@
 
 // STL Includes:
 #include <iomanip>
+#include <sstream>
 
 
 // Macros:
@@ -40,8 +41,21 @@ auto PrintVisitor::visit(If* t_if) -> void
   PPRINT_INIT();
 
   PPRINT("If");
+  PPRINT_IF("Init", t_if->init());
+  PPRINT_IF("Condition", t_if->condition());
   PPRINT_IF("Then", t_if->then());
   PPRINT_IF("Alt", t_if->alt());
+}
+
+auto PrintVisitor::visit(node::control::Loop* t_loop) -> void
+{
+  PPRINT_INIT();
+
+  PPRINT("Loop");
+  PPRINT_IF("Init", t_loop->init());
+  PPRINT_IF("Condition", t_loop->condition());
+  PPRINT_IF("Expr", t_loop->expr());
+  PPRINT_IF("Body", t_loop->body());
 }
 
 auto PrintVisitor::visit([[maybe_unused]] Continue* t_continue) -> void
@@ -82,6 +96,16 @@ auto PrintVisitor::visit(FunctionCall* t_fn_call) -> void
   PPRINT("Function call");
   PPRINT("| Identifier: ", t_fn_call->identifier());
   PPRINT_IF("Arguments: ", t_fn_call->args());
+}
+
+auto PrintVisitor::visit(Let* t_let) -> void
+{
+  PPRINT_INIT();
+
+  std::stringstream ss;
+
+  PPRINT("Let: ", t_let->identifier());
+  PPRINT_IF("Init: ", t_let->init());
 }
 
 auto PrintVisitor::visit(Variable* t_var) -> void

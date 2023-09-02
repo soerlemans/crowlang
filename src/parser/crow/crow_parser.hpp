@@ -7,8 +7,10 @@
 
 namespace parser::crow {
 // Namespace aliases:
-namespace n = ast::node;
 namespace pkg = ast::node::packaging;
+
+// Aliases:
+using NodePair = std::pair<n::NodePtr, n::NodePtr>;
 
 // Classes:
 /*! Top down parser of the Crow language.
@@ -25,10 +27,11 @@ class CrowParser : public pratt::PrattParser {
 
   auto expr_list_opt() -> n::NodeListPtr override;
 
-	virtual auto eval_expr() -> n::NodePtr;
+  virtual auto decl_expr() -> n::NodePtr;
+  virtual auto eval_expr() -> NodePair;
 
-	virtual auto loop_statement() -> n::NodePtr;
-	virtual auto if_statement() -> n::NodePtr;
+  virtual auto loop_statement() -> n::NodePtr;
+  virtual auto if_statement() -> n::NodePtr;
 
   virtual auto statement() -> n::NodePtr;
   virtual auto statement_list() -> n::NodeListPtr;

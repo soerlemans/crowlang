@@ -22,17 +22,17 @@ PrattParser::PrattParser(token::TokenStream&& t_tokenstream)
   : Parser{std::move(t_tokenstream)}
 {}
 
-// Expression terminals:
+// Prefix parsing:
 //! Parses unary prefixes like having a + or - before an expression
 auto PrattParser::unary_prefix(const PrattFunc& t_fn) -> NodePtr
 {
-  DBG_TRACE(VERBOSE, "UNARY PREFIX");
+  DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
   const auto token{get_token()};
   if(check(TokenType::PLUS) || check(TokenType::MINUS)) {
     next();
-    DBG_TRACE(VERBOSE, "Found UNARY PREFIX");
+    DBG_TRACE_PRINT(VERBOSE, "Found UNARY PREFIX");
 
     NodePtr rhs{t_fn(token.type())};
     if(!rhs) {
@@ -47,7 +47,7 @@ auto PrattParser::unary_prefix(const PrattFunc& t_fn) -> NodePtr
 
 auto PrattParser::grouping() -> NodePtr
 {
-  DBG_TRACE(VERBOSE, "GROUPING");
+  DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
   if(check(TokenType::PAREN_OPEN)) {
@@ -63,7 +63,7 @@ auto PrattParser::grouping() -> NodePtr
 
 auto PrattParser::negation(const PrattFunc& t_expr) -> NodePtr
 {
-  DBG_TRACE(VERBOSE, "NEGATION");
+  DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
   if(next_if(TokenType::NOT)) {
@@ -80,7 +80,7 @@ auto PrattParser::negation(const PrattFunc& t_expr) -> NodePtr
 
 auto PrattParser::literal() -> NodePtr
 {
-  DBG_TRACE(VERBOSE, "LITERAL");
+  DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
   const auto token{get_token()};
@@ -100,7 +100,7 @@ auto PrattParser::literal() -> NodePtr
 
 auto PrattParser::lvalue() -> NodePtr
 {
-  DBG_TRACE(VERBOSE, "LVALUE");
+  DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
   const auto token{get_token()};
@@ -116,7 +116,7 @@ auto PrattParser::lvalue() -> NodePtr
 //! Prefix operator parses prefix increment and decrement
 auto PrattParser::precrement() -> NodePtr
 {
-  DBG_TRACE(VERBOSE, "PREFIX OPERATOR");
+  DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
   const auto lambda{[&]<typename T>() {
@@ -145,7 +145,7 @@ auto PrattParser::precrement() -> NodePtr
 // User defined
 auto PrattParser::function_call() -> NodePtr
 {
-  DBG_TRACE(VERBOSE, "FUNCTION CALL");
+  DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
   const auto token{get_token()};
@@ -156,7 +156,7 @@ auto PrattParser::function_call() -> NodePtr
     })};
 
     auto name{token.get<std::string>()};
-    DBG_TRACE_PRINT(INFO, "Found a FUNCTION CALL: ", name);
+    DBG_TRACE_PRINT(INFO, "Found a 'FUNCTION CALL': ", name);
 
     node = make_node<FunctionCall>(std::move(name), std::move(args));
   }
@@ -164,9 +164,32 @@ auto PrattParser::function_call() -> NodePtr
   return node;
 }
 
+auto PrattParser::prefix(const PrattFunc& t_fn) -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  if(auto ptr{grouping()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{negation(t_fn)}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{literal()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{lvalue()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{precrement()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{function_call()}; ptr) {
+    node = std::move(ptr);
+  }
+
+  return node;
+}
+
+// Infix parsing:
 auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
 {
-  DBG_TRACE(VERBOSE, "ARITHMETIC");
+  DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
   const auto token{get_token()};
@@ -199,7 +222,7 @@ auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
 
 auto PrattParser::logical(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
 {
-  DBG_TRACE(VERBOSE, "LOGICAL");
+  DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
   const auto token{get_token()};
@@ -223,7 +246,7 @@ auto PrattParser::logical(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
 
 auto PrattParser::assignment(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
 {
-  DBG_TRACE(VERBOSE, "ASSIGNMENT");
+  DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
   if(t_lhs) {
@@ -263,7 +286,7 @@ auto PrattParser::assignment(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
 
 auto PrattParser::comparison(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
 {
-  DBG_TRACE(VERBOSE, "COMPARISON");
+  DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
   if(t_lhs) {
@@ -301,7 +324,7 @@ auto PrattParser::comparison(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
 
 auto PrattParser::infix(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
 {
-  DBG_TRACE(VERBOSE, "UNIVERSAL EXPR");
+  DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
   if(t_lhs) {
@@ -322,28 +345,16 @@ auto PrattParser::infix(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
 // Grammar:
 auto PrattParser::expr(const int t_min_bp) -> NodePtr
 {
-  DBG_TRACE(VERBOSE, "EXPR");
+  DBG_TRACE_FN(VERBOSE);
   NodePtr lhs;
 
-  const auto prefix{[&](TokenType t_type) {
+  const auto prefix_fn{[&](TokenType t_type) {
     const auto [lbp, rbp] = m_prefix.at(t_type);
 
     return expr(rbp);
   }};
 
-  if(auto ptr{grouping()}; ptr) {
-    lhs = std::move(ptr);
-  } else if(auto ptr{negation(prefix)}; ptr) {
-    lhs = std::move(ptr);
-  } else if(auto ptr{literal()}; ptr) {
-    lhs = std::move(ptr);
-  } else if(auto ptr{lvalue()}; ptr) {
-    lhs = std::move(ptr);
-  } else if(auto ptr{precrement()}; ptr) {
-    lhs = std::move(ptr);
-  } else if(auto ptr{function_call()}; ptr) {
-    lhs = std::move(ptr);
-  }
+  lhs = prefix(prefix_fn);
 
   // Infix:
   while(!eos()) {

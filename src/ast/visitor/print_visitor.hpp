@@ -63,6 +63,7 @@ class PrintVisitor : public NodeVisitor {
   PrintVisitor() = default;
 
   auto visit(node::control::If* t_if) -> void override;
+  auto visit(node::control::Loop* t_loop) -> void override;
   auto visit(node::control::Continue* t_continue) -> void override;
   auto visit(node::control::Break* t_break) -> void override;
   auto visit(node::control::Return* t_return) -> void override;
@@ -70,6 +71,7 @@ class PrintVisitor : public NodeVisitor {
   auto visit(node::functions::Function* t_fn) -> void override;
   auto visit(node::functions::FunctionCall* t_fn_call) -> void override;
 
+  auto visit(node::lvalue::Let* t_let) -> void override;
   auto visit(node::lvalue::Variable* t_var) -> void override;
 
   auto visit(node::operators::Arithmetic* t_arithmetic) -> void override;

@@ -15,6 +15,7 @@
 #include "control/break.hpp"
 #include "control/continue.hpp"
 #include "control/if.hpp"
+#include "control/loop.hpp"
 #include "control/return.hpp"
 
 // Functions:
@@ -23,6 +24,7 @@
 #include "functions/functions.hpp"
 
 // Lvalue:
+#include "lvalue/let.hpp"
 #include "lvalue/lvalue.hpp"
 #include "lvalue/variable.hpp"
 
@@ -38,8 +40,8 @@
 #include "operators/unary_prefix.hpp"
 
 // Packaging:
-#include "packaging/package.hpp"
 #include "packaging/import.hpp"
+#include "packaging/package.hpp"
 
 // Rvalue:
 #include "rvalue/literal.hpp"

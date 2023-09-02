@@ -4,11 +4,7 @@
 
 namespace ast::node::control {
 class If;
-class While;
-class DoWhile;
-
-class For;
-class ForIn;
+class Loop;
 
 class Continue;
 class Break;

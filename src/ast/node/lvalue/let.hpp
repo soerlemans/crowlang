@@ -1,5 +1,5 @@
-#ifndef CROW_AST_NODE_LVALUE_VARIABLE_HPP
-#define CROW_AST_NODE_LVALUE_VARIABLE_HPP
+#ifndef LET_HPP
+#define LET_HPP
 
 // Includes:
 #include "../node_interface.hpp"
@@ -9,19 +9,21 @@
 
 
 namespace ast::node::lvalue {
-class Variable : public NodeInterface {
+class Let : public NodeInterface {
   private:
   std::string m_identifier;
+  NodePtr m_init;
 
   public:
-  Variable(const std::string& t_identifier);
+  Let(const std::string& t_identifier, NodePtr&& t_init);
 
   auto identifier() const -> const std::string&;
+  auto init() -> NodePtr&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Variable() override = default;
+  ~Let() override = default;
 };
 } // namespace ast::node::lvalue
 
-#endif // CROW_AST_NODE_LVALUE_VARIABLE_HPP
+#endif // LET_HPP

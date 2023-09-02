@@ -101,8 +101,8 @@ body             : newline_opt '{' newline_opt '}'
                  ;
 
 // Statements:
-statement_list   : statement
-                 | statement_list statement
+statement_list   : statement newline_opt
+                 | statement_list statement newline_opt
                  ;
 
 statement        : expr_statement
@@ -217,9 +217,9 @@ assignment       : lvalue MUL_ASSIGN expr
                  | lvalue '=' expr
                  ;
 
-eval_expr        : expr
+eval_expr        : decl_expr ';' expr
+                 | expr
                  | expr ';' expr
-                 | decl_expr ';' expr
                  ;
 
 decl_expr        : Let IDENTIFIER
