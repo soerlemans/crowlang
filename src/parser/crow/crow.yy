@@ -79,6 +79,10 @@ function         : Fn IDENTIFIER '(' param_list ')' body
                  | Fn IDENTIFIER body
 				         ;
 
+return_type_opt  : // empty
+                 | newline_opt ARROW IDENTIFIER
+                 ;
+
 lambda           : Fn '(' param_list ')' body
                  | Fn body
                  ;
@@ -101,12 +105,12 @@ statement_list   : statement
                  | statement_list statement
                  ;
 
-statement        : body
-				         | expr_statement
+statement        : expr_statement
 				         | if_statement
 				         | match_statement
 				         | loop_statement
-				         | jump_statement
+				         | jump_statement body
+				         | body
                  ;
 
 // If statement:

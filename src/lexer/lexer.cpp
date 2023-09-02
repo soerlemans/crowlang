@@ -249,6 +249,7 @@ auto Lexer::is_multi_symbol() -> TokenTypeOpt
        iter != g_multi_symbols.end()) {
       LOG_TOK("MULTI SYMBOL: ", iter->first);
       opt = iter->second;
+      m_text->next();
     }
   }
 
@@ -279,8 +280,9 @@ auto Lexer::symbol() -> Token
   opt = is_multi_symbol();
 
   // Then check for single symbol
-  if(!opt)
+  if(!opt) {
     opt = is_single_symbol();
+  }
 
   // Throw if it is neither
   if(!opt) {

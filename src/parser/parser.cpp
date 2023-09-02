@@ -40,13 +40,13 @@ auto Parser::eos() const -> bool
   return m_tokenstream.eos();
 }
 
-auto Parser::check(const TokenType t_tokentype) -> bool
+auto Parser::check(const TokenType t_type) -> bool
 {
   eos_error("Tried to check for token at EOS!");
 
   const auto token{m_tokenstream.current()};
 
-  return token.type() == t_tokentype;
+  return token.type() == t_type;
 }
 
 auto Parser::next() -> Token&
@@ -56,13 +56,13 @@ auto Parser::next() -> Token&
   return m_tokenstream.next();
 }
 
-auto Parser::next_if(const TokenType t_tokentype) -> bool
+auto Parser::next_if(const TokenType t_type) -> bool
 {
   eos_error(
     "Tried to move to next if Token is equal to expected token at EOS!");
 
   // Only go to next token if we find the token we expect
-  const auto advance{check(t_tokentype)};
+  const auto advance{check(t_type)};
   if(advance) {
     next();
   }
@@ -70,12 +70,12 @@ auto Parser::next_if(const TokenType t_tokentype) -> bool
   return advance;
 }
 
-auto Parser::expect(const TokenType t_tokentype) -> Token&
+auto Parser::expect(const TokenType t_type) -> Token&
 {
-  if(!check(t_tokentype)) {
+  if(!check(t_type)) {
     std::stringstream ss;
     ss << "Expected -> ";
-    ss << tokentype2str(t_tokentype) << '\n';
+    ss << tokentype2str(t_type) << '\n';
 
     syntax_error(ss.str());
   }
@@ -97,4 +97,22 @@ auto Parser::get_token() const -> Token&
   eos_error("Tried to return get token at EOS!");
 
   return m_tokenstream.current();
+}
+
+//! This method is used to verify if a certain token is located after newlines
+auto Parser::after_newline_list(const token::TokenType t_type) -> bool
+{
+  bool found{false};
+
+  for(auto iter{m_tokenstream.iter()}; iter != m_tokenstream.end(); iter++) {
+    if(iter->type() != TokenType::NEWLINE) {
+      if(iter->type() == t_type) {
+        found = true;
+      }
+
+      break;
+    }
+  }
+
+  return found;
 }

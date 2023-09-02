@@ -3,7 +3,7 @@
 // Includes:
 #include "../../ast/node/include.hpp"
 #include "../../debug/trace.hpp"
-
+#include <algorithm>
 
 // Using statements:
 using namespace parser::crow;
@@ -24,7 +24,7 @@ CrowParser::CrowParser(TokenStream t_tokenstream)
 
 auto CrowParser::newline_opt() -> void
 {
-  DBG_TRACE(VERBOSE, "NEWLINE OPT");
+  DBG_TRACE_FN(VERBOSE);
 
   while(!eos() && next_if(TokenType::NEWLINE)) {
     DBG_TRACE_PRINT(INFO, "Found 'NEWLINE'");
@@ -33,7 +33,7 @@ auto CrowParser::newline_opt() -> void
 
 auto CrowParser::terminator() -> void
 {
-  DBG_TRACE(VERBOSE, "TERMINATOR");
+  DBG_TRACE_FN(VERBOSE);
 
   const auto is_terminator{[this] {
     return check(TokenType::SEMICOLON) || check(TokenType::NEWLINE);
@@ -62,17 +62,57 @@ auto CrowParser::expr_list_opt() -> NodeListPtr
   return nodes;
 }
 
+auto CrowParser::statement() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  return node;
+}
+
+auto CrowParser::statement_list() -> NodeListPtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodeListPtr nodes;
+
+  while(!eos()) {
+    if(auto ptr{statement()}; ptr) {
+      nodes->push_back(std::move(ptr));
+    } else {
+      break;
+    }
+  }
+
+  return nodes;
+}
+
+/*! The body() should never be optional, or else we will consume newlines
+ * unintentionally
+ */
 auto CrowParser::body() -> NodeListPtr
 {
-  DBG_TRACE(VERBOSE, "BODY");
+  DBG_TRACE_FN(VERBOSE);
   NodeListPtr nodes;
+
+  // After a list of newlines an accolade most occur
+  if(after_newline_list(TokenType::ACCOLADE_OPEN)) {
+    newline_opt();
+    expect(TokenType::ACCOLADE_OPEN);
+
+    newline_opt();
+    if(auto ptr{statement_list()}; ptr) {
+      nodes = std::move(ptr);
+    }
+
+    expect(TokenType::ACCOLADE_CLOSE);
+  }
 
   return nodes;
 }
 
 auto CrowParser::param_list() -> NodeListPtr
 {
-  DBG_TRACE(VERBOSE, "PARAM LIST");
+  DBG_TRACE_FN(VERBOSE);
   NodeListPtr nodes{make_node<List>()};
 
   if(check(TokenType::IDENTIFIER)) {
@@ -100,9 +140,17 @@ auto CrowParser::param_list() -> NodeListPtr
   return nodes;
 }
 
+auto CrowParser::return_type_opt() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  return node;
+}
+
 auto CrowParser::function() -> NodePtr
 {
-  DBG_TRACE(VERBOSE, "FUNCTION");
+  DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
   if(next_if(TokenType::FUNCTION)) {
@@ -114,6 +162,11 @@ auto CrowParser::function() -> NodePtr
       return this->param_list();
     })};
 
+    // TODO: Move to own function
+    if(next_if(TokenType::ARROW)) {
+      expect(TokenType::IDENTIFIER);
+    }
+
     auto body_ptr{body()};
 
     node = make_node<Function>(id, std::move(params), std::move(body_ptr));
@@ -124,7 +177,7 @@ auto CrowParser::function() -> NodePtr
 
 auto CrowParser::import_expr(Import& t_import) -> bool
 {
-  DBG_TRACE(VERBOSE, "IMPORT EXPR");
+  DBG_TRACE_FN(VERBOSE);
   bool is_import_expr{true};
 
   const auto token{get_token()};
@@ -147,7 +200,7 @@ auto CrowParser::import_expr(Import& t_import) -> bool
 
 auto CrowParser::import_list(Import& t_import) -> void
 {
-  DBG_TRACE(VERBOSE, "IMPORT LIST");
+  DBG_TRACE_FN(VERBOSE);
 
   if(!import_expr(t_import)) {
     syntax_error("Expected at least one import");
@@ -162,14 +215,14 @@ auto CrowParser::import_list(Import& t_import) -> void
 
 auto CrowParser::import_() -> NodePtr
 {
-  DBG_TRACE(VERBOSE, "IMPORT");
+  DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
   if(next_if(TokenType::IMPORT)) {
-    DBG_TRACE(INFO, "Found 'IMPORT'");
+    DBG_TRACE_PRINT(INFO, "Found 'IMPORT'");
     auto import_ptr{make_node<Import>()};
     if(check(TokenType::STRING)) {
-      DBG_TRACE(INFO, "Found 'STRING'");
+      DBG_TRACE_PRINT(INFO, "Found 'STRING'");
       const auto id{get_token()};
       next();
 
@@ -182,7 +235,7 @@ auto CrowParser::import_() -> NodePtr
       syntax_error("Expected string or an import list");
     }
 
-		node = std::move(import_ptr);
+    node = std::move(import_ptr);
   }
 
   return node;
@@ -190,11 +243,11 @@ auto CrowParser::import_() -> NodePtr
 
 auto CrowParser::package() -> NodePtr
 {
-  DBG_TRACE(VERBOSE, "PACKAGE");
+  DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
   if(next_if(TokenType::PACKAGE)) {
-    DBG_TRACE(INFO, "Found 'PACKAGE'");
+    DBG_TRACE_PRINT(INFO, "Found 'PACKAGE'");
     const auto id{expect(TokenType::IDENTIFIER)};
 
     node = make_node<Package>(id.get<std::string>());
@@ -205,7 +258,7 @@ auto CrowParser::package() -> NodePtr
 
 auto CrowParser::item() -> NodePtr
 {
-  DBG_TRACE(VERBOSE, "ITEM");
+  DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
   if(auto ptr{package()}; ptr) {
@@ -223,7 +276,7 @@ auto CrowParser::item() -> NodePtr
 // Till there are are no more items
 auto CrowParser::item_list() -> NodeListPtr
 {
-  DBG_TRACE(VERBOSE, "ITEM LIST");
+  DBG_TRACE_FN(VERBOSE);
   NodeListPtr nodes{make_node<List>()};
 
   while(!eos()) {
@@ -245,7 +298,7 @@ auto CrowParser::item_list() -> NodeListPtr
 
 auto CrowParser::program() -> NodeListPtr
 {
-  DBG_TRACE(VERBOSE, "PROGRAM");
+  DBG_TRACE_FN(VERBOSE);
 
   return item_list();
 }

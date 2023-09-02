@@ -5,6 +5,7 @@
 #include "../macros.hpp"
 
 
+// Macros:
 #if DEBUG
 #define DBG_TRACE_INIT() int m_counter{0};
 
@@ -37,4 +38,7 @@
   } while(false)
 
 #endif // DEBUG
+
+#define DBG_TRACE_FN(t_loglevel) DBG_TRACE(t_loglevel, __func__)
+
 #endif // CROW_DEBUG_TRACE_MACROS_HPP

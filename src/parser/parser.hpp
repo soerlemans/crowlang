@@ -49,12 +49,14 @@ class Parser {
 
   auto eos() const -> bool;
 
-  auto check(token::TokenType t_tokentype) -> bool;
+  auto check(token::TokenType t_type) -> bool;
   auto next() -> token::Token&;
-  auto next_if(token::TokenType t_tokentype) -> bool;
-  auto expect(token::TokenType t_tokentype) -> token::Token&;
+  auto next_if(token::TokenType t_type) -> bool;
+  auto expect(token::TokenType t_type) -> token::Token&;
   auto prev() -> token::Token&;
   auto get_token() const -> token::Token&;
+
+	auto after_newline_list(token::TokenType t_type) -> bool;
 
   public:
   Parser(token::TokenStream&& t_tokenstream);

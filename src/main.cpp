@@ -145,7 +145,7 @@ auto run() -> void
 
 auto main(int t_argc, char* t_argv[]) -> int
 {
-  CLI::App app{""};
+  CLI::App app{"Crow(lang)"};
 
   DBG_SET_LOGLEVEL(INFO);
   try {

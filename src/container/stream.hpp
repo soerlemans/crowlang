@@ -58,6 +58,11 @@ class Stream : public T {
     return opt;
   }
 
+  virtual auto iter() const -> Iterator
+  {
+    return m_iter;
+  }
+
   virtual auto current() const -> Value&
   {
     return *m_iter;
