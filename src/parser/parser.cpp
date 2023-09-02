@@ -5,15 +5,15 @@
 #include "../token/tokentype2str.hpp"
 
 
+// Using statements:
 using namespace parser;
 using namespace token;
 
-// Constructor:
+// Methods:
 Parser::Parser(TokenStream&& t_tokenstream)
   : m_tokenstream{std::forward<TokenStream>(t_tokenstream)}
 {}
 
-// Methods:
 auto Parser::syntax_error(std::string_view t_msg) const -> void
 {
   const auto token{get_token()};
@@ -75,7 +75,7 @@ auto Parser::expect(const TokenType t_type) -> Token&
   if(!check(t_type)) {
     std::stringstream ss;
     ss << "Expected -> ";
-    ss << tokentype2str(t_type) << '\n';
+    ss << tokentype2str(t_type);
 
     syntax_error(ss.str());
   }

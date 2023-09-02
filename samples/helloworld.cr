@@ -6,9 +6,8 @@ import (
 )
 
 
-fn main (args) -> int {
-  let var = 10
-  if(var != 20){
-    io.println("Hello World!")
-		}
+fn main(args) -> int {
+  loop {
+
+  }
 }

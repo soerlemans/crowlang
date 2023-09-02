@@ -1,11 +1,11 @@
 #include "syntax_error.hpp"
 
+// STL Includes:
 #include <iomanip>
 #include <sstream>
 #include <string>
 
-// The following members m_lineno and m_columno are zero indexed so they need to
-// Have + 1 counted for them to line up properly
+
 SyntaxError::SyntaxError(const std::string_view t_msg,
                          const container::TextPosition& t_pos)
   : m_pos(t_pos)
@@ -15,20 +15,19 @@ SyntaxError::SyntaxError(const std::string_view t_msg,
 
   auto [path, line, lineno, columnno] = m_pos;
 
+  // Lineno is zero indexed
   lineno_ss << " - Line(";
-  lineno_ss << lineno;
-  lineno_ss << "): ";
+  lineno_ss << lineno + 1;
+  lineno_ss << "):";
 
   ss << "Error in file: " << std::quoted(path) << '\n';
   ss << "Error description: " << std::quoted(t_msg) << "\n";
   ss << lineno_ss.str();
 
-  // FIXME: If t_line does not end in a newline we have an issue!
   ss << line;
 
-  // FIXME: ~^~ does not align
   const auto indent{lineno_ss.str().size() + columnno};
-  ss << std::string(indent, ' ') << "~^~" << '\n';
+  ss << std::string(indent, ' ') << "^__" << '\n';
 
   m_error = ss.str();
 }

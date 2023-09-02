@@ -96,8 +96,8 @@ param_list       : IDENTIFIER
                  ;
 
 // Body:
-body             : newline_opt '{' newline_opt                  '}'
-                 | newline_opt '{' newline_opt statement_list   '}'
+body             : newline_opt '{' newline_opt '}'
+                 | newline_opt '{' newline_opt statement_list newline_opt '}'
                  ;
 
 // Statements:
@@ -109,7 +109,7 @@ statement        : expr_statement
 				         | if_statement
 				         | match_statement
 				         | loop_statement
-				         | jump_statement body
+				         | jump_statement
 				         | body
                  ;
 
@@ -129,8 +129,8 @@ match_case_list : match_case
                  | match_case_list match_case
                  ;
 
-match_case      : Case body
-                 ;
+match_case      :
+                ;
 
 // Loop statement:
 loop_statement   : Loop body

@@ -25,9 +25,6 @@ using namespace container;
 // Error handling:
 auto Lexer::syntax_error(std::string_view t_msg) const -> void
 {
-  // FIXME: The ^^^ does not properly align, columnno is possibly not
-  // properly adjusted
-
   // Throws a SyntaxError with a message
   throw SyntaxError{std::string{t_msg}, m_text->position()};
 }

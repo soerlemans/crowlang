@@ -62,10 +62,47 @@ auto CrowParser::expr_list_opt() -> NodeListPtr
   return nodes;
 }
 
+auto CrowParser::loop_statement() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  if(next_if(TokenType::LOOP)) {
+    auto body_ptr{body()};
+  }
+
+  return node;
+}
+
+auto CrowParser::eval_expr() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  return node;
+}
+
+auto CrowParser::if_statement() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  if(next_if(TokenType::IF)) {
+  }
+
+  return node;
+}
+
 auto CrowParser::statement() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
+
+  if(auto ptr{if_statement()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{loop_statement()}; ptr) {
+    node = std::move(ptr);
+  }
 
   return node;
 }
@@ -104,7 +141,10 @@ auto CrowParser::body() -> NodeListPtr
       nodes = std::move(ptr);
     }
 
+    newline_opt();
     expect(TokenType::ACCOLADE_CLOSE);
+  } else {
+    syntax_error("Expected a body");
   }
 
   return nodes;
@@ -145,6 +185,14 @@ auto CrowParser::return_type_opt() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
+  if(after_newline_list(TokenType::ARROW)) {
+    newline_opt();
+    expect(TokenType::ARROW);
+    expect(TokenType::IDENTIFIER);
+
+    // TODO: Set node
+  }
+
   return node;
 }
 
@@ -162,11 +210,7 @@ auto CrowParser::function() -> NodePtr
       return this->param_list();
     })};
 
-    // TODO: Move to own function
-    if(next_if(TokenType::ARROW)) {
-      expect(TokenType::IDENTIFIER);
-    }
-
+    auto return_type{return_type_opt()};
     auto body_ptr{body()};
 
     node = make_node<Function>(id, std::move(params), std::move(body_ptr));
