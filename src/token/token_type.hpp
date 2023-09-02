@@ -102,8 +102,7 @@ enum class TokenType {
   COLON,
   SEMICOLON,
 
-  NEWLINE,
-	EOS
+  NEWLINE
 };
 } // namespace token
 

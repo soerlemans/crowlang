@@ -63,7 +63,7 @@ auto PrattParser::grouping() -> NodePtr
     DBG_TRACE_PRINT(VERBOSE, "Found GROUPING");
 
     node = std::make_shared<Grouping>(expr());
-    expect(TokenType::PAREN_CLOSE, ")");
+    expect(TokenType::PAREN_CLOSE);
   }
 
   return node;
@@ -108,8 +108,7 @@ auto PrattParser::literal() -> NodePtr
       // break;
 
     case TokenType::STRING:
-      DBG_TRACE_PRINT(INFO,
-                      "Found STRING literal: ", token.get<std::string>());
+      DBG_TRACE_PRINT(INFO, "Found STRING literal: ", token.get<std::string>());
       node = std::make_shared<String>(token.get<std::string>());
       break;
 
@@ -214,9 +213,9 @@ auto PrattParser::function_call() -> NodePtr
 
   switch(const auto token{next()}; token.type()) {
     case TokenType::IDENTIFIER: {
-      expect(TokenType::PAREN_OPEN, "(");
+      expect(TokenType::PAREN_OPEN);
       NodeListPtr args{expr_list_opt()};
-      expect(TokenType::PAREN_CLOSE, ")");
+      expect(TokenType::PAREN_CLOSE);
 
       auto name{token.get<std::string>()};
       DBG_TRACE_PRINT(INFO, "Found a FUNCTION CALL: ", name);

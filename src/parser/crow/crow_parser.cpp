@@ -7,11 +7,11 @@
 
 // Macros:
 //! Convenvience macro for
-#define GROUPING(t_var, t_func)          \
-  do {                                   \
-    expect(TokenType::PAREN_OPEN, "(");  \
-    t_var = t_func();                    \
-    expect(TokenType::PAREN_CLOSE, ")"); \
+#define GROUPING(t_var, t_func)     \
+  do {                              \
+    expect(TokenType::PAREN_OPEN);  \
+    t_var = t_func();               \
+    expect(TokenType::PAREN_CLOSE); \
   } while(false)
 
 // Using statements:
@@ -86,7 +86,7 @@ auto CrowParser::param_list() -> NodeListPtr
     if(next_if(TokenType::COMMA)) {
       DBG_TRACE_PRINT(INFO, "Found ',' 'IDENTIFIER'");
 
-      const auto token{expect(TokenType::IDENTIFIER, "IDENTIFIER")};
+      const auto token{expect(TokenType::IDENTIFIER)};
       const auto id{token.get<std::string>()};
 
       nodes->push_back(make_node<Variable>(id));
@@ -104,7 +104,7 @@ auto CrowParser::function() -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::FUNCTION)) {
-    const auto tt_id{expect(TokenType::IDENTIFIER, "Function identifier")};
+    const auto tt_id{expect(TokenType::IDENTIFIER)};
     const auto id{tt_id.get<std::string>()};
 
     NodeListPtr params;
@@ -125,9 +125,18 @@ auto CrowParser::import_() -> NodePtr
 
   if(next_if(TokenType::IMPORT)) {
     DBG_TRACE(INFO, "Found 'IMPORT'");
-    const auto id{expect(TokenType::STRING, "STRING")};
+    if(check(TokenType::STRING)) {
+      DBG_TRACE(INFO, "Found 'STRING'");
+      const auto id{get_token()};
+      next();
 
-    node = make_node<Import>(id.get<std::string>());
+      node = make_node<Import>(id.get<std::string>());
+    } else if(next_if(TokenType::PAREN_OPEN)) {
+      // alias_list();
+      expect(TokenType::PAREN_CLOSE);
+    } else {
+      syntax_error("Expected string or an alias list");
+    }
   }
 
   return node;
@@ -140,7 +149,7 @@ auto CrowParser::package() -> NodePtr
 
   if(next_if(TokenType::PACKAGE)) {
     DBG_TRACE(INFO, "Found 'PACKAGE'");
-    const auto id{expect(TokenType::IDENTIFIER, "IDENTIFIER")};
+    const auto id{expect(TokenType::IDENTIFIER)};
 
     node = make_node<Package>(id.get<std::string>());
   }

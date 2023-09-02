@@ -43,14 +43,10 @@ auto Lexer::is_keyword(std::string_view t_identifier) -> TokenTypeOpt
 
   TokenTypeOpt opt;
 
-  // TODO: Clean this up we could use a loop with an std::pair for the tokentype
-  // Having a centralized location for
-  for(const auto& keyword : g_keywords)
-    if(t_identifier == keyword.m_identifier) {
-      LOG_TOK("KEYWORD: ", t_identifier);
-      opt = keyword.m_type;
-      break;
-    }
+  if(const auto iter{g_keywords.find(t_identifier)}; iter != g_keywords.end()) {
+    LOG_TOK("KEYWORD: ", iter->first);
+    opt = iter->second;
+  }
 
   return opt;
 }
@@ -246,26 +242,15 @@ auto Lexer::is_multi_symbol() -> TokenTypeOpt
 
   ss << character;
 
-  // TODO: We use two loops now, we can change this to only use one
-  // Refactor someday
-  for(const auto& multi : g_multi_symbols)
-    if(character == multi.m_identifier.front()) {
-      if(const auto ch{m_text->peek()}; ch) {
-        ss << ch.value();
+  if(const auto ch{m_text->peek()}; ch) {
+    ss << ch.value();
 
-        if(!m_text->eos())
-          for(const auto& multi : g_multi_symbols)
-            if(ss.str() == multi.m_identifier) {
-              LOG_TOK("MULTI SYMBOL: ", ss.str());
-              opt = multi.m_type;
-              break;
-            }
-      }
-
-      // We compare against all reserverd multi symbols in the second loop
-      // So there is no need to iterate againt after we found our first match
-      break;
+    if(const auto iter{g_multi_symbols.find(ss.str())};
+       iter != g_multi_symbols.end()) {
+      LOG_TOK("MULTI SYMBOL: ", iter->first);
+      opt = iter->second;
     }
+  }
 
   return opt;
 }
@@ -275,14 +260,13 @@ auto Lexer::is_single_symbol() -> TokenTypeOpt
   using namespace reserved::symbols;
 
   TokenTypeOpt opt;
-  const char character{m_text->character()};
+  const auto ch{m_text->character()};
 
-  for(const auto& single : g_single_symbols)
-    if(character == single.m_identifier) {
-      LOG_TOK("SINGLE SYMBOL: ", character);
-      opt = single.m_type;
-      break;
-    }
+  if(const auto iter{g_single_symbols.find(ch)};
+     iter != g_single_symbols.end()) {
+    LOG_TOK("SINGLE SYMBOL: ", iter->first);
+    opt = iter->second;
+  }
 
   return opt;
 }

@@ -29,6 +29,11 @@ struct Terminal {
     : m_identifier{t_identifier}, m_type{t_type}
   {}
 
+  constexpr auto pair() const -> std::pair<T, TokenType>
+  {
+    return {m_identifier, m_type};
+  }
+
   virtual ~Terminal() = default;
 };
 } // namespace token::reserved

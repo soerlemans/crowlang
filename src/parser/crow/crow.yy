@@ -54,11 +54,18 @@ item             : package
                  | function
                  ;
 
+// Packaging:
 package          : Package IDENTIFIER
                  ;
 
 import           : Import STRING
-                 | Import '(' ')'
+                 | Import '(' newline_opt alias_list newline_opt ')'
+                 ;
+
+alias_list       : STRING
+                 | IDENTIFIER '=' STRING
+                 | alias_list terminator STRING newline_opt
+                 | alias_list terminator IDENTIFIER '=' STRING newline_opt
                  ;
 
 attribute        : Private

@@ -2,7 +2,7 @@
 #define CROW_TOKEN_RESERVED_RESERVED_HPP
 
 // STL Includes:
-#include <array>
+#include <map>
 #include <type_traits>
 #include <utility>
 
@@ -48,18 +48,16 @@ namespace keywords {
   DEFINE_TERMINAL(g_defer,    "defer",    DEFER);
   DEFINE_TERMINAL(g_return,   "return",   RETURN);
 
-  // TODO: Use a std::map instead of an array as those have a faster lookup time
-  // Then we wont need to loop through them either
-  constexpr std::array g_keywords{
-		g_let, g_const,
-		g_package, g_import, g_priv, g_pub,
-		g_struct, g_interface,
-	  g_fn,
-		g_match,
-	  g_if, g_else,
-	  g_loop,
-	  g_break, g_continue, g_defer, g_return
-  };
+	const std::map g_keywords {
+		g_let.pair(), g_const.pair(),
+		g_package.pair(), g_import.pair(), g_priv.pair(), g_pub.pair(),
+		g_struct.pair(), g_interface.pair(),
+	  g_fn.pair(),
+		g_match.pair(),
+	  g_if.pair(), g_else.pair(),
+	  g_loop.pair(),
+	  g_break.pair(), g_continue.pair(), g_defer.pair(), g_return.pair()
+	};
 } // namespace keywords
 
 // Language reserved symbols
@@ -120,66 +118,66 @@ namespace symbols {
 
   DEFINE_TERMINAL(g_newline,  '\n', NEWLINE);
 
-  constexpr std::array g_single_symbols{
-	  g_paren_open,
-	  g_paren_close,
-	  g_accolade_open,
-	  g_accolade_close,
-	  g_brace_open,
-	  g_brace_close,
+	const std::map g_single_symbols {
+	  g_paren_open.pair(),
+	  g_paren_close.pair(),
+	  g_accolade_open.pair(),
+	  g_accolade_close.pair(),
+	  g_brace_open.pair(),
+	  g_brace_close.pair(),
 
-	  g_assignment,
+	  g_assignment.pair(),
 
-	  g_less_than,
-	  g_greater_than,
+	  g_less_than.pair(),
+	  g_greater_than.pair(),
 
-	  g_not,
+	  g_not.pair(),
 
-	  g_dot,
-	  g_comma,
-	  g_question_mark,
-	  g_colon,
-	  g_semicolon,
+	  g_dot.pair(),
+	  g_comma.pair(),
+	  g_question_mark.pair(),
+	  g_colon.pair(),
+	  g_semicolon.pair(),
 
-	  g_plus,
-	  g_minus,
-	  g_asterisk,
-	  g_slash,
-	  g_percent_sign,
+	  g_plus.pair(),
+	  g_minus.pair(),
+	  g_asterisk.pair(),
+	  g_slash.pair(),
+	  g_percent_sign.pair(),
 
-		g_newline
+		g_newline.pair()
   };
 
-  constexpr std::array g_multi_symbols{
-	  g_increment,
-	  g_decrement,
+	const std::map g_multi_symbols{
+	  g_increment.pair(),
+	  g_decrement.pair(),
 
-	  g_mul_assign,
-	  g_div_assign,
-	  g_mod_assign,
+	  g_mul_assign.pair(),
+	  g_div_assign.pair(),
+	  g_mod_assign.pair(),
 
-	  g_add_assign,
-	  g_sub_assign,
+	  g_add_assign.pair(),
+	  g_sub_assign.pair(),
 
-	  g_less_than_equal,
+	  g_less_than_equal.pair(),
 
-	  g_equal,
-	  g_not_equal,
+	  g_equal.pair(),
+	  g_not_equal.pair(),
 
-	  g_greater_than_equal,
+	  g_greater_than_equal.pair(),
 
-	  g_true,
-	  g_false,
+	  g_true.pair(),
+	  g_false.pair(),
 
-	  g_or,
-	  g_and,
+	  g_or.pair(),
+	  g_and.pair(),
 
-		g_arrow
+		g_arrow.pair()
 	};
 
 	namespace none {
-		constexpr char g_double_quote{'"'};
-		constexpr char g_backslash{'\\'};
+		constexpr auto g_double_quote{'"'};
+		constexpr auto g_backslash{'\\'};
 	}
 } // namespace symbols
 } // namespace reserved

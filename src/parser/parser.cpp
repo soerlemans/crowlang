@@ -2,6 +2,7 @@
 
 // Includes:
 #include "../exception/syntax_error.hpp"
+#include "../token/tokentype2str.hpp"
 
 
 using namespace parser;
@@ -69,13 +70,12 @@ auto Parser::next_if(const TokenType t_tokentype) -> bool
   return advance;
 }
 
-auto Parser::expect(const TokenType t_tokentype, const std::string_view t_msg)
-  -> Token&
+auto Parser::expect(const TokenType t_tokentype) -> Token&
 {
   if(!check(t_tokentype)) {
     std::stringstream ss;
     ss << "Expected -> ";
-    ss << t_msg << '\n';
+    ss << tokentype2str(t_tokentype) << '\n';
 
     syntax_error(ss.str());
   }
