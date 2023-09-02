@@ -31,6 +31,29 @@ auto CrowParser::newline_opt() -> void
   }
 }
 
+auto CrowParser::terminator() -> void
+{
+  DBG_TRACE(VERBOSE, "TERMINATOR");
+
+  const auto is_terminator{[this] {
+    return check(TokenType::SEMICOLON) || check(TokenType::NEWLINE);
+  }};
+
+  if(is_terminator()) {
+    next();
+  } else {
+    syntax_error("Expected at least one 'TERMINATOR'");
+  }
+
+  while(!eos()) {
+    if(is_terminator()) {
+      DBG_TRACE_PRINT(INFO, "Found 'TERMINATOR'");
+
+      next();
+    }
+  }
+}
+
 // TODO: Implement
 auto CrowParser::expr_list_opt() -> NodeListPtr
 {
@@ -99,6 +122,44 @@ auto CrowParser::function() -> NodePtr
   return node;
 }
 
+auto CrowParser::import_expr(Import& t_import) -> bool
+{
+  DBG_TRACE(VERBOSE, "IMPORT EXPR");
+  bool is_import_expr{true};
+
+  const auto token{get_token()};
+  if(next_if(TokenType::STRING)) {
+    auto str{token.get<std::string>()};
+    t_import.add_import(std::move(str));
+  } else if(next_if(TokenType::IDENTIFIER)) {
+    auto id{token.get<std::string>()};
+    expect(TokenType::ASSIGNMENT);
+    auto str{expect(TokenType::STRING).get<std::string>()};
+
+    t_import.add_import({str, id});
+  } else {
+    is_import_expr = false;
+  }
+  newline_opt();
+
+  return is_import_expr;
+}
+
+auto CrowParser::import_list(Import& t_import) -> void
+{
+  DBG_TRACE(VERBOSE, "IMPORT LIST");
+
+  if(!import_expr(t_import)) {
+    syntax_error("Expected at least one import");
+  }
+
+  while(!eos()) {
+    if(!import_expr(t_import)) {
+      break;
+    }
+  }
+}
+
 auto CrowParser::import_() -> NodePtr
 {
   DBG_TRACE(VERBOSE, "IMPORT");
@@ -106,18 +167,22 @@ auto CrowParser::import_() -> NodePtr
 
   if(next_if(TokenType::IMPORT)) {
     DBG_TRACE(INFO, "Found 'IMPORT'");
+    auto import_ptr{make_node<Import>()};
     if(check(TokenType::STRING)) {
       DBG_TRACE(INFO, "Found 'STRING'");
       const auto id{get_token()};
       next();
 
-      node = make_node<Import>(id.get<std::string>());
+      import_ptr->add_import(id.get<std::string>());
     } else if(next_if(TokenType::PAREN_OPEN)) {
-      // alias_list();
+      newline_opt();
+      import_list(*import_ptr);
       expect(TokenType::PAREN_CLOSE);
     } else {
-      syntax_error("Expected string or an alias list");
+      syntax_error("Expected string or an import list");
     }
+
+		node = std::move(import_ptr);
   }
 
   return node;

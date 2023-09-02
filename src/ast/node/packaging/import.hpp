@@ -4,9 +4,10 @@
 // STL Includes:
 #include <optional>
 #include <string>
+#include <vector>
 
 // Includes:
-#include "../map.hpp"
+#include "../node_interface.hpp"
 
 // Local Includes:
 #include "packaging.hpp"
@@ -16,21 +17,19 @@ namespace ast::node::packaging {
 // Aliases:
 using StrOpt = std::optional<std::string>;
 using AliasPair = std::pair<std::string, StrOpt>;
-using Imports = Map<std::string, StrOpt>;
+using Imports = std::vector<AliasPair>;
 
 // Classes:
 class Import : public NodeInterface {
   private:
-  std::string m_identifier;
   Imports m_imports;
 
   public:
-  Import(std::string t_identifier);
+  Import() = default;
 
   auto add_import(std::string t_key) -> void;
   auto add_import(AliasPair t_pair) -> void;
 
-  auto identifier() const -> std::string_view;
   auto imports() const -> const Imports&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);

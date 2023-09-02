@@ -59,13 +59,15 @@ package          : Package IDENTIFIER
                  ;
 
 import           : Import STRING
-                 | Import '(' newline_opt alias_list newline_opt ')'
+                 | Import '(' newline_opt import_list ')'
                  ;
 
-alias_list       : STRING
-                 | IDENTIFIER '=' STRING
-                 | alias_list terminator STRING newline_opt
-                 | alias_list terminator IDENTIFIER '=' STRING newline_opt
+import_list      : import_expr
+                 | import_list import_expr
+                 ;
+
+import_expr      : STRING newline_opt
+                 | IDENTIFIER '=' STRING newline_opt
                  ;
 
 attribute        : Private
@@ -242,7 +244,8 @@ rvalue           :
                  ;
 
 // Miscellaneous:
-terminator       : terminator NEWLINE
+terminator       : terminator ';'
+                 | terminator NEWLINE
                  | ';'
                  | NEWLINE
                  ;

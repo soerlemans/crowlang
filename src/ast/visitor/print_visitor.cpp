@@ -1,5 +1,8 @@
 #include "print_visitor.hpp"
 
+// STL Includes:
+#include <iomanip>
+
 
 // Macros:
 #define PPRINT_INIT() \
@@ -171,7 +174,15 @@ auto PrintVisitor::visit(Import* t_import) -> void
   PPRINT_INIT();
 
   PPRINT("Import");
-  PPRINT("| Identifier: ", t_import->identifier());
+
+  for(const auto& pair : t_import->imports()) {
+    std::stringstream ss;
+    if(pair.second) {
+      ss << " Identifier: " << pair.second.value();
+    }
+
+    PPRINT("| Pkg path: ", std::quoted(pair.first), ss.str());
+  }
 }
 
 auto PrintVisitor::visit(Package* t_pkg) -> void

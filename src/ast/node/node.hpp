@@ -10,10 +10,6 @@ class NodeInterface;
 class List;
 class Nil;
 
-// template<typename Key, typename Val>
-// class Map<Key, Val>;
-
-
 // Aliases:
 using NodePtr = std::shared_ptr<NodeInterface>;
 using NodeListPtr = std::shared_ptr<List>;

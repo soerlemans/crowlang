@@ -1,6 +1,9 @@
 pkg main
 
-import "io"
+import (
+  "io"
+  fs = "filesystem"
+)
 
 
 fn main (args) -> int {
