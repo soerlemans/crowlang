@@ -171,9 +171,9 @@ auto PrattParser::function_call() -> NodePtr
   const auto token{get_token()};
 
   if(next_if(TokenType::IDENTIFIER)) {
-    expect(TokenType::PAREN_OPEN);
-    NodeListPtr args{expr_list_opt()};
-    expect(TokenType::PAREN_CLOSE);
+    auto args{parens([this] {
+      return this->expr_list_opt();
+    })};
 
     auto name{token.get<std::string>()};
     DBG_TRACE_PRINT(INFO, "Found a FUNCTION CALL: ", name);
@@ -192,8 +192,7 @@ auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
   const auto token{next()};
   const auto lambda{[&](ArithmeticOp t_op) {
     if(auto rhs{t_fn(token.type())}; rhs) {
-      node =
-        make_node<Arithmetic>(t_op, std::move(t_lhs), std::move(rhs));
+      node = make_node<Arithmetic>(t_op, std::move(t_lhs), std::move(rhs));
     }
   }};
 
@@ -276,8 +275,7 @@ auto PrattParser::assignment(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
     const auto lambda{[&](AssignmentOp t_op) {
       auto rhs{t_fn(token.type())};
       if(rhs) {
-        node =
-          make_node<Assignment>(t_op, std::move(t_lhs), std::move(rhs));
+        node = make_node<Assignment>(t_op, std::move(t_lhs), std::move(rhs));
       }
     }};
 
@@ -331,8 +329,7 @@ auto PrattParser::comparison(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
     const auto lambda{[&](ComparisonOp t_op) {
       auto rhs{t_fn(token.type())};
       if(rhs) {
-        node =
-          make_node<Comparison>(t_op, std::move(t_lhs), std::move(rhs));
+        node = make_node<Comparison>(t_op, std::move(t_lhs), std::move(rhs));
       }
     }};
 

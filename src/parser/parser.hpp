@@ -31,6 +31,18 @@ class Parser {
     return std::make_shared<T>(std::forward<Args>(t_args)...);
   }
 
+  template<typename Func>
+  inline auto parens(const Func t_func)
+  {
+    using namespace token;
+
+    expect(TokenType::PAREN_OPEN);
+    auto var{t_func()};
+    expect(TokenType::PAREN_CLOSE);
+
+    return var;
+  }
+
   // m_tokenstream helper methods:
   auto syntax_error(std::string_view t_msg) const -> void;
   auto eos_error(std::string_view t_msg) const -> void;

@@ -5,15 +5,6 @@
 #include "../../debug/trace.hpp"
 
 
-// Macros:
-//! Convenvience macro for
-#define GROUPING(t_var, t_func)     \
-  do {                              \
-    expect(TokenType::PAREN_OPEN);  \
-    t_var = t_func();               \
-    expect(TokenType::PAREN_CLOSE); \
-  } while(false)
-
 // Using statements:
 using namespace parser::crow;
 
@@ -95,8 +86,10 @@ auto CrowParser::function() -> NodePtr
     const auto tt_id{expect(TokenType::IDENTIFIER)};
     const auto id{tt_id.get<std::string>()};
 
-    NodeListPtr params;
-    GROUPING(params, param_list);
+    // NodeListPtr params;
+    auto params{parens([this] {
+      return this->param_list();
+    })};
 
     auto body_ptr{body()};
 
