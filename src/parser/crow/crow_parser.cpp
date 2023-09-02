@@ -27,18 +27,6 @@ using namespace ast::node::operators;
 using namespace ast::node::packaging;
 using namespace ast::node::rvalue;
 
-namespace {
-/*! Wrapper method for std::make_shared() makes it easy to change smart pointer
- * type later down the line
- */
-template<typename T, typename... Args>
-inline auto make_node(Args&&... t_args) -> std::shared_ptr<T>
-{
-  return std::make_shared<T>(std::forward<Args>(t_args)...);
-}
-} // namespace
-
-
 CrowParser::CrowParser(TokenStream t_tokenstream)
   : PrattParser{std::move(t_tokenstream)}
 {}

@@ -22,6 +22,15 @@ class Parser {
   protected:
   DBG_TRACE_INIT()
 
+  /*! Wrapper method for std::make_shared() makes it easy to change smart
+   * pointer type later down the line
+   */
+  template<typename T, typename... Args>
+  inline auto make_node(Args&&... t_args) -> std::shared_ptr<T>
+  {
+    return std::make_shared<T>(std::forward<Args>(t_args)...);
+  }
+
   // m_tokenstream helper methods:
   auto syntax_error(std::string_view t_msg) const -> void;
   auto eos_error(std::string_view t_msg) const -> void;

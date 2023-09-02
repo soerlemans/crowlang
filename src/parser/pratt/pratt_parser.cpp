@@ -29,24 +29,17 @@ auto PrattParser::unary_prefix(const PrattFunc& t_fn) -> NodePtr
   DBG_TRACE(VERBOSE, "UNARY PREFIX");
   NodePtr node;
 
-  switch(const auto token{next()}; token.type()) {
-    case TokenType::PLUS:
-      [[fallthrough]];
-    case TokenType::MINUS: {
-      DBG_TRACE(VERBOSE, "Found UNARY PREFIX");
+  const auto token{get_token()};
+  if(check(TokenType::PLUS) || check(TokenType::MINUS)) {
+    next();
+    DBG_TRACE(VERBOSE, "Found UNARY PREFIX");
 
-      NodePtr rhs{t_fn(token.type())};
-      if(!rhs) {
-        syntax_error("Expected an expression after + or -");
-      }
-
-      node = std::make_shared<UnaryPrefix>(token.type(), std::move(rhs));
-      break;
+    NodePtr rhs{t_fn(token.type())};
+    if(!rhs) {
+      syntax_error("Expected an expression after + or -");
     }
 
-    default:
-      prev();
-      break;
+    node = make_node<UnaryPrefix>(token.type(), std::move(rhs));
   }
 
   return node;
@@ -62,7 +55,7 @@ auto PrattParser::grouping() -> NodePtr
   if(next_if(TokenType::PAREN_OPEN)) {
     DBG_TRACE_PRINT(VERBOSE, "Found GROUPING");
 
-    node = std::make_shared<Grouping>(expr());
+    node = make_node<Grouping>(expr());
     expect(TokenType::PAREN_CLOSE);
   }
 
@@ -77,7 +70,7 @@ auto PrattParser::negation(const PrattFunc& t_expr) -> NodePtr
   if(next_if(TokenType::NOT)) {
     DBG_TRACE_PRINT(INFO, "Found '!'");
     if(auto ptr{t_expr(TokenType::NOT)}; ptr) {
-      node = std::make_shared<Not>(std::move(ptr));
+      node = make_node<Not>(std::move(ptr));
     } else {
       syntax_error("After a negation (!) an expression must follow");
     }
@@ -91,30 +84,16 @@ auto PrattParser::literal() -> NodePtr
   DBG_TRACE(VERBOSE, "LITERAL");
   NodePtr node;
 
-  switch(const auto token{next()}; token.type()) {
-    // TODO: Token in the grammar calls for NUMBER? These are not treated
-    // differently?
-    case TokenType::FLOAT:
-      DBG_TRACE_PRINT(INFO, "Found FLOAT literal");
-      node = std::make_shared<Float>(token.get<double>());
-      break;
-
-      // TODO: Take a look at this later when dealing with typeinference
-      // case TokenType::HEX:
-      //   [[fallthrough]];
-      // case TokenType::INTEGER:
-      //   DBG_TRACE_PRINT(INFO, "Found INTEGER literal: ");
-      //   node = std::make_shared<Integer>(token.get<int>());
-      // break;
-
-    case TokenType::STRING:
-      DBG_TRACE_PRINT(INFO, "Found STRING literal: ", token.get<std::string>());
-      node = std::make_shared<String>(token.get<std::string>());
-      break;
-
-    default:
-      prev();
-      break;
+  const auto token{get_token()};
+  if(next_if(TokenType::FLOAT)) {
+    DBG_TRACE_PRINT(INFO, "Found FLOAT literal: ");
+    node = make_node<Float>(token.get<double>());
+  } else if(next_if(TokenType::INTEGER)) {
+    DBG_TRACE_PRINT(INFO, "Found INTEGER literal: ");
+    node = make_node<Integer>(token.get<int>());
+  } else if(next_if(TokenType::STRING)) {
+    DBG_TRACE_PRINT(INFO, "Found STRING literal: ", token.get<std::string>());
+    node = make_node<String>(token.get<std::string>());
   }
 
   return node;
@@ -125,19 +104,11 @@ auto PrattParser::lvalue() -> NodePtr
   DBG_TRACE(VERBOSE, "LVALUE");
   NodePtr node;
 
-  const auto token{next()};
-  switch(token.type()) {
-    case TokenType::IDENTIFIER: {
-      const auto name{token.get<std::string>()};
-      // We really dont expect these next_tokens to fail
-      DBG_TRACE_PRINT(INFO, "Found VARIABLE: ", name);
-      node = std::make_shared<Variable>(name);
-      break;
-    }
-
-    default:
-      prev();
-      break;
+  const auto token{get_token()};
+  if(next_if(TokenType::IDENTIFIER)) {
+    const auto id{token.get<std::string>()};
+    DBG_TRACE_PRINT(INFO, "Found VARIABLE: ", id);
+    node = make_node<Variable>(id);
   }
 
   return node;
@@ -149,20 +120,13 @@ auto PrattParser::postcrement(NodePtr& t_lhs) -> NodePtr
   DBG_TRACE(VERBOSE, "POSTCREMENT");
   NodePtr node;
 
-  switch(next().type()) {
-    case TokenType::INCREMENT:
-      DBG_TRACE_PRINT(INFO, "Found INCREMENT++");
-      node = std::make_shared<Increment>(std::move(t_lhs), false);
-      break;
-
-    case TokenType::DECREMENT:
-      DBG_TRACE_PRINT(INFO, "Found DECREMENT--");
-      node = std::make_shared<Decrement>(std::move(t_lhs), false);
-      break;
-
-    default:
-      prev();
-      break;
+  const auto token{get_token()};
+  if(next_if(TokenType::INCREMENT)) {
+    DBG_TRACE_PRINT(INFO, "Found INCREMENT++");
+    node = make_node<Increment>(std::move(t_lhs), false);
+  } else if(next_if(TokenType::DECREMENT)) {
+    DBG_TRACE_PRINT(INFO, "Found DECREMENT--");
+    node = make_node<Decrement>(std::move(t_lhs), false);
   }
 
   return node;
@@ -176,29 +140,22 @@ auto PrattParser::precrement() -> NodePtr
 
   const auto lambda{[&]<typename T>() {
     if(auto ptr{lvalue()}; ptr) {
-      node = std::make_shared<T>(std::move(ptr), true);
+      node = make_node<T>(std::move(ptr), true);
     } else {
-      // TODO: Error handling
+      syntax_error("Expected an lvalue");
     }
   }};
 
-  switch(next().type()) {
-    case TokenType::INCREMENT: {
-      DBG_TRACE_PRINT(INFO, "Found ++INCREMENT");
-      lambda.template operator()<Increment>();
-      break;
-    }
+  const auto token{get_token()};
+  if(next_if(TokenType::INCREMENT)) {
+    DBG_TRACE_PRINT(INFO, "Found ++INCREMENT");
+    lambda.template operator()<Increment>();
+  } else if(next_if(TokenType::DECREMENT)) {
 
-    case TokenType::DECREMENT: {
-      DBG_TRACE_PRINT(INFO, "Found --DECREMENT");
-      lambda.template operator()<Decrement>();
-      break;
-    }
-
-    default:
-      prev();
-      break;
+    DBG_TRACE_PRINT(INFO, "Found --DECREMENT");
+    lambda.template operator()<Decrement>();
   }
+
 
   return node;
 }
@@ -211,22 +168,17 @@ auto PrattParser::function_call() -> NodePtr
   DBG_TRACE(VERBOSE, "FUNCTION CALL");
   NodePtr node;
 
-  switch(const auto token{next()}; token.type()) {
-    case TokenType::IDENTIFIER: {
-      expect(TokenType::PAREN_OPEN);
-      NodeListPtr args{expr_list_opt()};
-      expect(TokenType::PAREN_CLOSE);
+  const auto token{get_token()};
 
-      auto name{token.get<std::string>()};
-      DBG_TRACE_PRINT(INFO, "Found a FUNCTION CALL: ", name);
+  if(next_if(TokenType::IDENTIFIER)) {
+    expect(TokenType::PAREN_OPEN);
+    NodeListPtr args{expr_list_opt()};
+    expect(TokenType::PAREN_CLOSE);
 
-      node = std::make_shared<FunctionCall>(std::move(name), std::move(args));
-      break;
-    }
+    auto name{token.get<std::string>()};
+    DBG_TRACE_PRINT(INFO, "Found a FUNCTION CALL: ", name);
 
-    default:
-      prev();
-      break;
+    node = make_node<FunctionCall>(std::move(name), std::move(args));
   }
 
   return node;
@@ -241,7 +193,7 @@ auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
   const auto lambda{[&](ArithmeticOp t_op) {
     if(auto rhs{t_fn(token.type())}; rhs) {
       node =
-        std::make_shared<Arithmetic>(t_op, std::move(t_lhs), std::move(rhs));
+        make_node<Arithmetic>(t_op, std::move(t_lhs), std::move(rhs));
     }
   }};
 
@@ -289,7 +241,7 @@ auto PrattParser::logical(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
   auto lambda{[&]<typename T>() {
     newline_opt();
     if(auto rhs{t_fn(token.type())}; rhs) {
-      node = std::make_shared<T>(std::move(t_lhs), std::move(rhs));
+      node = make_node<T>(std::move(t_lhs), std::move(rhs));
     }
   }};
 
@@ -325,7 +277,7 @@ auto PrattParser::assignment(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
       auto rhs{t_fn(token.type())};
       if(rhs) {
         node =
-          std::make_shared<Assignment>(t_op, std::move(t_lhs), std::move(rhs));
+          make_node<Assignment>(t_op, std::move(t_lhs), std::move(rhs));
       }
     }};
 
@@ -380,7 +332,7 @@ auto PrattParser::comparison(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
       auto rhs{t_fn(token.type())};
       if(rhs) {
         node =
-          std::make_shared<Comparison>(t_op, std::move(t_lhs), std::move(rhs));
+          make_node<Comparison>(t_op, std::move(t_lhs), std::move(rhs));
       }
     }};
 

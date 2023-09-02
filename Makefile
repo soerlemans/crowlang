@@ -7,7 +7,8 @@ RELWITHDEBINFO := -DCMAKE_BUILD_TYPE=RelWithDebInfo
 # Rules:
 .PHONY: all \
 	build debug \
-	install clean \
+	install \
+  clean clean-objects \
 	format lint \
 	docs docs-pdf
 
@@ -27,6 +28,10 @@ install: build
 clean:
 	rm -rf build/*
 	rm -rf debug/*
+
+clean-objects:
+	rm -rf build/CMakeFiles/*
+	rm -rf debug/CMakeFiles/*
 
 # Misc. rules:
 format:
