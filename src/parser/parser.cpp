@@ -40,7 +40,6 @@ auto Parser::eos() const -> bool
   return m_tokenstream.eos();
 }
 
-
 auto Parser::check(const TokenType t_tokentype) -> bool
 {
   eos_error("Tried to check for token at EOS!");

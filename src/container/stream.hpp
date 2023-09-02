@@ -33,31 +33,29 @@ class Stream : public T {
 
   virtual auto next() -> Value&
   {
-    auto iter{m_iter};
     m_iter++;
 
-    return *iter;
+    return *m_iter;
   }
 
   virtual auto prev() -> Value&
   {
-    auto iter{m_iter};
     m_iter--;
 
-    return *iter;
+    return *m_iter;
   }
 
   virtual auto peek() const -> ValueOpt
   {
-		ValueOpt opt;
+    ValueOpt opt;
     auto iter{m_iter};
 
     iter++;
     if(iter != this->end()) {
-			opt = *iter;
+      opt = *iter;
     }
 
-		return opt;
+    return opt;
   }
 
   virtual auto current() const -> Value&
