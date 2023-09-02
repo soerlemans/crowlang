@@ -181,7 +181,7 @@ auto PrintVisitor::visit(Import* t_import) -> void
       ss << " Identifier: " << pair.second.value();
     }
 
-    PPRINT("| Pkg path: ", std::quoted(pair.first), ss.str());
+    PPRINT("| Pkg: ", std::quoted(pair.first), ss.str());
   }
 }
 
