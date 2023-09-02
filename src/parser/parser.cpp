@@ -24,7 +24,7 @@ auto Parser::syntax_error(std::string_view t_msg) const -> void
 // FIXME: This function should be replaced with the printing of a stacktrace
 auto Parser::eos_error(const std::string_view t_msg) const -> void
 {
-  if(eos()) {
+  if(m_tokenstream.eos()) {
     // TODO: Make a function for this
     std::stringstream ss;
     ss << "EOS reached!\n";

@@ -189,43 +189,29 @@ auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
   DBG_TRACE(VERBOSE, "ARITHMETIC");
   NodePtr node;
 
-  const auto token{next()};
+  const auto token{get_token()};
   const auto lambda{[&](ArithmeticOp t_op) {
     if(auto rhs{t_fn(token.type())}; rhs) {
       node = make_node<Arithmetic>(t_op, std::move(t_lhs), std::move(rhs));
     }
   }};
 
-  // TODO: Maybe define a macro to do this cleanly?
-  switch(token.type()) {
-    case TokenType::ASTERISK:
-      DBG_TRACE_PRINT(INFO, "Found 'MULTIPLICATION'");
-      lambda(ArithmeticOp::MULTIPLY);
-      break;
-
-    case TokenType::SLASH:
-      DBG_TRACE_PRINT(INFO, "Found 'DIVISION'");
-      lambda(ArithmeticOp::DIVIDE);
-      break;
-
-    case TokenType::PERCENT_SIGN:
-      DBG_TRACE_PRINT(INFO, "Found 'MODULO'");
-      lambda(ArithmeticOp::MODULO);
-      break;
-
-    case TokenType::PLUS:
-      DBG_TRACE_PRINT(INFO, "Found 'ADDITION'");
-      lambda(ArithmeticOp::ADD);
-      break;
-
-    case TokenType::MINUS:
-      DBG_TRACE_PRINT(INFO, "Found 'SUBTRACTION'");
-      lambda(ArithmeticOp::SUBTRACT);
-      break;
-
-    default:
-      prev();
-      break;
+  // TODO: This code can be made shorter
+  if(next_if(TokenType::ASTERISK)) {
+    DBG_TRACE_PRINT(INFO, "Found 'MULTIPLICATION'");
+    lambda(ArithmeticOp::MULTIPLY);
+  } else if(next_if(TokenType::SLASH)) {
+    DBG_TRACE_PRINT(INFO, "Found 'DIVISION'");
+    lambda(ArithmeticOp::DIVIDE);
+  } else if(next_if(TokenType::PERCENT_SIGN)) {
+    DBG_TRACE_PRINT(INFO, "Found 'MODULO'");
+    lambda(ArithmeticOp::MODULO);
+  } else if(next_if(TokenType::PLUS)) {
+    DBG_TRACE_PRINT(INFO, "Found 'ADDITION'");
+    lambda(ArithmeticOp::ADD);
+  } else if(next_if(TokenType::MINUS)) {
+    DBG_TRACE_PRINT(INFO, "Found 'SUBTRACTION'");
+    lambda(ArithmeticOp::SUBTRACT);
   }
 
   return node;
@@ -236,7 +222,7 @@ auto PrattParser::logical(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
   DBG_TRACE(VERBOSE, "LOGICAL");
   NodePtr node;
 
-  const auto token{next()};
+  const auto token{get_token()};
   auto lambda{[&]<typename T>() {
     newline_opt();
     if(auto rhs{t_fn(token.type())}; rhs) {
@@ -244,20 +230,12 @@ auto PrattParser::logical(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
     }
   }};
 
-  switch(token.type()) {
-    case TokenType::AND:
-      DBG_TRACE_PRINT(INFO, "Found '&&'");
-      lambda.template operator()<And>();
-      break;
-
-    case TokenType::OR:
-      DBG_TRACE_PRINT(INFO, "Found '||'");
-      lambda.template operator()<Or>();
-      break;
-
-    default:
-      prev();
-      break;
+  if(next_if(TokenType::AND)) {
+    DBG_TRACE_PRINT(INFO, "Found '&&'");
+    lambda.template operator()<And>();
+  } else if(next_if(TokenType::AND)) {
+    DBG_TRACE_PRINT(INFO, "Found '||'");
+    lambda.template operator()<Or>();
   }
 
   return node;
@@ -271,7 +249,7 @@ auto PrattParser::assignment(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
   if(t_lhs) {
     // TODO: Create an actual function for this that we can call instead of
     // Defining a separate lambda in each function
-    const auto token{next()};
+    const auto token{get_token()};
     const auto lambda{[&](AssignmentOp t_op) {
       auto rhs{t_fn(token.type())};
       if(rhs) {
@@ -279,40 +257,24 @@ auto PrattParser::assignment(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
       }
     }};
 
-    switch(token.type()) {
-      case TokenType::MUL_ASSIGN:
-        DBG_TRACE_PRINT(INFO, "Found '*='");
-        lambda(AssignmentOp::MULTIPLY);
-        break;
-
-      case TokenType::DIV_ASSIGN:
-        DBG_TRACE_PRINT(INFO, "Found '/='");
-        lambda(AssignmentOp::DIVIDE);
-        break;
-
-      case TokenType::MOD_ASSIGN:
-        DBG_TRACE_PRINT(INFO, "Found '%='");
-        lambda(AssignmentOp::MODULO);
-        break;
-
-      case TokenType::ADD_ASSIGN:
-        DBG_TRACE_PRINT(INFO, "Found '+='");
-        lambda(AssignmentOp::ADD);
-        break;
-
-      case TokenType::SUB_ASSIGN:
-        DBG_TRACE_PRINT(INFO, "Found '-='");
-        lambda(AssignmentOp::SUBTRACT);
-        break;
-
-      case TokenType::ASSIGNMENT:
-        DBG_TRACE_PRINT(INFO, "Found '='");
-        lambda(AssignmentOp::REGULAR);
-        break;
-
-      default:
-        prev();
-        break;
+    if(next_if(TokenType::MUL_ASSIGN)) {
+      DBG_TRACE_PRINT(INFO, "Found '*='");
+      lambda(AssignmentOp::MULTIPLY);
+    } else if(next_if(TokenType::DIV_ASSIGN)) {
+      DBG_TRACE_PRINT(INFO, "Found '/='");
+      lambda(AssignmentOp::DIVIDE);
+    } else if(next_if(TokenType::MOD_ASSIGN)) {
+      DBG_TRACE_PRINT(INFO, "Found '%='");
+      lambda(AssignmentOp::MODULO);
+    } else if(next_if(TokenType::ADD_ASSIGN)) {
+      DBG_TRACE_PRINT(INFO, "Found '+='");
+      lambda(AssignmentOp::ADD);
+    } else if(next_if(TokenType::SUB_ASSIGN)) {
+      DBG_TRACE_PRINT(INFO, "Found '-='");
+      lambda(AssignmentOp::SUBTRACT);
+    } else if(next_if(TokenType::ASSIGNMENT)) {
+      DBG_TRACE_PRINT(INFO, "Found '='");
+      lambda(AssignmentOp::REGULAR);
     }
   }
 
@@ -325,7 +287,7 @@ auto PrattParser::comparison(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
   NodePtr node;
 
   if(t_lhs) {
-    const auto token{next()};
+    const auto token{get_token()};
     const auto lambda{[&](ComparisonOp t_op) {
       auto rhs{t_fn(token.type())};
       if(rhs) {
@@ -333,40 +295,24 @@ auto PrattParser::comparison(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
       }
     }};
 
-    switch(token.type()) {
-      case TokenType::LESS_THAN:
-        DBG_TRACE_PRINT(INFO, "Found '<'");
-        lambda(ComparisonOp::LESS_THAN);
-        break;
-
-      case TokenType::LESS_THAN_EQUAL:
-        DBG_TRACE_PRINT(INFO, "Found '<='");
-        lambda(ComparisonOp::LESS_THAN_EQUAL);
-        break;
-
-      case TokenType::EQUAL:
-        DBG_TRACE_PRINT(INFO, "Found '=='");
-        lambda(ComparisonOp::EQUAL);
-        break;
-
-      case TokenType::NOT_EQUAL:
-        DBG_TRACE_PRINT(INFO, "Found '!='");
-        lambda(ComparisonOp::NOT_EQUAL);
-        break;
-
-      case TokenType::GREATER_THAN:
-        DBG_TRACE_PRINT(INFO, "Found '>'");
-        lambda(ComparisonOp::GREATER_THAN);
-        break;
-
-      case TokenType::GREATER_THAN_EQUAL:
-        DBG_TRACE_PRINT(INFO, "Found '>='");
-        lambda(ComparisonOp::GREATER_THAN_EQUAL);
-        break;
-
-      default:
-        prev();
-        break;
+    if(next_if(TokenType::LESS_THAN)) {
+      DBG_TRACE_PRINT(INFO, "Found '<'");
+      lambda(ComparisonOp::LESS_THAN);
+    } else if(next_if(TokenType::LESS_THAN_EQUAL)) {
+      DBG_TRACE_PRINT(INFO, "Found '<='");
+      lambda(ComparisonOp::LESS_THAN_EQUAL);
+    } else if(next_if(TokenType::EQUAL)) {
+      DBG_TRACE_PRINT(INFO, "Found '=='");
+      lambda(ComparisonOp::EQUAL);
+    } else if(next_if(TokenType::NOT_EQUAL)) {
+      DBG_TRACE_PRINT(INFO, "Found '!='");
+      lambda(ComparisonOp::NOT_EQUAL);
+    } else if(next_if(TokenType::GREATER_THAN)) {
+      DBG_TRACE_PRINT(INFO, "Found '>'");
+      lambda(ComparisonOp::GREATER_THAN);
+    } else if(next_if(TokenType::GREATER_THAN_EQUAL)) {
+      DBG_TRACE_PRINT(INFO, "Found '>='");
+      lambda(ComparisonOp::GREATER_THAN_EQUAL);
     }
   }
 
