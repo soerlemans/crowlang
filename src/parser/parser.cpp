@@ -80,7 +80,11 @@ auto Parser::expect(const TokenType t_tokentype) -> Token&
     syntax_error(ss.str());
   }
 
-  return next();
+  auto& token{get_token()};
+
+  next();
+
+  return token;
 }
 
 auto Parser::prev() -> Token&
@@ -88,7 +92,7 @@ auto Parser::prev() -> Token&
   return m_tokenstream.prev();
 }
 
-auto Parser::get_token() const -> Token
+auto Parser::get_token() const -> Token&
 {
   eos_error("Tried to return get token at EOS!");
 

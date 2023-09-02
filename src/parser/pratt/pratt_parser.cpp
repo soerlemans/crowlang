@@ -45,18 +45,17 @@ auto PrattParser::unary_prefix(const PrattFunc& t_fn) -> NodePtr
   return node;
 }
 
-// TODO: Have this also handle multidimensional 'in' statements?
-// TODO: Create a function that extracts expressions from in between '(', ')'
 auto PrattParser::grouping() -> NodePtr
 {
   DBG_TRACE(VERBOSE, "GROUPING");
   NodePtr node;
 
-  if(next_if(TokenType::PAREN_OPEN)) {
+  if(check(TokenType::PAREN_OPEN)) {
     DBG_TRACE_PRINT(VERBOSE, "Found GROUPING");
 
-    node = make_node<Grouping>(expr());
-    expect(TokenType::PAREN_CLOSE);
+    node = parens([this] {
+      return this->expr();
+    });
   }
 
   return node;
@@ -114,24 +113,6 @@ auto PrattParser::lvalue() -> NodePtr
   return node;
 }
 
-// TODO: We should use PostfixMap?
-auto PrattParser::postcrement(NodePtr& t_lhs) -> NodePtr
-{
-  DBG_TRACE(VERBOSE, "POSTCREMENT");
-  NodePtr node;
-
-  const auto token{get_token()};
-  if(next_if(TokenType::INCREMENT)) {
-    DBG_TRACE_PRINT(INFO, "Found INCREMENT++");
-    node = make_node<Increment>(std::move(t_lhs), false);
-  } else if(next_if(TokenType::DECREMENT)) {
-    DBG_TRACE_PRINT(INFO, "Found DECREMENT--");
-    node = make_node<Decrement>(std::move(t_lhs), false);
-  }
-
-  return node;
-}
-
 //! Prefix operator parses prefix increment and decrement
 auto PrattParser::precrement() -> NodePtr
 {
@@ -155,7 +136,6 @@ auto PrattParser::precrement() -> NodePtr
     DBG_TRACE_PRINT(INFO, "Found --DECREMENT");
     lambda.template operator()<Decrement>();
   }
-
 
   return node;
 }
@@ -359,11 +339,6 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
     lhs = std::move(ptr);
   } else if(auto ptr{lvalue()}; ptr) {
     lhs = std::move(ptr);
-
-    ptr = postcrement(lhs);
-    if(ptr) {
-      lhs = std::move(ptr);
-    }
   } else if(auto ptr{precrement()}; ptr) {
     lhs = std::move(ptr);
   } else if(auto ptr{function_call()}; ptr) {

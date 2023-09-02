@@ -39,7 +39,6 @@ class PrattParser : public Parser {
   virtual auto literal() -> ast::node::NodePtr;
   virtual auto lvalue() -> ast::node::NodePtr;
 
-  virtual auto postcrement(ast::node::NodePtr& t_lhs) -> ast::node::NodePtr;
   virtual auto precrement() -> ast::node::NodePtr;
 
   virtual auto function_call() -> ast::node::NodePtr;

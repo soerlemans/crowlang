@@ -37,7 +37,6 @@ class NodeVisitor {
   virtual auto visit(node::operators::And* t_and) -> void = 0;
   virtual auto visit(node::operators::Or* t_or) -> void = 0;
 
-  virtual auto visit(node::operators::Grouping* t_grouping) -> void = 0;
   virtual auto visit(node::operators::Ternary* t_ternary) -> void = 0;
 
   virtual auto visit(node::operators::UnaryPrefix* t_unary_prefix) -> void = 0;

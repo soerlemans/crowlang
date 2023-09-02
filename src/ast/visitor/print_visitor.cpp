@@ -147,13 +147,6 @@ auto PrintVisitor::visit(Or* t_or) -> void
   PPRINT_BINOP("Or", t_or);
 }
 
-auto PrintVisitor::visit(Grouping* t_grouping) -> void
-{
-  PPRINT_INIT();
-
-  PPRINT_UNOP("Grouping", t_grouping)
-}
-
 auto PrintVisitor::visit(Ternary* t_ternary) -> void
 {
   PPRINT_INIT();

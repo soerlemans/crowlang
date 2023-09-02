@@ -43,7 +43,7 @@ class Parser {
     return var;
   }
 
-  // m_tokenstream helper methods:
+  // Helper methods for parsing:
   auto syntax_error(std::string_view t_msg) const -> void;
   auto eos_error(std::string_view t_msg) const -> void;
 
@@ -54,7 +54,7 @@ class Parser {
   auto next_if(token::TokenType t_tokentype) -> bool;
   auto expect(token::TokenType t_tokentype) -> token::Token&;
   auto prev() -> token::Token&;
-  auto get_token() const -> token::Token;
+  auto get_token() const -> token::Token&;
 
   public:
   Parser(token::TokenStream&& t_tokenstream);

@@ -5,7 +5,6 @@ target_sources(${PROJECT_NAME} PRIVATE
   binary_operator.cpp
   comparison.cpp
   decrement.cpp
-  grouping.cpp
   increment.cpp
   logical.cpp
   ternary.cpp

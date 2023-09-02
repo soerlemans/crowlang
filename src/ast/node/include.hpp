@@ -31,7 +31,6 @@
 #include "operators/assignment.hpp"
 #include "operators/comparison.hpp"
 #include "operators/decrement.hpp"
-#include "operators/grouping.hpp"
 #include "operators/increment.hpp"
 #include "operators/logical.hpp"
 #include "operators/operators.hpp"
