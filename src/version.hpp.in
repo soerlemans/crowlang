@@ -1,5 +1,5 @@
-#ifndef NEWLANG_VERSION_HPP
-#define NEWLANG_VERSION_HPP
+#ifndef CROW_VERSION_HPP
+#define CROW_VERSION_HPP
 
 
 //! Cmake substitutes the version numbers specified in the root CMakeLists.txt

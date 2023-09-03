@@ -1,5 +1,5 @@
-#ifndef TOKENTYPE2STR_HPP
-#define TOKENTYPE2STR_HPP
+#ifndef CROW_TOKEN_TOKENTYPE2STR_HPP
+#define CROW_TOKEN_TOKENTYPE2STR_HPP
 
 // STL Includes:
 #include <string>
@@ -12,4 +12,4 @@ namespace token {
 auto tokentype2str(token::TokenType t_type) -> std::string;
 } // namespace token
 
-#endif // TOKENTYPE2STR_HPP
+#endif // CROW_TOKEN_TOKENTYPE2STR_HPP

@@ -1,5 +1,5 @@
-#ifndef LOOP_HPP
-#define LOOP_HPP
+#ifndef CROW_AST_NODE_CONTROL_LOOP_HPP
+#define CROW_AST_NODE_CONTROL_LOOP_HPP
 
 // Includes:
 #include "../node_interface.hpp"
@@ -33,4 +33,4 @@ class Loop : public NodeInterface {
 };
 } // namespace ast::node::control
 
-#endif // LOOP_HPP
+#endif // CROW_AST_NODE_CONTROL_LOOP_HPP

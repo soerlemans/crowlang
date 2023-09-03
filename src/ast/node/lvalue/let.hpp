@@ -1,5 +1,5 @@
-#ifndef LET_HPP
-#define LET_HPP
+#ifndef CROW_AST_NODE_LVALUE_LET_HPP
+#define CROW_AST_NODE_LVALUE_LET_HPP
 
 // Includes:
 #include "../node_interface.hpp"
@@ -26,4 +26,4 @@ class Let : public NodeInterface {
 };
 } // namespace ast::node::lvalue
 
-#endif // LET_HPP
+#endif // CROW_AST_NODE_LVALUE_LET_HPP
