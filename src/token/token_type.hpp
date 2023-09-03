@@ -33,6 +33,7 @@ enum class TokenType {
   MATCH,
   IF,
   ELSE,
+  ELIF,
   LOOP,
 
   // Jump:

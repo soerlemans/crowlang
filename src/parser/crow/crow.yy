@@ -11,7 +11,7 @@
 %token Struct Interface
 
 // Control Statements:
-%token Fn Match Case If Else Loop
+%token Fn Match Case If Else ElIf Loop
 
 // Control Flow:
 %token Break Continue Defer Return
@@ -105,7 +105,8 @@ statement_list   : statement newline_opt
                  | statement_list statement newline_opt
                  ;
 
-statement        : expr_statement
+statement        : decl_expr terminator
+				         | expr_statement
 				         | if_statement
 				         | match_statement
 				         | loop_statement
@@ -116,6 +117,13 @@ statement        : expr_statement
 // If statement:
 if_statement     : If eval_expr body
 				         | If eval_expr body Else body
+				         | If eval_expr body elif_statement
+                 ;
+
+elif_statement   : ElIf eval_expr body
+				         | ElIf eval_expr body Else body
+				         | ElIf eval_expr body elif_statement
+                 ;
 
 // Match statement:
 match_statement  : Match match_body
@@ -205,8 +213,8 @@ comparison       : expr LTE expr
                  | expr GTE expr
                  ;
 
-logical          : expr AND newline_opt expr
-                 | expr OR  newline_opt expr
+logical          : expr AND expr
+                 | expr OR  expr
                  ;
 
 assignment       : lvalue MUL_ASSIGN expr
@@ -240,11 +248,6 @@ bool_lit         : TRUE
 // Lvalue:
 lvalue           : IDENTIFIER
                  | IDENTIFIER '[' expr ']'
-                 ;
-
-// Rvalue:
-rvalue           :
-				         |
                  ;
 
 // Miscellaneous:

@@ -51,6 +51,8 @@ auto CrowParser::terminator() -> void
       DBG_TRACE_PRINT(INFO, "Found 'TERMINATOR'");
 
       next();
+    } else {
+      break;
     }
   }
 }
@@ -81,6 +83,19 @@ auto CrowParser::loop_statement() -> NodePtr
 
     node = make_node<Loop>(std::move(init), std::move(cond),
                            std::move(expr_ptr), std::move(body_ptr));
+  }
+
+  return node;
+}
+
+auto CrowParser::expr_statement() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  if(auto ptr{expr()}; ptr) {
+    terminator();
+    node = std::move(ptr);
   }
 
   return node;
@@ -131,12 +146,12 @@ auto CrowParser::eval_expr() -> NodePair
   return pair;
 }
 
-auto CrowParser::if_statement() -> NodePtr
+auto CrowParser::branch_statement(const TokenType t_type) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  if(next_if(TokenType::IF)) {
+  if(next_if(t_type)) {
     auto [init, cond] = eval_expr();
     if(!cond) {
       syntax_error("Expected a conditional");
@@ -147,6 +162,10 @@ auto CrowParser::if_statement() -> NodePtr
     NodeListPtr alt_ptr;
     if(next_if(TokenType::ELSE)) {
       alt_ptr = body();
+    } else if(auto ptr{branch_statement(TokenType::ELIF)}; ptr) {
+			// Elifs are structured in the AST as just an if in an else branch
+      alt_ptr = make_node<List>();
+      alt_ptr->push_back(std::move(ptr));
     }
 
     node = make_node<If>(std::move(init), std::move(cond), std::move(then_ptr),
@@ -156,12 +175,32 @@ auto CrowParser::if_statement() -> NodePtr
   return node;
 }
 
+auto CrowParser::elif_statement() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+
+  return branch_statement(TokenType::ELIF);
+}
+
+auto CrowParser::if_statement() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  return branch_statement(TokenType::IF);
+}
+
 auto CrowParser::statement() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  if(auto ptr{if_statement()}; ptr) {
+  if(auto ptr{decl_expr()}; ptr) {
+    terminator();
+    node = std::move(ptr);
+  } else if(auto ptr{expr_statement()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{if_statement()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{loop_statement()}; ptr) {
     node = std::move(ptr);
@@ -182,7 +221,7 @@ auto CrowParser::statement_list() -> NodeListPtr
       break;
     }
 
-		newline_opt();
+    newline_opt();
   }
 
   return nodes;
@@ -207,8 +246,6 @@ auto CrowParser::body() -> NodeListPtr
     }
 
     expect(TokenType::ACCOLADE_CLOSE);
-  } else {
-    syntax_error("Expected a body");
   }
 
   return nodes;
@@ -275,7 +312,11 @@ auto CrowParser::function() -> NodePtr
     })};
 
     auto return_type{return_type_opt()};
+
     auto body_ptr{body()};
+    if(!body_ptr) {
+      syntax_error("Expected a function body");
+    }
 
     node = make_node<Function>(id, std::move(params), std::move(body_ptr));
   }

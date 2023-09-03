@@ -40,6 +40,7 @@ namespace keywords {
   DEFINE_TERMINAL(g_match, "match", MATCH);
   DEFINE_TERMINAL(g_if,    "if",    IF);
   DEFINE_TERMINAL(g_else,  "else",  ELSE);
+  DEFINE_TERMINAL(g_elif,  "elif",  ELIF);
   DEFINE_TERMINAL(g_loop,  "loop",  LOOP);
 
   // Jump:
@@ -54,7 +55,7 @@ namespace keywords {
 		g_struct.pair(), g_interface.pair(),
 	  g_fn.pair(),
 		g_match.pair(),
-	  g_if.pair(), g_else.pair(),
+	  g_if.pair(), g_else.pair(), g_elif.pair(),
 	  g_loop.pair(),
 	  g_break.pair(), g_continue.pair(), g_defer.pair(), g_return.pair()
 	};
