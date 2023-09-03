@@ -77,6 +77,7 @@ auto PrintVisitor::visit([[maybe_unused]] Return* t_return) -> void
   PPRINT_INIT();
 
   PPRINT("Return");
+  PPRINT_IF("Expr", t_return->expr());
 }
 
 auto PrintVisitor::visit(Function* t_fn) -> void

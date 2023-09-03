@@ -17,6 +17,9 @@ fn main(args) {
 	  var = 3 + 3
 	}
 
-  loop let var2 = 10; var2 < 10 * 20; ++var2 {
-  }
+	loop let var2 = 10; var2 < 10 * 20; ++var2 {
+		continue
+	}
+
+	return 10
 }
