@@ -14,11 +14,7 @@
 namespace parser::pratt {
 // Aliases:
 //! This type is used to get the right hand side of a binary expressions
-using PrattFunc = std::function<n::NodePtr(token::TokenType)>;
-//! This type takes the binding power
-using BpFunc = std::function<n::NodePtr(int)>;
-//! This type is used to parse extra infix operations of a universal method
-using InfixFunc = std::function<n::NodePtr(n::NodePtr&, const PrattFunc&)>;
+using RhsFn = std::function<n::NodePtr(token::TokenType)>;
 
 // Classes:
 class PrattParser : public Parser {
@@ -31,38 +27,32 @@ class PrattParser : public Parser {
   public:
   PrattParser(token::TokenStream&& t_tokenstream);
 
+  // Grammar:
+  virtual auto newline_opt() -> void = 0;
+  virtual auto expr_list_opt() -> n::NodeListPtr = 0;
+
   // Prefix parsing:
+  virtual auto prefix_expr(token::TokenType t_type) -> n::NodePtr;
   virtual auto lvalue() -> n::NodePtr;
   virtual auto literal() -> n::NodePtr;
   virtual auto grouping() -> n::NodePtr;
-  virtual auto unary_prefix(const PrattFunc& t_fn) -> n::NodePtr;
-  virtual auto negation(const PrattFunc& t_expr) -> n::NodePtr;
+  virtual auto unary_prefix() -> n::NodePtr;
+  virtual auto negation() -> n::NodePtr;
   virtual auto precrement() -> n::NodePtr;
   virtual auto function_call() -> n::NodePtr;
 
-  virtual auto prefix(const PrattFunc& t_fn) -> n::NodePtr;
+  virtual auto prefix() -> n::NodePtr;
 
   // Infix parsing:
-  virtual auto infix_rhs(token::TokenType t_type) -> n::NodePtr;
-  virtual auto arithmetic(n::NodePtr& t_lhs, const PrattFunc& t_fn)
-    -> n::NodePtr;
-  virtual auto logical(n::NodePtr& t_lhs, const PrattFunc& t_fn) -> n::NodePtr;
-  virtual auto assignment(n::NodePtr& t_lhs, const PrattFunc& t_fn)
-    -> n::NodePtr;
-  virtual auto comparison(n::NodePtr& t_lhs, const PrattFunc& t_fn)
-    -> n::NodePtr;
+  virtual auto arithmetic(n::NodePtr& t_lhs, const RhsFn& t_fn) -> n::NodePtr;
+  virtual auto logical(n::NodePtr& t_lhs, const RhsFn& t_fn) -> n::NodePtr;
+  virtual auto assignment(n::NodePtr& t_lhs, const RhsFn& t_fn) -> n::NodePtr;
+  virtual auto comparison(n::NodePtr& t_lhs, const RhsFn& t_fn) -> n::NodePtr;
 
-  virtual auto infix(n::NodePtr& t_lhs, const PrattFunc& t_fn) -> n::NodePtr;
-
-  // Grammar:
-  virtual auto newline_opt() -> void = 0;
+  virtual auto infix(n::NodePtr& t_lhs, const RhsFn& t_fn) -> n::NodePtr;
 
   // Expressions:
   virtual auto expr(int t_min_bp = 0) -> n::NodePtr;
-
-  // virtual auto multiple_expr_list() -> n::NodeListPtr = 0;
-  // virtual auto expr_list() -> n::NodeListPtr = 0;
-  virtual auto expr_list_opt() -> n::NodeListPtr = 0;
 
   ~PrattParser() override = default;
 };

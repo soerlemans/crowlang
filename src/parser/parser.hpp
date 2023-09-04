@@ -34,13 +34,13 @@ class Parser {
     return std::make_shared<T>(std::forward<Args>(t_args)...);
   }
 
-  template<typename Func>
-  inline auto parens(const Func t_func)
+  template<typename T>
+  inline auto parens(const T t_fn)
   {
     using namespace token;
 
     expect(TokenType::PAREN_OPEN);
-    auto var{t_func()};
+    auto var{t_fn()};
     expect(TokenType::PAREN_CLOSE);
 
     return var;
