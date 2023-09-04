@@ -219,7 +219,6 @@ auto CrowParser::loop_statement() -> NodePtr
   if(next_if(TokenType::LOOP)) {
     auto [init, cond] = eval_expr();
 
-
     NodePtr expr_ptr;
     if(next_if(TokenType::SEMICOLON)) {
       expr_ptr = expr();

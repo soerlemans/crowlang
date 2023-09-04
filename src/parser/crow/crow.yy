@@ -57,14 +57,11 @@ lvalue           : IDENTIFIER
                  | lvalue ARROW newline_opt IDENTIFIER
                  ;
 
-rvalue           : IDENTIFIER
-                 | rvalue '[' expr ']'
-				         | rvalue '(' expr_list_opt ')'
-                 | rvalue '.' newline_opt IDENTIFIER
-                 | rvalue ARROW newline_opt IDENTIFIER
-                 ;
-
-function_call    : IDENTIFIER '(' expr_list_opt')'
+chain_expr       : IDENTIFIER
+                 | chain_expr '[' expr ']'
+				         | chain_expr '(' expr_list_opt ')'
+                 | chain_expr '.' newline_opt IDENTIFIER
+                 | chain_expr ARROW newline_opt IDENTIFIER
                  ;
 
 // Literals:
@@ -85,24 +82,32 @@ unary_prefix     : '+' expr
                  | '-' expr
                  ;
 
+precrement       : INCREMENT lvalue
+				         | DECREMENT lvalue
+                 ;
+
+postcrement      : lvalue INCREMENT
+				         | lvalue DECREMENT
+                 ;
+
 // Infix:
-arithmetic       : expr '*' newline_opt expr
-                 | expr '/' newline_opt expr
-                 | expr '%' newline_opt expr
-                 | expr '+' newline_opt expr
-                 | expr '-' newline_opt expr
+arithmetic       : expr newline_opt '*' expr
+                 | expr newline_opt '/' expr
+                 | expr newline_opt '%' expr
+                 | expr newline_opt '+' expr
+                 | expr newline_opt '-' expr
                  ;
 
-comparison       : expr LTE newline_opt expr
-                 | expr '<' newline_opt expr
-                 | expr EQ  newline_opt expr
-                 | expr NE  newline_opt expr
-                 | expr '>' newline_opt expr
-                 | expr GTE newline_opt expr
+comparison       : expr newline_opt LTE expr
+                 | expr newline_opt '<' expr
+                 | expr newline_opt EQ  expr
+                 | expr newline_opt NE  expr
+                 | expr newline_opt '>' expr
+                 | expr newline_opt GTE expr
                  ;
 
-logical          : expr AND newline_opt expr
-                 | expr OR  newline_opt expr
+logical          : expr newline_opt AND expr
+                 | expr newline_opt OR  expr
                  ;
 
 assignment       : lvalue MUL_ASSIGN newline_opt expr
@@ -114,18 +119,17 @@ assignment       : lvalue MUL_ASSIGN newline_opt expr
                  ;
 
 // Expressions:
-expr             : unary_prefix
+expr             : lvalue
+				         | literal
                  | grouping
+                 | unary_prefix
                  | negation
+                 | precrement
+                 | postcrement
+				         | function_call
                  | arithmetic
                  | comparison
                  | logical
-				         | literal
-                 | lvalue
-                 | INCREMENT lvalue
-                 | DECREMENT lvalue
-                 | assignment
-                 | IDENTIFIER '(' expr_list_opt ')'
                  ;
 
 expr_opt         : // empty
@@ -142,8 +146,16 @@ eval_expr        : decl_expr ';' expr
                  | expr ';' expr
                  ;
 
-expr_statement   : assignment terminator
-				         | 
+expr_statement   : expr terminator
+                 ;
+
+// Result statement:
+result_statement : decl_expr terminator
+				         | assignment terminator
+				         | function_call terminator
+				         | precrement
+				         | postcrement
+				         | ';'
                  ;
 
 // Expression lists:
@@ -200,8 +212,7 @@ elif_statement   : ElIf eval_expr body
                  ;
 
 // Statements:
-statement        : decl_expr terminator
-				         | expr_statement
+statement        : result_statement
 				         | if_statement
 				         | match_statement
 				         | loop_statement
@@ -243,6 +254,9 @@ lambda           : Fn '(' param_list_opt ')' return_type_opt body
 function         : Fn IDENTIFIER '(' param_list_opt ')' return_type_opt body
                  | Fn IDENTIFIER return_type_opt body
 				         ;
+
+function_call    : chain_expr '(' expr_list_opt')'
+                 ;
 
 // Import:
 import_expr      : STRING newline_opt
