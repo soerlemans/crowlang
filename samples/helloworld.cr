@@ -9,6 +9,8 @@ fn msg(t_str: String) -> String {
   return t_str
 }
 
+let var = fn {}
+
 fn main() {
 	let var1
 

@@ -99,12 +99,10 @@ auto CrowParser::multiple_expr_list() -> NodeListPtr
 auto CrowParser::expr_list() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodeListPtr nodes{make_node<List>()};
+  auto nodes{expr_list_opt()};
 
-  if(auto ptr{expr()}; ptr) {
-    nodes->push_back(std::move(ptr));
-  } else if(auto ptr{multiple_expr_list()}; ptr) {
-    nodes = std::move(ptr);
+  if(nodes->empty()) {
+    syntax_error("Expected a list of expressions");
   }
 
   return nodes;
@@ -113,12 +111,12 @@ auto CrowParser::expr_list() -> NodeListPtr
 auto CrowParser::expr_list_opt() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodeListPtr nodes;
+  NodeListPtr nodes{make_node<List>()};
 
-  if(auto ptr{expr_list()}; ptr) {
-    if(!ptr->empty()) {
-      nodes = std::move(ptr);
-    }
+  if(auto ptr{expr()}; ptr) {
+    nodes->push_back(std::move(ptr));
+  } else if(auto ptr{multiple_expr_list()}; ptr) {
+    nodes = std::move(ptr);
   }
 
   return nodes;
@@ -153,6 +151,7 @@ auto CrowParser::decl_expr() -> NodePtr
 
     NodePtr expr_ptr;
     if(next_if(TokenType::ASSIGNMENT)) {
+      newline_opt();
       expr_ptr = expr();
     }
 
@@ -349,6 +348,18 @@ auto CrowParser::body() -> NodeListPtr
 auto CrowParser::param_list() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
+  auto nodes{param_list_opt()};
+
+  if(nodes->empty()) {
+    syntax_error("Expected list of parameters");
+  }
+
+  return nodes;
+}
+
+auto CrowParser::param_list_opt() -> NodeListPtr
+{
+  DBG_TRACE_FN(VERBOSE);
   NodeListPtr nodes{make_node<List>()};
 
   if(check(TokenType::IDENTIFIER)) {
@@ -394,6 +405,20 @@ auto CrowParser::return_type_opt() -> NodePtr
   return node;
 }
 
+auto CrowParser::lambda() -> n::NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  if(next_if(TokenType::FUNCTION)) {
+    auto params{parens([this] {
+      return this->param_list_opt();
+    })};
+  }
+
+  return node;
+}
+
 auto CrowParser::function() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -405,7 +430,7 @@ auto CrowParser::function() -> NodePtr
 
     // NodeListPtr params;
     auto params{parens([this] {
-      return this->param_list();
+      return this->param_list_opt();
     })};
 
     auto return_type{return_type_opt()};
@@ -510,6 +535,8 @@ auto CrowParser::item() -> NodePtr
   if(auto ptr{package()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{import_()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{decl_expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{function()}; ptr) {
     node = std::move(ptr);

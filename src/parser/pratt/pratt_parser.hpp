@@ -36,6 +36,7 @@ class PrattParser : public Parser {
   virtual auto grouping() -> n::NodePtr;
   virtual auto negation(const PrattFunc& t_expr) -> n::NodePtr;
   virtual auto literal() -> n::NodePtr;
+  virtual auto primary_expr() -> n::NodePtr;
   virtual auto lvalue() -> n::NodePtr;
 
   virtual auto precrement() -> n::NodePtr;

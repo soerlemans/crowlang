@@ -39,165 +39,55 @@
 
 %start program
 %%
-
-program          : item_list
-                 | item_list item
+// Miscellaneous:
+newline_opt      : // empty
+                 | newline_opt NEWLINE
                  ;
 
-item_list        : // empty
-                 | newline_opt item
-                 | item_list newlinte_opt item
+terminator       : terminator ';'
+                 | terminator NEWLINE
+                 | ';'
+                 | NEWLINE
                  ;
 
-item             : package
-				         | import
-                 | function
+// Primary:
+primary_expr     : IDENTIFIER
+                 | '*' IDENTIFIER
+                 | STRING
+                 | '(' expr ')'
                  ;
 
-// Packaging:
-package          : Package IDENTIFIER
+// Lvalue:
+lvalue           : primary_expr
+                 | lvalue '[' expr ']'
+                 | lvalue '(' expr_list_opt ')'
+                 | lvalue '.' IDENTIFIER
+                 | lvalue ARROW IDENTIFIER
                  ;
 
-import           : Import STRING
-                 | Import '(' newline_opt import_list ')'
+
+// Literals:
+bool_lit         : TRUE
+				         | FALSE
                  ;
 
-import_list      : import_expr
-                 | import_list import_expr
-                 ;
-
-import_expr      : STRING newline_opt
-                 | IDENTIFIER '=' STRING newline_opt
-                 ;
-
-attribute        : Private
-				         | Public
-                 ;
-
-// Function:
-function         : Fn IDENTIFIER '(' param_list ')' body
-                 | Fn IDENTIFIER body
+literal          : NUMBER
+				         | STRING
+				         | bool_lit
 				         ;
 
-return_type_opt  : // empty
-                 | newline_opt ARROW IDENTIFIER
-                 ;
-
-lambda           : Fn '(' param_list ')' body
-                 | Fn body
-                 ;
-
-param_list_opt   : // empty
-                 | param_list
-                 ;
-
-param_list       : IDENTIFIER ':' IDENTIFIER
-                 | param_list ',' IDENTIFIER ':' IDENTIFIER
-                 ;
-
-// Body:
-body             : newline_opt '{' newline_opt '}'
-                 | newline_opt '{' newline_opt statement_list newline_opt '}'
-                 ;
-
-// Statements:
-statement_list   : statement newline_opt
-                 | statement_list statement newline_opt
-                 ;
-
-statement        : decl_expr terminator
-				         | expr_statement
-				         | if_statement
-				         | match_statement
-				         | loop_statement
-				         | jump_statement
-				         | body
-                 ;
-
-// If statement:
-if_statement     : If eval_expr body
-				         | If eval_expr body Else body
-				         | If eval_expr body elif_statement
-                 ;
-
-elif_statement   : ElIf eval_expr body
-				         | ElIf eval_expr body Else body
-				         | ElIf eval_expr body elif_statement
-                 ;
-
-// Match statement:
-match_statement  : Match match_body
-                 | Match eval_expr match_body
-                 ;
-
-match_body      : newline_opt '{' match_case_list '}'
-                 ;
-
-match_case_list : match_case
-                 | match_case_list match_case
-                 ;
-
-match_case      :
-                ;
-
-// Loop statement:
-loop_statement   : Loop body
-				         | Loop eval_expr body
-				         | Loop eval_expr ';' expr body
-                 ;
-
-// Jump statement:
-jump_statement   : Continue terminator
-                 | Break terminator
-				         | Defer expr_statement
-				         | Defer body
-                 | Return expr_opt terminator
-                 ;
-
-// Expressions:
-expr_statement   : expr terminator
-                 ;
-
-expr_list_opt    : // empty
-                 | expr_list
-                 ;
-
-expr_list        : expr
-                 | multiple_expr_list
-                 ;
-
-multiple_expr_list : expr ',' newline_opt expr
-                 | multiple_expr_list ',' newline_opt expr
-                 ;
-
-expr_opt         : // empty
-				         | expr
-                 ;
-
-expr             : unary_prefix
-                 | grouping
-                 | negation
-                 | arithmetic
-                 | comparison
-                 | logical
-				         | literal
-                 | lvalue
-                 | INCREMENT lvalue
-                 | DECREMENT lvalue
-                 | assignment
-                 | IDENTIFIER '(' expr_list_opt ')'
-                 ;
-
+// Prefix:
 unary_prefix     : '+' expr
                  | '-' expr
-                 ;
-
-grouping         : '(' expr ')'
                  ;
 
 negation         : '!' expr
                  ;
 
+grouping         : '(' expr ')'
+                 ;
+
+// Infix:
 arithmetic       : expr '*' newline_opt expr
                  | expr '/' newline_opt expr
                  | expr '%' newline_opt expr
@@ -225,48 +115,168 @@ assignment       : lvalue MUL_ASSIGN newline_opt expr
                  | lvalue '=' newline_opt expr
                  ;
 
+// Expressions:
+expr             : unary_prefix
+                 | grouping
+                 | negation
+                 | arithmetic
+                 | comparison
+                 | logical
+				         | literal
+                 | lvalue
+                 | INCREMENT lvalue
+                 | DECREMENT lvalue
+                 | assignment
+                 | IDENTIFIER '(' expr_list_opt ')'
+                 ;
+
+expr_opt         : // empty
+				         | expr
+                 ;
+
+decl_expr        : Let IDENTIFIER
+                 | Let IDENTIFIER '=' newline_opt expr
+                 | Let IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
+                 ;
+
 eval_expr        : decl_expr ';' expr
                  | expr
                  | expr ';' expr
                  ;
 
-decl_expr        : Let IDENTIFIER
-                 | Let IDENTIFIER '=' expr
-                 | Let IDENTIFIER ':' IDENTIFIER '=' expr
+expr_statement   : expr terminator
                  ;
 
-// Literals:
-literal          : NUMBER
-				         | STRING
-				         | bool_lit
+// Expression lists:
+expr_list        : expr
+                 | multiple_expr_list
+                 ;
+
+expr_list_opt    : // empty
+                 | expr_list
+                 ;
+
+multiple_expr_list : expr ',' newline_opt expr
+                 | multiple_expr_list ',' newline_opt expr
+                 ;
+
+
+// Jump statement:
+jump_statement   : Continue terminator
+                 | Break terminator
+				         | Defer expr_statement
+				         | Defer body
+                 | Return expr_opt terminator
+                 ;
+
+// Loop statement:
+loop_statement   : Loop body
+				         | Loop eval_expr body
+				         | Loop eval_expr ';' expr body
+                 ;
+
+// Match statement:
+match_statement  : Match match_body
+                 | Match eval_expr match_body
+                 ;
+
+match_body      : newline_opt '{' match_case_list '}'
+                 ;
+
+match_case_list : match_case
+                 | match_case_list match_case
+                 ;
+
+match_case      :
+                ;
+
+// If statement:
+if_statement     : If eval_expr body
+				         | If eval_expr body Else body
+				         | If eval_expr body elif_statement
+                 ;
+
+elif_statement   : ElIf eval_expr body
+				         | ElIf eval_expr body Else body
+				         | ElIf eval_expr body elif_statement
+                 ;
+
+// Statements:
+statement        : decl_expr terminator
+				         | expr_statement
+				         | if_statement
+				         | match_statement
+				         | loop_statement
+				         | jump_statement
+				         | body
+                 ;
+
+statement_list   : statement newline_opt
+                 | statement_list statement newline_opt
+                 ;
+
+// Body:
+body             : newline_opt '{' newline_opt '}'
+                 | newline_opt '{' newline_opt statement_list newline_opt '}'
+                 ;
+
+// Attributes:
+attribute        : Private
+				         | Public
+                 ;
+
+// Function:
+return_type_opt  : // empty
+                 | newline_opt ARROW IDENTIFIER
+                 ;
+
+param_list       : IDENTIFIER ':' IDENTIFIER
+                 | param_list ',' IDENTIFIER ':' IDENTIFIER
+                 ;
+
+param_list_opt   : // empty
+                 | param_list
+                 ;
+
+function         : Fn IDENTIFIER '(' param_list_opt ')' return_type_opt body
+                 | Fn IDENTIFIER return_type_opt body
 				         ;
 
-bool_lit         : TRUE
-				         | FALSE
-                 ;
-// Member access
-primary_expr     : IDENTIFIER
-                 | STRING
-                 | '(' expr ')'
+lambda           : Fn '(' param_list_opt ')' return_type_opt body
+                 | Fn return_type_opt body
                  ;
 
-// Lvalue:
-lvalue           : primary_expr
-                 | lvalue '[' expr ']'
-                 | lvalue '(' expr_list_opt ')'
-                 | lvalue '.' IDENTIFIER
-                 | lvalue ARROW IDENTIFIER
+// Import:
+import_expr      : STRING newline_opt
+                 | IDENTIFIER '=' STRING newline_opt
                  ;
 
-// Miscellaneous:
-terminator       : terminator ';'
-                 | terminator NEWLINE
-                 | ';'
-                 | NEWLINE
+import_list      : import_expr
+                 | import_list import_expr
                  ;
 
-newline_opt      : // empty
-                 | newline_opt NEWLINE
+import           : Import STRING
+                 | Import '(' newline_opt import_list ')'
+                 ;
+
+// Packaging:
+package          : Package IDENTIFIER
+                 ;
+
+// Items:
+item             : package
+				         | import
+				         | decl_expr
+                 | function
+                 ;
+
+item_list        : // empty
+                 | newline_opt item
+                 | item_list newline_opt item
+                 ;
+
+program          : item_list
+                 | item_list item
                  ;
 
 %%
