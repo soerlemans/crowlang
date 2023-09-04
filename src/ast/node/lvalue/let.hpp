@@ -1,6 +1,9 @@
 #ifndef CROW_AST_NODE_LVALUE_LET_HPP
 #define CROW_AST_NODE_LVALUE_LET_HPP
 
+// STL Includes:
+#include <string_view>
+
 // Includes:
 #include "../node_interface.hpp"
 
@@ -15,9 +18,9 @@ class Let : public NodeInterface {
   NodePtr m_init;
 
   public:
-  Let(const std::string& t_identifier, NodePtr&& t_init);
+  Let(std::string_view t_identifier, NodePtr&& t_init);
 
-  auto identifier() const -> const std::string&;
+  auto identifier() const -> std::string_view;
   auto init() -> NodePtr&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);

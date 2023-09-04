@@ -5,8 +5,11 @@ import (
   fs = "filesystem"
 )
 
+fn msg(t_str: String) -> String {
+  return t_str
+}
 
-fn main(args) {
+fn main() {
 	let var1
 
 	if 10 + 10 {
@@ -18,7 +21,7 @@ fn main(args) {
 	}
 
 	loop let var2 = 10; var2 < 10 * 20; ++var2 {
-		continue
+	  break;
 	}
 
 	return 10

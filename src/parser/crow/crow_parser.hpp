@@ -22,11 +22,12 @@ class CrowParser : public pratt::PrattParser {
 
   // Grammar:
   auto newline_opt() -> void override;
-  auto terminator() -> void;
-
-  auto expr_list_opt() -> n::NodeListPtr override;
+  virtual auto terminator() -> void;
 
   virtual auto expr_opt() -> n::NodePtr;
+  virtual auto multiple_expr_list() -> n::NodeListPtr;
+  virtual auto expr_list() -> n::NodeListPtr;
+  auto expr_list_opt() -> n::NodeListPtr override;
   virtual auto expr_statement() -> n::NodePtr;
 
   virtual auto decl_expr() -> n::NodePtr;

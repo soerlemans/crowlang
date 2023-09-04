@@ -91,8 +91,8 @@ param_list_opt   : // empty
                  | param_list
                  ;
 
-param_list       : IDENTIFIER
-                 | param_list ',' IDENTIFIER
+param_list       : IDENTIFIER ':' IDENTIFIER
+                 | param_list ',' IDENTIFIER ':' IDENTIFIER
                  ;
 
 // Body:

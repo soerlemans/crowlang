@@ -37,24 +37,91 @@ auto CrowParser::terminator() -> void
   DBG_TRACE_FN(VERBOSE);
 
   const auto is_terminator{[this] {
-    return check(TokenType::SEMICOLON) || check(TokenType::NEWLINE);
+    const bool is_term{check(TokenType::SEMICOLON)
+                       || check(TokenType::NEWLINE)};
+
+    if(is_term) {
+      next();
+    }
+
+    return is_term;
   }};
 
-  if(is_terminator()) {
-    next();
-  } else {
+  if(!is_terminator()) {
     syntax_error("Expected at least one 'TERMINATOR'");
   }
 
   while(!eos()) {
     if(is_terminator()) {
       DBG_TRACE_PRINT(INFO, "Found 'TERMINATOR'");
-
-      next();
     } else {
       break;
     }
   }
+}
+
+auto CrowParser::expr_opt() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+
+  return expr();
+}
+
+auto CrowParser::multiple_expr_list() -> NodeListPtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodeListPtr nodes{make_node<List>()};
+
+  if(auto ptr{expr()}; ptr) {
+    DBG_TRACE_PRINT(INFO, "Found 'EXPR");
+
+    nodes->push_back(std::move(ptr));
+  }
+
+  while(!eos()) {
+    if(next_if(TokenType::COMMA)) {
+      newline_opt();
+      if(auto ptr{expr()}; ptr) {
+        DBG_TRACE_PRINT(INFO, "Found ',' 'EXPR'");
+
+        nodes->push_back(std::move(ptr));
+      } else {
+        syntax_error("Expected another expression after ','");
+      }
+    } else {
+      break;
+    }
+  }
+
+  return nodes;
+}
+
+auto CrowParser::expr_list() -> NodeListPtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodeListPtr nodes{make_node<List>()};
+
+  if(auto ptr{expr()}; ptr) {
+    nodes->push_back(std::move(ptr));
+  } else if(auto ptr{multiple_expr_list()}; ptr) {
+    nodes = std::move(ptr);
+  }
+
+  return nodes;
+}
+
+auto CrowParser::expr_list_opt() -> NodeListPtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodeListPtr nodes;
+
+  if(auto ptr{expr_list()}; ptr) {
+    if(!ptr->empty()) {
+      nodes = std::move(ptr);
+    }
+  }
+
+  return nodes;
 }
 
 auto CrowParser::expr_statement() -> NodePtr
@@ -68,22 +135,6 @@ auto CrowParser::expr_statement() -> NodePtr
   }
 
   return node;
-}
-
-// TODO: Implement
-auto CrowParser::expr_list_opt() -> NodeListPtr
-{
-  DBG_TRACE_FN(VERBOSE);
-  NodeListPtr nodes;
-
-  return nodes;
-}
-
-auto CrowParser::expr_opt() -> NodePtr
-{
-  DBG_TRACE_FN(VERBOSE);
-
-  return expr();
 }
 
 auto CrowParser::decl_expr() -> NodePtr
@@ -151,6 +202,7 @@ auto CrowParser::jump_statement() -> NodePtr
       defer_body = std::move(ptr);
     }
 
+    // TODO: Create Defer typ
     // node = make_node<Defer>();
   } else if(next_if(TokenType::RETURN)) {
     auto expr_ptr{expr_opt()};
@@ -302,20 +354,22 @@ auto CrowParser::param_list() -> NodeListPtr
   if(check(TokenType::IDENTIFIER)) {
     DBG_TRACE_PRINT(INFO, "Found 'IDENTIFIER'");
 
-    const auto id{get_token().get<std::string>()};
-    next();
+    const auto id{expect(TokenType::IDENTIFIER).get<std::string>()};
+    expect(TokenType::COLON);
+    const auto type{expect(TokenType::IDENTIFIER).get<std::string>()};
 
-    nodes->push_back(make_node<Variable>(id));
+    nodes->push_back(make_node<Variable>(id, type));
   }
 
   while(!eos()) {
     if(next_if(TokenType::COMMA)) {
       DBG_TRACE_PRINT(INFO, "Found ',' 'IDENTIFIER'");
 
-      const auto token{expect(TokenType::IDENTIFIER)};
-      const auto id{token.get<std::string>()};
+      const auto id{expect(TokenType::IDENTIFIER).get<std::string>()};
+      expect(TokenType::COLON);
+      const auto type{expect(TokenType::IDENTIFIER).get<std::string>()};
 
-      nodes->push_back(make_node<Variable>(id));
+      nodes->push_back(make_node<Variable>(id, type));
     } else {
       break;
     }
