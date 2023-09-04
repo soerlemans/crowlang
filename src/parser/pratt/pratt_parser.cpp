@@ -23,27 +23,43 @@ PrattParser::PrattParser(token::TokenStream&& t_tokenstream)
 {}
 
 // Prefix parsing:
-//! Parses unary prefixes like having a + or - before an expression
-auto PrattParser::unary_prefix(const PrattFunc& t_fn) -> NodePtr
+auto PrattParser::lvalue() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
   const auto token{get_token()};
-  if(check(TokenType::PLUS) || check(TokenType::MINUS)) {
-    next();
-    DBG_TRACE_PRINT(VERBOSE, "Found UNARY PREFIX");
-
-    NodePtr rhs{t_fn(token.type())};
-    if(!rhs) {
-      syntax_error("Expected an expression after + or -");
-    }
-
-    node = make_node<UnaryPrefix>(token.type(), std::move(rhs));
+  if(next_if(TokenType::IDENTIFIER)) {
+    const auto id{token.get<std::string>()};
+    DBG_TRACE_PRINT(INFO, "Found 'VARIABLE': ", id);
+    node = make_node<Variable>(id);
   }
 
   return node;
 }
+
+//! Prefix operator parses prefix increment and decrement
+
+auto PrattParser::literal() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  const auto token{get_token()};
+  if(next_if(TokenType::FLOAT)) {
+    DBG_TRACE_PRINT(INFO, "Found FLOAT literal: ");
+    node = make_node<Float>(token.get<double>());
+  } else if(next_if(TokenType::INTEGER)) {
+    DBG_TRACE_PRINT(INFO, "Found INTEGER literal: ");
+    node = make_node<Integer>(token.get<int>());
+  } else if(next_if(TokenType::STRING)) {
+    DBG_TRACE_PRINT(INFO, "Found STRING literal: ", token.get<std::string>());
+    node = make_node<String>(token.get<std::string>());
+  }
+
+  return node;
+}
+
 
 auto PrattParser::grouping() -> NodePtr
 {
@@ -78,42 +94,28 @@ auto PrattParser::negation(const PrattFunc& t_expr) -> NodePtr
   return node;
 }
 
-auto PrattParser::literal() -> NodePtr
+//! Parses unary prefixes like having a + or - before an expression
+auto PrattParser::unary_prefix(const PrattFunc& t_fn) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
   const auto token{get_token()};
-  if(next_if(TokenType::FLOAT)) {
-    DBG_TRACE_PRINT(INFO, "Found FLOAT literal: ");
-    node = make_node<Float>(token.get<double>());
-  } else if(next_if(TokenType::INTEGER)) {
-    DBG_TRACE_PRINT(INFO, "Found INTEGER literal: ");
-    node = make_node<Integer>(token.get<int>());
-  } else if(next_if(TokenType::STRING)) {
-    DBG_TRACE_PRINT(INFO, "Found STRING literal: ", token.get<std::string>());
-    node = make_node<String>(token.get<std::string>());
+  if(check(TokenType::PLUS) || check(TokenType::MINUS)) {
+    next();
+    DBG_TRACE_PRINT(VERBOSE, "Found UNARY PREFIX");
+
+    NodePtr rhs{t_fn(token.type())};
+    if(!rhs) {
+      syntax_error("Expected an expression after + or -");
+    }
+
+    node = make_node<UnaryPrefix>(token.type(), std::move(rhs));
   }
 
   return node;
 }
 
-auto PrattParser::lvalue() -> NodePtr
-{
-  DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
-
-  const auto token{get_token()};
-  if(next_if(TokenType::IDENTIFIER)) {
-    const auto id{token.get<std::string>()};
-    DBG_TRACE_PRINT(INFO, "Found 'VARIABLE': ", id);
-    node = make_node<Variable>(id);
-  }
-
-  return node;
-}
-
-//! Prefix operator parses prefix increment and decrement
 auto PrattParser::precrement() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);

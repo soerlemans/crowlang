@@ -50,41 +50,36 @@ terminator       : terminator ';'
                  | NEWLINE
                  ;
 
-// Primary:
-primary_expr     : IDENTIFIER
-                 | '*' IDENTIFIER
-                 | STRING
-                 | '(' expr ')'
-                 ;
-
 // Lvalue:
-lvalue           : primary_expr
+lvalue           : IDENTIFIER
                  | lvalue '[' expr ']'
-                 | lvalue '(' expr_list_opt ')'
-                 | lvalue '.' IDENTIFIER
-                 | lvalue ARROW IDENTIFIER
+                 | lvalue '.' newline_opt IDENTIFIER
+                 | lvalue ARROW newline_opt IDENTIFIER
                  ;
 
+rvalue           : IDENTIFIER
+                 | rvalue '[' expr ']'
+				         | rvalue '(' expr_list_opt ')'
+                 | rvalue '.' newline_opt IDENTIFIER
+                 | rvalue ARROW newline_opt IDENTIFIER
+                 ;
 
 // Literals:
-bool_lit         : TRUE
-				         | FALSE
-                 ;
-
 literal          : NUMBER
 				         | STRING
-				         | bool_lit
+				         | TRUE
+				         | FALSE
 				         ;
 
-// Prefix:
-unary_prefix     : '+' expr
-                 | '-' expr
+grouping         : '(' expr ')'
                  ;
 
 negation         : '!' expr
                  ;
 
-grouping         : '(' expr ')'
+// Prefix:
+unary_prefix     : '+' expr
+                 | '-' expr
                  ;
 
 // Infix:
@@ -144,7 +139,8 @@ eval_expr        : decl_expr ';' expr
                  | expr ';' expr
                  ;
 
-expr_statement   : expr terminator
+expr_statement   : assignment terminator
+				         | 
                  ;
 
 // Expression lists:

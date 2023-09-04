@@ -14,6 +14,7 @@
 // Control Statements:
 #include "control/break.hpp"
 #include "control/continue.hpp"
+#include "control/defer.hpp"
 #include "control/if.hpp"
 #include "control/loop.hpp"
 #include "control/return.hpp"

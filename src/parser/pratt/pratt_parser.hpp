@@ -32,12 +32,11 @@ class PrattParser : public Parser {
   PrattParser(token::TokenStream&& t_tokenstream);
 
   // Prefix parsing:
-  virtual auto unary_prefix(const PrattFunc& t_fn) -> n::NodePtr;
-  virtual auto grouping() -> n::NodePtr;
-  virtual auto negation(const PrattFunc& t_expr) -> n::NodePtr;
-  virtual auto literal() -> n::NodePtr;
-  virtual auto primary_expr() -> n::NodePtr;
   virtual auto lvalue() -> n::NodePtr;
+  virtual auto literal() -> n::NodePtr;
+  virtual auto grouping() -> n::NodePtr;
+  virtual auto unary_prefix(const PrattFunc& t_fn) -> n::NodePtr;
+  virtual auto negation(const PrattFunc& t_expr) -> n::NodePtr;
 
   virtual auto precrement() -> n::NodePtr;
 

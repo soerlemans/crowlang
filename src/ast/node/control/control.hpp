@@ -8,8 +8,7 @@ class Loop;
 
 class Continue;
 class Break;
-class Next;
-class Exit;
+class Defer;
 class Return;
 }; // namespace node::control
 
