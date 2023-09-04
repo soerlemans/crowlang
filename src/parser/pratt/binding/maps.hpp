@@ -15,16 +15,17 @@ class PrefixMap : public BindingMap {
   public:
   PrefixMap()
   {
-    using namespace token;
+    // Dereference:
+    INSERT_BINDING(ASTERISK, 15, 15);
 
     // Precrement:
-    INSERT_BINDING(INCREMENT, 22, 22);
-    INSERT_BINDING(DECREMENT, 22, 22);
+    INSERT_BINDING(INCREMENT, 14, 14);
+    INSERT_BINDING(DECREMENT, 14, 14);
 
     // Unary operators:
-    INSERT_BINDING(NOT, 19, 19);
-    INSERT_BINDING(PLUS, 19, 19);
-    INSERT_BINDING(MINUS, 19, 19);
+    INSERT_BINDING(NOT, 14, 14);
+    INSERT_BINDING(PLUS, 14, 14);
+    INSERT_BINDING(MINUS, 14, 14);
   }
 };
 
@@ -33,22 +34,26 @@ class InfixMap : public BindingMap {
   public:
   InfixMap()
   {
+    // Member access:
+    INSERT_BINDING(DOT, 15, 15);
+    INSERT_BINDING(ARROW, 15, 15);
+
     // Factor:
-    INSERT_BINDING(ASTERISK, 17, 18);     // Multiplication
-    INSERT_BINDING(SLASH, 17, 18);        // Division
-    INSERT_BINDING(PERCENT_SIGN, 17, 18); // Modulo
+    INSERT_BINDING(ASTERISK, 12, 13);     // Multiplication
+    INSERT_BINDING(SLASH, 12, 13);        // Division
+    INSERT_BINDING(PERCENT_SIGN, 12, 13); // Modulo
 
     // Arithmetic:
-    INSERT_BINDING(PLUS, 15, 16);  // Addition
-    INSERT_BINDING(MINUS, 15, 16); // Subtraction
+    INSERT_BINDING(PLUS, 10, 11);  // Addition
+    INSERT_BINDING(MINUS, 10, 11); // Subtraction
 
     // Comparisons:
-    INSERT_BINDING(LESS_THAN, 12, 12);
-    INSERT_BINDING(LESS_THAN_EQUAL, 12, 12);
-    INSERT_BINDING(EQUAL, 12, 12);
-    INSERT_BINDING(NOT_EQUAL, 12, 12);
-    INSERT_BINDING(GREATER_THAN, 12, 12);
-    INSERT_BINDING(GREATER_THAN_EQUAL, 12, 12);
+    INSERT_BINDING(LESS_THAN, 9, 9);
+    INSERT_BINDING(LESS_THAN_EQUAL, 9, 9);
+    INSERT_BINDING(EQUAL, 9, 9);
+    INSERT_BINDING(NOT_EQUAL, 9, 9);
+    INSERT_BINDING(GREATER_THAN, 9, 9);
+    INSERT_BINDING(GREATER_THAN_EQUAL, 9, 9);
 
     // Logical
     INSERT_BINDING(AND, 7, 8);
@@ -65,23 +70,13 @@ class InfixMap : public BindingMap {
     INSERT_BINDING(SUB_ASSIGN, 2, 1);
     INSERT_BINDING(ASSIGNMENT, 2, 1);
   }
-
-  auto string_concat() -> BindingPower
-  {
-    // No infix operator means that we are dealing with a string concatenation
-    return {13, 14};
-  }
 };
 
 //! This class is a map of prefix operator binding powers
 class PostfixMap : public BindingMap {
   public:
   PostfixMap()
-  {
-    // Postcrement:
-    INSERT_BINDING(INCREMENT, 23, 23);
-    INSERT_BINDING(DECREMENT, 23, 23);
-  }
+  {}
 };
 
 } // namespace parser::pratt::binding

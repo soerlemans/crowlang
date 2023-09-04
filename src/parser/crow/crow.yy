@@ -198,31 +198,31 @@ grouping         : '(' expr ')'
 negation         : '!' expr
                  ;
 
-arithmetic       : expr '*' expr
-                 | expr '/' expr
-                 | expr '%' expr
-                 | expr '+' expr
-                 | expr '-' expr
+arithmetic       : expr '*' newline_opt expr
+                 | expr '/' newline_opt expr
+                 | expr '%' newline_opt expr
+                 | expr '+' newline_opt expr
+                 | expr '-' newline_opt expr
                  ;
 
-comparison       : expr LTE expr
-                 | expr '<' expr
-                 | expr EQ  expr
-                 | expr NE  expr
-                 | expr '>' expr
-                 | expr GTE expr
+comparison       : expr LTE newline_opt expr
+                 | expr '<' newline_opt expr
+                 | expr EQ  newline_opt expr
+                 | expr NE  newline_opt expr
+                 | expr '>' newline_opt expr
+                 | expr GTE newline_opt expr
                  ;
 
-logical          : expr AND expr
-                 | expr OR  expr
+logical          : expr AND newline_opt expr
+                 | expr OR  newline_opt expr
                  ;
 
-assignment       : lvalue MUL_ASSIGN expr
-                 | lvalue DIV_ASSIGN expr
-                 | lvalue MOD_ASSIGN expr
-                 | lvalue ADD_ASSIGN expr
-                 | lvalue SUB_ASSIGN expr
-                 | lvalue '=' expr
+assignment       : lvalue MUL_ASSIGN newline_opt expr
+                 | lvalue DIV_ASSIGN newline_opt expr
+                 | lvalue MOD_ASSIGN newline_opt expr
+                 | lvalue ADD_ASSIGN newline_opt expr
+                 | lvalue SUB_ASSIGN newline_opt expr
+                 | lvalue '=' newline_opt expr
                  ;
 
 eval_expr        : decl_expr ';' expr
@@ -244,10 +244,18 @@ literal          : NUMBER
 bool_lit         : TRUE
 				         | FALSE
                  ;
+// Member access
+primary_expr     : IDENTIFIER
+                 | STRING
+                 | '(' expr ')'
+                 ;
 
 // Lvalue:
-lvalue           : IDENTIFIER
-                 | IDENTIFIER '[' expr ']'
+lvalue           : primary_expr
+                 | lvalue '[' expr ']'
+                 | lvalue '(' expr_list_opt ')'
+                 | lvalue '.' IDENTIFIER
+                 | lvalue ARROW IDENTIFIER
                  ;
 
 // Miscellaneous:

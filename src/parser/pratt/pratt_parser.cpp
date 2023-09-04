@@ -194,6 +194,7 @@ auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
 
   const auto token{get_token()};
   const auto lambda{[&](ArithmeticOp t_op) {
+		newline_opt();
     if(auto rhs{t_fn(token.type())}; rhs) {
       node = make_node<Arithmetic>(t_op, std::move(t_lhs), std::move(rhs));
     }
@@ -254,6 +255,7 @@ auto PrattParser::assignment(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
     // Defining a separate lambda in each function
     const auto token{get_token()};
     const auto lambda{[&](AssignmentOp t_op) {
+			newline_opt();
       auto rhs{t_fn(token.type())};
       if(rhs) {
         node = make_node<Assignment>(t_op, std::move(t_lhs), std::move(rhs));
@@ -292,6 +294,7 @@ auto PrattParser::comparison(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
   if(t_lhs) {
     const auto token{get_token()};
     const auto lambda{[&](ComparisonOp t_op) {
+			newline_opt();
       auto rhs{t_fn(token.type())};
       if(rhs) {
         node = make_node<Comparison>(t_op, std::move(t_lhs), std::move(rhs));
