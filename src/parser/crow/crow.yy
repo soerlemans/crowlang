@@ -64,6 +64,9 @@ rvalue           : IDENTIFIER
                  | rvalue ARROW newline_opt IDENTIFIER
                  ;
 
+function_call    : IDENTIFIER '(' expr_list_opt')'
+                 ;
+
 // Literals:
 literal          : NUMBER
 				         | STRING

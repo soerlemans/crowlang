@@ -193,15 +193,14 @@ auto CrowParser::jump_statement() -> NodePtr
     terminator();
     node = make_node<Break>();
   } else if(next_if(TokenType::DEFER)) {
-    NodePtr defer_body;
+    NodeListPtr body_ptr{make_node<List>()};
     if(auto ptr{expr_statement()}; ptr) {
-      defer_body = std::move(ptr);
+      body_ptr->push_back(std::move(ptr));
     } else if(auto ptr{body()}; ptr) {
-      defer_body = std::move(ptr);
+      body_ptr = std::move(ptr);
     }
 
-    // TODO: Create Defer typ
-    // node = make_node<Defer>();
+    node = make_node<Defer>(std::move(body_ptr));
   } else if(next_if(TokenType::RETURN)) {
     auto expr_ptr{expr_opt()};
     terminator();

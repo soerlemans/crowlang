@@ -37,14 +37,13 @@ class PrattParser : public Parser {
   virtual auto grouping() -> n::NodePtr;
   virtual auto unary_prefix(const PrattFunc& t_fn) -> n::NodePtr;
   virtual auto negation(const PrattFunc& t_expr) -> n::NodePtr;
-
   virtual auto precrement() -> n::NodePtr;
-
   virtual auto function_call() -> n::NodePtr;
 
   virtual auto prefix(const PrattFunc& t_fn) -> n::NodePtr;
 
   // Infix parsing:
+  virtual auto infix_rhs(token::TokenType t_type) -> n::NodePtr;
   virtual auto arithmetic(n::NodePtr& t_lhs, const PrattFunc& t_fn)
     -> n::NodePtr;
   virtual auto logical(n::NodePtr& t_lhs, const PrattFunc& t_fn) -> n::NodePtr;

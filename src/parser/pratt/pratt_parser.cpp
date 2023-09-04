@@ -189,6 +189,26 @@ auto PrattParser::prefix(const PrattFunc& t_fn) -> NodePtr
 }
 
 // Infix parsing:
+//! Return the right hand side of the expression
+virtual auto infix_rhs(token::TokenType t_type) -> n::NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr rhs;
+
+  const auto [lbp, rbp] = m_infix.at(t_type);
+  if(lbp < t_min_bp) {
+    // Unget the infix token operator
+    prev();
+  } else {
+    rhs = expr(rbp);
+    if(!rhs) {
+      syntax_error("Infix operations require a right hand side");
+    }
+  }
+
+  return rhs;
+}
+
 auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -196,7 +216,7 @@ auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
 
   const auto token{get_token()};
   const auto lambda{[&](ArithmeticOp t_op) {
-		newline_opt();
+    newline_opt();
     if(auto rhs{t_fn(token.type())}; rhs) {
       node = make_node<Arithmetic>(t_op, std::move(t_lhs), std::move(rhs));
     }
@@ -257,7 +277,7 @@ auto PrattParser::assignment(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
     // Defining a separate lambda in each function
     const auto token{get_token()};
     const auto lambda{[&](AssignmentOp t_op) {
-			newline_opt();
+      newline_opt();
       auto rhs{t_fn(token.type())};
       if(rhs) {
         node = make_node<Assignment>(t_op, std::move(t_lhs), std::move(rhs));
@@ -296,7 +316,7 @@ auto PrattParser::comparison(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
   if(t_lhs) {
     const auto token{get_token()};
     const auto lambda{[&](ComparisonOp t_op) {
-			newline_opt();
+      newline_opt();
       auto rhs{t_fn(token.type())};
       if(rhs) {
         node = make_node<Comparison>(t_op, std::move(t_lhs), std::move(rhs));
