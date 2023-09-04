@@ -148,6 +148,10 @@ expr_statement   : expr terminator
                  ;
 
 // Expression lists:
+multiple_expr_list : expr ',' newline_opt expr
+                 | multiple_expr_list ',' newline_opt expr
+                 ;
+
 expr_list        : expr
                  | multiple_expr_list
                  ;
@@ -155,11 +159,6 @@ expr_list        : expr
 expr_list_opt    : // empty
                  | expr_list
                  ;
-
-multiple_expr_list : expr ',' newline_opt expr
-                 | multiple_expr_list ',' newline_opt expr
-                 ;
-
 
 // Jump statement:
 jump_statement   : Continue terminator
@@ -176,21 +175,21 @@ loop_statement   : Loop body
                  ;
 
 // Match statement:
+match_case      :
+                ;
+
+match_case_list  : match_case
+                 | match_case_list match_case
+                 ;
+
+match_body       : newline_opt '{' match_case_list '}'
+                 ;
+
 match_statement  : Match match_body
                  | Match eval_expr match_body
                  ;
 
-match_body      : newline_opt '{' match_case_list '}'
-                 ;
-
-match_case_list : match_case
-                 | match_case_list match_case
-                 ;
-
-match_case      :
-                ;
-
-// If statement:
+// Branch statements:
 if_statement     : If eval_expr body
 				         | If eval_expr body Else body
 				         | If eval_expr body elif_statement
@@ -226,10 +225,6 @@ attribute        : Private
                  ;
 
 // Function:
-return_type_opt  : // empty
-                 | newline_opt ARROW IDENTIFIER
-                 ;
-
 param_list       : IDENTIFIER ':' IDENTIFIER
                  | param_list ',' IDENTIFIER ':' IDENTIFIER
                  ;
@@ -238,13 +233,17 @@ param_list_opt   : // empty
                  | param_list
                  ;
 
-function         : Fn IDENTIFIER '(' param_list_opt ')' return_type_opt body
-                 | Fn IDENTIFIER return_type_opt body
-				         ;
+return_type_opt  : // empty
+                 | newline_opt ARROW IDENTIFIER
+                 ;
 
 lambda           : Fn '(' param_list_opt ')' return_type_opt body
                  | Fn return_type_opt body
                  ;
+
+function         : Fn IDENTIFIER '(' param_list_opt ')' return_type_opt body
+                 | Fn IDENTIFIER return_type_opt body
+				         ;
 
 // Import:
 import_expr      : STRING newline_opt
