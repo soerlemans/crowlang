@@ -26,10 +26,10 @@ namespace keywords {
   DEFINE_TERMINAL(g_const, "const", CONST);
 
   // Package:
-  DEFINE_TERMINAL(g_package, "pkg",    PACKAGE);
-  DEFINE_TERMINAL(g_import,  "import", IMPORT);
-  DEFINE_TERMINAL(g_priv,    "priv",   PRIVATE);
-  DEFINE_TERMINAL(g_pub,     "pub",    PUBLIC);
+  DEFINE_TERMINAL(g_package, "package", PACKAGE);
+  DEFINE_TERMINAL(g_import,  "import",  IMPORT);
+  DEFINE_TERMINAL(g_priv,    "priv",    PRIVATE);
+  DEFINE_TERMINAL(g_pub,     "pub",     PUBLIC);
 
   // Object oriented:
   DEFINE_TERMINAL(g_struct,    "struct",    STRUCT);

@@ -56,7 +56,19 @@ class Parser {
 
   auto check(token::TokenType t_type) -> bool;
   auto next() -> token::Token&;
-  auto next_if(token::TokenType t_type) -> bool;
+
+  template<typename... Args>
+  auto next_if(Args&&... t_args) -> bool
+  {
+    const auto is_next{(check(std::forward<Args>(t_args)) || ...)};
+
+    if(is_next) {
+      next();
+    }
+
+    return is_next;
+  }
+
   auto expect(token::TokenType t_type) -> token::Token&;
   auto prev() -> token::Token&;
   auto get_token() const -> token::Token&;

@@ -13,6 +13,8 @@
 
 namespace parser::pratt {
 // Aliases:
+using NodeFn = std::function<n::NodePtr()>;
+
 //! This type is used to get the right hand side of a binary expressions
 using RhsFn = std::function<n::NodePtr(token::TokenType)>;
 
@@ -46,7 +48,6 @@ class PrattParser : public Parser {
   // Infix parsing:
   virtual auto arithmetic(n::NodePtr& t_lhs, const RhsFn& t_fn) -> n::NodePtr;
   virtual auto logical(n::NodePtr& t_lhs, const RhsFn& t_fn) -> n::NodePtr;
-  virtual auto assignment(n::NodePtr& t_lhs, const RhsFn& t_fn) -> n::NodePtr;
   virtual auto comparison(n::NodePtr& t_lhs, const RhsFn& t_fn) -> n::NodePtr;
 
   virtual auto infix(n::NodePtr& t_lhs, const RhsFn& t_fn) -> n::NodePtr;

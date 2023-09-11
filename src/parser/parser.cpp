@@ -56,20 +56,6 @@ auto Parser::next() -> Token&
   return m_tokenstream.next();
 }
 
-auto Parser::next_if(const TokenType t_type) -> bool
-{
-  eos_error(
-    "Tried to move to next if Token is equal to expected token at EOS!");
-
-  // Only go to next token if we find the token we expect
-  const auto advance{check(t_type)};
-  if(advance) {
-    next();
-  }
-
-  return advance;
-}
-
 auto Parser::expect(const TokenType t_type) -> Token&
 {
   if(!check(t_type)) {

@@ -53,8 +53,8 @@ terminator       : terminator ';'
 // Lvalue:
 lvalue           : IDENTIFIER
                  | lvalue '[' expr ']'
-                 | lvalue '.' newline_opt IDENTIFIER
-                 | lvalue ARROW newline_opt IDENTIFIER
+                 | lvalue newline_opt '.' IDENTIFIER
+                 | lvalue newline_opt ARROW IDENTIFIER
                  ;
 
 chain_expr       : IDENTIFIER
@@ -110,14 +110,6 @@ logical          : expr newline_opt AND expr
                  | expr newline_opt OR  expr
                  ;
 
-assignment       : lvalue MUL_ASSIGN newline_opt expr
-                 | lvalue DIV_ASSIGN newline_opt expr
-                 | lvalue MOD_ASSIGN newline_opt expr
-                 | lvalue ADD_ASSIGN newline_opt expr
-                 | lvalue SUB_ASSIGN newline_opt expr
-                 | lvalue '=' newline_opt expr
-                 ;
-
 // Expressions:
 expr             : lvalue
 				         | literal
@@ -150,12 +142,20 @@ expr_statement   : expr terminator
                  ;
 
 // Result statement:
+assignment       : lvalue MUL_ASSIGN newline_opt expr
+                 | lvalue DIV_ASSIGN newline_opt expr
+                 | lvalue MOD_ASSIGN newline_opt expr
+                 | lvalue ADD_ASSIGN newline_opt expr
+                 | lvalue SUB_ASSIGN newline_opt expr
+                 | lvalue '=' newline_opt expr
+                 ;
+
 result_statement : decl_expr terminator
 				         | assignment terminator
 				         | function_call terminator
 				         | precrement terminator
 				         | postcrement terminator
-				         | ';'
+				         /* | ';' */
                  ;
 
 // Expression lists:
@@ -259,12 +259,12 @@ function_call    : chain_expr '(' expr_list_opt')'
                  ;
 
 // Import:
-import_expr      : STRING newline_opt
-                 | IDENTIFIER '=' STRING newline_opt
+import_expr      : STRING
+                 | IDENTIFIER '=' STRING
                  ;
 
-import_list      : import_expr
-                 | import_list import_expr
+import_list      : import_expr newline_opt
+                 | import_list terminator import_expr newline_opt
                  ;
 
 import           : Import STRING

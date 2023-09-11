@@ -37,14 +37,7 @@ auto CrowParser::terminator() -> void
   DBG_TRACE_FN(VERBOSE);
 
   const auto is_terminator{[this] {
-    const bool is_term{check(TokenType::SEMICOLON)
-                       || check(TokenType::NEWLINE)};
-
-    if(is_term) {
-      next();
-    }
-
-    return is_term;
+    return next_if(TokenType::SEMICOLON, TokenType::NEWLINE);
   }};
 
   if(!is_terminator()) {
@@ -75,7 +68,7 @@ auto CrowParser::decl_expr() -> NodePtr
   if(next_if(TokenType::LET)) {
     const auto id{expect(TokenType::IDENTIFIER)};
 
-    if(next_if(TokenType::SEMICOLON)) {
+    if(next_if(TokenType::COLON)) {
       expect(TokenType::IDENTIFIER);
 
       // TODO: Implement type inference
@@ -182,6 +175,44 @@ auto CrowParser::expr_list_opt() -> NodeListPtr
 }
 
 // Result statement:
+auto CrowParser::assignment() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  if(auto lhs{lvalue()}; lhs) {
+    const auto token{get_token()};
+    const auto lambda{[&](AssignmentOp t_op) {
+      newline_opt();
+      if(auto rhs{expr()}; rhs) {
+        node = make_node<Assignment>(t_op, std::move(lhs), std::move(rhs));
+      }
+    }};
+
+    if(next_if(TokenType::MUL_ASSIGN)) {
+      DBG_TRACE_PRINT(INFO, "Found '*='");
+      lambda(AssignmentOp::MULTIPLY);
+    } else if(next_if(TokenType::DIV_ASSIGN)) {
+      DBG_TRACE_PRINT(INFO, "Found '/='");
+      lambda(AssignmentOp::DIVIDE);
+    } else if(next_if(TokenType::MOD_ASSIGN)) {
+      DBG_TRACE_PRINT(INFO, "Found '%='");
+      lambda(AssignmentOp::MODULO);
+    } else if(next_if(TokenType::ADD_ASSIGN)) {
+      DBG_TRACE_PRINT(INFO, "Found '+='");
+      lambda(AssignmentOp::ADD);
+    } else if(next_if(TokenType::SUB_ASSIGN)) {
+      DBG_TRACE_PRINT(INFO, "Found '-='");
+      lambda(AssignmentOp::SUBTRACT);
+    } else if(next_if(TokenType::ASSIGNMENT)) {
+      DBG_TRACE_PRINT(INFO, "Found '='");
+      lambda(AssignmentOp::REGULAR);
+    }
+  }
+
+  return node;
+}
+
 auto CrowParser::result_statement() -> n::NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -189,10 +220,13 @@ auto CrowParser::result_statement() -> n::NodePtr
 
   if(auto ptr{decl_expr()}; ptr) {
     node = std::move(ptr);
-  }else if(auto ptr{precrement()}; ptr) {
+  } else if(auto ptr{assignment()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{precrement()}; ptr) {
     node = std::move(ptr);
   }
 
+  // Terminate result statement
   if(node) {
     terminator();
   }
@@ -304,7 +338,7 @@ auto CrowParser::statement() -> NodePtr
   if(auto ptr{decl_expr()}; ptr) {
     terminator();
     node = std::move(ptr);
-  } else if(auto ptr{expr_statement()}; ptr) {
+  } else if(auto ptr{result_statement()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{if_statement()}; ptr) {
     node = std::move(ptr);
@@ -347,7 +381,7 @@ auto CrowParser::body() -> NodeListPtr
 
   // After a list of newlines an accolade most occur
   if(after_newlines(TokenType::ACCOLADE_OPEN)) {
-		expect(TokenType::ACCOLADE_OPEN);
+    expect(TokenType::ACCOLADE_OPEN);
 
     newline_opt();
     if(auto ptr{statement_list()}; ptr) {
@@ -410,7 +444,7 @@ auto CrowParser::return_type_opt() -> NodePtr
   NodePtr node;
 
   if(after_newlines(TokenType::ARROW)) {
-		expect(TokenType::ARROW);
+    expect(TokenType::ARROW);
     expect(TokenType::IDENTIFIER);
 
     // TODO: Set node
@@ -468,31 +502,49 @@ auto CrowParser::import_expr(Import& t_import) -> bool
   const auto token{get_token()};
   if(next_if(TokenType::STRING)) {
     auto str{token.get<std::string>()};
+
+    DBG_TRACE_PRINT(INFO, "Found: ", std::quoted(str));
+
     t_import.add_import(std::move(str));
   } else if(next_if(TokenType::IDENTIFIER)) {
     auto id{token.get<std::string>()};
     expect(TokenType::ASSIGNMENT);
     auto str{expect(TokenType::STRING).get<std::string>()};
 
+    DBG_TRACE_PRINT(INFO, "Found alias: ", id, " = ", std::quoted(str));
+
     t_import.add_import({str, id});
   } else {
     is_import_expr = false;
   }
-  newline_opt();
 
   return is_import_expr;
 }
 
 auto CrowParser::import_list(Import& t_import) -> void
 {
+  using namespace token;
+
   DBG_TRACE_FN(VERBOSE);
 
   if(!import_expr(t_import)) {
-    syntax_error("Expected at least one import");
+    syntax_error("Expected at least one import expression!");
   }
 
   while(!eos()) {
-    if(!import_expr(t_import)) {
+    if(check(TokenType::SEMICOLON)) {
+      terminator();
+
+      if(!import_expr(t_import)) {
+        syntax_error("Expected another import expression!");
+      }
+    } else if(next_if(TokenType::NEWLINE)) {
+      newline_opt();
+
+      if(!import_expr(t_import)) {
+        break;
+      }
+    } else {
       break;
     }
   }

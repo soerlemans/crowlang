@@ -115,8 +115,7 @@ auto PrattParser::unary_prefix() -> NodePtr
   NodePtr node;
 
   const auto token{get_token()};
-  if(check(TokenType::PLUS) || check(TokenType::MINUS)) {
-    next();
+  if(next_if(TokenType::PLUS, TokenType::MINUS)) {
     DBG_TRACE_PRINT(VERBOSE, "Found UNARY PREFIX");
 
     NodePtr rhs{prefix_expr(token.type())};
@@ -185,6 +184,8 @@ auto PrattParser::prefix() -> NodePtr
   NodePtr node;
 
   if(auto ptr{grouping()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{unary_prefix()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{negation()}; ptr) {
     node = std::move(ptr);
@@ -261,46 +262,6 @@ auto PrattParser::logical(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   return node;
 }
 
-auto PrattParser::assignment(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
-{
-  DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
-
-  if(t_lhs) {
-    // TODO: Create an actual function for this that we can call instead of
-    // Defining a separate lambda in each function
-    const auto token{get_token()};
-    const auto lambda{[&](AssignmentOp t_op) {
-      newline_opt();
-      if(auto rhs{t_fn(token.type())}; rhs) {
-        node = make_node<Assignment>(t_op, std::move(t_lhs), std::move(rhs));
-      }
-    }};
-
-    if(next_if(TokenType::MUL_ASSIGN)) {
-      DBG_TRACE_PRINT(INFO, "Found '*='");
-      lambda(AssignmentOp::MULTIPLY);
-    } else if(next_if(TokenType::DIV_ASSIGN)) {
-      DBG_TRACE_PRINT(INFO, "Found '/='");
-      lambda(AssignmentOp::DIVIDE);
-    } else if(next_if(TokenType::MOD_ASSIGN)) {
-      DBG_TRACE_PRINT(INFO, "Found '%='");
-      lambda(AssignmentOp::MODULO);
-    } else if(next_if(TokenType::ADD_ASSIGN)) {
-      DBG_TRACE_PRINT(INFO, "Found '+='");
-      lambda(AssignmentOp::ADD);
-    } else if(next_if(TokenType::SUB_ASSIGN)) {
-      DBG_TRACE_PRINT(INFO, "Found '-='");
-      lambda(AssignmentOp::SUBTRACT);
-    } else if(next_if(TokenType::ASSIGNMENT)) {
-      DBG_TRACE_PRINT(INFO, "Found '='");
-      lambda(AssignmentOp::REGULAR);
-    }
-  }
-
-  return node;
-}
-
 auto PrattParser::comparison(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -350,8 +311,6 @@ auto PrattParser::infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
       node = std::move(ptr);
     } else if(auto ptr{logical(t_lhs, t_fn)}; ptr) {
       node = std::move(ptr);
-    } else if(auto ptr{assignment(t_lhs, t_fn)}; ptr) {
-      node = std::move(ptr);
     } else if(auto ptr{comparison(t_lhs, t_fn)}; ptr) {
       node = std::move(ptr);
     }
@@ -360,7 +319,7 @@ auto PrattParser::infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   return node;
 }
 
-// Grammar:
+// Expressions:
 auto PrattParser::expr(const int t_min_bp) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
