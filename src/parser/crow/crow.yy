@@ -60,8 +60,8 @@ lvalue           : IDENTIFIER
 chain_expr       : IDENTIFIER
                  | chain_expr '[' expr ']'
 				         | chain_expr '(' expr_list_opt ')'
-                 | chain_expr '.' newline_opt IDENTIFIER
-                 | chain_expr ARROW newline_opt IDENTIFIER
+                 | chain_expr newline_opt '.' IDENTIFIER
+                 | chain_expr newline_opt ARROW IDENTIFIER
                  ;
 
 // Literals:
@@ -153,8 +153,8 @@ expr_statement   : expr terminator
 result_statement : decl_expr terminator
 				         | assignment terminator
 				         | function_call terminator
-				         | precrement
-				         | postcrement
+				         | precrement terminator
+				         | postcrement terminator
 				         | ';'
                  ;
 

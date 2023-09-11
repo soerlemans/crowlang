@@ -181,6 +181,25 @@ auto CrowParser::expr_list_opt() -> NodeListPtr
   return nodes;
 }
 
+// Result statement:
+auto CrowParser::result_statement() -> n::NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  if(auto ptr{decl_expr()}; ptr) {
+    node = std::move(ptr);
+  }else if(auto ptr{precrement()}; ptr) {
+    node = std::move(ptr);
+  }
+
+  if(node) {
+    terminator();
+  }
+
+  return node;
+}
+
 auto CrowParser::jump_statement() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -327,9 +346,8 @@ auto CrowParser::body() -> NodeListPtr
   NodeListPtr nodes;
 
   // After a list of newlines an accolade most occur
-  if(after_newline_list(TokenType::ACCOLADE_OPEN)) {
-    newline_opt();
-    expect(TokenType::ACCOLADE_OPEN);
+  if(after_newlines(TokenType::ACCOLADE_OPEN)) {
+		expect(TokenType::ACCOLADE_OPEN);
 
     newline_opt();
     if(auto ptr{statement_list()}; ptr) {
@@ -391,9 +409,8 @@ auto CrowParser::return_type_opt() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  if(after_newline_list(TokenType::ARROW)) {
-    newline_opt();
-    expect(TokenType::ARROW);
+  if(after_newlines(TokenType::ARROW)) {
+		expect(TokenType::ARROW);
     expect(TokenType::IDENTIFIER);
 
     // TODO: Set node

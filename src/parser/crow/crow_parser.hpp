@@ -37,6 +37,9 @@ class CrowParser : public pratt::PrattParser {
   virtual auto expr_list() -> n::NodeListPtr;
   auto expr_list_opt() -> n::NodeListPtr override;
 
+	// Result statement:
+  virtual auto result_statement() -> n::NodePtr;
+
 	// Jump statements:
   virtual auto jump_statement() -> n::NodePtr;
 

@@ -55,14 +55,20 @@ auto PrattParser::literal() -> NodePtr
 
   const auto token{get_token()};
   if(next_if(TokenType::FLOAT)) {
-    DBG_TRACE_PRINT(INFO, "Found FLOAT literal: ");
-    node = make_node<Float>(token.get<double>());
+    const auto val{token.get<double>()};
+    DBG_TRACE_PRINT(INFO, "Found FLOAT literal: ", val);
+
+    node = make_node<Float>(val);
   } else if(next_if(TokenType::INTEGER)) {
-    DBG_TRACE_PRINT(INFO, "Found INTEGER literal: ");
-    node = make_node<Integer>(token.get<int>());
+    const auto val{token.get<int>()};
+    DBG_TRACE_PRINT(INFO, "Found INTEGER literal: ", val);
+
+    node = make_node<Integer>(val);
   } else if(next_if(TokenType::STRING)) {
-    DBG_TRACE_PRINT(INFO, "Found STRING literal: ", token.get<std::string>());
-    node = make_node<String>(token.get<std::string>());
+    const auto val{token.get<std::string>()};
+    DBG_TRACE_PRINT(INFO, "Found STRING literal: ", val);
+
+    node = make_node<String>(val);
   }
 
   return node;
@@ -150,7 +156,6 @@ auto PrattParser::precrement() -> NodePtr
   return node;
 }
 
-
 // This function parses function calls, it parses builtin functions as well as
 // User defined
 auto PrattParser::function_call() -> NodePtr
@@ -202,27 +207,28 @@ auto PrattParser::arithmetic(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  const auto token{get_token()};
   const auto lambda{[&](ArithmeticOp t_op) {
-    newline_opt();
+    const auto token{get_token()};
+    next();
+
     if(auto rhs{t_fn(token.type())}; rhs) {
       node = make_node<Arithmetic>(t_op, std::move(t_lhs), std::move(rhs));
     }
   }};
 
-  if(next_if(TokenType::ASTERISK)) {
+  if(after_newlines(TokenType::ASTERISK)) {
     DBG_TRACE_PRINT(INFO, "Found 'MULTIPLICATION'");
     lambda(ArithmeticOp::MULTIPLY);
-  } else if(next_if(TokenType::SLASH)) {
+  } else if(after_newlines(TokenType::SLASH)) {
     DBG_TRACE_PRINT(INFO, "Found 'DIVISION'");
     lambda(ArithmeticOp::DIVIDE);
-  } else if(next_if(TokenType::PERCENT_SIGN)) {
+  } else if(after_newlines(TokenType::PERCENT_SIGN)) {
     DBG_TRACE_PRINT(INFO, "Found 'MODULO'");
     lambda(ArithmeticOp::MODULO);
-  } else if(next_if(TokenType::PLUS)) {
+  } else if(after_newlines(TokenType::PLUS)) {
     DBG_TRACE_PRINT(INFO, "Found 'ADDITION'");
     lambda(ArithmeticOp::ADD);
-  } else if(next_if(TokenType::MINUS)) {
+  } else if(after_newlines(TokenType::MINUS)) {
     DBG_TRACE_PRINT(INFO, "Found 'SUBTRACTION'");
     lambda(ArithmeticOp::SUBTRACT);
   }
@@ -235,18 +241,19 @@ auto PrattParser::logical(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  const auto token{get_token()};
   auto lambda{[&]<typename T>() {
-    newline_opt();
+    const auto token{get_token()};
+    next();
+
     if(auto rhs{t_fn(token.type())}; rhs) {
       node = make_node<T>(std::move(t_lhs), std::move(rhs));
     }
   }};
 
-  if(next_if(TokenType::AND)) {
+  if(after_newlines(TokenType::AND)) {
     DBG_TRACE_PRINT(INFO, "Found '&&'");
     lambda.template operator()<And>();
-  } else if(next_if(TokenType::AND)) {
+  } else if(after_newlines(TokenType::AND)) {
     DBG_TRACE_PRINT(INFO, "Found '||'");
     lambda.template operator()<Or>();
   }
@@ -265,8 +272,7 @@ auto PrattParser::assignment(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
     const auto token{get_token()};
     const auto lambda{[&](AssignmentOp t_op) {
       newline_opt();
-      auto rhs{t_fn(token.type())};
-      if(rhs) {
+      if(auto rhs{t_fn(token.type())}; rhs) {
         node = make_node<Assignment>(t_op, std::move(t_lhs), std::move(rhs));
       }
     }};
@@ -301,31 +307,31 @@ auto PrattParser::comparison(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   NodePtr node;
 
   if(t_lhs) {
-    const auto token{get_token()};
     const auto lambda{[&](ComparisonOp t_op) {
-      newline_opt();
-      auto rhs{t_fn(token.type())};
-      if(rhs) {
+      const auto token{get_token()};
+      next();
+
+      if(auto rhs{t_fn(token.type())}; rhs) {
         node = make_node<Comparison>(t_op, std::move(t_lhs), std::move(rhs));
       }
     }};
 
-    if(next_if(TokenType::LESS_THAN)) {
+    if(after_newlines(TokenType::LESS_THAN)) {
       DBG_TRACE_PRINT(INFO, "Found '<'");
       lambda(ComparisonOp::LESS_THAN);
-    } else if(next_if(TokenType::LESS_THAN_EQUAL)) {
+    } else if(after_newlines(TokenType::LESS_THAN_EQUAL)) {
       DBG_TRACE_PRINT(INFO, "Found '<='");
       lambda(ComparisonOp::LESS_THAN_EQUAL);
-    } else if(next_if(TokenType::EQUAL)) {
+    } else if(after_newlines(TokenType::EQUAL)) {
       DBG_TRACE_PRINT(INFO, "Found '=='");
       lambda(ComparisonOp::EQUAL);
-    } else if(next_if(TokenType::NOT_EQUAL)) {
+    } else if(after_newlines(TokenType::NOT_EQUAL)) {
       DBG_TRACE_PRINT(INFO, "Found '!='");
       lambda(ComparisonOp::NOT_EQUAL);
-    } else if(next_if(TokenType::GREATER_THAN)) {
+    } else if(after_newlines(TokenType::GREATER_THAN)) {
       DBG_TRACE_PRINT(INFO, "Found '>'");
       lambda(ComparisonOp::GREATER_THAN);
-    } else if(next_if(TokenType::GREATER_THAN_EQUAL)) {
+    } else if(after_newlines(TokenType::GREATER_THAN_EQUAL)) {
       DBG_TRACE_PRINT(INFO, "Found '>='");
       lambda(ComparisonOp::GREATER_THAN_EQUAL);
     }

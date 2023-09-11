@@ -39,6 +39,8 @@ class Parser {
   {
     using namespace token;
 
+    DBG_TRACE_FN(VERBOSE);
+
     expect(TokenType::PAREN_OPEN);
     auto var{t_fn()};
     expect(TokenType::PAREN_CLOSE);
@@ -59,7 +61,7 @@ class Parser {
   auto prev() -> token::Token&;
   auto get_token() const -> token::Token&;
 
-  auto after_newline_list(token::TokenType t_type) -> bool;
+  auto after_newlines(token::TokenType t_type) -> bool;
 
   public:
   Parser(token::TokenStream&& t_tokenstream);

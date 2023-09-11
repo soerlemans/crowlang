@@ -75,7 +75,7 @@ auto Parser::expect(const TokenType t_type) -> Token&
   if(!check(t_type)) {
     std::stringstream ss;
     ss << "Expected -> ";
-    ss << tokentype2str(t_type);
+    ss << std::quoted(tokentype2str(t_type), '\'');
 
     syntax_error(ss.str());
   }
@@ -100,14 +100,22 @@ auto Parser::get_token() const -> Token&
 }
 
 //! This method is used to verify if a certain token is located after newlines
-auto Parser::after_newline_list(const token::TokenType t_type) -> bool
+auto Parser::after_newlines(const token::TokenType t_type) -> bool
 {
+  DBG_TRACE_FN(VERBOSE);
+
   bool found{false};
 
   for(auto iter{m_tokenstream.iter()}; iter != m_tokenstream.end(); iter++) {
     if(iter->type() != TokenType::NEWLINE) {
       if(iter->type() == t_type) {
         found = true;
+
+        DBG_TRACE_PRINT(VERBOSE,
+                        "Found: ", std::quoted(tokentype2str(t_type), '\''));
+
+        // Update iterator
+        m_tokenstream.set(iter);
       }
 
       break;
