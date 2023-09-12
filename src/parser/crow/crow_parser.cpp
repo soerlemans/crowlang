@@ -17,6 +17,7 @@ using namespace ast::node::lvalue;
 using namespace ast::node::operators;
 using namespace ast::node::packaging;
 using namespace ast::node::rvalue;
+using namespace ast::node::typing;
 
 // Methods:
 CrowParser::CrowParser(TokenStream t_tokenstream)
@@ -438,6 +439,18 @@ auto CrowParser::param_list_opt() -> NodeListPtr
   return nodes;
 }
 
+auto CrowParser::return_type() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node{return_type_opt()};
+
+  if(!node) {
+    syntax_error("Expected a return type specification!");
+  }
+
+  return node;
+}
+
 auto CrowParser::return_type_opt() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -467,6 +480,33 @@ auto CrowParser::lambda() -> n::NodePtr
   return node;
 }
 
+auto CrowParser::function_decl() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  if(next_if(TokenType::FUNCTION)) {
+    const auto tt_id{expect(TokenType::IDENTIFIER)};
+    const auto id{tt_id.get<std::string>()};
+
+    // NodeListPtr params;
+    auto params{parens([this] {
+      return this->param_list_opt();
+    })};
+
+    auto rettype_ptr{return_type()};
+
+    terminator();
+
+    // TODO: Implement
+    // node = make_node<FunctionDecl>(id, std::move(params),
+    // std::move(rettype_ptr));
+  }
+
+  return node;
+}
+
+
 auto CrowParser::function() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -481,7 +521,7 @@ auto CrowParser::function() -> NodePtr
       return this->param_list_opt();
     })};
 
-    auto return_type{return_type_opt()};
+    auto rettype_ptr{return_type_opt()};
 
     auto body_ptr{body()};
     if(!body_ptr) {

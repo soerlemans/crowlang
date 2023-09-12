@@ -27,6 +27,7 @@ enum class TokenType {
   // Typing:
   STRUCT,
   INTERFACE,
+	IMPL,
 
   // Control statements:
   FUNCTION,

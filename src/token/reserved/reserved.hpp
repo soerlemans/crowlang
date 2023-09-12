@@ -34,6 +34,7 @@ namespace keywords {
   // Object oriented:
   DEFINE_TERMINAL(g_struct,    "struct",    STRUCT);
   DEFINE_TERMINAL(g_interface, "interface", INTERFACE);
+  DEFINE_TERMINAL(g_impl,      "impl",      IMPL);
 
   // Control statements:
   DEFINE_TERMINAL(g_fn,    "fn",    FUNCTION);
@@ -52,7 +53,7 @@ namespace keywords {
 	const std::map g_keywords {
 		g_let.pair(), g_const.pair(),
 		g_package.pair(), g_import.pair(), g_priv.pair(), g_pub.pair(),
-		g_struct.pair(), g_interface.pair(),
+		g_struct.pair(), g_interface.pair(), g_impl.pair(),
 	  g_fn.pair(),
 		g_match.pair(),
 	  g_if.pair(), g_else.pair(), g_elif.pair(),

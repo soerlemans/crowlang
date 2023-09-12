@@ -48,4 +48,9 @@
 #include "rvalue/literal.hpp"
 #include "rvalue/rvalue.hpp"
 
+// Typing:
+#include "typing/impl.hpp"
+#include "typing/interface.hpp"
+#include "typing/struct.hpp"
+
 #endif // CROW_AST_NODE_INCLUDE_HPP

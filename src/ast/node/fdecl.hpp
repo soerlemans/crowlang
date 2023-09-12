@@ -9,6 +9,7 @@
 #include "operators/operators.hpp"
 #include "packaging/packaging.hpp"
 #include "rvalue/rvalue.hpp"
+#include "typing/typing.hpp"
 
 // Local Includes:
 #include "node.hpp"

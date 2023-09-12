@@ -8,7 +8,7 @@
 %token Package Import Private Public
 
 // Typing:
-%token Struct Interface
+%token Enum Struct Interface Impl
 
 // Control Statements:
 %token Fn Match Case If Else ElIf Loop
@@ -234,6 +234,44 @@ attribute        : Private
 				         | Public
                  ;
 
+// Typing:
+// Enum:
+enum_def         : Enum IDENTIFIER newline_opt
+                     '{' newline_opt '}'
+                 ;
+// TODO: Add self as must have parameter
+method_decl      : Fn IDENTIFIER '(' param_list_opt ')' return_type terminator
+                 ;
+
+
+method_decl_list : // empty
+				         | method_decl
+				         | fn_decl_list method_decl
+                 ;
+
+// Interface:
+interface_def    : Interface IDENTIFIER newline_opt
+                     '{' newline_opt method_decl_list '}'
+                 ;
+
+member_decl      : IDENTIFIER ':' IDENTIFIER terminator
+                 ;
+
+member_decl_list : // empty
+                 | member_decl
+				         | member_decl_list member_decl
+                 ;
+
+// Struct:
+struct_def       : Struct IDENTIFIER newline_opt
+                     '{'  newline_opt newline_opt'}'
+                 ;
+
+// Implementation:
+impl_block       : Impl IDENTIFIER newline_opt
+                   '{' newline_opt newline_opt '}'
+                 ;
+
 // Function:
 param_list       : IDENTIFIER ':' IDENTIFIER
                  | param_list ',' IDENTIFIER ':' IDENTIFIER
@@ -243,8 +281,11 @@ param_list_opt   : // empty
                  | param_list
                  ;
 
+return_type      : newline_opt ARROW IDENTIFIER
+                 ;
+
 return_type_opt  : // empty
-                 | newline_opt ARROW IDENTIFIER
+                 | return_type
                  ;
 
 lambda           : Fn '(' param_list_opt ')' return_type_opt body
