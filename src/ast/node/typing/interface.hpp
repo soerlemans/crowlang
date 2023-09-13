@@ -18,6 +18,8 @@ class Interface : public nt::Identifier, nt::Body {
   public:
   Interface(std::string_view t_identifier, NodeListPtr&& t_body);
 
+  MAKE_VISITABLE(visitor::NodeVisitor);
+
   ~Interface() override = default;
 };
 } // namespace ast::node::typing

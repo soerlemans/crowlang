@@ -18,6 +18,8 @@ class Struct : public nt::Identifier, public nt::Body {
   public:
   Struct(std::string_view t_identifier, NodeListPtr&& t_body);
 
+  MAKE_VISITABLE(visitor::NodeVisitor);
+
   ~Struct() override = default;
 };
 } // namespace ast::node::typing

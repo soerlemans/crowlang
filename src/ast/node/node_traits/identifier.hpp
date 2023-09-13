@@ -9,7 +9,7 @@
 
 
 namespace ast::node::node_traits {
-class Identifier : public NodeInterface {
+class Identifier : virtual public NodeInterface {
   protected:
   std::string m_identifier;
 

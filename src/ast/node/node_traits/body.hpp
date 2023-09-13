@@ -6,9 +6,9 @@
 
 
 namespace ast::node::node_traits {
-class Body : public NodeInterface {
+class Body : virtual public NodeInterface {
   protected:
-	NodeListPtr m_body;
+  NodeListPtr m_body;
 
   public:
   Body(NodeListPtr&& t_body);
@@ -19,6 +19,6 @@ class Body : public NodeInterface {
 
   ~Body() override = default;
 };
-} // namespace ast::node::node_triats
+} // namespace ast::node::node_traits
 
 #endif // CROW_AST_NODE_NODE_TRAITS_BODY_HPP

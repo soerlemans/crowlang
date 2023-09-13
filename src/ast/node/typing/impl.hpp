@@ -17,6 +17,8 @@ class Impl : public nt::Identifier, public nt::Body {
   public:
   Impl(std::string_view t_identifier, NodeListPtr&& t_body);
 
+  MAKE_VISITABLE(visitor::NodeVisitor);
+
   ~Impl() override = default;
 };
 } // namespace ast::node::typing

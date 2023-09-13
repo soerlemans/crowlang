@@ -6,7 +6,7 @@
 
 
 namespace ast::node::node_traits {
-class Init : public NodeInterface {
+class Init : virtual public NodeInterface {
   protected:
   NodePtr m_init;
 
