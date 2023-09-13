@@ -15,8 +15,6 @@ namespace nt = node_traits;
 // Classes:
 class If : public nt::Init, public nt::Condition {
   private:
-  NodePtr m_init;
-  NodePtr m_condition;
   NodeListPtr m_then;
   NodeListPtr m_alt;
 

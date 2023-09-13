@@ -13,15 +13,13 @@ namespace ast::node::control {
 namespace nt = node_traits;
 
 // Classes:
-class Loop : public nt::Init, public nt::Condition, public nt::Body {
-  private:
-  NodePtr m_expr;
-
+class Loop : public nt::Init,
+             public nt::Condition,
+             public nt::Body,
+             public nt::Expr {
   public:
   Loop(NodePtr&& t_init, NodePtr&& t_condition, NodePtr&& t_expr,
        NodeListPtr&& t_body);
-
-  auto expr() -> NodePtr&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

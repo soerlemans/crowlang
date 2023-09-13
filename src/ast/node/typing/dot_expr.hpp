@@ -13,14 +13,9 @@ namespace ast::node::lvalue {
 namespace nt = node_traits;
 
 // Classes:
-class DotExpr : public nt::Identifier {
-  private:
-  NodePtr m_expr;
-
+class DotExpr : public nt::Identifier, nt::Expr {
   public:
   DotExpr(std::string_view t_identifier, NodePtr&& t_init);
-
-  auto expr() -> NodePtr&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

@@ -2,11 +2,7 @@
 
 
 using namespace ast::node::control;
+using namespace ast::node::node_traits;
 
-Return::Return(NodePtr&& t_expr): m_expr{std::move(t_expr)}
+Return::Return(NodePtr&& t_expr): Expr{std::move(t_expr)}
 {}
-
-auto Return::expr() -> NodePtr&
-{
-  return m_expr;
-}

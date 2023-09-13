@@ -4,6 +4,7 @@
 // Node traits:
 #include "body.hpp"
 #include "condition.hpp"
+#include "expr.hpp"
 #include "identifier.hpp"
 #include "init.hpp"
 
