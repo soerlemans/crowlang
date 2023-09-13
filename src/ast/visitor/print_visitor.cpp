@@ -210,12 +210,12 @@ auto PrintVisitor::visit(Import* t_import) -> void
   }
 }
 
-auto PrintVisitor::visit(Package* t_pkg) -> void
+auto PrintVisitor::visit(ModuleDecl* t_mod) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("Package");
-  PPRINT("| Identifier: ", t_pkg->identifier());
+  PPRINT("Module Declaration");
+  PPRINT("| Identifier: ", t_mod->identifier());
 }
 
 auto PrintVisitor::visit(Float* t_float) -> void

@@ -7,7 +7,7 @@
 #include "functions/functions.hpp"
 #include "lvalue/lvalue.hpp"
 #include "operators/operators.hpp"
-#include "packaging/packaging.hpp"
+#include "packaging/fdecl.hpp"
 #include "rvalue/rvalue.hpp"
 #include "typing/typing.hpp"
 

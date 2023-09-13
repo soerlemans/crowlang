@@ -19,8 +19,9 @@ enum class TokenType {
   CONST,
 
   // Package:
-  PACKAGE,
+  MODULE,
   IMPORT,
+  USE,
   PRIVATE,
   PUBLIC,
 
@@ -101,6 +102,7 @@ enum class TokenType {
   DOT,
   COMMA,
   QUESTION_MARK,
+  DOUBLE_COLON,
   COLON,
   SEMICOLON,
 

@@ -1,20 +1,22 @@
-#ifndef DOT_EXPR_HPP
-#define DOT_EXPR_HPP
+#ifndef CROW_AST_NODE_TYPING_DOT_EXPR_HPP
+#define CROW_AST_NODE_TYPING_DOT_EXPR_HPP
 
 // Includes:
-#include "../node_interface.hpp"
+#include "../node_traits/include.hpp"
 
 
 namespace ast::node::lvalue {
-class DotExpr : public NodeInterface {
+// Aliases:
+namespace nt = node_traits;
+
+// Classes:
+class DotExpr : public nt::Identifier {
   private:
-  std::string m_identifier;
   NodePtr m_expr;
 
   public:
   DotExpr(std::string_view t_identifier, NodePtr&& t_init);
 
-  auto identifier() const -> std::string_view;
   auto expr() -> NodePtr&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);
@@ -24,4 +26,4 @@ class DotExpr : public NodeInterface {
 
 } // namespace ast::node::lvalue
 
-#endif // DOT_EXPR_HPP
+#endif // CROW_AST_NODE_TYPING_DOT_EXPR_HPP

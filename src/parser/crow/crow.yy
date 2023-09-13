@@ -5,7 +5,7 @@
 %token Let Const
 
 // Package:
-%token Package Import Private Public
+%token Module Import Private Public
 
 // Typing:
 %token Enum Struct Interface Impl
@@ -313,11 +313,11 @@ import           : Import STRING
                  ;
 
 // Packaging:
-package          : Package IDENTIFIER
+module           : Module IDENTIFIER
                  ;
 
 // Items:
-item             : package
+item             : module
 				         | import
 				         | decl_expr
                  | function

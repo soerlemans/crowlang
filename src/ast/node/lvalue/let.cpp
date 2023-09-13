@@ -2,15 +2,11 @@
 
 
 using namespace ast::node::lvalue;
+using namespace ast::node::node_traits;
 
-Let::Let(std::string_view t_identifier, NodePtr&& t_init)
-  : m_identifier{std::move(t_identifier)}, m_init{std::move(t_init)}
+Let::Let(const std::string_view t_identifier, NodePtr&& t_init)
+  : Identifier{t_identifier}, m_init{std::move(t_init)}
 {}
-
-auto Let::identifier() const -> std::string_view
-{
-  return m_identifier;
-}
 
 auto Let::init() -> NodePtr&
 {

@@ -2,18 +2,14 @@
 
 
 using namespace ast::node::functions;
+using namespace ast::node::node_traits;
 
-Function::Function(std::string t_identifier, NodeListPtr&& t_params,
+Function::Function(std::string_view t_identifier, NodeListPtr&& t_params,
                    NodeListPtr&& t_body)
-  : m_identifier{std::move(t_identifier)},
+  : Identifier{t_identifier},
     m_params{std::move(t_params)},
     m_body{std::move(t_body)}
 {}
-
-auto Function::identifier() const -> std::string_view
-{
-  return {m_identifier};
-}
 
 auto Function::params() -> NodeListPtr&
 {

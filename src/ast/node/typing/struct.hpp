@@ -1,24 +1,25 @@
-#ifndef STRUCT_HPP
-#define STRUCT_HPP
+#ifndef CROW_AST_NODE_TYPING_STRUCT_HPP
+#define CROW_AST_NODE_TYPING_STRUCT_HPP
 
 // Includes:
-#include "../node_interface.hpp"
+#include "../node_traits/include.hpp"
+
+// Local Includes:
+#include "typing.hpp"
 
 
 namespace ast::node::typing {
-class Struct : public NodeInterface {
-  private:
-  std::string m_identifier;
-  NodeListPtr m_body;
+// Aliases:
+namespace nt = node_traits;
+
+// Classes:
+class Struct : public nt::Identifier, public nt::Body {
 
   public:
-  Struct(std::string t_identifier, NodeListPtr&& t_body);
-
-  auto identifier() const -> std::string_view;
-  auto body() -> NodeListPtr&;
+  Struct(std::string_view t_identifier, NodeListPtr&& t_body);
 
   ~Struct() override = default;
 };
 } // namespace ast::node::typing
 
-#endif // STRUCT_HPP
+#endif // CROW_AST_NODE_TYPING_STRUCT_HPP

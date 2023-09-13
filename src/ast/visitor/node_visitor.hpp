@@ -44,7 +44,7 @@ class NodeVisitor {
   virtual auto visit(node::operators::UnaryPrefix* t_unary_prefix) -> void = 0;
 
   virtual auto visit(node::packaging::Import* t_import) -> void = 0;
-  virtual auto visit(node::packaging::Package* t_pkg) -> void = 0;
+  virtual auto visit(node::packaging::ModuleDecl* t_mod) -> void = 0;
 
   virtual auto visit(node::rvalue::Float* t_float) -> void = 0;
   virtual auto visit(node::rvalue::Integer* t_int) -> void = 0;

@@ -1,5 +1,5 @@
-#ifndef TYPING_HPP
-#define TYPING_HPP
+#ifndef CROW_AST_NODE_TYPING_TYPING_HPP
+#define CROW_AST_NODE_TYPING_TYPING_HPP
 
 
 namespace ast::node::typing {
@@ -8,4 +8,4 @@ class Interface;
 class Impl;
 } // namespace ast::node::typing
 
-#endif // TYPING_HPP
+#endif // CROW_AST_NODE_TYPING_TYPING_HPP

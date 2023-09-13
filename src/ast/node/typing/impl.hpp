@@ -1,24 +1,21 @@
-#ifndef IMPL_HPP
-#define IMPL_HPP
+#ifndef CROW_AST_NODE_TYPING_IMPL_HPP
+#define CROW_AST_NODE_TYPING_IMPL_HPP
 
 // Includes:
-#include "../node_interface.hpp"
+#include "../node_traits/include.hpp"
 
 
 namespace ast::node::typing {
-class Impl : public NodeInterface {
-  private:
-  std::string m_identifier;
-  NodeListPtr m_body;
+// Aliases:
+namespace nt = node_traits;
 
+// Classes:
+class Impl : public nt::Identifier, public nt::Body {
   public:
-  Impl(std::string t_identifier, NodeListPtr&& t_body);
-
-  auto identifier() const -> std::string_view;
-  auto body() -> NodeListPtr&;
+  Impl(std::string_view t_identifier, NodeListPtr&& t_body);
 
   ~Impl() override = default;
 };
 } // namespace ast::node::typing
 
-#endif // IMPL_HPP
+#endif // CROW_AST_NODE_TYPING_IMPL_HPP

@@ -372,6 +372,7 @@ auto CrowParser::statement_list() -> NodeListPtr
   return nodes;
 }
 
+// Body:
 /*! The body() should never be optional, or else we will consume newlines
  * unintentionally
  */
@@ -395,6 +396,34 @@ auto CrowParser::body() -> NodeListPtr
   return nodes;
 }
 
+// Interface:
+auto CrowParser::method_decl() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  if(next_if(TokenType::FUNCTION)) {
+    const auto tt_id{expect(TokenType::IDENTIFIER)};
+    const auto id{tt_id.get<std::string>()};
+
+    // NodeListPtr params;
+    auto params{parens([this] {
+      return this->param_list_opt();
+    })};
+
+    auto rettype_ptr{return_type()};
+
+    terminator();
+
+    // TODO: Implement
+    // node = make_node<FunctionDecl>(id, std::move(params),
+    // std::move(rettype_ptr));
+  }
+
+  return node;
+}
+
+// Function:
 auto CrowParser::param_list() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -479,33 +508,6 @@ auto CrowParser::lambda() -> n::NodePtr
 
   return node;
 }
-
-auto CrowParser::function_decl() -> NodePtr
-{
-  DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
-
-  if(next_if(TokenType::FUNCTION)) {
-    const auto tt_id{expect(TokenType::IDENTIFIER)};
-    const auto id{tt_id.get<std::string>()};
-
-    // NodeListPtr params;
-    auto params{parens([this] {
-      return this->param_list_opt();
-    })};
-
-    auto rettype_ptr{return_type()};
-
-    terminator();
-
-    // TODO: Implement
-    // node = make_node<FunctionDecl>(id, std::move(params),
-    // std::move(rettype_ptr));
-  }
-
-  return node;
-}
-
 
 auto CrowParser::function() -> NodePtr
 {
@@ -618,16 +620,16 @@ auto CrowParser::import_() -> NodePtr
   return node;
 }
 
-auto CrowParser::package() -> NodePtr
+auto CrowParser::module_() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  if(next_if(TokenType::PACKAGE)) {
-    DBG_TRACE_PRINT(INFO, "Found 'PACKAGE'");
+  if(next_if(TokenType::MODULE)) {
+    DBG_TRACE_PRINT(INFO, "Found 'MODULE'");
     const auto id{expect(TokenType::IDENTIFIER)};
 
-    node = make_node<Package>(id.get<std::string>());
+    node = make_node<ModuleDecl>(id.get<std::string>());
   }
 
   return node;
@@ -638,7 +640,7 @@ auto CrowParser::item() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  if(auto ptr{package()}; ptr) {
+  if(auto ptr{module_()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{import_()}; ptr) {
     node = std::move(ptr);

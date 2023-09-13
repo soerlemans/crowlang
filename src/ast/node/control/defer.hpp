@@ -2,26 +2,25 @@
 #define CROW_AST_NODE_CONTROL_DEFER_HPP
 
 // Includes:
-#include "../node_interface.hpp"
+#include "../node_traits/include.hpp"
 
 // Local Includes:
 #include "control.hpp"
 
 
 namespace ast::node::control {
-class Defer : public NodeInterface {
-  private:
-  NodeListPtr m_body;
+// Aliases:
+namespace nt = node_traits;
 
+// Classes:
+class Defer : public nt::Body {
   public:
   Defer(NodeListPtr&& t_body);
-
-  auto body() -> NodeListPtr&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~Defer() override = default;
 };
-} // namespace node::control
+} // namespace ast::node::control
 
 #endif // CROW_AST_NODE_CONTROL_DEFER_HPP

@@ -26,7 +26,7 @@ namespace keywords {
   DEFINE_TERMINAL(g_const, "const", CONST);
 
   // Package:
-  DEFINE_TERMINAL(g_package, "package", PACKAGE);
+  DEFINE_TERMINAL(g_module, "module", MODULE);
   DEFINE_TERMINAL(g_import,  "import",  IMPORT);
   DEFINE_TERMINAL(g_priv,    "priv",    PRIVATE);
   DEFINE_TERMINAL(g_pub,     "pub",     PUBLIC);
@@ -52,7 +52,7 @@ namespace keywords {
 
 	const std::map g_keywords {
 		g_let.pair(), g_const.pair(),
-		g_package.pair(), g_import.pair(), g_priv.pair(), g_pub.pair(),
+		g_module.pair(), g_import.pair(), g_priv.pair(), g_pub.pair(),
 		g_struct.pair(), g_interface.pair(), g_impl.pair(),
 	  g_fn.pair(),
 		g_match.pair(),
@@ -115,6 +115,7 @@ namespace symbols {
   DEFINE_TERMINAL(g_dot,           '.',  DOT);
   DEFINE_TERMINAL(g_comma,         ',',  COMMA);
   DEFINE_TERMINAL(g_question_mark, '?',  QUESTION_MARK);
+  DEFINE_TERMINAL(g_double_colon,  "::",  DOUBLE_COLON);
   DEFINE_TERMINAL(g_colon,         ':',  COLON);
   DEFINE_TERMINAL(g_semicolon,     ';',  SEMICOLON);
 
@@ -174,7 +175,8 @@ namespace symbols {
 	  g_or.pair(),
 	  g_and.pair(),
 
-		g_arrow.pair()
+		g_arrow.pair(),
+		g_double_colon.pair()
 	};
 
 	namespace none {

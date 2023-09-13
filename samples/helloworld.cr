@@ -1,4 +1,4 @@
-package main
+module main
 
 import (
 		"io";

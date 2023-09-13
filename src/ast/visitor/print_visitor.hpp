@@ -90,7 +90,7 @@ class PrintVisitor : public NodeVisitor {
   auto visit(node::operators::UnaryPrefix* t_unary_prefix) -> void override;
 
   auto visit(node::packaging::Import* t_import) -> void override;
-  auto visit(node::packaging::Package* t_pkg) -> void override;
+  auto visit(node::packaging::ModuleDecl* t_mod) -> void override;
 
   auto visit(node::rvalue::Float* t_float) -> void override;
   auto visit(node::rvalue::Integer* t_int) -> void override;
