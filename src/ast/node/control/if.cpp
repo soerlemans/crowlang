@@ -2,24 +2,15 @@
 
 
 using namespace ast::node::control;
+using namespace ast::node::node_traits;
 
 If::If(NodePtr&& t_init, NodePtr&& t_condition, NodeListPtr&& t_then,
        NodeListPtr&& t_alt)
-  : m_init{std::move(t_init)},
-    m_condition{std::move(t_condition)},
+  : Init{std::move(t_init)},
+    Condition{std::move(t_condition)},
     m_then{std::move(t_then)},
     m_alt{std::move(t_alt)}
 {}
-
-auto If::init() -> NodePtr&
-{
-  return m_init;
-}
-
-auto If::condition() -> NodePtr&
-{
-  return m_condition;
-}
 
 auto If::then() -> NodeListPtr&
 {

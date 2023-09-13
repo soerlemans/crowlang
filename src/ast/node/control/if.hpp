@@ -2,14 +2,18 @@
 #define CROW_AST_NODE_CONTROL_IF_HPP
 
 // Includes:
-#include "../node_interface.hpp"
+#include "../node_traits/include.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"
 
 
 namespace ast::node::control {
-class If : public NodeInterface {
+// Aliases:
+namespace nt = node_traits;
+
+// Classes:
+class If : public nt::Init, public nt::Condition {
   private:
   NodePtr m_init;
   NodePtr m_condition;
@@ -20,8 +24,6 @@ class If : public NodeInterface {
   If(NodePtr&& t_init, NodePtr&& t_condition, NodeListPtr&& t_then,
      NodeListPtr&& t_alt);
 
-  auto init() -> NodePtr&;
-  auto condition() -> NodePtr&;
   auto then() -> NodeListPtr&;
   auto alt() -> NodeListPtr&;
 
