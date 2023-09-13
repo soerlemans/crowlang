@@ -12,12 +12,7 @@
 #include "node_interface.hpp"
 
 // Control Statements:
-#include "control/break.hpp"
-#include "control/continue.hpp"
-#include "control/defer.hpp"
-#include "control/if.hpp"
-#include "control/loop.hpp"
-#include "control/return.hpp"
+#include "control/include.hpp"
 
 // Functions:
 #include "functions/function.hpp"
@@ -48,8 +43,6 @@
 #include "rvalue/rvalue.hpp"
 
 // Typing:
-#include "typing/impl.hpp"
-#include "typing/interface.hpp"
-#include "typing/struct.hpp"
+#include "typing/include.hpp"
 
 #endif // CROW_AST_NODE_INCLUDE_HPP

@@ -1,8 +1,9 @@
-#ifndef BODY_HPP
-#define BODY_HPP
+#ifndef CROW_AST_NODE_NODE_TRAITS_BODY_HPP
+#define CROW_AST_NODE_NODE_TRAITS_BODY_HPP
 
 // Includes:
 #include "../node_interface.hpp"
+
 
 namespace ast::node::node_traits {
 class Body : public NodeInterface {
@@ -20,4 +21,4 @@ class Body : public NodeInterface {
 };
 } // namespace ast::node::node_triats
 
-#endif // BODY_HPP
+#endif // CROW_AST_NODE_NODE_TRAITS_BODY_HPP

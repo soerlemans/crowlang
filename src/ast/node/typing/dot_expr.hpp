@@ -4,6 +4,9 @@
 // Includes:
 #include "../node_traits/include.hpp"
 
+// Local Includes:
+#include "fdecl.hpp"
+
 
 namespace ast::node::lvalue {
 // Aliases:

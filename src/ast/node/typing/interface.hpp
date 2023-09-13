@@ -6,7 +6,7 @@
 #include "../node_traits/include.hpp"
 
 // Local Includes:
-#include "typing.hpp"
+#include "fdecl.hpp"
 
 
 namespace ast::node::typing {
