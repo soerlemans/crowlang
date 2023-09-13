@@ -235,11 +235,14 @@ attribute        : Private
                  ;
 
 // Typing:
+// TODO:
+/* alias_def        : Use? */
+
 // Enum:
 enum_def         : Enum IDENTIFIER newline_opt
                      '{' newline_opt '}'
                  ;
-// TODO: Add self as must have parameter
+// Interface:
 method_decl      : Fn IDENTIFIER '(' param_list_opt ')' return_type terminator
                  ;
 
@@ -249,11 +252,11 @@ method_decl_list : // empty
 				         | fn_decl_list method_decl
                  ;
 
-// Interface:
 interface_def    : Interface IDENTIFIER newline_opt
                      '{' newline_opt method_decl_list '}'
                  ;
 
+// Struct:
 member_decl      : IDENTIFIER ':' IDENTIFIER terminator
                  ;
 
@@ -262,9 +265,11 @@ member_decl_list : // empty
 				         | member_decl_list member_decl
                  ;
 
-// Struct:
 struct_def       : Struct IDENTIFIER newline_opt
                      '{'  newline_opt newline_opt'}'
+                 ;
+
+type_def         : enum_def
                  ;
 
 // Implementation:

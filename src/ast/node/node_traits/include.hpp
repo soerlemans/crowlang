@@ -5,6 +5,7 @@
 #include "body.hpp"
 #include "condition.hpp"
 #include "expr.hpp"
+#include "type_expr.hpp"
 #include "identifier.hpp"
 #include "init.hpp"
 

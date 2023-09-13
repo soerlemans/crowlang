@@ -123,7 +123,12 @@ auto PrattParser::unary_prefix() -> NodePtr
       syntax_error("Expected an expression after + or -");
     }
 
-    node = make_node<UnaryPrefix>(token.type(), std::move(rhs));
+    UnaryPrefixOp op{UnaryPrefixOp::PLUS};
+    if(token.type() == TokenType::MINUS) {
+      op = UnaryPrefixOp::MINUS;
+    }
+
+    node = make_node<UnaryPrefix>(op, std::move(rhs));
   }
 
   return node;

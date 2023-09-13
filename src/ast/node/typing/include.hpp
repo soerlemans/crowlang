@@ -3,6 +3,7 @@
 
 // Typing:#
 #include "impl.hpp"
+#include "method_decl.hpp"
 #include "interface.hpp"
 #include "struct.hpp"
 #include "dot_expr.hpp"

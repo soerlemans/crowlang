@@ -14,9 +14,14 @@ namespace ast::node::typing {
 namespace nt = node_traits;
 
 // Classes:
-class Interface : public nt::Identifier, nt::Body {
+class Interface : public nt::Identifier {
+  private:
+  NodeListPtr m_methods;
+
   public:
-  Interface(std::string_view t_identifier, NodeListPtr&& t_body);
+  Interface(std::string_view t_identifier, NodeListPtr&& t_methods);
+
+  auto methods() -> NodeListPtr;
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

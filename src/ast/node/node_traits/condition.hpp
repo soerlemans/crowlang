@@ -1,5 +1,5 @@
-#ifndef CONDITION_HPP
-#define CONDITION_HPP
+#ifndef CROW_AST_NODE_NODE_TRAITS_CONDITION_HPP
+#define CROW_AST_NODE_NODE_TRAITS_CONDITION_HPP
 
 // Includes:
 #include "../node_interface.hpp"
@@ -21,4 +21,4 @@ class Condition : virtual public NodeInterface {
 };
 } // namespace ast::node::node_traits
 
-#endif // CONDITION_HPP
+#endif // CROW_AST_NODE_NODE_TRAITS_CONDITION_HPP

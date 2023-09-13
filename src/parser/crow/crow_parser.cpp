@@ -416,8 +416,46 @@ auto CrowParser::method_decl() -> NodePtr
     terminator();
 
     // TODO: Implement
-    // node = make_node<FunctionDecl>(id, std::move(params),
+    // node = make_node<MethodDecl>(id, std::move(params),
     // std::move(rettype_ptr));
+  }
+
+  return node;
+}
+
+auto CrowParser::method_decl_list() -> NodeListPtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr nodes{make_node<List>()};
+
+  while(!eos()) {
+    if(auto ptr{method_decl()}; ptr) {
+      nodes->push_back(std::move(ptr));
+    } else {
+      break;
+    }
+  }
+
+  return node;
+}
+
+auto CrowParser::interface() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  if(next_if(TokenType::INTERFACE)) {
+    auto id{expect(TokenType::IDENTIFIER)};
+    newline_opt();
+
+    expect(TokenType::ACCOLADE_OPEN);
+    newline_opt();
+
+    auto methods{method_decl_list()};
+
+    expect(TokenType::ACCOLADE_CLOSE);
+
+    // node = make_node();
   }
 
   return node;

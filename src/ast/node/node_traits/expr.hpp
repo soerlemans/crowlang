@@ -1,5 +1,5 @@
-#ifndef EXPR_HPP
-#define EXPR_HPP
+#ifndef CROW_AST_NODE_NODE_TRAITS_EXPR_HPP
+#define CROW_AST_NODE_NODE_TRAITS_EXPR_HPP
 
 // Includes:
 #include "../node_interface.hpp"
@@ -21,4 +21,4 @@ class Expr : virtual public NodeInterface {
 };
 } // namespace ast::node::node_traits
 
-#endif // EXPR_HPP
+#endif // CROW_AST_NODE_NODE_TRAITS_EXPR_HPP
