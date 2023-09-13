@@ -2,15 +2,12 @@
 
 
 using namespace ast::node::functions;
+using namespace ast::node::node_traits;
 
-FunctionCall::FunctionCall(std::string&& t_identifier, NodeListPtr&& t_args)
-  : m_identifier{std::move(t_identifier)}, m_args{std::move(t_args)}
+FunctionCall::FunctionCall(const std::string_view t_identifier,
+                           NodeListPtr&& t_args)
+  : Identifier{std::move(t_identifier)}, m_args{std::move(t_args)}
 {}
-
-auto FunctionCall::identifier() const -> std::string_view
-{
-  return {m_identifier};
-}
 
 auto FunctionCall::args() -> NodeListPtr&
 {

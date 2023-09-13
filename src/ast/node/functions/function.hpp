@@ -10,17 +10,19 @@
 
 
 namespace ast::node::functions {
-class Function : public node_traits::Identifier {
+// Aliases:
+namespace nt = node_traits;
+
+// Classes:
+class Function : public nt::Identifier, public nt::Body {
   private:
   NodeListPtr m_params;
-  NodeListPtr m_body;
 
   public:
   Function(std::string_view t_identifier, NodeListPtr&& t_params,
            NodeListPtr&& t_body);
 
   auto params() -> NodeListPtr&;
-  auto body() -> NodeListPtr&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
