@@ -2,7 +2,7 @@
 #define CROW_AST_NODE_OPERATORS_DECREMENT_HPP
 
 // Local Includes:
-#include "operators.hpp"
+#include "fdecl.hpp"
 #include "unary_operator.hpp"
 
 
@@ -20,6 +20,6 @@ class Decrement : public UnaryOperator {
 
   ~Decrement() override = default;
 };
-} // namespace node::operators
+} // namespace ast::node::operators
 
 #endif // CROW_AST_NODE_OPERATORS_DECREMENT_HPP

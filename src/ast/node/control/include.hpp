@@ -1,5 +1,5 @@
-#ifndef INCLUDE_HPP
-#define INCLUDE_HPP
+#ifndef CROW_AST_NODE_CONTROL_INCLUDE_HPP
+#define CROW_AST_NODE_CONTROL_INCLUDE_HPP
 
 // Control Statements:
 #include "break.hpp"
@@ -9,4 +9,4 @@
 #include "loop.hpp"
 #include "return.hpp"
 
-#endif // INCLUDE_HPP
+#endif // CROW_AST_NODE_CONTROL_INCLUDE_HPP

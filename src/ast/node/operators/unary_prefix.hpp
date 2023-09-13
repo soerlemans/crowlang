@@ -5,7 +5,7 @@
 #include "../../../token/token_type.hpp"
 
 // Local Includes:
-#include "operators.hpp"
+#include "fdecl.hpp"
 #include "unary_operator.hpp"
 
 
@@ -28,6 +28,6 @@ class UnaryPrefix : public UnaryOperator {
 
   ~UnaryPrefix() override = default;
 };
-} // namespace node::operators
+} // namespace ast::node::operators
 
 #endif // CROW_AST_NODE_OPERATORS_UNARY_PREFIX_HPP

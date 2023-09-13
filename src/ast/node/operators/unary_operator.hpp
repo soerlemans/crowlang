@@ -5,7 +5,7 @@
 #include "../node_interface.hpp"
 
 // Local Includes:
-#include "operators.hpp"
+#include "fdecl.hpp"
 
 
 namespace ast::node::operators {

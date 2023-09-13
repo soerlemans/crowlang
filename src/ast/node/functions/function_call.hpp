@@ -10,7 +10,7 @@
 #include "../node_interface.hpp"
 
 // Local Includes:
-#include "functions.hpp"
+#include "fdecl.hpp"
 
 
 namespace ast::node::functions {

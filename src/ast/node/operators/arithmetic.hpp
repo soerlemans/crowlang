@@ -3,7 +3,7 @@
 
 // Local Includes:
 #include "binary_operator.hpp"
-#include "operators.hpp"
+#include "fdecl.hpp"
 
 
 namespace ast::node::operators {

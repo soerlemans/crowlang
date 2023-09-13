@@ -1,5 +1,5 @@
-#ifndef INCLUDE_HPP
-#define INCLUDE_HPP
+#ifndef CROW_AST_NODE_TYPING_INCLUDE_HPP
+#define CROW_AST_NODE_TYPING_INCLUDE_HPP
 
 // Typing:#
 #include "impl.hpp"
@@ -7,4 +7,4 @@
 #include "struct.hpp"
 #include "dot_expr.hpp"
 
-#endif // INCLUDE_HPP
+#endif // CROW_AST_NODE_TYPING_INCLUDE_HPP

@@ -6,7 +6,7 @@
 #include "../node_traits/include.hpp"
 
 // Local Includes:
-#include "functions.hpp"
+#include "fdecl.hpp"
 
 
 namespace ast::node::functions {

@@ -11,38 +11,13 @@
 #include "nil.hpp"
 #include "node_interface.hpp"
 
-// Control Statements:
+// Includes:
 #include "control/include.hpp"
-
-// Functions:
-#include "functions/function.hpp"
-#include "functions/function_call.hpp"
-#include "functions/functions.hpp"
-
-// Lvalue:
-#include "lvalue/let.hpp"
-#include "lvalue/lvalue.hpp"
-#include "lvalue/variable.hpp"
-
-// Operators:
-#include "operators/arithmetic.hpp"
-#include "operators/assignment.hpp"
-#include "operators/comparison.hpp"
-#include "operators/decrement.hpp"
-#include "operators/increment.hpp"
-#include "operators/logical.hpp"
-#include "operators/operators.hpp"
-#include "operators/ternary.hpp"
-#include "operators/unary_prefix.hpp"
-
-// Packaging:
+#include "functions/include.hpp"
+#include "lvalue/include.hpp"
+#include "operators/include.hpp"
 #include "packaging/include.hpp"
-
-// Rvalue:
-#include "rvalue/literal.hpp"
-#include "rvalue/rvalue.hpp"
-
-// Typing:
+#include "rvalue/include.hpp"
 #include "typing/include.hpp"
 
 #endif // CROW_AST_NODE_INCLUDE_HPP

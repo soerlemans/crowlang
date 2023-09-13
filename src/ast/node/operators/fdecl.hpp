@@ -1,5 +1,5 @@
-#ifndef CROW_AST_NODE_OPERATORS_OPERATORS_HPP
-#define CROW_AST_NODE_OPERATORS_OPERATORS_HPP
+#ifndef CROW_AST_NODE_OPERATORS_FDECL_HPP
+#define CROW_AST_NODE_OPERATORS_FDECL_HPP
 
 // Forward Declarations:
 namespace ast::node::operators {
@@ -24,4 +24,4 @@ class Assignment;
 class Ternary;
 } // namespace node::operators
 
-#endif // CROW_AST_NODE_OPERATORS_OPERATORS_HPP
+#endif // CROW_AST_NODE_OPERATORS_FDECL_HPP

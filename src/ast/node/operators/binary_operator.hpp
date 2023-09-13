@@ -2,7 +2,7 @@
 #define CROW_AST_NODE_OPERATORS_BINARY_OPERATOR_HPP
 
 // Local Includes:
-#include "operators.hpp"
+#include "fdecl.hpp"
 #include "unary_operator.hpp"
 
 
@@ -20,6 +20,6 @@ class BinaryOperator : public UnaryOperator {
 
   ~BinaryOperator() override = default;
 };
-} // namespace node::operators
+} // namespace ast::node::operators
 
 #endif // CROW_AST_NODE_OPERATORS_BINARY_OPERATOR_HPP

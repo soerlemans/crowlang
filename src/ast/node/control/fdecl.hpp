@@ -1,5 +1,5 @@
-#ifndef FDECL_HPP
-#define FDECL_HPP
+#ifndef CROW_AST_NODE_CONTROL_FDECL_HPP
+#define CROW_AST_NODE_CONTROL_FDECL_HPP
 
 
 namespace ast::node::control {
@@ -12,4 +12,4 @@ class Defer;
 class Return;
 }; // namespace ast::node::control
 
-#endif // FDECL_HPP
+#endif // CROW_AST_NODE_CONTROL_FDECL_HPP

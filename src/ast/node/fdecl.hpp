@@ -4,11 +4,11 @@
 // Includes:
 // Forward declarations all Node classes:
 #include "control/fdecl.hpp"
-#include "functions/functions.hpp"
-#include "lvalue/lvalue.hpp"
-#include "operators/operators.hpp"
+#include "functions/fdecl.hpp"
+#include "lvalue/fdecl.hpp"
+#include "operators/fdecl.hpp"
 #include "packaging/fdecl.hpp"
-#include "rvalue/rvalue.hpp"
+#include "rvalue/fdecl.hpp"
 #include "typing/fdecl.hpp"
 
 // Local Includes:

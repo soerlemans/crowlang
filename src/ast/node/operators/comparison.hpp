@@ -3,7 +3,7 @@
 
 // Local Includes:
 #include "binary_operator.hpp"
-#include "operators.hpp"
+#include "fdecl.hpp"
 
 
 namespace ast::node::operators {
@@ -33,6 +33,6 @@ class Comparison : public BinaryOperator {
 
   ~Comparison() override = default;
 };
-} // namespace node::operators
+} // namespace ast::node::operators
 
 #endif // CROW_AST_NODE_OPERATORS_COMPARISON_HPP
