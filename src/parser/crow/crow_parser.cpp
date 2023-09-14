@@ -426,7 +426,7 @@ auto CrowParser::method_decl() -> NodePtr
 auto CrowParser::method_decl_list() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePtr nodes{make_node<List>()};
+  NodeListPtr nodes{make_node<List>()};
 
   while(!eos()) {
     if(auto ptr{method_decl()}; ptr) {
@@ -436,7 +436,7 @@ auto CrowParser::method_decl_list() -> NodeListPtr
     }
   }
 
-  return node;
+  return nodes;
 }
 
 auto CrowParser::interface() -> NodePtr

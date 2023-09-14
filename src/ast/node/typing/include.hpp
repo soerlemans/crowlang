@@ -1,11 +1,11 @@
 #ifndef CROW_AST_NODE_TYPING_INCLUDE_HPP
 #define CROW_AST_NODE_TYPING_INCLUDE_HPP
 
-// Typing:#
-#include "impl.hpp"
-#include "method_decl.hpp"
-#include "interface.hpp"
-#include "struct.hpp"
+// Typing:
 #include "dot_expr.hpp"
+#include "impl.hpp"
+#include "interface.hpp"
+#include "method_decl.hpp"
+#include "struct.hpp"
 
 #endif // CROW_AST_NODE_TYPING_INCLUDE_HPP

@@ -17,14 +17,24 @@
 //! Pretty print if a member is not a nullptr
 #define PPRINT_IF(t_str, t_ptr) printer.print_if(t_ptr, this, "| " t_str)
 
-#define PPRINT_UNOP(t_str, t_ptr) \
-  PPRINT(t_str);                  \
-  PPRINT_IF("Left", t_ptr->left());
+#define PPRINT_UNOP(t_str, t_ptr)     \
+  do {                                \
+    PPRINT(t_str);                    \
+    PPRINT_IF("Left", t_ptr->left()); \
+  } while(false)
 
-#define PPRINT_BINOP(t_str, t_ptr)  \
-  PPRINT(t_str);                    \
-  PPRINT_IF("Left", t_ptr->left()); \
-  PPRINT_IF("Right", t_ptr->right());
+#define PPRINT_BINOP(t_str, t_ptr)      \
+  do {                                  \
+    PPRINT(t_str);                      \
+    PPRINT_IF("Left", t_ptr->left());   \
+    PPRINT_IF("Right", t_ptr->right()); \
+  } while(false)
+
+#define PPRINT_ID(t_ptr) PPRINT("| Identifier", t_ptr->identifier())
+// #define PPRINT_INIT(t_ptr) PPRINT_IF("Init", t_ptr->init())
+#define PPRINT_COND(t_ptr) PPRINT_IF("Condition", t_ptr->condition())
+#define PPRINT_EXPR(t_ptr) PPRINT_IF("Expr", t_ptr->expr())
+#define PPRINT_BODY(t_ptr) PPRINT("| Body", t_ptr->body())
 
 // Using statements:
 using namespace ast::visitor;
@@ -36,6 +46,7 @@ using namespace ast::node::operators;
 using namespace ast::node::packaging;
 using namespace ast::node::rvalue;
 
+// Control:
 auto PrintVisitor::visit(If* t_if) -> void
 {
   PPRINT_INIT();
@@ -80,6 +91,7 @@ auto PrintVisitor::visit([[maybe_unused]] Return* t_return) -> void
   PPRINT_IF("Expr", t_return->expr());
 }
 
+// Function:
 auto PrintVisitor::visit(Function* t_fn) -> void
 {
   PPRINT_INIT();
@@ -99,6 +111,7 @@ auto PrintVisitor::visit(FunctionCall* t_fn_call) -> void
   PPRINT_IF("Arguments: ", t_fn_call->args());
 }
 
+// Lvalue:
 auto PrintVisitor::visit(Let* t_let) -> void
 {
   PPRINT_INIT();
@@ -116,11 +129,12 @@ auto PrintVisitor::visit(Variable* t_var) -> void
   PPRINT("Variable: ", t_var->identifier());
 }
 
+// Operators:
 auto PrintVisitor::visit(Arithmetic* t_arithmetic) -> void
 {
   PPRINT_INIT();
 
-  PPRINT_BINOP("ARITHMETIC", t_arithmetic)
+  PPRINT_BINOP("ARITHMETIC", t_arithmetic);
   PPRINT("| OP: TODO!");
 }
 
@@ -154,6 +168,16 @@ auto PrintVisitor::visit(Decrement* t_decrement) -> void
   PPRINT("| Prefix: ", t_decrement->prefix());
 }
 
+auto PrintVisitor::visit(UnaryPrefix* t_unary_prefix) -> void
+{
+  PPRINT_INIT();
+
+  PPRINT("Unary prefix");
+  PPRINT_UNOP("Unary prefix", t_unary_prefix);
+  PPRINT("| OP: TODO!");
+}
+
+// Logical:
 auto PrintVisitor::visit(Not* t_not) -> void
 {
   PPRINT_INIT();
@@ -185,15 +209,7 @@ auto PrintVisitor::visit(Ternary* t_ternary) -> void
   PPRINT_IF("Alt", t_ternary->alt());
 }
 
-auto PrintVisitor::visit(UnaryPrefix* t_unary_prefix) -> void
-{
-  PPRINT_INIT();
-
-  PPRINT("Unary prefix");
-  PPRINT_UNOP("Unary prefix", t_unary_prefix)
-  PPRINT("| OP: TODO");
-}
-
+// Packaging:
 auto PrintVisitor::visit(Import* t_import) -> void
 {
   PPRINT_INIT();
@@ -218,6 +234,7 @@ auto PrintVisitor::visit(ModuleDecl* t_mod) -> void
   PPRINT("| Identifier: ", t_mod->identifier());
 }
 
+// Rvalue:
 auto PrintVisitor::visit(Float* t_float) -> void
 {
   PPRINT_INIT();
@@ -237,6 +254,31 @@ auto PrintVisitor::visit(String* t_str) -> void
   PPRINT_INIT();
 
   PPRINT("String: ", t_str->get());
+}
+
+// Typing:
+auto PrintVisitor::visit(ast::node::typing::DotExpr* t_dot_expr) -> void
+{
+  PPRINT_INIT();
+}
+
+auto PrintVisitor::visit(ast::node::typing::Impl* t_impl) -> void
+{
+  PPRINT_INIT();
+}
+
+auto PrintVisitor::visit(ast::node::typing::Interface* t_ifc) -> void
+{
+  PPRINT_INIT();
+}
+
+auto PrintVisitor::visit(ast::node::typing::MethodDecl* t_md) -> void
+{
+  PPRINT_INIT();
+}
+auto PrintVisitor::visit(ast::node::typing::Struct* t_struct) -> void
+{
+  PPRINT_INIT();
 }
 
 auto PrintVisitor::visit(List* t_list) -> void

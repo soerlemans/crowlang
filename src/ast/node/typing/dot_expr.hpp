@@ -8,7 +8,7 @@
 #include "fdecl.hpp"
 
 
-namespace ast::node::lvalue {
+namespace ast::node::typing {
 // Aliases:
 namespace nt = node_traits;
 
