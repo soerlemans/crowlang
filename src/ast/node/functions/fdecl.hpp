@@ -9,6 +9,7 @@ namespace ast::node::functions {
 // Forward Declarations:
 class Function;
 class FunctionCall;
+class ReturnType;
 
 // Aliases:
 using NodeFnPtr = std::shared_ptr<Function>;

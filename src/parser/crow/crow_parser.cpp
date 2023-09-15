@@ -539,8 +539,8 @@ auto CrowParser::return_type_opt() -> NodePtr
     expect(TokenType::ARROW);
     auto id{expect(TokenType::IDENTIFIER).get<std::string>()};
 
-    // TODO: Figure out if this is a good idea?
-    auto type{make_node<nt::Identifier>(id)};
+    // Temporary:
+    auto type{make_node<Nil>()};
     node = make_node<ReturnType>(std::move(type));
   }
 

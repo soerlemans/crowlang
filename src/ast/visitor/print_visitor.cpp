@@ -30,11 +30,11 @@
     PPRINT_IF("Right", t_ptr->right()); \
   } while(false)
 
-#define PPRINT_ID(t_ptr) PPRINT("| Identifier", t_ptr->identifier())
+#define PPRINT_ID(t_ptr) PPRINT("| Identifier: ", t_ptr->identifier())
 // #define PPRINT_INIT(t_ptr) PPRINT_IF("Init", t_ptr->init())
 #define PPRINT_COND(t_ptr)      PPRINT_IF("Condition", t_ptr->condition())
 #define PPRINT_EXPR(t_ptr)      PPRINT_IF("Expr", t_ptr->expr())
-#define PPRINT_BODY(t_ptr)      PPRINT("| Body", t_ptr->body())
+#define PPRINT_BODY(t_ptr)      PPRINT("| Body: ", t_ptr->body())
 #define PPRINT_TYPE_EXPR(t_ptr) PPRINT_IF("Type Expr", t_ptr->type())
 
 // Using statements:
@@ -111,6 +111,14 @@ auto PrintVisitor::visit(FunctionCall* t_fn_call) -> void
   PPRINT("Function call");
   PPRINT("| Identifier: ", t_fn_call->identifier());
   PPRINT_IF("Arguments: ", t_fn_call->args());
+}
+
+auto PrintVisitor::visit(node::functions::ReturnType* t_rt) -> void
+{
+  PPRINT_INIT();
+
+  PPRINT("Return type");
+  PPRINT_IF("Type: ", t_rt->type());
 }
 
 // Lvalue:
@@ -294,6 +302,7 @@ auto PrintVisitor::visit(MethodDecl* t_md) -> void
   PPRINT_ID(t_md);
   PPRINT_TYPE_EXPR(t_md);
 }
+
 auto PrintVisitor::visit(Struct* t_struct) -> void
 {
   PPRINT_INIT();
