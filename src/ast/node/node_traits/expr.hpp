@@ -4,6 +4,9 @@
 // Includes:
 #include "../node_interface.hpp"
 
+// Local Includes:
+#include "fdecl.hpp"
+
 
 namespace ast::node::node_traits {
 class Expr : virtual public NodeInterface {
@@ -13,7 +16,7 @@ class Expr : virtual public NodeInterface {
   public:
   Expr(NodePtr&& t_expr);
 
-  auto expr() -> NodePtr&;
+  virtual auto expr() -> NodePtr&;
 
   auto accept(visitor::NodeVisitor* t_visitor) -> void override = 0;
 

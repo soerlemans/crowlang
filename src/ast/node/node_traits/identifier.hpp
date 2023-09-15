@@ -7,6 +7,9 @@
 // Includes:
 #include "../node_interface.hpp"
 
+// Local Includes:
+#include "fdecl.hpp"
+
 
 namespace ast::node::node_traits {
 class Identifier : virtual public NodeInterface {

@@ -1,9 +1,10 @@
 # Add source files
 target_sources(${PROJECT_NAME} PRIVATE
-	init.cpp
-	expr.cpp
-	type_expr.cpp
-	condition.cpp
-	identifier.cpp
 	body.cpp
+	condition.cpp
+	expr.cpp
+	identifier.cpp
+	init.cpp
+	params.cpp
+	type_expr.cpp
 )

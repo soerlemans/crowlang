@@ -4,6 +4,9 @@
 // Includes:
 #include "../node_interface.hpp"
 
+// Local Includes:
+#include "fdecl.hpp"
+
 
 namespace ast::node::node_traits {
 class Condition : virtual public NodeInterface {
@@ -13,7 +16,7 @@ class Condition : virtual public NodeInterface {
   public:
   Condition(NodePtr&& t_condition);
 
-  auto condition() -> NodePtr&;
+  virtual auto condition() -> NodePtr&;
 
   auto accept(visitor::NodeVisitor* t_visitor) -> void override = 0;
 

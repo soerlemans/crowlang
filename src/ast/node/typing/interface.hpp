@@ -21,7 +21,7 @@ class Interface : public nt::Identifier {
   public:
   Interface(std::string_view t_identifier, NodeListPtr&& t_methods);
 
-  auto methods() -> NodeListPtr;
+  virtual auto methods() -> NodeListPtr&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

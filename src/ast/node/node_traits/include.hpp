@@ -7,6 +7,7 @@
 #include "expr.hpp"
 #include "identifier.hpp"
 #include "init.hpp"
+#include "params.hpp"
 #include "type_expr.hpp"
 
 #endif // CROW_AST_NODE_NODE_TRAITS_INCLUDE_HPP

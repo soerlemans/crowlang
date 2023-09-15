@@ -32,9 +32,10 @@
 
 #define PPRINT_ID(t_ptr) PPRINT("| Identifier", t_ptr->identifier())
 // #define PPRINT_INIT(t_ptr) PPRINT_IF("Init", t_ptr->init())
-#define PPRINT_COND(t_ptr) PPRINT_IF("Condition", t_ptr->condition())
-#define PPRINT_EXPR(t_ptr) PPRINT_IF("Expr", t_ptr->expr())
-#define PPRINT_BODY(t_ptr) PPRINT("| Body", t_ptr->body())
+#define PPRINT_COND(t_ptr)      PPRINT_IF("Condition", t_ptr->condition())
+#define PPRINT_EXPR(t_ptr)      PPRINT_IF("Expr", t_ptr->expr())
+#define PPRINT_BODY(t_ptr)      PPRINT("| Body", t_ptr->body())
+#define PPRINT_TYPE_EXPR(t_ptr) PPRINT_IF("Type Expr", t_ptr->type())
 
 // Using statements:
 using namespace ast::visitor;
@@ -45,6 +46,7 @@ using namespace ast::node::lvalue;
 using namespace ast::node::operators;
 using namespace ast::node::packaging;
 using namespace ast::node::rvalue;
+using namespace ast::node::typing;
 
 // Control:
 auto PrintVisitor::visit(If* t_if) -> void
@@ -257,28 +259,48 @@ auto PrintVisitor::visit(String* t_str) -> void
 }
 
 // Typing:
-auto PrintVisitor::visit(ast::node::typing::DotExpr* t_dot_expr) -> void
+auto PrintVisitor::visit(DotExpr* t_dot_expr) -> void
 {
   PPRINT_INIT();
+
+  PPRINT("DotExpr");
+  PPRINT_ID(t_dot_expr);
+  PPRINT_EXPR(t_dot_expr);
 }
 
-auto PrintVisitor::visit(ast::node::typing::Impl* t_impl) -> void
+auto PrintVisitor::visit(Impl* t_impl) -> void
 {
   PPRINT_INIT();
+
+  PPRINT("Impl");
+  PPRINT_ID(t_impl);
+  PPRINT_BODY(t_impl);
 }
 
-auto PrintVisitor::visit(ast::node::typing::Interface* t_ifc) -> void
+auto PrintVisitor::visit(Interface* t_ifc) -> void
 {
   PPRINT_INIT();
+
+  PPRINT("Interface");
+  PPRINT_ID(t_ifc);
+  PPRINT_IF("Methods: ", t_ifc->methods());
 }
 
-auto PrintVisitor::visit(ast::node::typing::MethodDecl* t_md) -> void
+auto PrintVisitor::visit(MethodDecl* t_md) -> void
 {
   PPRINT_INIT();
+
+  PPRINT("Method Declaration");
+  PPRINT_ID(t_md);
+  PPRINT_TYPE_EXPR(t_md);
 }
-auto PrintVisitor::visit(ast::node::typing::Struct* t_struct) -> void
+auto PrintVisitor::visit(Struct* t_struct) -> void
 {
   PPRINT_INIT();
+
+  PPRINT("Struct");
+  PPRINT_ID(t_struct);
+  PPRINT_BODY(t_struct);
 }
 
 auto PrintVisitor::visit(List* t_list) -> void

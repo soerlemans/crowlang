@@ -4,6 +4,9 @@
 // Includes:
 #include "../node_interface.hpp"
 
+// Local Includes:
+#include "fdecl.hpp"
+
 
 namespace ast::node::node_traits {
 class Body : virtual public NodeInterface {
@@ -13,7 +16,7 @@ class Body : virtual public NodeInterface {
   public:
   Body(NodeListPtr&& t_body);
 
-  auto body() -> NodeListPtr&;
+  virtual auto body() -> NodeListPtr&;
 
   auto accept(visitor::NodeVisitor* t_visitor) -> void override = 0;
 

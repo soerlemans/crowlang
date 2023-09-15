@@ -13,7 +13,7 @@ namespace ast::node::typing {
 namespace nt = node_traits;
 
 // Classes:
-class DotExpr : public nt::Identifier, nt::Expr {
+class DotExpr : public nt::Identifier, public nt::Expr {
   public:
   DotExpr(std::string_view t_identifier, NodePtr&& t_init);
 

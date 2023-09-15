@@ -14,9 +14,12 @@ namespace ast::node::typing {
 namespace nt = node_traits;
 
 // Classes:
-class MethodDecl : public nt::Identifier, public nt::TypeExpr {
+class MethodDecl : public nt::Identifier,
+                   public nt::Params,
+                   public nt::TypeExpr {
   public:
-  MethodDecl(std::string_view t_identifier, NodePtr&& t_type);
+  MethodDecl(std::string_view t_identifier, NodeListPtr&& t_params,
+             NodePtr&& t_type);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
