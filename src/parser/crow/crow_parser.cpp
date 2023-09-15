@@ -19,6 +19,9 @@ using namespace ast::node::packaging;
 using namespace ast::node::rvalue;
 using namespace ast::node::typing;
 
+// Aliases:
+namespace nt = ast::node::node_traits;
+
 // Methods:
 CrowParser::CrowParser(TokenStream t_tokenstream)
   : PrattParser{std::move(t_tokenstream)}
@@ -123,7 +126,7 @@ auto CrowParser::expr_statement() -> NodePtr
 auto CrowParser::multiple_expr_list() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodeListPtr nodes{make_node<List>()};
+  auto nodes{make_node<List>()};
 
   if(auto ptr{expr()}; ptr) {
     DBG_TRACE_PRINT(INFO, "Found 'EXPR");
@@ -164,7 +167,7 @@ auto CrowParser::expr_list() -> NodeListPtr
 auto CrowParser::expr_list_opt() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodeListPtr nodes{make_node<List>()};
+  auto nodes{make_node<List>()};
 
   if(auto ptr{expr()}; ptr) {
     nodes->push_back(std::move(ptr));
@@ -247,7 +250,7 @@ auto CrowParser::jump_statement() -> NodePtr
     terminator();
     node = make_node<Break>();
   } else if(next_if(TokenType::DEFER)) {
-    NodeListPtr body_ptr{make_node<List>()};
+    auto body_ptr{make_node<List>()};
     if(auto ptr{expr_statement()}; ptr) {
       body_ptr->push_back(std::move(ptr));
     } else if(auto ptr{body()}; ptr) {
@@ -357,7 +360,7 @@ auto CrowParser::statement() -> NodePtr
 auto CrowParser::statement_list() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodeListPtr nodes{make_node<List>()};
+  auto nodes{make_node<List>()};
 
   while(!eos()) {
     if(auto ptr{statement()}; ptr) {
@@ -403,8 +406,7 @@ auto CrowParser::method_decl() -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::FUNCTION)) {
-    const auto tt_id{expect(TokenType::IDENTIFIER)};
-    const auto id{tt_id.get<std::string>()};
+    const auto id{expect(TokenType::IDENTIFIER).get<std::string>()};
 
     // NodeListPtr params;
     auto params{parens([this] {
@@ -424,7 +426,7 @@ auto CrowParser::method_decl() -> NodePtr
 auto CrowParser::method_decl_list() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodeListPtr nodes{make_node<List>()};
+  auto nodes{make_node<List>()};
 
   while(!eos()) {
     if(auto ptr{method_decl()}; ptr) {
@@ -443,7 +445,7 @@ auto CrowParser::interface() -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::INTERFACE)) {
-    auto id{expect(TokenType::IDENTIFIER)};
+    const auto id{expect(TokenType::IDENTIFIER).get<std::string>()};
     newline_opt();
 
     expect(TokenType::ACCOLADE_OPEN);
@@ -453,7 +455,19 @@ auto CrowParser::interface() -> NodePtr
 
     expect(TokenType::ACCOLADE_CLOSE);
 
-    // node = make_node();
+    node = make_node<Interface>(id, std::move(methods));
+  }
+
+  return node;
+}
+
+auto CrowParser::type_def() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  if(auto ptr{interface()}; ptr) {
+    node = std::move(ptr);
   }
 
   return node;
@@ -475,7 +489,7 @@ auto CrowParser::param_list() -> NodeListPtr
 auto CrowParser::param_list_opt() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodeListPtr nodes{make_node<List>()};
+  auto nodes{make_node<List>()};
 
   if(check(TokenType::IDENTIFIER)) {
     DBG_TRACE_PRINT(INFO, "Found 'IDENTIFIER'");
@@ -523,9 +537,11 @@ auto CrowParser::return_type_opt() -> NodePtr
 
   if(after_newlines(TokenType::ARROW)) {
     expect(TokenType::ARROW);
-    expect(TokenType::IDENTIFIER);
+    auto id{expect(TokenType::IDENTIFIER).get<std::string>()};
 
-    // TODO: Set node
+    // TODO: Figure out if this is a good idea?
+    auto type{make_node<nt::Identifier>(id)};
+    node = make_node<ReturnType>(std::move(type));
   }
 
   return node;
@@ -680,6 +696,8 @@ auto CrowParser::item() -> NodePtr
     node = std::move(ptr);
   } else if(auto ptr{import_()}; ptr) {
     node = std::move(ptr);
+  } else if(auto ptr{type_def()}; ptr) {
+    node = std::move(ptr);
   } else if(auto ptr{decl_expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{function()}; ptr) {
@@ -694,7 +712,7 @@ auto CrowParser::item() -> NodePtr
 auto CrowParser::item_list() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodeListPtr nodes{make_node<List>()};
+  auto nodes{make_node<List>()};
 
   while(!eos()) {
     // Remove newlines before items

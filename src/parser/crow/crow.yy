@@ -270,6 +270,8 @@ struct_def       : Struct IDENTIFIER newline_opt
                  ;
 
 type_def         : enum_def
+				         | interface_def
+				         | struct_def
                  ;
 
 // Implementation:
@@ -324,6 +326,7 @@ module           : Module IDENTIFIER
 // Items:
 item             : module
 				         | import
+				         | type_def
 				         | decl_expr
                  | function
                  ;

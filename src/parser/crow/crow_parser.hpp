@@ -24,7 +24,7 @@ class CrowParser : public pratt::PrattParser {
   auto newline_opt() -> void override;
   virtual auto terminator() -> void;
 
-	// Expressions:
+  // Expressions:
   virtual auto expr_opt() -> n::NodePtr;
 
   virtual auto decl_expr() -> n::NodePtr;
@@ -32,39 +32,41 @@ class CrowParser : public pratt::PrattParser {
 
   virtual auto expr_statement() -> n::NodePtr;
 
-	// Expression lists:
+  // Expression lists:
   virtual auto multiple_expr_list() -> n::NodeListPtr;
   virtual auto expr_list() -> n::NodeListPtr;
   auto expr_list_opt() -> n::NodeListPtr override;
 
-	// Result statement:
+  // Result statement:
   virtual auto assignment() -> n::NodePtr;
   virtual auto result_statement() -> n::NodePtr;
 
-	// Jump statements:
+  // Jump statements:
   virtual auto jump_statement() -> n::NodePtr;
 
-	// Loop statements:
+  // Loop statements:
   virtual auto loop_statement() -> n::NodePtr;
 
-	// Branch statements:
+  // Branch statements:
   virtual auto branch_statement(token::TokenType t_type) -> n::NodePtr;
   virtual auto if_statement() -> n::NodePtr;
   virtual auto elif_statement() -> n::NodePtr;
 
-	// Statements:
+  // Statements:
   virtual auto statement() -> n::NodePtr;
   virtual auto statement_list() -> n::NodeListPtr;
 
-	// Body:
+  // Body:
   virtual auto body() -> n::NodeListPtr;
 
-	// Interface:
+  // Interface:
   virtual auto method_decl() -> n::NodePtr;
   virtual auto method_decl_list() -> n::NodeListPtr;
   virtual auto interface() -> n::NodePtr;
 
-	// Function:
+  virtual auto type_def() -> n::NodePtr;
+
+  // Function:
   virtual auto param_list() -> n::NodeListPtr;
   virtual auto param_list_opt() -> n::NodeListPtr;
 
@@ -79,7 +81,7 @@ class CrowParser : public pratt::PrattParser {
   virtual auto import_list(pkg::Import& t_import) -> void;
   virtual auto import_() -> n::NodePtr;
 
-	// Package:
+  // Package:
   virtual auto module_() -> n::NodePtr;
 
   virtual auto item() -> n::NodePtr;

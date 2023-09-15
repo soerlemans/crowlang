@@ -1,9 +1,6 @@
 #ifndef CROW_AST_NODE_LVALUE_VARIABLE_HPP
 #define CROW_AST_NODE_LVALUE_VARIABLE_HPP
 
-// STL Includes:
-#include <string_view>
-
 // Includes:
 #include "../node_traits/include.hpp"
 
@@ -12,8 +9,10 @@
 
 
 namespace ast::node::lvalue {
+// Aliases:
 namespace nt = node_traits;
 
+// Classes:
 class Variable : public nt::Identifier {
   private:
   std::string m_type;

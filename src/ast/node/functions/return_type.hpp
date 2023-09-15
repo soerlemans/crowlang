@@ -2,21 +2,20 @@
 #define CROW_AST_NODE_FUNCTIONS_RETURN_TYPE_HPP
 
 // Includes:
-#include "../node_interface.hpp"
+#include "../node_traits/include.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"
 
 
 namespace ast::node::functions {
-class ReturnType : public NodeInterface {
-  private:
-  NodePtr m_type;
+// Aliases:
+namespace nt = node_traits;
 
+// Classes:
+class ReturnType : public nt::TypeExpr {
   public:
   ReturnType(NodePtr&& t_type);
-
-  auto type() -> NodePtr&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
