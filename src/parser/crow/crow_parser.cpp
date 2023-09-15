@@ -415,9 +415,7 @@ auto CrowParser::method_decl() -> NodePtr
 
     terminator();
 
-    // TODO: Implement
-    // node = make_node<MethodDecl>(id, std::move(params),
-    // std::move(rettype_ptr));
+    node = make_node<MethodDecl>(id, std::move(params), std::move(rettype_ptr));
   }
 
   return node;

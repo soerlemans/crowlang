@@ -1,7 +1,8 @@
 # Add source files
 target_sources(${PROJECT_NAME} PRIVATE
 	dot_expr.cpp
-	struct.cpp
+	method_decl.cpp
 	interface.cpp
+	struct.cpp
 	impl.cpp
 )

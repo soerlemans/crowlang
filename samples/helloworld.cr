@@ -5,6 +5,10 @@ import (
 		fs = "filesystem"
 )
 
+interface Print {
+  fn print() -> String
+}
+
 
 fn main() {
 	let var = +10 + -30
