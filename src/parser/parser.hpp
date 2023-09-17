@@ -34,6 +34,7 @@ class Parser {
     return std::make_shared<T>(std::forward<Args>(t_args)...);
   }
 
+	// TODO: Create a helper method for these
   template<typename T>
   inline auto parens(const T t_fn)
   {
@@ -44,6 +45,20 @@ class Parser {
     expect(TokenType::PAREN_OPEN);
     auto var{t_fn()};
     expect(TokenType::PAREN_CLOSE);
+
+    return var;
+  }
+
+  template<typename T>
+  inline auto accolades(const T t_fn)
+  {
+    using namespace token;
+
+    DBG_TRACE_FN(VERBOSE);
+
+    expect(TokenType::ACCOLADE_OPEN);
+    auto var{t_fn()};
+    expect(TokenType::ACCOLADE_CLOSE);
 
     return var;
   }

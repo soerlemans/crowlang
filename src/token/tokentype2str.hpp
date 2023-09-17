@@ -9,7 +9,7 @@
 
 
 namespace token {
-auto tokentype2str(token::TokenType t_type) -> std::string;
+auto tokentype2str(TokenType t_type) -> std::string;
 } // namespace token
 
 #endif // CROW_TOKEN_TOKENTYPE2STR_HPP

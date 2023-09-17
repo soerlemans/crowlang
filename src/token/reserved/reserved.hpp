@@ -50,6 +50,10 @@ namespace keywords {
   DEFINE_TERMINAL(g_defer,    "defer",    DEFER);
   DEFINE_TERMINAL(g_return,   "return",   RETURN);
 
+	// Literals:
+  DEFINE_TERMINAL(g_true,  "true",  TRUE);
+  DEFINE_TERMINAL(g_false, "false", FALSE);
+
 	const std::map g_keywords {
 		g_let.pair(), g_const.pair(),
 		g_module.pair(), g_import.pair(), g_priv.pair(), g_pub.pair(),
@@ -58,7 +62,8 @@ namespace keywords {
 		g_match.pair(),
 	  g_if.pair(), g_else.pair(), g_elif.pair(),
 	  g_loop.pair(),
-	  g_break.pair(), g_continue.pair(), g_defer.pair(), g_return.pair()
+	  g_break.pair(), g_continue.pair(), g_defer.pair(), g_return.pair(),
+    g_true.pair(), g_false.pair()
 	};
 } // namespace keywords
 

@@ -103,6 +103,7 @@ class PrintVisitor : public NodeVisitor {
   auto visit(node::rvalue::Float* t_float) -> void override;
   auto visit(node::rvalue::Integer* t_int) -> void override;
   auto visit(node::rvalue::String* t_str) -> void override;
+  auto visit(node::rvalue::Boolean* t_bool) -> void override;
 
   // Typing:
   auto visit(ast::node::typing::DotExpr* t_dot_expr) -> void override;

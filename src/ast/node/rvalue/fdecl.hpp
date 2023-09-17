@@ -11,6 +11,7 @@ class Literal;
 using Integer = Literal<int>;
 using Float = Literal<double>;
 using String = Literal<std::string>;
+using Boolean = Literal<bool>;
 } // namespace ast::node::rvalue
 
 #endif // CROW_AST_NODE_RVALUE_FDECL_HPP

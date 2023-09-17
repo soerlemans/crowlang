@@ -57,6 +57,7 @@ class NodeVisitor {
   virtual auto visit(node::rvalue::Float* t_float) -> void = 0;
   virtual auto visit(node::rvalue::Integer* t_int) -> void = 0;
   virtual auto visit(node::rvalue::String* t_str) -> void = 0;
+  virtual auto visit(node::rvalue::Boolean* t_bool) -> void = 0;
 
   // Typing:
   virtual auto visit(ast::node::typing::DotExpr* t_dot_expr) -> void = 0;

@@ -266,7 +266,7 @@ member_decl_list : // empty
                  ;
 
 struct_def       : Struct IDENTIFIER newline_opt
-                     '{'  newline_opt newline_opt'}'
+                     '{'  newline_opt member_decl_list '}'
                  ;
 
 type_def         : enum_def
@@ -280,6 +280,7 @@ impl_block       : Impl IDENTIFIER newline_opt
                  ;
 
 // Function:
+// TODO: Think about having in, out and inout specifiers like ADA?
 param_list       : IDENTIFIER ':' IDENTIFIER
                  | param_list ',' IDENTIFIER ':' IDENTIFIER
                  ;

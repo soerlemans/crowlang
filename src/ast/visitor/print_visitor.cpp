@@ -2,6 +2,7 @@
 
 // STL Includes:
 #include <iomanip>
+#include <ios>
 #include <sstream>
 
 
@@ -34,7 +35,8 @@
 // #define PPRINT_INIT(t_ptr) PPRINT_IF("Init", t_ptr->init())
 #define PPRINT_COND(t_ptr)      PPRINT_IF("Condition", t_ptr->condition())
 #define PPRINT_EXPR(t_ptr)      PPRINT_IF("Expr", t_ptr->expr())
-#define PPRINT_BODY(t_ptr)      PPRINT("| Body: ", t_ptr->body())
+#define PPRINT_BODY(t_ptr)      PPRINT_IF("Body", t_ptr->body())
+#define PPRINT_PARAMS(t_ptr)    PPRINT_IF("Params", t_ptr->body())
 #define PPRINT_TYPE_EXPR(t_ptr) PPRINT_IF("Type Expr", t_ptr->type())
 
 // Using statements:
@@ -55,7 +57,7 @@ auto PrintVisitor::visit(If* t_if) -> void
 
   PPRINT("If");
   PPRINT_IF("Init", t_if->init());
-  PPRINT_IF("Condition", t_if->condition());
+  PPRINT_COND(t_if);
   PPRINT_IF("Then", t_if->then());
   PPRINT_IF("Alt", t_if->alt());
 }
@@ -66,9 +68,9 @@ auto PrintVisitor::visit(node::control::Loop* t_loop) -> void
 
   PPRINT("Loop");
   PPRINT_IF("Init", t_loop->init());
-  PPRINT_IF("Condition", t_loop->condition());
-  PPRINT_IF("Expr", t_loop->expr());
-  PPRINT_IF("Body", t_loop->body());
+  PPRINT_COND(t_loop);
+  PPRINT_EXPR(t_loop);
+  PPRINT_BODY(t_loop);
 }
 
 auto PrintVisitor::visit([[maybe_unused]] Continue* t_continue) -> void
@@ -90,7 +92,7 @@ auto PrintVisitor::visit([[maybe_unused]] Return* t_return) -> void
   PPRINT_INIT();
 
   PPRINT("Return");
-  PPRINT_IF("Expr", t_return->expr());
+  PPRINT_EXPR(t_return);
 }
 
 // Function:
@@ -99,9 +101,9 @@ auto PrintVisitor::visit(Function* t_fn) -> void
   PPRINT_INIT();
 
   PPRINT("Function");
-  PPRINT("| Identifier: ", t_fn->identifier());
-  PPRINT_IF("Params", t_fn->params());
-  PPRINT_IF("Body", t_fn->body());
+  PPRINT_ID(t_fn);
+  PPRINT_PARAMS(t_fn);
+  PPRINT_BODY(t_fn);
 }
 
 auto PrintVisitor::visit(FunctionCall* t_fn_call) -> void
@@ -119,6 +121,7 @@ auto PrintVisitor::visit(node::functions::ReturnType* t_rt) -> void
 
   PPRINT("Return type");
   PPRINT_IF("Type: ", t_rt->type());
+  PPRINT_TYPE_EXPR(t_rt);
 }
 
 // Lvalue:
@@ -214,7 +217,7 @@ auto PrintVisitor::visit(Ternary* t_ternary) -> void
   PPRINT_INIT();
 
   PPRINT("Ternary");
-  PPRINT_IF("Condition", t_ternary->condition());
+  PPRINT_COND(t_ternary);
   PPRINT_IF("Then", t_ternary->then());
   PPRINT_IF("Alt", t_ternary->alt());
 }
@@ -241,7 +244,7 @@ auto PrintVisitor::visit(ModuleDecl* t_mod) -> void
   PPRINT_INIT();
 
   PPRINT("Module Declaration");
-  PPRINT("| Identifier: ", t_mod->identifier());
+  PPRINT_ID(t_mod);
 }
 
 // Rvalue:
@@ -264,6 +267,13 @@ auto PrintVisitor::visit(String* t_str) -> void
   PPRINT_INIT();
 
   PPRINT("String: ", t_str->get());
+}
+
+auto PrintVisitor::visit(Boolean* t_bool) -> void
+{
+  PPRINT_INIT();
+
+  PPRINT("Boolean: ", t_bool->get());
 }
 
 // Typing:

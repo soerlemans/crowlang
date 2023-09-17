@@ -439,7 +439,7 @@ auto CrowParser::method_decl_list() -> NodeListPtr
   return nodes;
 }
 
-auto CrowParser::interface() -> NodePtr
+auto CrowParser::interface_def() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
@@ -448,14 +448,74 @@ auto CrowParser::interface() -> NodePtr
     const auto id{expect(TokenType::IDENTIFIER).get<std::string>()};
     newline_opt();
 
-    expect(TokenType::ACCOLADE_OPEN);
-    newline_opt();
+    auto methods{accolades([this] {
+      newline_opt();
 
-    auto methods{method_decl_list()};
-
-    expect(TokenType::ACCOLADE_CLOSE);
+      return method_decl_list();
+    })};
 
     node = make_node<Interface>(id, std::move(methods));
+  }
+
+  return node;
+}
+
+// Struct:
+auto CrowParser::member_decl() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  const auto token{get_token()};
+  if(next_if(TokenType::IDENTIFIER)) {
+    const auto id{token.get<std::string>()};
+    expect(TokenType::COLON);
+    const auto type{expect(TokenType::IDENTIFIER).get<std::string>()};
+    terminator();
+
+    // node = make_node<MemberDecl>(id, type);
+  }
+
+  return node;
+}
+
+auto CrowParser::member_decl_list() -> NodeListPtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  auto nodes{make_node<List>()};
+
+  while(!eos()) {
+    if(auto ptr{member_decl()}; ptr) {
+      nodes->push_back(std::move(ptr));
+    } else {
+      break;
+    }
+  }
+
+  return nodes;
+
+
+  return nodes;
+}
+
+auto CrowParser::struct_def() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  if(next_if(TokenType::STRUCT)) {
+    DBG_TRACE_PRINT(INFO, "Found 'struct'");
+
+    const auto id{expect(TokenType::IDENTIFIER).get<std::string>()};
+    newline_opt();
+
+    auto members{accolades([this] {
+      newline_opt();
+
+      return member_decl_list();
+    })};
+
+    node = make_node<Struct>(id, std::move(members));
   }
 
   return node;
@@ -466,7 +526,9 @@ auto CrowParser::type_def() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  if(auto ptr{interface()}; ptr) {
+  if(auto ptr{interface_def()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{struct_def()}; ptr) {
     node = std::move(ptr);
   }
 

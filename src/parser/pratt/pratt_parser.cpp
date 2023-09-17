@@ -69,6 +69,14 @@ auto PrattParser::literal() -> NodePtr
     DBG_TRACE_PRINT(INFO, "Found STRING literal: ", val);
 
     node = make_node<String>(val);
+  } else if(next_if(TokenType::TRUE)) {
+    DBG_TRACE_PRINT(INFO, "Found 'TRUE'");
+
+    node = make_node<Boolean>(true);
+  } else if(next_if(TokenType::FALSE)) {
+    DBG_TRACE_PRINT(INFO, "Found 'FALSE'");
+
+    node = make_node<Boolean>(false);
   }
 
   return node;
