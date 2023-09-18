@@ -56,26 +56,25 @@ auto PrattParser::literal() -> NodePtr
   const auto token{get_token()};
   if(next_if(TokenType::FLOAT)) {
     const auto val{token.get<double>()};
-    DBG_TRACE_PRINT(INFO, "Found FLOAT literal: ", val);
-
+    PARSER_FOUND(TokenType::FLOAT, " literal: ", val);
     node = make_node<Float>(val);
+
   } else if(next_if(TokenType::INTEGER)) {
     const auto val{token.get<int>()};
-    DBG_TRACE_PRINT(INFO, "Found INTEGER literal: ", val);
-
+    PARSER_FOUND(TokenType::INTEGER, " literal: ", val);
     node = make_node<Integer>(val);
+
   } else if(next_if(TokenType::STRING)) {
     const auto val{token.get<std::string>()};
-    DBG_TRACE_PRINT(INFO, "Found STRING literal: ", val);
-
+    PARSER_FOUND(TokenType::STRING, " literal: ", val);
     node = make_node<String>(val);
+
   } else if(next_if(TokenType::TRUE)) {
-    DBG_TRACE_PRINT(INFO, "Found 'TRUE'");
-
+    PARSER_FOUND(TokenType::TRUE);
     node = make_node<Boolean>(true);
-  } else if(next_if(TokenType::FALSE)) {
-    DBG_TRACE_PRINT(INFO, "Found 'FALSE'");
 
+  } else if(next_if(TokenType::FALSE)) {
+    PARSER_FOUND(TokenType::FALSE);
     node = make_node<Boolean>(false);
   }
 
@@ -89,7 +88,7 @@ auto PrattParser::grouping() -> NodePtr
   NodePtr node;
 
   if(check(TokenType::PAREN_OPEN)) {
-    DBG_TRACE_PRINT(VERBOSE, "Found GROUPING");
+    DBG_TRACE_PRINT(VERBOSE, "Found 'GROUPING'");
 
     node = parens([this] {
       return this->expr();
@@ -105,7 +104,8 @@ auto PrattParser::negation() -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::NOT)) {
-    DBG_TRACE_PRINT(INFO, "Found '!'");
+    PARSER_FOUND(TokenType::NOT);
+
     if(auto ptr{prefix_expr(TokenType::NOT)}; ptr) {
       node = make_node<Not>(std::move(ptr));
     } else {
@@ -124,7 +124,7 @@ auto PrattParser::unary_prefix() -> NodePtr
 
   const auto token{get_token()};
   if(next_if(TokenType::PLUS, TokenType::MINUS)) {
-    DBG_TRACE_PRINT(VERBOSE, "Found UNARY PREFIX");
+    DBG_TRACE_PRINT(VERBOSE, "Found 'UNARY PREFIX'");
 
     NodePtr rhs{prefix_expr(token.type())};
     if(!rhs) {
@@ -157,11 +157,11 @@ auto PrattParser::precrement() -> NodePtr
 
   const auto token{get_token()};
   if(next_if(TokenType::INCREMENT)) {
-    DBG_TRACE_PRINT(INFO, "Found ++INCREMENT");
+    PARSER_FOUND(TokenType::INCREMENT, " (pre)");
     lambda.template operator()<Increment>();
-  } else if(next_if(TokenType::DECREMENT)) {
 
-    DBG_TRACE_PRINT(INFO, "Found --DECREMENT");
+  } else if(next_if(TokenType::DECREMENT)) {
+    PARSER_FOUND(TokenType::DECREMENT, " (pre)");
     lambda.template operator()<Decrement>();
   }
 
@@ -231,19 +231,23 @@ auto PrattParser::arithmetic(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   }};
 
   if(after_newlines(TokenType::ASTERISK)) {
-    DBG_TRACE_PRINT(INFO, "Found 'MULTIPLICATION'");
+    PARSER_FOUND(TokenType::ASTERISK);
     lambda(ArithmeticOp::MULTIPLY);
+
   } else if(after_newlines(TokenType::SLASH)) {
-    DBG_TRACE_PRINT(INFO, "Found 'DIVISION'");
+    PARSER_FOUND(TokenType::SLASH);
     lambda(ArithmeticOp::DIVIDE);
+
   } else if(after_newlines(TokenType::PERCENT_SIGN)) {
-    DBG_TRACE_PRINT(INFO, "Found 'MODULO'");
+    PARSER_FOUND(TokenType::PERCENT_SIGN);
     lambda(ArithmeticOp::MODULO);
+
   } else if(after_newlines(TokenType::PLUS)) {
-    DBG_TRACE_PRINT(INFO, "Found 'ADDITION'");
+    PARSER_FOUND(TokenType::PLUS);
     lambda(ArithmeticOp::ADD);
+
   } else if(after_newlines(TokenType::MINUS)) {
-    DBG_TRACE_PRINT(INFO, "Found 'SUBTRACTION'");
+    PARSER_FOUND(TokenType::MINUS);
     lambda(ArithmeticOp::SUBTRACT);
   }
 
@@ -265,10 +269,11 @@ auto PrattParser::logical(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   }};
 
   if(after_newlines(TokenType::AND)) {
-    DBG_TRACE_PRINT(INFO, "Found '&&'");
+    PARSER_FOUND(TokenType::AND);
     lambda.template operator()<And>();
-  } else if(after_newlines(TokenType::AND)) {
-    DBG_TRACE_PRINT(INFO, "Found '||'");
+
+  } else if(after_newlines(TokenType::OR)) {
+    PARSER_FOUND(TokenType::OR);
     lambda.template operator()<Or>();
   }
 
@@ -291,22 +296,27 @@ auto PrattParser::comparison(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
     }};
 
     if(after_newlines(TokenType::LESS_THAN)) {
-      DBG_TRACE_PRINT(INFO, "Found '<'");
+      PARSER_FOUND(TokenType::LESS_THAN);
       lambda(ComparisonOp::LESS_THAN);
+
     } else if(after_newlines(TokenType::LESS_THAN_EQUAL)) {
-      DBG_TRACE_PRINT(INFO, "Found '<='");
+      PARSER_FOUND(TokenType::LESS_THAN_EQUAL);
       lambda(ComparisonOp::LESS_THAN_EQUAL);
+
     } else if(after_newlines(TokenType::EQUAL)) {
-      DBG_TRACE_PRINT(INFO, "Found '=='");
+      PARSER_FOUND(TokenType::EQUAL);
       lambda(ComparisonOp::EQUAL);
+
     } else if(after_newlines(TokenType::NOT_EQUAL)) {
-      DBG_TRACE_PRINT(INFO, "Found '!='");
+      PARSER_FOUND(TokenType::NOT_EQUAL);
       lambda(ComparisonOp::NOT_EQUAL);
+
     } else if(after_newlines(TokenType::GREATER_THAN)) {
-      DBG_TRACE_PRINT(INFO, "Found '>'");
+      PARSER_FOUND(TokenType::GREATER_THAN);
       lambda(ComparisonOp::GREATER_THAN);
+
     } else if(after_newlines(TokenType::GREATER_THAN_EQUAL)) {
-      DBG_TRACE_PRINT(INFO, "Found '>='");
+      PARSER_FOUND(TokenType::GREATER_THAN_EQUAL);
       lambda(ComparisonOp::GREATER_THAN_EQUAL);
     }
   }

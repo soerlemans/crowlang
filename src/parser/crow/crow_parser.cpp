@@ -194,22 +194,28 @@ auto CrowParser::assignment() -> NodePtr
     }};
 
     if(next_if(TokenType::MUL_ASSIGN)) {
-      DBG_TRACE_PRINT(INFO, "Found '*='");
+      PARSER_FOUND(TokenType::MUL_ASSIGN);
+
       lambda(AssignmentOp::MULTIPLY);
     } else if(next_if(TokenType::DIV_ASSIGN)) {
-      DBG_TRACE_PRINT(INFO, "Found '/='");
+      PARSER_FOUND(TokenType::DIV_ASSIGN);
+
       lambda(AssignmentOp::DIVIDE);
     } else if(next_if(TokenType::MOD_ASSIGN)) {
-      DBG_TRACE_PRINT(INFO, "Found '%='");
+      PARSER_FOUND(TokenType::MOD_ASSIGN);
+
       lambda(AssignmentOp::MODULO);
     } else if(next_if(TokenType::ADD_ASSIGN)) {
-      DBG_TRACE_PRINT(INFO, "Found '+='");
+      PARSER_FOUND(TokenType::ADD_ASSIGN);
+
       lambda(AssignmentOp::ADD);
     } else if(next_if(TokenType::SUB_ASSIGN)) {
-      DBG_TRACE_PRINT(INFO, "Found '-='");
+      PARSER_FOUND(TokenType::SUB_ASSIGN);
+
       lambda(AssignmentOp::SUBTRACT);
     } else if(next_if(TokenType::ASSIGNMENT)) {
-      DBG_TRACE_PRINT(INFO, "Found '='");
+      PARSER_FOUND(TokenType::ASSIGNMENT);
+
       lambda(AssignmentOp::REGULAR);
     }
   }

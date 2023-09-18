@@ -8,7 +8,16 @@
 #include "../ast/node/fdecl.hpp"
 #include "../debug/trace.hpp"
 #include "../token/token.hpp"
+#include "../token/tokentype2str.hpp"
 
+
+// Macros:
+#define PARSER_FOUND(t_tokentype, ...)                    \
+  do {                                                    \
+    const auto str{token::tokentype2str(t_tokentype)};    \
+    const auto quoted{std::quoted(str, '\'')};            \
+    DBG_TRACE_PRINT(INFO, "Found ", quoted, __VA_ARGS__); \
+  } while(false)
 
 namespace parser {
 // Namespace aliases:
@@ -34,7 +43,7 @@ class Parser {
     return std::make_shared<T>(std::forward<Args>(t_args)...);
   }
 
-	// TODO: Create a helper method for these
+  // TODO: Create a helper method for these
   template<typename T>
   inline auto parens(const T t_fn)
   {

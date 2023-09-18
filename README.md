@@ -11,7 +11,7 @@ I aim to keep dependencies to a minimum but the following is required:
 - Cmake  (Main buildsysstem)
 - [CLI11](https://github.com/CLIUtils/CLI11) (CLI option parsing library)
 - [tabulate](https://github.com/p-ranav/tabulate) (Text table library)
-- [LLVM]() (LLVM codegen library)
+- [LLVM](https://llvm.org) (LLVM codegen library)
 
 Tabulate is downloaded using CMake and statically linked but CLI11 and LLVM are dynamically linked (CMake searches for it on your system).
 You can install the dependencies with the following aptitude command:
