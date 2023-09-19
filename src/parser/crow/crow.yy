@@ -293,7 +293,10 @@ param_list_opt   : // empty
                  | param_list
                  ;
 
-return_type      : newline_opt ARROW IDENTIFIER
+type_expr        : IDENTIFIER
+                 ;
+
+return_type      : newline_opt ARROW type_expr
                  ;
 
 return_type_opt  : // empty

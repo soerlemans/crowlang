@@ -3,6 +3,7 @@
 // Includes:
 #include "../../ast/node/include.hpp"
 #include "../../debug/trace.hpp"
+#include <string>
 
 
 // Using statements:
@@ -70,6 +71,7 @@ auto CrowParser::decl_expr() -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::LET)) {
+    PARSER_FOUND(TokenType::LET);
     const auto id{expect(TokenType::IDENTIFIER)};
 
     if(next_if(TokenType::COLON)) {
@@ -195,27 +197,26 @@ auto CrowParser::assignment() -> NodePtr
 
     if(next_if(TokenType::MUL_ASSIGN)) {
       PARSER_FOUND(TokenType::MUL_ASSIGN);
-
       lambda(AssignmentOp::MULTIPLY);
+
     } else if(next_if(TokenType::DIV_ASSIGN)) {
       PARSER_FOUND(TokenType::DIV_ASSIGN);
-
       lambda(AssignmentOp::DIVIDE);
+
     } else if(next_if(TokenType::MOD_ASSIGN)) {
       PARSER_FOUND(TokenType::MOD_ASSIGN);
-
       lambda(AssignmentOp::MODULO);
+
     } else if(next_if(TokenType::ADD_ASSIGN)) {
       PARSER_FOUND(TokenType::ADD_ASSIGN);
-
       lambda(AssignmentOp::ADD);
+
     } else if(next_if(TokenType::SUB_ASSIGN)) {
       PARSER_FOUND(TokenType::SUB_ASSIGN);
-
       lambda(AssignmentOp::SUBTRACT);
+
     } else if(next_if(TokenType::ASSIGNMENT)) {
       PARSER_FOUND(TokenType::ASSIGNMENT);
-
       lambda(AssignmentOp::REGULAR);
     }
   }
@@ -419,11 +420,11 @@ auto CrowParser::method_decl() -> NodePtr
       return this->param_list_opt();
     })};
 
-    auto rettype_ptr{return_type()};
+    auto type_ptr{return_type()};
 
     terminator();
 
-    node = make_node<MethodDecl>(id, std::move(params), std::move(rettype_ptr));
+    node = make_node<MethodDecl>(id, std::move(params), std::move(type_ptr));
   }
 
   return node;
@@ -476,10 +477,11 @@ auto CrowParser::member_decl() -> NodePtr
   if(next_if(TokenType::IDENTIFIER)) {
     const auto id{token.get<std::string>()};
     expect(TokenType::COLON);
-    const auto type{expect(TokenType::IDENTIFIER).get<std::string>()};
+
+    auto type_ptr{return_type()};
     terminator();
 
-    // node = make_node<MemberDecl>(id, type);
+    node = make_node<MemberDecl>(id, std::move(type_ptr));
   }
 
   return node;
@@ -510,7 +512,7 @@ auto CrowParser::struct_def() -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::STRUCT)) {
-    DBG_TRACE_PRINT(INFO, "Found 'struct'");
+    PARSER_FOUND(TokenType::STRUCT);
 
     const auto id{expect(TokenType::IDENTIFIER).get<std::string>()};
     newline_opt();
@@ -560,7 +562,7 @@ auto CrowParser::param_list_opt() -> NodeListPtr
   auto nodes{make_node<List>()};
 
   if(check(TokenType::IDENTIFIER)) {
-    DBG_TRACE_PRINT(INFO, "Found 'IDENTIFIER'");
+    PARSER_FOUND(TokenType::IDENTIFIER);
 
     const auto id{expect(TokenType::IDENTIFIER).get<std::string>()};
     expect(TokenType::COLON);
@@ -571,9 +573,9 @@ auto CrowParser::param_list_opt() -> NodeListPtr
 
   while(!eos()) {
     if(next_if(TokenType::COMMA)) {
-      DBG_TRACE_PRINT(INFO, "Found ',' 'IDENTIFIER'");
-
       const auto id{expect(TokenType::IDENTIFIER).get<std::string>()};
+      PARSER_FOUND(TokenType::COMMA, "'IDENTIFIER'");
+
       expect(TokenType::COLON);
       const auto type{expect(TokenType::IDENTIFIER).get<std::string>()};
 
@@ -584,6 +586,22 @@ auto CrowParser::param_list_opt() -> NodeListPtr
   }
 
   return nodes;
+}
+
+auto CrowParser::type_expr() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  auto token{get_token()};
+  if(next_if(TokenType::IDENTIFIER)) {
+    const auto id{token.get<std::string>()};
+
+		// TODO: For now just return Nil
+    node = make_node<Nil>();
+  }
+
+  return node;
 }
 
 auto CrowParser::return_type() -> NodePtr
@@ -643,7 +661,7 @@ auto CrowParser::function() -> NodePtr
       return this->param_list_opt();
     })};
 
-    auto rettype_ptr{return_type_opt()};
+    auto type_ptr{return_type_opt()};
 
     auto body_ptr{body()};
     if(!body_ptr) {
@@ -664,12 +682,12 @@ auto CrowParser::import_expr(Import& t_import) -> bool
   const auto token{get_token()};
   if(next_if(TokenType::STRING)) {
     auto str{token.get<std::string>()};
-
     DBG_TRACE_PRINT(INFO, "Found: ", std::quoted(str));
 
     t_import.add_import(std::move(str));
   } else if(next_if(TokenType::IDENTIFIER)) {
     auto id{token.get<std::string>()};
+
     expect(TokenType::ASSIGNMENT);
     auto str{expect(TokenType::STRING).get<std::string>()};
 
@@ -685,8 +703,6 @@ auto CrowParser::import_expr(Import& t_import) -> bool
 
 auto CrowParser::import_list(Import& t_import) -> void
 {
-  using namespace token;
-
   DBG_TRACE_FN(VERBOSE);
 
   if(!import_expr(t_import)) {
@@ -718,10 +734,11 @@ auto CrowParser::import_() -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::IMPORT)) {
-    DBG_TRACE_PRINT(INFO, "Found 'IMPORT'");
+    PARSER_FOUND(TokenType::IMPORT);
+
     auto import_ptr{make_node<Import>()};
     if(check(TokenType::STRING)) {
-      DBG_TRACE_PRINT(INFO, "Found 'STRING'");
+      PARSER_FOUND(TokenType::STRING);
       const auto id{get_token()};
       next();
 
@@ -746,7 +763,7 @@ auto CrowParser::module_() -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::MODULE)) {
-    DBG_TRACE_PRINT(INFO, "Found 'MODULE'");
+    PARSER_FOUND(TokenType::MODULE);
     const auto id{expect(TokenType::IDENTIFIER)};
 
     node = make_node<ModuleDecl>(id.get<std::string>());

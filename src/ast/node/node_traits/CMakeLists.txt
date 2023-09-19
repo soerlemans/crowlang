@@ -6,5 +6,5 @@ target_sources(${PROJECT_NAME} PRIVATE
 	identifier.cpp
 	init.cpp
 	params.cpp
-	type_expr.cpp
+	type.cpp
 )

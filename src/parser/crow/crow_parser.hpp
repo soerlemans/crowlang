@@ -64,7 +64,7 @@ class CrowParser : public pratt::PrattParser {
   virtual auto method_decl_list() -> n::NodeListPtr;
   virtual auto interface_def() -> n::NodePtr;
 
-	// Struct:
+  // Struct:
   virtual auto member_decl() -> n::NodePtr;
   virtual auto member_decl_list() -> n::NodeListPtr;
   virtual auto struct_def() -> n::NodePtr;
@@ -75,6 +75,7 @@ class CrowParser : public pratt::PrattParser {
   virtual auto param_list() -> n::NodeListPtr;
   virtual auto param_list_opt() -> n::NodeListPtr;
 
+  virtual auto type_expr() -> n::NodePtr;
   virtual auto return_type() -> n::NodePtr;
   virtual auto return_type_opt() -> n::NodePtr;
 

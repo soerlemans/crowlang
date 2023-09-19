@@ -5,19 +5,13 @@ import (
 		fs = "filesystem"
 )
 
-interface Cast {
-  fn integer() -> Int
-  fn string() -> String
-}
-
 struct Pair {
   m_first: int
+  m_second: int
 }
 
-
 fn main() {
-	let var = +10 + -30
-	let var = true
+  pair: Pair = { m_first = 10, m_second = 20}
 
 	return 0
 }

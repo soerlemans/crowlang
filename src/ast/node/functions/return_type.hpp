@@ -15,7 +15,7 @@ namespace nt = node_traits;
 // Classes:
 class ReturnType : public nt::TypeExpr {
   public:
-  ReturnType(NodePtr&& t_type);
+  ReturnType(std::string_view t_type);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

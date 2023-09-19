@@ -1,6 +1,9 @@
 #ifndef CROW_AST_NODE_NODE_TRAITS_TYPE_EXPR_HPP
 #define CROW_AST_NODE_NODE_TRAITS_TYPE_EXPR_HPP
 
+// STL Includes:
+#include <string_view>
+
 // Includes:
 #include "../node_interface.hpp"
 
@@ -9,18 +12,18 @@
 
 
 namespace ast::node::node_traits {
-class TypeExpr : virtual public NodeInterface {
+class Type : virtual public NodeInterface {
   protected:
-  NodePtr m_type;
+  std::string m_type;
 
   public:
-  TypeExpr(NodePtr&& t_type);
+  Type(std::string_view t_type);
 
-  virtual auto type() -> NodePtr&;
+  virtual auto type() const -> std::string_view;
 
   auto accept(visitor::NodeVisitor* t_visitor) -> void override = 0;
 
-  ~TypeExpr() override = default;
+  ~Type() override = default;
 };
 } // namespace ast::node::node_traits
 

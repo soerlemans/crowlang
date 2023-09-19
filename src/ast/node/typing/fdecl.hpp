@@ -4,9 +4,13 @@
 
 namespace ast::node::typing {
 class DotExpr;
+
 class MethodDecl;
 class Interface;
+
+class MemberDecl;
 class Struct;
+
 class Impl;
 } // namespace ast::node::typing
 

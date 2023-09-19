@@ -7,6 +7,7 @@
 
 // Local Includes:
 #include "fdecl.hpp"
+#include <string_view>
 
 
 namespace ast::node::typing {
@@ -14,12 +15,10 @@ namespace ast::node::typing {
 namespace nt = node_traits;
 
 // Classes:
-class MethodDecl : public nt::Identifier,
-                   public nt::Params,
-                   public nt::TypeExpr {
+class MethodDecl : public nt::Identifier, public nt::Params, public nt::Type {
   public:
   MethodDecl(std::string_view t_identifier, NodeListPtr&& t_params,
-             NodePtr&& t_type);
+             std::string_view t_type);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
