@@ -103,6 +103,7 @@ auto PrintVisitor::visit(Function* t_fn) -> void
   PPRINT("Function");
   PPRINT_ID(t_fn);
   PPRINT_PARAMS(t_fn);
+  PPRINT_TYPE(t_fn);
   PPRINT_BODY(t_fn);
 }
 
