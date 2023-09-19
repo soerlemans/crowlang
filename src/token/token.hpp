@@ -42,7 +42,6 @@ class Token {
 
   auto type() const -> TokenType;
 
-
   template<typename T>
   auto get() const -> T
   {

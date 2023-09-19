@@ -3,6 +3,7 @@
 
 // Includes:
 #include "../pratt/pratt_parser.hpp"
+#include <string>
 
 
 namespace parser::crow {
@@ -75,9 +76,8 @@ class CrowParser : public pratt::PrattParser {
   virtual auto param_list() -> n::NodeListPtr;
   virtual auto param_list_opt() -> n::NodeListPtr;
 
-  virtual auto type_expr() -> n::NodePtr;
-  virtual auto return_type() -> n::NodePtr;
-  virtual auto return_type_opt() -> n::NodePtr;
+  virtual auto return_type() -> std::string;
+  virtual auto return_type_opt() -> std::string;
 
   virtual auto lambda() -> n::NodePtr;
   virtual auto function() -> n::NodePtr;

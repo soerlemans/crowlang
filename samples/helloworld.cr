@@ -11,7 +11,6 @@ struct Pair {
 }
 
 fn main() {
-  pair: Pair = { m_first = 10, m_second = 20}
 
 	return 0
 }

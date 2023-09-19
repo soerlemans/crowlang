@@ -1,4 +1,5 @@
 #include "method_decl.hpp"
+#include <string_view>
 
 
 using namespace ast::node::typing;

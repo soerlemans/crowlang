@@ -5,13 +5,9 @@ using namespace ast::node::functions;
 using namespace ast::node::node_traits;
 
 Function::Function(const std::string_view t_identifier, NodeListPtr&& t_params,
-                   NodeListPtr&& t_body)
+                   const std::string_view t_type, NodeListPtr&& t_body)
   : Identifier{t_identifier},
-    Body{std::move(t_body)},
-    m_params{std::move(t_params)}
+    Params{std::move(t_params)},
+    Type{t_type},
+    Body{std::move(t_body)}
 {}
-
-auto Function::params() -> NodeListPtr&
-{
-  return m_params;
-}

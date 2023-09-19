@@ -13,9 +13,9 @@ namespace ast::node::typing {
 namespace nt = node_traits;
 
 // Classes:
-class MemberDecl : public nt::Identifier, public nt::TypeExpr {
+class MemberDecl : public nt::Identifier, public nt::Type {
   public:
-  MemberDecl(std::string_view t_identifier, NodePtr&& t_type);
+  MemberDecl(std::string_view t_identifier, std::string_view t_type);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

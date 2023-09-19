@@ -13,7 +13,7 @@ namespace ast::node::functions {
 namespace nt = node_traits;
 
 // Classes:
-class ReturnType : public nt::TypeExpr {
+class ReturnType : public nt::Type {
   public:
   ReturnType(std::string_view t_type);
 

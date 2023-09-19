@@ -60,11 +60,12 @@ class NodeVisitor {
   virtual auto visit(node::rvalue::Boolean* t_bool) -> void = 0;
 
   // Typing:
-  virtual auto visit(ast::node::typing::DotExpr* t_dot_expr) -> void = 0;
-  virtual auto visit(ast::node::typing::Impl* t_impl) -> void = 0;
-  virtual auto visit(ast::node::typing::Interface* t_ifc) -> void = 0;
   virtual auto visit(ast::node::typing::MethodDecl* t_md) -> void = 0;
+  virtual auto visit(ast::node::typing::Interface* t_ifc) -> void = 0;
+  virtual auto visit(ast::node::typing::MemberDecl* t_md) -> void = 0;
   virtual auto visit(ast::node::typing::Struct* t_struct) -> void = 0;
+  virtual auto visit(ast::node::typing::Impl* t_impl) -> void = 0;
+  virtual auto visit(ast::node::typing::DotExpr* t_dot_expr) -> void = 0;
 
   virtual auto visit(node::List* t_list) -> void = 0;
   virtual auto visit(node::Nil* t_nil) -> void = 0;

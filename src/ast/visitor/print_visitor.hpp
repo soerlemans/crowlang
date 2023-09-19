@@ -106,11 +106,12 @@ class PrintVisitor : public NodeVisitor {
   auto visit(node::rvalue::Boolean* t_bool) -> void override;
 
   // Typing:
-  auto visit(ast::node::typing::DotExpr* t_dot_expr) -> void override;
-  auto visit(ast::node::typing::Impl* t_impl) -> void override;
-  auto visit(ast::node::typing::Interface* t_ifc) -> void override;
   auto visit(ast::node::typing::MethodDecl* t_md) -> void override;
+  auto visit(ast::node::typing::Interface* t_ifc) -> void override;
+  auto visit(ast::node::typing::MemberDecl* t_md) -> void override;
   auto visit(ast::node::typing::Struct* t_struct) -> void override;
+  auto visit(ast::node::typing::Impl* t_impl) -> void override;
+  auto visit(ast::node::typing::DotExpr* t_dot_expr) -> void override;
 
   auto visit(node::List* t_list) -> void override;
   auto visit(node::Nil* t_nil) -> void override;

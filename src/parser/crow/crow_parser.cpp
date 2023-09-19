@@ -3,6 +3,7 @@
 // Includes:
 #include "../../ast/node/include.hpp"
 #include "../../debug/trace.hpp"
+#include <exception>
 #include <string>
 
 
@@ -420,11 +421,11 @@ auto CrowParser::method_decl() -> NodePtr
       return this->param_list_opt();
     })};
 
-    auto type_ptr{return_type()};
+    const auto type{return_type()};
 
     terminator();
 
-    node = make_node<MethodDecl>(id, std::move(params), std::move(type_ptr));
+    node = make_node<MethodDecl>(id, std::move(params), type);
   }
 
   return node;
@@ -478,10 +479,10 @@ auto CrowParser::member_decl() -> NodePtr
     const auto id{token.get<std::string>()};
     expect(TokenType::COLON);
 
-    auto type_ptr{return_type()};
+    const auto type{expect(TokenType::IDENTIFIER).get<std::string>()};
     terminator();
 
-    node = make_node<MemberDecl>(id, std::move(type_ptr));
+    node = make_node<MemberDecl>(id, type);
   }
 
   return node;
@@ -588,49 +589,30 @@ auto CrowParser::param_list_opt() -> NodeListPtr
   return nodes;
 }
 
-auto CrowParser::type_expr() -> NodePtr
+// TODO: Create a StrOpt type
+auto CrowParser::return_type() -> std::string
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
+  const auto type{return_type_opt()};
 
-  auto token{get_token()};
-  if(next_if(TokenType::IDENTIFIER)) {
-    const auto id{token.get<std::string>()};
-
-		// TODO: For now just return Nil
-    node = make_node<Nil>();
+  if(type.empty()) {
+    syntax_error("Expected a return type!");
   }
 
-  return node;
+  return type;
 }
 
-auto CrowParser::return_type() -> NodePtr
+auto CrowParser::return_type_opt() -> std::string
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePtr node{return_type_opt()};
-
-  if(!node) {
-    syntax_error("Expected a return type specification!");
-  }
-
-  return node;
-}
-
-auto CrowParser::return_type_opt() -> NodePtr
-{
-  DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
+  std::string type;
 
   if(after_newlines(TokenType::ARROW)) {
     expect(TokenType::ARROW);
-    auto id{expect(TokenType::IDENTIFIER).get<std::string>()};
-
-    // Temporary:
-    auto type{make_node<Nil>()};
-    node = make_node<ReturnType>(std::move(type));
+    type = expect(TokenType::IDENTIFIER).get<std::string>();
   }
 
-  return node;
+  return type;
 }
 
 auto CrowParser::lambda() -> n::NodePtr
@@ -661,14 +643,15 @@ auto CrowParser::function() -> NodePtr
       return this->param_list_opt();
     })};
 
-    auto type_ptr{return_type_opt()};
+    const auto type{return_type_opt()};
 
     auto body_ptr{body()};
     if(!body_ptr) {
       syntax_error("Expected a function body");
     }
 
-    node = make_node<Function>(id, std::move(params), std::move(body_ptr));
+    node =
+      make_node<Function>(id, std::move(params), type, std::move(body_ptr));
   }
 
   return node;

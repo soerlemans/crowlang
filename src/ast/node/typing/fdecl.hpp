@@ -3,8 +3,6 @@
 
 
 namespace ast::node::typing {
-class DotExpr;
-
 class MethodDecl;
 class Interface;
 
@@ -12,6 +10,7 @@ class MemberDecl;
 class Struct;
 
 class Impl;
+class DotExpr;
 } // namespace ast::node::typing
 
 #endif // CROW_AST_NODE_TYPING_FDECL_HPP
