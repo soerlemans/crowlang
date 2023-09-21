@@ -17,6 +17,14 @@ struct Pair {
   m_third: int
 }
 
+fn num() -> String {}
+
+impl Pair {
+  fn num() -> String {}
+  fn float() -> String {}
+  fn str() -> String {}
+}
+
 fn main() {
 
 	return 0

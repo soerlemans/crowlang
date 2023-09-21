@@ -524,6 +524,37 @@ auto CrowParser::type_def() -> NodePtr
   return node;
 }
 
+// Impl:
+auto CrowParser::impl_list() -> NodeListPtr
+{
+  DBG_TRACE_FN(VERBOSE);
+
+  return list_of([this] {
+    newline_opt();
+
+    return function();
+  });
+}
+
+auto CrowParser::impl_block() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  if(next_if(TokenType::IMPL)) {
+    const auto id{expect(TokenType::IDENTIFIER).str()};
+    newline_opt();
+
+    auto functions{accolades([this] {
+      return impl_list();
+    })};
+
+    node = make_node<Impl>(id, std::move(functions));
+  }
+
+  return node;
+}
+
 // Function:
 auto CrowParser::param_list() -> NodeListPtr
 {
@@ -749,6 +780,8 @@ auto CrowParser::item() -> NodePtr
   } else if(auto ptr{decl_expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{function()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{impl_block()}; ptr) {
     node = std::move(ptr);
   }
 

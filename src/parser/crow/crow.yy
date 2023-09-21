@@ -285,12 +285,12 @@ type_def         : enum_def
                  ;
 
 // Implementation:
-impl_list        : function
-                 | impl_list function
+impl_list        : newline_opt function
+                 | impl_list newline_opt function
                  ;
 
 impl_block       : Impl IDENTIFIER newline_opt
-                   '{' newline_opt newline_opt '}'
+                   '{' newline_opt impl_list '}'
                  ;
 
 // Function:
@@ -344,6 +344,7 @@ item             : module
 				         | type_def
 				         | decl_expr
                  | function
+                 | impl_block
                  ;
 
 item_list        : // empty
