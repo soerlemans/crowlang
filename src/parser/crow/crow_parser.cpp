@@ -368,19 +368,16 @@ auto CrowParser::statement() -> NodePtr
 auto CrowParser::statement_list() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
-  auto nodes{make_node<List>()};
 
-  while(!eos()) {
-    if(auto ptr{statement()}; ptr) {
-      nodes->push_back(std::move(ptr));
-    } else {
-      break;
+  return list_of([this] {
+    NodePtr stmnt{statement()};
+
+    if(stmnt) {
+      newline_opt();
     }
 
-    newline_opt();
-  }
-
-  return nodes;
+    return stmnt;
+  });
 }
 
 // Body:
@@ -434,17 +431,10 @@ auto CrowParser::method_decl() -> NodePtr
 auto CrowParser::method_decl_list() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
-  auto nodes{make_node<List>()};
 
-  while(!eos()) {
-    if(auto ptr{method_decl()}; ptr) {
-      nodes->push_back(std::move(ptr));
-    } else {
-      break;
-    }
-  }
-
-  return nodes;
+  return list_of([this] {
+    return method_decl();
+  });
 }
 
 auto CrowParser::interface_def() -> NodePtr
@@ -491,17 +481,10 @@ auto CrowParser::member_decl() -> NodePtr
 auto CrowParser::member_decl_list() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
-  auto nodes{make_node<List>()};
 
-  while(!eos()) {
-    if(auto ptr{member_decl()}; ptr) {
-      nodes->push_back(std::move(ptr));
-    } else {
-      break;
-    }
-  }
-
-  return nodes;
+  return list_of([this] {
+    return member_decl();
+  });
 }
 
 auto CrowParser::struct_def() -> NodePtr
@@ -777,23 +760,16 @@ auto CrowParser::item() -> NodePtr
 auto CrowParser::item_list() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
-  auto nodes{make_node<List>()};
 
-  while(!eos()) {
-    // Remove newlines before items
+  return list_of([this] -> NodePtr {
+    // Remove newlines before item
     newline_opt();
     if(eos()) {
-      break;
+      return nullptr;
     }
 
-    if(auto ptr{item()}; ptr) {
-      nodes->push_back(std::move(ptr));
-    } else {
-      break;
-    }
-  }
-
-  return nodes;
+    return item();
+  });
 }
 
 auto CrowParser::program() -> NodeListPtr
