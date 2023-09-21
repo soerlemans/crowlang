@@ -39,7 +39,7 @@ auto PrattParser::lvalue() -> NodePtr
 
   const auto token{get_token()};
   if(next_if(TokenType::IDENTIFIER)) {
-    const auto id{token.get<std::string>()};
+    const auto id{token.str()};
     DBG_TRACE_PRINT(INFO, "Found 'VARIABLE': ", id);
     node = make_node<Variable>(id);
   }
@@ -55,17 +55,17 @@ auto PrattParser::literal() -> NodePtr
 
   const auto token{get_token()};
   if(next_if(TokenType::FLOAT)) {
-    const auto val{token.get<double>()};
+    const auto val{token.double_()};
     PARSER_FOUND(TokenType::FLOAT, " literal: ", val);
     node = make_node<Float>(val);
 
   } else if(next_if(TokenType::INTEGER)) {
-    const auto val{token.get<int>()};
+    const auto val{token.int_()};
     PARSER_FOUND(TokenType::INTEGER, " literal: ", val);
     node = make_node<Integer>(val);
 
   } else if(next_if(TokenType::STRING)) {
-    const auto val{token.get<std::string>()};
+    const auto val{token.str()};
     PARSER_FOUND(TokenType::STRING, " literal: ", val);
     node = make_node<String>(val);
 
@@ -182,7 +182,7 @@ auto PrattParser::function_call() -> NodePtr
       return this->expr_list_opt();
     })};
 
-    auto id{token.get<std::string>()};
+    auto id{token.str()};
     DBG_TRACE_PRINT(INFO, "Found a 'FUNCTION CALL': ", id);
 
     node = make_node<FunctionCall>(std::move(id), std::move(args));

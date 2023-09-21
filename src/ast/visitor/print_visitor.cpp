@@ -87,7 +87,7 @@ auto PrintVisitor::visit([[maybe_unused]] Break* t_break) -> void
   PPRINT("Break");
 }
 
-auto PrintVisitor::visit([[maybe_unused]] Return* t_return) -> void
+auto PrintVisitor::visit(Return* t_return) -> void
 {
   PPRINT_INIT();
 
@@ -345,5 +345,5 @@ auto PrintVisitor::visit([[maybe_unused]] Nil* t_nil) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("NIL");
+  PPRINT("Nil");
 }

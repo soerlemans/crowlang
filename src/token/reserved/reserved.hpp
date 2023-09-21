@@ -22,14 +22,14 @@ namespace token::reserved {
 // Language reserved keywords
 namespace keywords {
 	// Variables:
-  DEFINE_TERMINAL(g_let,   "let",   LET);
   DEFINE_TERMINAL(g_const, "const", CONST);
+  DEFINE_TERMINAL(g_let,   "let",   LET);
 
   // Package:
-  DEFINE_TERMINAL(g_module, "module", MODULE);
-  DEFINE_TERMINAL(g_import,  "import",  IMPORT);
-  DEFINE_TERMINAL(g_priv,    "priv",    PRIVATE);
-  DEFINE_TERMINAL(g_pub,     "pub",     PUBLIC);
+  DEFINE_TERMINAL(g_module,  "module", MODULE);
+  DEFINE_TERMINAL(g_import,  "import", IMPORT);
+  DEFINE_TERMINAL(g_priv,    "priv",   PRIVATE);
+  DEFINE_TERMINAL(g_pub,     "pub",    PUBLIC);
 
   // Object oriented:
   DEFINE_TERMINAL(g_struct,    "struct",    STRUCT);

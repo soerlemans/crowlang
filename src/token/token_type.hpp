@@ -15,8 +15,8 @@ using TokenTypeOpt = std::optional<TokenType>;
 enum class TokenType {
   // Variables:
   IDENTIFIER = 0,
-  LET,
   CONST,
+  LET,
 
   // Package:
   MODULE,

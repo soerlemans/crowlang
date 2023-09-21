@@ -87,7 +87,7 @@ auto CrowParser::decl_expr() -> NodePtr
       expr_ptr = expr();
     }
 
-    node = make_node<Let>(id.get<std::string>(), std::move(expr_ptr));
+    node = make_node<Let>(id.str(), std::move(expr_ptr));
   }
 
   return node;
@@ -414,7 +414,7 @@ auto CrowParser::method_decl() -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::FUNCTION)) {
-    const auto id{expect(TokenType::IDENTIFIER).get<std::string>()};
+    const auto id{expect(TokenType::IDENTIFIER).str()};
 
     // NodeListPtr params;
     auto params{parens([this] {
@@ -453,7 +453,7 @@ auto CrowParser::interface_def() -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::INTERFACE)) {
-    const auto id{expect(TokenType::IDENTIFIER).get<std::string>()};
+    const auto id{expect(TokenType::IDENTIFIER).str()};
     newline_opt();
 
     auto methods{accolades([this] {
@@ -476,10 +476,10 @@ auto CrowParser::member_decl() -> NodePtr
 
   const auto token{get_token()};
   if(next_if(TokenType::IDENTIFIER)) {
-    const auto id{token.get<std::string>()};
+    const auto id{token.str()};
     expect(TokenType::COLON);
 
-    const auto type{expect(TokenType::IDENTIFIER).get<std::string>()};
+    const auto type{expect(TokenType::IDENTIFIER).str()};
     terminator();
 
     node = make_node<MemberDecl>(id, type);
@@ -515,7 +515,7 @@ auto CrowParser::struct_def() -> NodePtr
   if(next_if(TokenType::STRUCT)) {
     PARSER_FOUND(TokenType::STRUCT);
 
-    const auto id{expect(TokenType::IDENTIFIER).get<std::string>()};
+    const auto id{expect(TokenType::IDENTIFIER).str()};
     newline_opt();
 
     auto members{accolades([this] {
@@ -565,20 +565,20 @@ auto CrowParser::param_list_opt() -> NodeListPtr
   if(check(TokenType::IDENTIFIER)) {
     PARSER_FOUND(TokenType::IDENTIFIER);
 
-    const auto id{expect(TokenType::IDENTIFIER).get<std::string>()};
+    const auto id{expect(TokenType::IDENTIFIER).str()};
     expect(TokenType::COLON);
-    const auto type{expect(TokenType::IDENTIFIER).get<std::string>()};
+    const auto type{expect(TokenType::IDENTIFIER).str()};
 
     nodes->push_back(make_node<Variable>(id, type));
   }
 
   while(!eos()) {
     if(next_if(TokenType::COMMA)) {
-      const auto id{expect(TokenType::IDENTIFIER).get<std::string>()};
+      const auto id{expect(TokenType::IDENTIFIER).str()};
       PARSER_FOUND(TokenType::COMMA, "'IDENTIFIER'");
 
       expect(TokenType::COLON);
-      const auto type{expect(TokenType::IDENTIFIER).get<std::string>()};
+      const auto type{expect(TokenType::IDENTIFIER).str()};
 
       nodes->push_back(make_node<Variable>(id, type));
     } else {
@@ -609,7 +609,7 @@ auto CrowParser::return_type_opt() -> std::string
 
   if(after_newlines(TokenType::ARROW)) {
     expect(TokenType::ARROW);
-    type = expect(TokenType::IDENTIFIER).get<std::string>();
+    type = expect(TokenType::IDENTIFIER).str();
   }
 
   return type;
@@ -636,7 +636,7 @@ auto CrowParser::function() -> NodePtr
 
   if(next_if(TokenType::FUNCTION)) {
     const auto tt_id{expect(TokenType::IDENTIFIER)};
-    const auto id{tt_id.get<std::string>()};
+    const auto id{tt_id.str()};
 
     // NodeListPtr params;
     auto params{parens([this] {
@@ -664,15 +664,15 @@ auto CrowParser::import_expr(Import& t_import) -> bool
 
   const auto token{get_token()};
   if(next_if(TokenType::STRING)) {
-    auto str{token.get<std::string>()};
+    auto str{token.str()};
     DBG_TRACE_PRINT(INFO, "Found: ", std::quoted(str));
 
     t_import.add_import(std::move(str));
   } else if(next_if(TokenType::IDENTIFIER)) {
-    auto id{token.get<std::string>()};
+    auto id{token.str()};
 
     expect(TokenType::ASSIGNMENT);
-    auto str{expect(TokenType::STRING).get<std::string>()};
+    auto str{expect(TokenType::STRING).str()};
 
     DBG_TRACE_PRINT(INFO, "Found alias: ", id, " = ", std::quoted(str));
 
@@ -725,7 +725,7 @@ auto CrowParser::import_() -> NodePtr
       const auto id{get_token()};
       next();
 
-      import_ptr->add_import(id.get<std::string>());
+      import_ptr->add_import(id.str());
     } else if(next_if(TokenType::PAREN_OPEN)) {
       newline_opt();
       import_list(*import_ptr);
@@ -749,7 +749,7 @@ auto CrowParser::module_() -> NodePtr
     PARSER_FOUND(TokenType::MODULE);
     const auto id{expect(TokenType::IDENTIFIER)};
 
-    node = make_node<ModuleDecl>(id.get<std::string>());
+    node = make_node<ModuleDecl>(id.str());
   }
 
   return node;

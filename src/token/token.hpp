@@ -48,6 +48,21 @@ class Token {
     return std::get<T>(m_tv);
   }
 
+  auto str() const -> std::string
+  {
+    return get<std::string>();
+  }
+
+  auto int_() const -> int
+  {
+    return get<int>();
+  }
+
+  auto double_() const -> double
+  {
+    return get<double>();
+  }
+
   auto position() const -> TextPosition;
 
   virtual ~Token() = default;

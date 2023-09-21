@@ -128,6 +128,16 @@ expr_opt         : // empty
 				         | expr
                  ;
 
+const_expr       : Const IDENTIFIER
+                 | Const IDENTIFIER '=' newline_opt expr
+                 | Const IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
+                 ;
+
+let_expr         : Let IDENTIFIER
+                 | Let IDENTIFIER '=' newline_opt expr
+                 | Let IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
+                 ;
+
 decl_expr        : Let IDENTIFIER
                  | Let IDENTIFIER '=' newline_opt expr
                  | Let IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
