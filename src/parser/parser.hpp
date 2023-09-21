@@ -23,6 +23,9 @@ namespace parser {
 // Namespace aliases:
 namespace n = ast::node;
 
+// Aliases:
+using ParseFn = std::function<ast::node::NodePtr()>;
+
 // Classes:
 /*! Abstract parser class provides utilities that a parser would need to
  * implement
@@ -43,34 +46,6 @@ class Parser {
     return std::make_shared<T>(std::forward<Args>(t_args)...);
   }
 
-  // TODO: Create a helper method for these
-  template<typename T>
-  inline auto parens(const T t_fn)
-  {
-    using namespace token;
-
-    DBG_TRACE_FN(VERBOSE);
-
-    expect(TokenType::PAREN_OPEN);
-    auto var{t_fn()};
-    expect(TokenType::PAREN_CLOSE);
-
-    return var;
-  }
-
-  template<typename T>
-  inline auto accolades(const T t_fn)
-  {
-    using namespace token;
-
-    DBG_TRACE_FN(VERBOSE);
-
-    expect(TokenType::ACCOLADE_OPEN);
-    auto var{t_fn()};
-    expect(TokenType::ACCOLADE_CLOSE);
-
-    return var;
-  }
 
   // Helper methods for parsing:
   auto syntax_error(std::string_view t_msg) const -> void;
@@ -98,6 +73,42 @@ class Parser {
 
 
   auto after_newlines(token::TokenType t_type) -> bool;
+
+  // TODO: create .tpp for these definitions?
+  template<typename Fn>
+  inline auto surround(const token::TokenType t_open,
+                       const token::TokenType t_close, const Fn t_fn)
+  {
+    using namespace token;
+
+    DBG_TRACE_FN(VERBOSE);
+
+    expect(t_open);
+    auto var{t_fn()};
+    expect(t_close);
+
+    return var;
+  }
+
+  template<typename Fn>
+  inline auto parens(const Fn t_fn)
+  {
+    using namespace token;
+
+    DBG_TRACE_FN(VERBOSE);
+
+    return surround(TokenType::PAREN_OPEN, TokenType::PAREN_CLOSE, t_fn);
+  }
+
+  template<typename Fn>
+  inline auto accolades(const Fn t_fn)
+  {
+    using namespace token;
+
+    return surround(TokenType::ACCOLADE_OPEN, TokenType::ACCOLADE_CLOSE, t_fn);
+  }
+
+  auto list_of(ParseFn t_fn) -> ast::node::NodeListPtr;
 
   public:
   Parser(token::TokenStream&& t_tokenstream);

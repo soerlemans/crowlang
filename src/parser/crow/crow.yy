@@ -128,8 +128,8 @@ expr_opt         : // empty
 				         | expr
                  ;
 
-const_expr       : Const IDENTIFIER
-                 | Const IDENTIFIER '=' newline_opt expr
+// TODO: Refactor Const and Let to be more elegant
+const_expr       : Const IDENTIFIER '=' newline_opt expr
                  | Const IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
                  ;
 

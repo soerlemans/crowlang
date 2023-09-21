@@ -1,5 +1,5 @@
-#ifndef MEMBER_DECL_HPP
-#define MEMBER_DECL_HPP
+#ifndef CROW_AST_NODE_TYPING_MEMBER_DECL_HPP
+#define CROW_AST_NODE_TYPING_MEMBER_DECL_HPP
 
 // Includes:
 #include "../node_traits/include.hpp"
@@ -23,4 +23,4 @@ class MemberDecl : public nt::Identifier, public nt::Type {
 };
 } // namespace ast::node::typing
 
-#endif // MEMBER_DECL_HPP
+#endif // CROW_AST_NODE_TYPING_MEMBER_DECL_HPP

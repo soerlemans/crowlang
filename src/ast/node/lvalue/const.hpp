@@ -1,5 +1,5 @@
-#ifndef CONST_HPP
-#define CONST_HPP
+#ifndef CROW_AST_NODE_LVALUE_CONST_HPP
+#define CROW_AST_NODE_LVALUE_CONST_HPP
 
 // Includes:
 #include "../node_traits/include.hpp"
@@ -28,4 +28,4 @@ class Const : public nt::Identifier {
 };
 } // namespace ast::node::lvalue
 
-#endif // CONST_HPP
+#endif // CROW_AST_NODE_LVALUE_CONST_HPP

@@ -502,9 +502,6 @@ auto CrowParser::member_decl_list() -> NodeListPtr
   }
 
   return nodes;
-
-
-  return nodes;
 }
 
 auto CrowParser::struct_def() -> NodePtr
