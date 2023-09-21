@@ -36,7 +36,11 @@ class Lexer {
   public:
   Lexer(TextStreamPtr t_text);
 
-  // Name lexing:
+	// Misc:
+	auto whitespace() -> void;
+	auto comment() -> void;
+
+  // Name:
   static auto is_keyword(std::string_view t_identifier) -> token::TokenTypeOpt;
   auto identifier() -> token::Token;
 

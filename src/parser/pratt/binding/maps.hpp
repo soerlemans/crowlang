@@ -6,8 +6,8 @@
 
 
 namespace parser::pratt::binding {
-// TODO: Figure out how to deal with parenthesis
-// BINDING_POWER(GROUPING, 25, 25);
+// Parenthesis always have the highest precedence, so there is no need to assign
+// them a binding power!
 
 // Classes:
 //! This class is a map of prefix operator binding powers
