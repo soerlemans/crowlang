@@ -7,37 +7,32 @@
 
 
 // Macros:
-#define COUNT_INIT()  \
-  do {                \
-    CountGuard guard; \
+#define COUNTG_INIT()       \
+  do {                      \
+    CountGuard guard{this}; \
   } while(false)
 
-#define PPRINT(...) printer.print(__VA_ARGS__)
-
-//! Pretty print if a member is not a nullptr
-#define PPRINT_IF(t_str, t_ptr) printer.print_if(t_ptr, this, "| " t_str)
-
-#define PPRINT_UNOP(t_str, t_ptr)     \
-  do {                                \
-    PPRINT(t_str);                    \
-    PPRINT_IF("Left", t_ptr->left()); \
+#define PPRINT_UNOP(t_str, t_ptr)    \
+  do {                               \
+    print(t_str);                    \
+    print_if("Left", t_ptr->left()); \
   } while(false)
 
-#define PPRINT_BINOP(t_str, t_ptr)      \
-  do {                                  \
-    PPRINT(t_str);                      \
-    PPRINT_IF("Left", t_ptr->left());   \
-    PPRINT_IF("Right", t_ptr->right()); \
+#define PPRINT_BINOP(t_str, t_ptr)     \
+  do {                                 \
+    print(t_str);                      \
+    print_if("Left", t_ptr->left());   \
+    print_if("Right", t_ptr->right()); \
   } while(false)
 
 
-#define PPRINT_ID(t_ptr)        PPRINT("| Identifier: ", t_ptr->identifier())
-#define PPRINT_INIT_EXPR(t_ptr) PPRINT_IF("Init Expr", t_ptr->init_expr())
-#define PPRINT_COND(t_ptr)      PPRINT_IF("Condition", t_ptr->condition())
-#define PPRINT_EXPR(t_ptr)      PPRINT_IF("Expr", t_ptr->expr())
-#define PPRINT_BODY(t_ptr)      PPRINT_IF("Body", t_ptr->body())
-#define PPRINT_PARAMS(t_ptr)    PPRINT_IF("Params", t_ptr->body())
-#define PPRINT_TYPE(t_ptr)      PPRINT("| Type: ", t_ptr->type())
+#define PPRINT_ID(t_ptr)        print("| Identifier: ", t_ptr->identifier())
+#define PPRINT_INIT_EXPR(t_ptr) print_if("Init Expr", t_ptr->init_expr())
+#define PPRINT_COND(t_ptr)      print_if("Condition", t_ptr->condition())
+#define PPRINT_EXPR(t_ptr)      print_if("Expr", t_ptr->expr())
+#define PPRINT_BODY(t_ptr)      print_if("Body", t_ptr->body())
+#define PPRINT_PARAMS(t_ptr)    print_if("Params", t_ptr->body())
+#define PPRINT_TYPE(t_ptr)      print("| Type: ", t_ptr->type())
 
 //! Helper macro for resovling trait printing at compile time
 #define PPRINT_IF_DERIVED(t_ptr, t_type, t_macro)              \
@@ -71,11 +66,30 @@ using namespace ast::node::rvalue;
 using namespace ast::node::typing;
 using namespace ast::node::node_traits;
 
+// Friend classes:
+namespace ast::visitor {
+class CountGuard {
+  private:
+  PrintVisitor* m_this;
+
+  public:
+  CountGuard(PrintVisitor* t_this): m_this{t_this}
+  {
+    m_this->m_counter++;
+  }
+
+  ~CountGuard()
+  {
+    m_this->m_counter--;
+  }
+};
+}
+
 // Methods:
-auto PrintVisitor::print_if(std::string_view t_str_vw, NodePtr t_ptr) -> void
+auto PrintVisitor::print_if(std::string_view t_str, NodePtr t_ptr) -> void
 {
   if(t_ptr) {
-    print(t_str_vw);
+    print(t_str);
     t_ptr->accept(this);
   }
 }
@@ -83,9 +97,9 @@ auto PrintVisitor::print_if(std::string_view t_str_vw, NodePtr t_ptr) -> void
 // Control:
 auto PrintVisitor::visit(If* t_if) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("If");
+  print("If");
   print_if("Init", t_if->init_expr());
   PPRINT_COND(t_if);
   print_if("Then", t_if->then());
@@ -94,9 +108,9 @@ auto PrintVisitor::visit(If* t_if) -> void
 
 auto PrintVisitor::visit(node::control::Loop* t_loop) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Loop");
+  print("Loop");
   print_if("Init", t_loop->init_expr());
   PPRINT_COND(t_loop);
   PPRINT_EXPR(t_loop);
@@ -105,145 +119,145 @@ auto PrintVisitor::visit(node::control::Loop* t_loop) -> void
 
 auto PrintVisitor::visit([[maybe_unused]] Continue* t_continue) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Continue");
+  print("Continue");
 }
 
 auto PrintVisitor::visit([[maybe_unused]] Break* t_break) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Break");
+  print("Break");
 }
 
 auto PrintVisitor::visit(Return* t_return) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Return");
+  print("Return");
   PPRINT_EXPR(t_return);
 }
 
 // Function:
 auto PrintVisitor::visit(Function* t_fn) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Function");
-  // pprint_traits(printer, t_fn);
+  print("Function");
+  print_traits(t_fn);
 }
 
 auto PrintVisitor::visit(FunctionCall* t_fn_call) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Function call");
-  PPRINT("| Identifier: ", t_fn_call->identifier());
+  print("Function call");
+  print("| Identifier: ", t_fn_call->identifier());
   print_if("Arguments: ", t_fn_call->args());
 }
 
 auto PrintVisitor::visit(node::functions::ReturnType* t_rt) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Return type");
-  PPRINT("| Type: ", t_rt->type());
+  print("Return type");
+  print("| Type: ", t_rt->type());
 }
 
 // Lvalue:
 auto PrintVisitor::visit(Let* t_let) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
   std::stringstream ss;
 
-  PPRINT("Let: ", t_let->identifier());
+  print("Let: ", t_let->identifier());
   PPRINT_INIT_EXPR(t_let);
 }
 
 auto PrintVisitor::visit(Variable* t_var) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Variable: ", t_var->identifier());
+  print("Variable: ", t_var->identifier());
 }
 
 // Operators:
 auto PrintVisitor::visit(Arithmetic* t_arithmetic) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
   PPRINT_BINOP("ARITHMETIC", t_arithmetic);
-  PPRINT("| OP: TODO!");
+  print("| OP: TODO!");
 }
 
 auto PrintVisitor::visit(Assignment* t_assignment) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
   PPRINT_BINOP("Assignment", t_assignment);
 }
 
 auto PrintVisitor::visit(Comparison* t_comparison) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
   PPRINT_BINOP("Comparison", t_comparison);
 }
 
 auto PrintVisitor::visit(Increment* t_increment) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Increment");
-  PPRINT("| Prefix: ", t_increment->prefix());
+  print("Increment");
+  print("| Prefix: ", t_increment->prefix());
 }
 
 auto PrintVisitor::visit(Decrement* t_decrement) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Decrement");
-  PPRINT("| Prefix: ", t_decrement->prefix());
+  print("Decrement");
+  print("| Prefix: ", t_decrement->prefix());
 }
 
 auto PrintVisitor::visit(UnaryPrefix* t_unary_prefix) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Unary prefix");
+  print("Unary prefix");
   PPRINT_UNOP("Unary prefix", t_unary_prefix);
-  PPRINT("| OP: TODO!");
+  print("| OP: TODO!");
 }
 
 // Logical:
 auto PrintVisitor::visit(Not* t_not) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
   PPRINT_UNOP("Not", t_not);
 }
 
 auto PrintVisitor::visit(And* t_and) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
   PPRINT_BINOP("And", t_and);
 }
 
 auto PrintVisitor::visit(Or* t_or) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
   PPRINT_BINOP("Or", t_or);
 }
 
 auto PrintVisitor::visit(Ternary* t_ternary) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Ternary");
+  print("Ternary");
   PPRINT_COND(t_ternary);
   print_if("Then", t_ternary->then());
   print_if("Alt", t_ternary->alt());
@@ -252,9 +266,9 @@ auto PrintVisitor::visit(Ternary* t_ternary) -> void
 // Packaging:
 auto PrintVisitor::visit(Import* t_import) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Import");
+  print("Import");
 
   for(const auto& pair : t_import->imports()) {
     std::stringstream ss;
@@ -262,107 +276,107 @@ auto PrintVisitor::visit(Import* t_import) -> void
       ss << " Identifier: " << pair.second.value();
     }
 
-    PPRINT("| Pkg: ", std::quoted(pair.first), ss.str());
+    print("| Pkg: ", std::quoted(pair.first), ss.str());
   }
 }
 
 auto PrintVisitor::visit(ModuleDecl* t_mod) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Module Declaration");
+  print("Module Declaration");
   PPRINT_ID(t_mod);
 }
 
 // Rvalue:
 auto PrintVisitor::visit(Float* t_float) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Float: ", t_float->get());
+  print("Float: ", t_float->get());
 }
 
 auto PrintVisitor::visit(Integer* t_int) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Integer: ", t_int->get());
+  print("Integer: ", t_int->get());
 }
 
 auto PrintVisitor::visit(String* t_str) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("String: ", t_str->get());
+  print("String: ", t_str->get());
 }
 
 auto PrintVisitor::visit(Boolean* t_bool) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Boolean: ", t_bool->get());
+  print("Boolean: ", t_bool->get());
 }
 
 // Typing:
 auto PrintVisitor::visit(MethodDecl* t_md) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Method Declaration");
+  print("Method Declaration");
   PPRINT_ID(t_md);
   PPRINT_TYPE(t_md);
 }
 
 auto PrintVisitor::visit(Interface* t_ifc) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Interface");
+  print("Interface");
   PPRINT_ID(t_ifc);
   print_if("Methods: ", t_ifc->methods());
 }
 
 auto PrintVisitor::visit(MemberDecl* t_md) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Member Declaration");
+  print("Member Declaration");
   PPRINT_ID(t_md);
   PPRINT_TYPE(t_md);
 }
 
 auto PrintVisitor::visit(Struct* t_struct) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Struct");
+  print("Struct");
   PPRINT_ID(t_struct);
   PPRINT_BODY(t_struct);
 }
 
 auto PrintVisitor::visit(DefBlock* t_db) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("DefBlock");
+  print("DefBlock");
   PPRINT_ID(t_db);
   PPRINT_BODY(t_db);
 }
 
 auto PrintVisitor::visit(DotExpr* t_dot_expr) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("DotExpr");
+  print("DotExpr");
   PPRINT_ID(t_dot_expr);
   PPRINT_EXPR(t_dot_expr);
 }
 
 auto PrintVisitor::visit(List* t_list) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("List");
+  print("List");
   for(NodePtr& node : *t_list) {
     node->accept(this);
   }
@@ -370,7 +384,7 @@ auto PrintVisitor::visit(List* t_list) -> void
 
 auto PrintVisitor::visit([[maybe_unused]] Nil* t_nil) -> void
 {
-  COUNT_INIT();
+  COUNTG_INIT();
 
-  PPRINT("Nil");
+  print("Nil");
 }

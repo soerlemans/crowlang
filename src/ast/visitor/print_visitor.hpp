@@ -1,9 +1,14 @@
 #ifndef CROW_AST_VISITOR_PRINT_VISITOR_HPP
 #define CROW_AST_VISITOR_PRINT_VISITOR_HPP
 
+// STL Includes:
+#include <iostream>
+
 // Local Includes:
 #include "node_visitor.hpp"
-#include "printer.hpp"
+
+// Includes:
+#include "../node/include.hpp"
 
 
 namespace ast::visitor {
@@ -12,22 +17,11 @@ namespace ast::visitor {
  */
 class PrintVisitor : public NodeVisitor {
   private:
-  // Variables:
-  unsigned int m_counter{0};
+  int m_counter{0};
 
-  struct Guard {
-    Guard()
-    {
-      m_counter++;
-    }
+  friend class CountGuard;
 
-    ~Guard()
-    {
-      m_counter--;
-    }
-  };
-
-  auto print_if(NodePtr t_ptr, std::string_view t_str_vw) -> void;
+  auto print_if(std::string_view t_str, ast::node::NodePtr t_ptr) -> void;
 
   template<typename... Args>
   auto print(Args&&... t_args) -> void
@@ -40,6 +34,29 @@ class PrintVisitor : public NodeVisitor {
 
     // Create the indentation level denoter
     std::cout << " - (" << m_counter << ")\n";
+  }
+
+  template<typename Derived, typename Base, typename Fn>
+  auto when_derived(const Fn t_fn) -> void
+  {
+    if constexpr(std::derived_from<Derived, Base>) {
+      t_fn();
+    }
+  }
+
+  template<typename Ptr>
+  auto print_traits(Ptr t_ptr) -> void
+  {
+    using namespace ast::node::node_traits;
+    using N = decltype(*t_ptr);
+
+    when_derived<N, Identifier>([&] {
+      print("| Identifier: ", t_ptr->identifier());
+    });
+
+    when_derived<N, InitExpr>([&] {
+      // print_if("Init Expr", t_ptr->init_expr());
+    });
   }
 
   public:
