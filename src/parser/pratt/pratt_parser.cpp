@@ -182,10 +182,10 @@ auto PrattParser::function_call() -> NodePtr
       return this->expr_list_opt();
     })};
 
-    auto id{token.str()};
+    const auto id{token.str()};
     DBG_TRACE_PRINT(INFO, "Found a 'FUNCTION CALL': ", id);
 
-    node = make_node<FunctionCall>(std::move(id), std::move(args));
+    node = make_node<FunctionCall>(id, std::move(args));
   }
 
   return node;

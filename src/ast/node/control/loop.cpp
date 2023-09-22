@@ -6,7 +6,7 @@ using namespace ast::node::node_traits;
 
 Loop::Loop(NodePtr&& t_init, NodePtr&& t_condition, NodePtr&& t_expr,
            NodeListPtr&& t_body)
-  : Init{std::move(t_init)},
+  : InitExpr{std::move(t_init)},
     Condition{std::move(t_condition)},
     Body{std::move(t_body)},
     Expr{std::move(t_expr)}

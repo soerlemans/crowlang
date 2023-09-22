@@ -4,7 +4,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 	condition.cpp
 	expr.cpp
 	identifier.cpp
-	init.cpp
+	init_expr.cpp
 	params.cpp
 	type.cpp
 )

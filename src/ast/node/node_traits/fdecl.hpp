@@ -7,7 +7,7 @@ class Body;
 class Condition;
 class Expr;
 class Identifier;
-class Init;
+class InitExpr;
 class Params;
 class Type;
 } // namespace ast::node::node_traits

@@ -72,9 +72,9 @@ class CrowParser : public pratt::PrattParser {
 
   virtual auto type_def() -> n::NodePtr;
 
-  // Impl:
-  virtual auto impl_list() -> n::NodeListPtr;
-  virtual auto impl_block() -> n::NodePtr;
+  // Def:
+  virtual auto def_list() -> n::NodeListPtr;
+  virtual auto def_block() -> n::NodePtr;
 
   // Function:
   virtual auto param_list() -> n::NodeListPtr;

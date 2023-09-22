@@ -1,14 +1,9 @@
 #ifndef CROW_AST_VISITOR_PRINT_VISITOR_HPP
 #define CROW_AST_VISITOR_PRINT_VISITOR_HPP
 
-// STL Includes:
-#include <iostream>
-
-// Includes:
-#include "../node/include.hpp"
-
 // Local Includes:
 #include "node_visitor.hpp"
+#include "printer.hpp"
 
 
 namespace ast::visitor {
@@ -17,47 +12,35 @@ namespace ast::visitor {
  */
 class PrintVisitor : public NodeVisitor {
   private:
-  //! This class is made for pretty printing the AST
-  class Printer {
-    private:
-    int& m_counter;
+  // Variables:
+  unsigned int m_counter{0};
 
-    public:
-    Printer(int& t_counter): m_counter{t_counter}
+  struct Guard {
+    Guard()
     {
       m_counter++;
     }
 
-    auto print_if(node::NodePtr t_ptr, PrintVisitor* t_this,
-                  std::string_view t_str_vw) -> void
-    {
-      if(t_ptr) {
-        print(t_str_vw);
-        t_ptr->accept(t_this);
-      }
-    }
-
-    template<typename... Args>
-    auto print(Args&&... t_args) -> void
-    {
-      // Construct the prefix
-      std::cout << std::string(m_counter, ' ') << "-> ";
-
-      // Print the arguments
-      (std::cout << ... << t_args);
-
-      // Create the indentation level denoter
-      std::cout << " - (" << m_counter << ")\n";
-    }
-
-    ~Printer()
+    ~Guard()
     {
       m_counter--;
     }
   };
 
-  // Variables:
-  int m_counter{0};
+  auto print_if(NodePtr t_ptr, std::string_view t_str_vw) -> void;
+
+  template<typename... Args>
+  auto print(Args&&... t_args) -> void
+  {
+    // Construct the prefix
+    std::cout << std::string(m_counter, ' ') << "-> ";
+
+    // Print the arguments
+    (std::cout << ... << t_args);
+
+    // Create the indentation level denoter
+    std::cout << " - (" << m_counter << ")\n";
+  }
 
   public:
   PrintVisitor() = default;
@@ -110,7 +93,7 @@ class PrintVisitor : public NodeVisitor {
   auto visit(ast::node::typing::Interface* t_ifc) -> void override;
   auto visit(ast::node::typing::MemberDecl* t_md) -> void override;
   auto visit(ast::node::typing::Struct* t_struct) -> void override;
-  auto visit(ast::node::typing::Impl* t_impl) -> void override;
+  auto visit(ast::node::typing::DefBlock* t_db) -> void override;
   auto visit(ast::node::typing::DotExpr* t_dot_expr) -> void override;
 
   auto visit(node::List* t_list) -> void override;

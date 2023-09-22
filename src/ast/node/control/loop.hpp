@@ -13,7 +13,7 @@ namespace ast::node::control {
 namespace nt = node_traits;
 
 // Classes:
-class Loop : public nt::Init,
+class Loop : public nt::InitExpr,
              public nt::Condition,
              public nt::Body,
              public nt::Expr {

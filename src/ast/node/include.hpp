@@ -15,6 +15,7 @@
 #include "control/include.hpp"
 #include "functions/include.hpp"
 #include "lvalue/include.hpp"
+#include "node_traits/include.hpp"
 #include "operators/include.hpp"
 #include "packaging/include.hpp"
 #include "rvalue/include.hpp"

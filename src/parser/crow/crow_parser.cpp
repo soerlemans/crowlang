@@ -230,7 +230,9 @@ auto CrowParser::result_statement() -> n::NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  if(auto ptr{decl_expr()}; ptr) {
+  if(auto ptr{function_call()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{decl_expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{assignment()}; ptr) {
     node = std::move(ptr);
@@ -525,7 +527,7 @@ auto CrowParser::type_def() -> NodePtr
 }
 
 // Impl:
-auto CrowParser::impl_list() -> NodeListPtr
+auto CrowParser::def_list() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
 
@@ -536,20 +538,20 @@ auto CrowParser::impl_list() -> NodeListPtr
   });
 }
 
-auto CrowParser::impl_block() -> NodePtr
+auto CrowParser::def_block() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  if(next_if(TokenType::IMPL)) {
+  if(next_if(TokenType::DEF)) {
     const auto id{expect(TokenType::IDENTIFIER).str()};
     newline_opt();
 
     auto functions{accolades([this] {
-      return impl_list();
+      return def_list();
     })};
 
-    node = make_node<Impl>(id, std::move(functions));
+    node = make_node<DefBlock>(id, std::move(functions));
   }
 
   return node;
@@ -781,7 +783,7 @@ auto CrowParser::item() -> NodePtr
     node = std::move(ptr);
   } else if(auto ptr{function()}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{impl_block()}; ptr) {
+  } else if(auto ptr{def_block()}; ptr) {
     node = std::move(ptr);
   }
 

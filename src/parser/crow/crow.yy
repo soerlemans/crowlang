@@ -226,7 +226,7 @@ statement        : result_statement
 				         | if_statement
 				         | match_statement
 				         | loop_statement
-				         | jump_statement
+				         | keyword_statement
 				         | body
                  ;
 
@@ -285,12 +285,14 @@ type_def         : enum_def
                  ;
 
 // Implementation:
-impl_list        : newline_opt function
+def_list         : newline_opt function
                  | impl_list newline_opt function
                  ;
 
-impl_block       : Impl IDENTIFIER newline_opt
-                   '{' newline_opt impl_list '}'
+def_block        : Def IDENTIFIER newline_opt
+                   '{' impl_list '}'
+                 | Def IDENTIFIER newline_opt
+                   '{' impl_list '}'
                  ;
 
 // Function:

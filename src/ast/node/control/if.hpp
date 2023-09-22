@@ -13,7 +13,7 @@ namespace ast::node::control {
 namespace nt = node_traits;
 
 // Classes:
-class If : public nt::Init, public nt::Condition {
+class If : public nt::InitExpr, public nt::Condition {
   private:
   NodeListPtr m_then;
   NodeListPtr m_alt;

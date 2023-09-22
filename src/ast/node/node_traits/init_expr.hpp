@@ -9,18 +9,18 @@
 
 
 namespace ast::node::node_traits {
-class Init : virtual public NodeInterface {
+class InitExpr : virtual public NodeInterface {
   protected:
   NodePtr m_init;
 
   public:
-  Init(NodePtr&& t_init);
+  InitExpr(NodePtr&& t_init);
 
-  virtual auto init() -> NodePtr&;
+  virtual auto init_expr() -> NodePtr&;
 
   auto accept(visitor::NodeVisitor* t_visitor) -> void override = 0;
 
-  ~Init() override = default;
+  ~InitExpr() override = default;
 };
 } // namespace ast::node::node_traits
 

@@ -13,14 +13,12 @@ namespace ast::node::lvalue {
 namespace nt = node_traits;
 
 // Classes:
-class Let : public nt::Identifier {
+class Let : public nt::Identifier, public nt::InitExpr {
   private:
   NodePtr m_init;
 
   public:
   Let(std::string_view t_identifier, NodePtr&& t_init);
-
-  auto init() -> NodePtr&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
