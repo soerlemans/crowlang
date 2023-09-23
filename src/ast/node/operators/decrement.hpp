@@ -1,13 +1,19 @@
 #ifndef CROW_AST_NODE_OPERATORS_DECREMENT_HPP
 #define CROW_AST_NODE_OPERATORS_DECREMENT_HPP
 
+// Includes:
+#include "../node_traits/include.hpp"
+
 // Local Includes:
 #include "fdecl.hpp"
-#include "unary_operator.hpp"
 
 
 namespace ast::node::operators {
-class Decrement : public UnaryOperator {
+// Namespace aliases:
+namespace nt = node_traits;
+
+// Classes:
+class Decrement : public nt::UnaryOperator {
   private:
   bool m_prefix;
 

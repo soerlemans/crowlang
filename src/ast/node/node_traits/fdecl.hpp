@@ -10,7 +10,8 @@ class Identifier;
 class InitExpr;
 class Params;
 class Type;
-
+class Then;
+class Alt;
 class UnaryOperator;
 class BinaryOperator;
 } // namespace ast::node::node_traits

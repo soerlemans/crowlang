@@ -4,6 +4,7 @@
 // STL Includes:
 #include <concepts>
 #include <iostream>
+#include <ostream>
 #include <sstream>
 #include <string_view>
 #include <type_traits>
@@ -27,6 +28,7 @@ concept IsAnyOf = (std::same_as<Args, Type> || ...);
 class PrintVisitor : public NodeVisitor {
   private:
   int m_counter{0};
+  std::ostream& m_os;
 
   auto print_if(std::string_view t_str, ast::node::NodePtr t_ptr) -> void;
 
@@ -34,13 +36,13 @@ class PrintVisitor : public NodeVisitor {
   auto print(Args&&... t_args) -> void
   {
     // Construct the prefix
-    std::cout << std::string(m_counter, ' ') << "-> ";
+    m_os << std::string(m_counter, ' ') << "-> ";
 
     // Print the arguments
-    (std::cout << ... << t_args);
+    (m_os << ... << t_args);
 
     // Create the indentation level denoter
-    std::cout << " - (" << m_counter << ")\n";
+    m_os << " - (" << m_counter << ")\n";
   }
 
   template<typename Base, typename Ptr, typename Fn>
@@ -64,7 +66,7 @@ class PrintVisitor : public NodeVisitor {
     // TODO: Make UnaryOperator and BinaryOperator a trait
     using namespace ast::node::operators;
 
-    const auto print_ptr{[this](const auto t_vw, auto t_any) {
+    const auto lambda{[this](const auto t_vw, auto t_any) {
       using namespace ast::node;
 
       using Type = std::remove_pointer<decltype(t_any)>::type;
@@ -80,23 +82,23 @@ class PrintVisitor : public NodeVisitor {
     }};
 
     when_derived<Identifier>(t_ptr, [&](auto t_ptr) {
-      print_ptr("Identifier", t_ptr->identifier());
+      lambda("Identifier", t_ptr->identifier());
     });
 
     when_derived<InitExpr>(t_ptr, [&](auto t_ptr) {
-      print_ptr("Init Expr", t_ptr->init_expr());
+      lambda("Init Expr", t_ptr->init_expr());
     });
 
     when_derived<Condition>(t_ptr, [&](auto t_ptr) {
-      print_ptr("Condition", t_ptr->condition());
+      lambda("Condition", t_ptr->condition());
     });
 
     when_derived<Expr>(t_ptr, [&](auto t_ptr) {
-      print_ptr("Expr", t_ptr->expr());
+      lambda("Expr", t_ptr->expr());
     });
 
     when_derived<Params>(t_ptr, [&](auto t_ptr) {
-      print_ptr("Params", t_ptr->params());
+      lambda("Params", t_ptr->params());
     });
 
     when_derived<Type>(t_ptr, [&](auto t_ptr) {
@@ -104,16 +106,28 @@ class PrintVisitor : public NodeVisitor {
     });
 
     when_derived<Body>(t_ptr, [&](auto t_ptr) {
-      print_ptr("Body", t_ptr->body());
+      lambda("Body", t_ptr->body());
+    });
+
+    when_derived<Then>(t_ptr, [&](auto t_ptr) {
+      lambda("Then", t_ptr->then());
+    });
+
+    when_derived<Alt>(t_ptr, [&](auto t_ptr) {
+      lambda("Alt", t_ptr->alt());
     });
 
     when_derived<UnaryOperator>(t_ptr, [&](auto t_ptr) {
-      print_ptr("Left", t_ptr->body());
+      lambda("Left", t_ptr->left());
+    });
+
+    when_derived<BinaryOperator>(t_ptr, [&](auto t_ptr) {
+      lambda("Right", t_ptr->right());
     });
   }
 
   public:
-  PrintVisitor() = default;
+  PrintVisitor(std::ostream& t_os);
 
   // Control:
   auto visit(node::control::If* t_if) -> void override;
@@ -136,8 +150,8 @@ class PrintVisitor : public NodeVisitor {
   auto visit(node::operators::Assignment* t_assignment) -> void override;
   auto visit(node::operators::Comparison* t_comparison) -> void override;
 
-  auto visit(node::operators::Increment* t_increment) -> void override;
-  auto visit(node::operators::Decrement* t_decrement) -> void override;
+  auto visit(node::operators::Increment* t_inc) -> void override;
+  auto visit(node::operators::Decrement* t_dec) -> void override;
 
   auto visit(node::operators::UnaryPrefix* t_unary_prefix) -> void override;
 
@@ -166,8 +180,11 @@ class PrintVisitor : public NodeVisitor {
   auto visit(ast::node::typing::DefBlock* t_db) -> void override;
   auto visit(ast::node::typing::DotExpr* t_dot_expr) -> void override;
 
+  // Misc:
   auto visit(node::List* t_list) -> void override;
   auto visit(node::Nil* t_nil) -> void override;
+
+	auto print(node::NodePtr t_ast) -> void;
 
   ~PrintVisitor() override = default;
 };

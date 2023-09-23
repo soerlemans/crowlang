@@ -1,5 +1,5 @@
-#ifndef CROW_AST_NODE_OPERATORS_BINARY_OPERATOR_HPP
-#define CROW_AST_NODE_OPERATORS_BINARY_OPERATOR_HPP
+#ifndef CROW_AST_NODE_NODE_TRAITS_BINARY_OPERATOR_HPP
+#define CROW_AST_NODE_NODE_TRAITS_BINARY_OPERATOR_HPP
 
 // Local Includes:
 #include "fdecl.hpp"
@@ -14,7 +14,7 @@ class BinaryOperator : public UnaryOperator {
   public:
   explicit BinaryOperator(NodePtr&& t_left, NodePtr&& t_right);
 
-  auto right() -> NodePtr&;
+  virtual auto right() -> NodePtr&;
 
   auto accept(visitor::NodeVisitor* t_visitor) -> void override = 0;
 
@@ -22,4 +22,4 @@ class BinaryOperator : public UnaryOperator {
 };
 } // namespace ast::node::node_traits
 
-#endif // CROW_AST_NODE_OPERATORS_BINARY_OPERATOR_HPP
+#endif // CROW_AST_NODE_NODE_TRAITS_BINARY_OPERATOR_HPP

@@ -5,7 +5,6 @@
 #include "../node_traits/include.hpp"
 
 // Local Includes:
-#include "binary_operator.hpp"
 #include "fdecl.hpp"
 
 
@@ -14,16 +13,9 @@ namespace ast::node::operators {
 namespace nt = node_traits;
 
 // Classes:
-class Ternary : public nt::Condition {
-  protected:
-  NodePtr m_then;
-  NodePtr m_alt;
-
+class Ternary : public nt::Condition, public nt::Then, public nt::Alt {
   public:
   explicit Ternary(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_alt);
-
-  auto then() -> NodePtr&;
-  auto alt() -> NodePtr&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

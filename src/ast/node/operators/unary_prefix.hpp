@@ -1,17 +1,22 @@
 #ifndef CROW_AST_NODE_OPERATORS_UNARY_PREFIX_HPP
 #define CROW_AST_NODE_OPERATORS_UNARY_PREFIX_HPP
 
+// Includes:
+#include "../node_traits/include.hpp"
+
 // Local Includes:
 #include "fdecl.hpp"
-#include "unary_operator.hpp"
 
 
 namespace ast::node::operators {
+// Namespace aliases:
+namespace nt = node_traits;
+
 // Enums:
 enum class UnaryPrefixOp { PLUS, MINUS };
 
 // Classes:
-class UnaryPrefix : public UnaryOperator {
+class UnaryPrefix : public nt::UnaryOperator {
   private:
   UnaryPrefixOp m_op;
 

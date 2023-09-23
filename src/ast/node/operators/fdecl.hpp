@@ -3,10 +3,6 @@
 
 // Forward Declarations:
 namespace ast::node::operators {
-// Abstract Base classes:
-class UnaryOperator;
-class BinaryOperator;
-
 // UnaryOperator derived classes:
 class UnaryPrefix;
 class Increment;

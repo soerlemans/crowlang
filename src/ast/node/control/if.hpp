@@ -13,17 +13,13 @@ namespace ast::node::control {
 namespace nt = node_traits;
 
 // Classes:
-class If : public nt::InitExpr, public nt::Condition {
-  private:
-  NodeListPtr m_then;
-  NodeListPtr m_alt;
-
+class If : public nt::InitExpr,
+           public nt::Condition,
+           public nt::Then,
+           public nt::Alt {
   public:
-  If(NodePtr&& t_init, NodePtr&& t_condition, NodeListPtr&& t_then,
-     NodeListPtr&& t_alt);
-
-  auto then() -> NodeListPtr&;
-  auto alt() -> NodeListPtr&;
+  If(NodePtr&& t_init, NodePtr&& t_condition, NodePtr&& t_then,
+     NodePtr&& t_alt);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

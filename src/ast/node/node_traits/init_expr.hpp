@@ -1,5 +1,5 @@
-#ifndef CROW_AST_NODE_NODE_TRAITS_INIT_HPP
-#define CROW_AST_NODE_NODE_TRAITS_INIT_HPP
+#ifndef CROW_AST_NODE_NODE_TRAITS_INIT_EXPR_HPP
+#define CROW_AST_NODE_NODE_TRAITS_INIT_EXPR_HPP
 
 // Includes:
 #include "../node_interface.hpp"
@@ -25,4 +25,4 @@ class InitExpr : virtual public NodeInterface {
 } // namespace ast::node::node_traits
 
 
-#endif // CROW_AST_NODE_NODE_TRAITS_INIT_HPP
+#endif // CROW_AST_NODE_NODE_TRAITS_INIT_EXPR_HPP

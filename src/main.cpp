@@ -104,8 +104,12 @@ auto pprint([[maybe_unused]] const auto& t_ast) -> void
   // Pretty print the AST
 #if DEBUG
 
-  PrintVisitor pprint;
-  t_ast->accept(&pprint);
+	std::stringstream ss;
+	ss << '\n';
+  PrintVisitor pprint{ss};
+	pprint.print(t_ast);
+
+	DBG_LOG(INFO, ss.str());
 #endif // DEBUG
 
   DBG_PRINTLN();

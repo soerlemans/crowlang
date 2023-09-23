@@ -1,14 +1,19 @@
 #ifndef CROW_AST_NODE_OPERATORS_LOGICAL_HPP
 #define CROW_AST_NODE_OPERATORS_LOGICAL_HPP
 
+// Includes:
+#include "../node_traits/include.hpp"
+
 // Local Includes:
-#include "binary_operator.hpp"
 #include "fdecl.hpp"
 
 
 namespace ast::node::operators {
+// Namespace aliases:
+namespace nt = node_traits;
+
 // Not:
-class Not : public UnaryOperator {
+class Not : public nt::UnaryOperator {
   public:
   Not(NodePtr&& t_left);
 
@@ -18,7 +23,7 @@ class Not : public UnaryOperator {
 };
 
 // And:
-class And : public BinaryOperator {
+class And : public nt::BinaryOperator {
   public:
   And(NodePtr&& t_left, NodePtr&& t_right);
 
@@ -28,7 +33,7 @@ class And : public BinaryOperator {
 };
 
 // Or:
-class Or : public BinaryOperator {
+class Or : public nt::BinaryOperator {
   public:
   Or(NodePtr&& t_left, NodePtr&& t_right);
 
