@@ -13,24 +13,27 @@
 #include "../../ast/visitor/node_visitor.hpp"
 
 
-namespace backend::llvm_ir {
+namespace backend::llvm_backend {
 // Using statements:
 using namespace ast;
 
 // Aliases:
-using ContextPtr = std::unique_ptr<llvm::LLVMContext>;
-using IrBuilderPtr = std::unique_ptr<llvm::IRBuilder<>>;
-using ModulePtr = std::unique_ptr<llvm::Module>;
+using ContextPtr = std::shared_ptr<llvm::LLVMContext>;
+using IrBuilderPtr = std::shared_ptr<llvm::IRBuilder<>>;
+using ModulePtr = std::shared_ptr<llvm::Module>;
 
 // Classes:
-class LlvmIrBackend : public ast::visitor::NodeVisitor {
+class LlvmBackend : public ast::visitor::NodeVisitor {
   private:
   ContextPtr m_context;
   IrBuilderPtr m_builder;
   ModulePtr m_module;
 
+  protected:
+  auto codegen(ast::node::NodePtr t_ptr) -> void;
+
   public:
-  LlvmIrBackend();
+  LlvmBackend();
 
   // Control:
   auto visit(node::control::If* t_if) -> void override;
@@ -89,10 +92,12 @@ class LlvmIrBackend : public ast::visitor::NodeVisitor {
   auto visit(node::Nil* t_nil) -> void override;
 
   // Util:
+  auto configure_target() -> void;
   auto dump_ir(std::ostream& t_os) -> void;
+  auto compile() -> void;
 
-  ~LlvmIrBackend() override = default;
+  ~LlvmBackend() override = default;
 };
-} // namespace backend::llvm_ir
+} // namespace backend::llvm_backend
 
 #endif // CROW_CODEGEN_LLVM_CODEGEN_HPP

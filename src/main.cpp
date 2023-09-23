@@ -11,7 +11,7 @@
 // Includes:
 #include "ast/node/include.hpp"
 #include "ast/visitor/print_visitor.hpp"
-#include "backend/llvm_ir/llvm_ir_backend.hpp"
+#include "backend/llvm_backend/llvm_backend.hpp"
 #include "container/text_buffer.hpp"
 #include "debug/log.hpp"
 #include "debug/log_macros.hpp"
@@ -133,12 +133,14 @@ auto interpret() -> void
 
 auto generate(ast::node::NodePtr t_ast) -> void
 {
-  using namespace backend::llvm_ir;
+  using namespace backend::llvm_backend;
 
   DBG_PRINTLN("|> Code generation:");
 
-  LlvmIrBackend backend;
+  LlvmBackend backend;
+  backend.configure_target();
   backend.traverse(t_ast);
+	backend.compile();
 
 #if DEBUG
   std::stringstream ss;

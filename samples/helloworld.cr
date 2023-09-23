@@ -6,7 +6,11 @@ import (
 )
 
 fn main() {
-  println(10 + 10);
+	if 10 + 10 == 20 {
+    println(10 + 10);
+  } else {
+    println("Not true");
+  }
 
 	return 0
 }

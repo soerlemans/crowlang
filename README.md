@@ -3,6 +3,9 @@ Crow
 This project is my experimentation with creating my own programming language.
 For this project I am using C++23.
 
+Crow's syntax is inspired by Swift and Rust.
+Semicolons are completely optional in Crow.
+
 ## Dependencies
 I aim to keep dependencies to a minimum but the following is required:
 
