@@ -2,11 +2,7 @@
 
 
 using namespace ast::node::control;
+using namespace ast::node::node_traits;
 
-Defer::Defer(NodeListPtr&& t_body): m_body{std::move(t_body)}
+Defer::Defer(NodeListPtr&& t_body): Body{std::move(t_body)}
 {}
-
-auto Defer::body() -> NodeListPtr&
-{
-  return m_body;
-}

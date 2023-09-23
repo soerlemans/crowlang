@@ -2,28 +2,24 @@
 #define CROW_AST_NODE_CONTROL_IF_HPP
 
 // Includes:
-#include "../node_interface.hpp"
+#include "../node_traits/include.hpp"
 
 // Local Includes:
-#include "control.hpp"
+#include "fdecl.hpp"
 
 
 namespace ast::node::control {
-class If : public NodeInterface {
-  private:
-  NodePtr m_init;
-  NodePtr m_condition;
-  NodeListPtr m_then;
-  NodeListPtr m_alt;
+// Aliases:
+namespace nt = node_traits;
 
+// Classes:
+class If : public nt::InitExpr,
+           public nt::Condition,
+           public nt::Then,
+           public nt::Alt {
   public:
-  If(NodePtr&& t_init, NodePtr&& t_condition, NodeListPtr&& t_then,
-     NodeListPtr&& t_alt);
-
-  auto init() -> NodePtr&;
-  auto condition() -> NodePtr&;
-  auto then() -> NodeListPtr&;
-  auto alt() -> NodeListPtr&;
+  If(NodePtr&& t_init, NodePtr&& t_condition, NodePtr&& t_then,
+     NodePtr&& t_alt);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

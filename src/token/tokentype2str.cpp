@@ -21,6 +21,7 @@
     return #t_type;
 
 
+// Using statements:
 using namespace token;
 
 namespace {
@@ -87,3 +88,11 @@ auto tokentype2str(const token::TokenType t_type) -> std::string
     "TokenType can not be converteted to std::string_view"};
 }
 } // namespace token
+
+auto operator<<(std::ostream& t_os, const TokenType t_type)
+  -> std::ostream&
+{
+  t_os << token::tokentype2str(t_type);
+
+  return t_os;
+}

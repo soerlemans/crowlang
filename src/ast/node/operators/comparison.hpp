@@ -1,12 +1,17 @@
 #ifndef CROW_AST_NODE_OPERATORS_COMPARISON_HPP
 #define CROW_AST_NODE_OPERATORS_COMPARISON_HPP
 
+// Includes:
+#include "../node_traits/include.hpp"
+
 // Local Includes:
-#include "binary_operator.hpp"
-#include "operators.hpp"
+#include "fdecl.hpp"
 
 
 namespace ast::node::operators {
+// Namespace aliases:
+namespace nt = node_traits;
+
 // Enums:
 enum class ComparisonOp {
   LESS_THAN,
@@ -20,7 +25,7 @@ enum class ComparisonOp {
 };
 
 // Classes:
-class Comparison : public BinaryOperator {
+class Comparison : public nt::BinaryOperator {
   private:
   ComparisonOp m_op;
 
@@ -33,6 +38,6 @@ class Comparison : public BinaryOperator {
 
   ~Comparison() override = default;
 };
-} // namespace node::operators
+} // namespace ast::node::operators
 
 #endif // CROW_AST_NODE_OPERATORS_COMPARISON_HPP

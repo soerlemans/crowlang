@@ -1,12 +1,12 @@
-#ifndef CROW_AST_NODE_OPERATORS_BINARY_OPERATOR_HPP
-#define CROW_AST_NODE_OPERATORS_BINARY_OPERATOR_HPP
+#ifndef CROW_AST_NODE_NODE_TRAITS_BINARY_OPERATOR_HPP
+#define CROW_AST_NODE_NODE_TRAITS_BINARY_OPERATOR_HPP
 
 // Local Includes:
-#include "operators.hpp"
+#include "fdecl.hpp"
 #include "unary_operator.hpp"
 
 
-namespace ast::node::operators {
+namespace ast::node::node_traits {
 class BinaryOperator : public UnaryOperator {
   private:
   NodePtr m_right;
@@ -14,12 +14,12 @@ class BinaryOperator : public UnaryOperator {
   public:
   explicit BinaryOperator(NodePtr&& t_left, NodePtr&& t_right);
 
-  auto right() -> NodePtr&;
+  virtual auto right() -> NodePtr&;
 
   auto accept(visitor::NodeVisitor* t_visitor) -> void override = 0;
 
   ~BinaryOperator() override = default;
 };
-} // namespace node::operators
+} // namespace ast::node::node_traits
 
-#endif // CROW_AST_NODE_OPERATORS_BINARY_OPERATOR_HPP
+#endif // CROW_AST_NODE_NODE_TRAITS_BINARY_OPERATOR_HPP

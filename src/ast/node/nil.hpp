@@ -11,7 +11,7 @@ class Nil : public NodeInterface {
   public:
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  virtual ~Nil() = default;
+  ~Nil() override = default;
 };
 } // namespace ast::node
 

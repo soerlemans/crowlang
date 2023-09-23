@@ -22,18 +22,19 @@ namespace token::reserved {
 // Language reserved keywords
 namespace keywords {
 	// Variables:
-  DEFINE_TERMINAL(g_let,   "let",   LET);
   DEFINE_TERMINAL(g_const, "const", CONST);
+  DEFINE_TERMINAL(g_let,   "let",   LET);
 
   // Package:
-  DEFINE_TERMINAL(g_package, "package", PACKAGE);
-  DEFINE_TERMINAL(g_import,  "import",  IMPORT);
-  DEFINE_TERMINAL(g_priv,    "priv",    PRIVATE);
-  DEFINE_TERMINAL(g_pub,     "pub",     PUBLIC);
+  DEFINE_TERMINAL(g_module,  "module", MODULE);
+  DEFINE_TERMINAL(g_import,  "import", IMPORT);
+  DEFINE_TERMINAL(g_priv,    "priv",   PRIVATE);
+  DEFINE_TERMINAL(g_pub,     "pub",    PUBLIC);
 
   // Object oriented:
   DEFINE_TERMINAL(g_struct,    "struct",    STRUCT);
   DEFINE_TERMINAL(g_interface, "interface", INTERFACE);
+  DEFINE_TERMINAL(g_def,       "def",       DEF);
 
   // Control statements:
   DEFINE_TERMINAL(g_fn,    "fn",    FUNCTION);
@@ -49,15 +50,20 @@ namespace keywords {
   DEFINE_TERMINAL(g_defer,    "defer",    DEFER);
   DEFINE_TERMINAL(g_return,   "return",   RETURN);
 
+	// Literals:
+  DEFINE_TERMINAL(g_true,  "true",  TRUE);
+  DEFINE_TERMINAL(g_false, "false", FALSE);
+
 	const std::map g_keywords {
 		g_let.pair(), g_const.pair(),
-		g_package.pair(), g_import.pair(), g_priv.pair(), g_pub.pair(),
-		g_struct.pair(), g_interface.pair(),
+		g_module.pair(), g_import.pair(), g_priv.pair(), g_pub.pair(),
+		g_struct.pair(), g_interface.pair(), g_def.pair(),
 	  g_fn.pair(),
 		g_match.pair(),
 	  g_if.pair(), g_else.pair(), g_elif.pair(),
 	  g_loop.pair(),
-	  g_break.pair(), g_continue.pair(), g_defer.pair(), g_return.pair()
+	  g_break.pair(), g_continue.pair(), g_defer.pair(), g_return.pair(),
+    g_true.pair(), g_false.pair()
 	};
 } // namespace keywords
 
@@ -114,6 +120,7 @@ namespace symbols {
   DEFINE_TERMINAL(g_dot,           '.',  DOT);
   DEFINE_TERMINAL(g_comma,         ',',  COMMA);
   DEFINE_TERMINAL(g_question_mark, '?',  QUESTION_MARK);
+  DEFINE_TERMINAL(g_double_colon,  "::",  DOUBLE_COLON);
   DEFINE_TERMINAL(g_colon,         ':',  COLON);
   DEFINE_TERMINAL(g_semicolon,     ';',  SEMICOLON);
 
@@ -173,7 +180,8 @@ namespace symbols {
 	  g_or.pair(),
 	  g_and.pair(),
 
-		g_arrow.pair()
+		g_arrow.pair(),
+		g_double_colon.pair()
 	};
 
 	namespace none {

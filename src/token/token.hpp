@@ -42,12 +42,15 @@ class Token {
 
   auto type() const -> TokenType;
 
-
   template<typename T>
   auto get() const -> T
   {
     return std::get<T>(m_tv);
   }
+
+  auto str() const -> std::string;
+  auto int_() const -> int;
+  auto double_() const -> double;
 
   auto position() const -> TextPosition;
 

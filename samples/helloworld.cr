@@ -1,13 +1,12 @@
-package main
+module main
 
 import (
 		"io";
 		fs = "filesystem"
-	)
-
+)
 
 fn main() {
-	let var = +10 + -30
+  println(10 + 10);
 
 	return 0
 }

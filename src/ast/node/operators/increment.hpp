@@ -1,13 +1,19 @@
 #ifndef CROW_AST_NODE_OPERATORS_INCREMENT_HPP
 #define CROW_AST_NODE_OPERATORS_INCREMENT_HPP
 
+// Includes:
+#include "../node_traits/include.hpp"
+
 // Local Includes:
-#include "operators.hpp"
-#include "unary_operator.hpp"
+#include "fdecl.hpp"
 
 
 namespace ast::node::operators {
-class Increment : public UnaryOperator {
+// Namespace aliases:
+namespace nt = node_traits;
+
+// Classes:
+class Increment : public nt::UnaryOperator {
   private:
   bool m_prefix;
 
@@ -20,6 +26,6 @@ class Increment : public UnaryOperator {
 
   ~Increment() override = default;
 };
-} // namespace node::operators
+} // namespace ast::node::operators
 
 #endif

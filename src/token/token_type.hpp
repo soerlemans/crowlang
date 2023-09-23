@@ -15,18 +15,20 @@ using TokenTypeOpt = std::optional<TokenType>;
 enum class TokenType {
   // Variables:
   IDENTIFIER = 0,
-  LET,
   CONST,
+  LET,
 
   // Package:
-  PACKAGE,
+  MODULE,
   IMPORT,
+  USE,
   PRIVATE,
   PUBLIC,
 
   // Typing:
   STRUCT,
   INTERFACE,
+	DEF,
 
   // Control statements:
   FUNCTION,
@@ -100,6 +102,7 @@ enum class TokenType {
   DOT,
   COMMA,
   QUESTION_MARK,
+  DOUBLE_COLON,
   COLON,
   SEMICOLON,
 

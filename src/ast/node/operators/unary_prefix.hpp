@@ -2,25 +2,26 @@
 #define CROW_AST_NODE_OPERATORS_UNARY_PREFIX_HPP
 
 // Includes:
-#include "../../../token/token_type.hpp"
+#include "../node_traits/include.hpp"
 
 // Local Includes:
-#include "operators.hpp"
-#include "unary_operator.hpp"
+#include "fdecl.hpp"
 
 
 namespace ast::node::operators {
+// Namespace aliases:
+namespace nt = node_traits;
+
 // Enums:
 enum class UnaryPrefixOp { PLUS, MINUS };
 
 // Classes:
-class UnaryPrefix : public UnaryOperator {
+class UnaryPrefix : public nt::UnaryOperator {
   private:
   UnaryPrefixOp m_op;
 
   public:
   UnaryPrefix(UnaryPrefixOp t_op, NodePtr&& t_left);
-  UnaryPrefix(token::TokenType t_tokentype, NodePtr&& t_left);
 
   virtual auto op() const -> UnaryPrefixOp;
 
@@ -28,6 +29,6 @@ class UnaryPrefix : public UnaryOperator {
 
   ~UnaryPrefix() override = default;
 };
-} // namespace node::operators
+} // namespace ast::node::operators
 
 #endif // CROW_AST_NODE_OPERATORS_UNARY_PREFIX_HPP

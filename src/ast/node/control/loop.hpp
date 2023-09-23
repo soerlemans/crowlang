@@ -2,30 +2,24 @@
 #define CROW_AST_NODE_CONTROL_LOOP_HPP
 
 // Includes:
-#include "../node_interface.hpp"
+#include "../node_traits/include.hpp"
 
 // Local Includes:
-#include "control.hpp"
+#include "fdecl.hpp"
 
 
 namespace ast::node::control {
-class Loop : public NodeInterface {
-  private:
-  NodePtr m_init;
-  NodePtr m_condition;
-  NodePtr m_expr;
+// Aliases:
+namespace nt = node_traits;
 
-  NodeListPtr m_body;
-
+// Classes:
+class Loop : public nt::InitExpr,
+             public nt::Condition,
+             public nt::Body,
+             public nt::Expr {
   public:
   Loop(NodePtr&& t_init, NodePtr&& t_condition, NodePtr&& t_expr,
        NodeListPtr&& t_body);
-
-  auto init() -> NodePtr&;
-  auto condition() -> NodePtr&;
-  auto expr() -> NodePtr&;
-
-  auto body() -> NodeListPtr&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

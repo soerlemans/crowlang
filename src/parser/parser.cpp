@@ -1,6 +1,7 @@
 #include "parser.hpp"
 
 // Includes:
+#include "../ast/node/include.hpp"
 #include "../exception/syntax_error.hpp"
 #include "../token/tokentype2str.hpp"
 
@@ -8,12 +9,9 @@
 // Using statements:
 using namespace parser;
 using namespace token;
+using namespace ast::node;
 
 // Methods:
-Parser::Parser(TokenStream&& t_tokenstream)
-  : m_tokenstream{std::forward<TokenStream>(t_tokenstream)}
-{}
-
 auto Parser::syntax_error(std::string_view t_msg) const -> void
 {
   const auto token{get_token()};
@@ -110,3 +108,24 @@ auto Parser::after_newlines(const token::TokenType t_type) -> bool
 
   return found;
 }
+
+//! Creates a list of the given function type
+auto Parser::list_of(const ParseFn t_fn) -> NodeListPtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  auto nodes{make_node<ast::node::List>()};
+
+  while(!eos()) {
+    if(auto ptr{t_fn()}; ptr) {
+      nodes->push_back(std::move(ptr));
+    } else {
+      break;
+    }
+  }
+
+  return nodes;
+}
+
+Parser::Parser(TokenStream&& t_tokenstream)
+  : m_tokenstream{std::forward<TokenStream>(t_tokenstream)}
+{}

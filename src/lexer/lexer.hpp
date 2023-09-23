@@ -36,15 +36,18 @@ class Lexer {
   public:
   Lexer(TextStreamPtr t_text);
 
-  // Name lexing:
+  // Misc:
+  auto whitespace() -> void;
+  auto comment() -> void;
+
+  // Name:
   static auto is_keyword(std::string_view t_identifier) -> token::TokenTypeOpt;
   auto identifier() -> token::Token;
 
   // Integer literal lexing:
   auto is_hex_literal() -> bool;
   auto handle_hex() -> token::Token;
-  auto handle_float(std::string_view t_str)
-    -> token::Token;
+  auto handle_float(std::string_view t_str) -> token::Token;
   auto handle_integer() -> token::Token;
 
   // Literal lexing:

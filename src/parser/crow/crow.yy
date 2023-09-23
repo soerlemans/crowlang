@@ -5,10 +5,10 @@
 %token Let Const
 
 // Package:
-%token Package Import Private Public
+%token Module Import Private Public
 
 // Typing:
-%token Struct Interface
+%token Enum Struct Interface Impl
 
 // Control Statements:
 %token Fn Match Case If Else ElIf Loop
@@ -128,6 +128,16 @@ expr_opt         : // empty
 				         | expr
                  ;
 
+// TODO: Refactor Const and Let to be more elegant
+const_expr       : Const IDENTIFIER '=' newline_opt expr
+                 | Const IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
+                 ;
+
+let_expr         : Let IDENTIFIER
+                 | Let IDENTIFIER '=' newline_opt expr
+                 | Let IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
+                 ;
+
 decl_expr        : Let IDENTIFIER
                  | Let IDENTIFIER '=' newline_opt expr
                  | Let IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
@@ -216,7 +226,7 @@ statement        : result_statement
 				         | if_statement
 				         | match_statement
 				         | loop_statement
-				         | jump_statement
+				         | keyword_statement
 				         | body
                  ;
 
@@ -234,7 +244,59 @@ attribute        : Private
 				         | Public
                  ;
 
+// Typing:
+// TODO:
+/* alias_def        : Use? */
+
+// Enum:
+enum_def         : Enum IDENTIFIER newline_opt
+                     '{' newline_opt '}'
+                 ;
+// Interface:
+method_decl      : Fn IDENTIFIER '(' param_list_opt ')' return_type terminator
+                 ;
+
+
+method_decl_list : // empty
+				         | method_decl
+				         | fn_decl_list method_decl
+                 ;
+
+interface_def    : Interface IDENTIFIER newline_opt
+                     '{' newline_opt method_decl_list '}'
+                 ;
+
+// Struct:
+member_decl      : IDENTIFIER ':' IDENTIFIER terminator
+                 ;
+
+member_decl_list : // empty
+                 | member_decl
+				         | member_decl_list member_decl
+                 ;
+
+struct_def       : Struct IDENTIFIER newline_opt
+                     '{'  newline_opt member_decl_list '}'
+                 ;
+
+type_def         : enum_def
+				         | interface_def
+				         | struct_def
+                 ;
+
+// Implementation:
+def_list         : newline_opt function
+                 | impl_list newline_opt function
+                 ;
+
+def_block        : Def IDENTIFIER newline_opt
+                   '{' impl_list '}'
+                 | Def IDENTIFIER newline_opt
+                   '{' impl_list '}'
+                 ;
+
 // Function:
+// TODO: Think about having in, out and inout specifiers like ADA?
 param_list       : IDENTIFIER ':' IDENTIFIER
                  | param_list ',' IDENTIFIER ':' IDENTIFIER
                  ;
@@ -243,8 +305,11 @@ param_list_opt   : // empty
                  | param_list
                  ;
 
+return_type      : newline_opt ARROW IDENTIFIER
+                 ;
+
 return_type_opt  : // empty
-                 | newline_opt ARROW IDENTIFIER
+                 | return_type
                  ;
 
 lambda           : Fn '(' param_list_opt ')' return_type_opt body
@@ -272,14 +337,16 @@ import           : Import STRING
                  ;
 
 // Packaging:
-package          : Package IDENTIFIER
+module           : Module IDENTIFIER
                  ;
 
 // Items:
-item             : package
+item             : module
 				         | import
+				         | type_def
 				         | decl_expr
                  | function
+                 | impl_block
                  ;
 
 item_list        : // empty

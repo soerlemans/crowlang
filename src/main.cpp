@@ -11,6 +11,7 @@
 // Includes:
 #include "ast/node/include.hpp"
 #include "ast/visitor/print_visitor.hpp"
+#include "backend/llvm_ir/llvm_ir_backend.hpp"
 #include "container/text_buffer.hpp"
 #include "debug/log.hpp"
 #include "debug/log_macros.hpp"
@@ -90,25 +91,27 @@ auto lex(const fs::path& t_path) -> token::TokenStream
   Lexer lexer{ts_ptr};
   const auto tokenstream{lexer.tokenize()};
 
-  DBG_PRINTLN();
+  DBG_PRINTLN("$");
 
   return tokenstream;
 }
 
-auto pprint([[maybe_unused]] const auto& t_ast) -> void
+auto pprint([[maybe_unused]] ast::node::NodePtr t_ast) -> void
 {
   using namespace ast::visitor;
 
-  DBG_PRINTLN("|> Pretty printing AST:");
-
   // Pretty print the AST
 #if DEBUG
+  DBG_PRINTLN("|> Pretty printing AST:");
+  std::stringstream ss;
+  ss << "\nAst:\n";
+  PrintVisitor pprint{ss};
+  pprint.traverse(t_ast);
 
-  PrintVisitor pprint;
-  t_ast->accept(&pprint);
+  DBG_LOG(INFO, ss.str());
+
+  DBG_PRINTLN("$");
 #endif // DEBUG
-
-  DBG_PRINTLN();
 }
 
 auto parse(const token::TokenStream& t_ts) -> ast::node::NodePtr
@@ -120,7 +123,7 @@ auto parse(const token::TokenStream& t_ts) -> ast::node::NodePtr
   CrowParser parser{t_ts};
   const auto ast{parser.parse()};
 
-  DBG_PRINTLN();
+  DBG_PRINTLN("$");
 
   return ast;
 }
@@ -128,8 +131,28 @@ auto parse(const token::TokenStream& t_ts) -> ast::node::NodePtr
 auto interpret() -> void
 {}
 
-auto codegen() -> void
-{}
+auto generate(ast::node::NodePtr t_ast) -> void
+{
+  using namespace backend::llvm_ir;
+
+  DBG_PRINTLN("|> Code generation:");
+
+  LlvmIrBackend backend;
+  backend.traverse(t_ast);
+
+#if DEBUG
+  std::stringstream ss;
+  ss << "\nLLVM IR:\n";
+
+  backend.dump_ir(ss);
+
+  DBG_LOG(INFO, ss.str());
+
+  DBG_PRINTLN("$");
+#endif // DEBUG
+
+  DBG_PRINTLN("$");
+}
 
 auto run() -> void
 {
@@ -140,6 +163,8 @@ auto run() -> void
     const auto ast{parse(ts)};
 
     pprint(ast);
+
+    generate(ast);
   }
 }
 

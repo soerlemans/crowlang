@@ -2,6 +2,7 @@
 
 
 using namespace ast::node::operators;
+using namespace ast::node::node_traits;
 
 // Not:
 Not::Not(NodePtr&& t_left): UnaryOperator{std::move(t_left)}

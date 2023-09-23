@@ -2,31 +2,29 @@
 #define CROW_AST_NODE_FUNCTIONS_FUNCTION_HPP
 
 // Includes:
-#include "../list.hpp"
-#include "../node_interface.hpp"
+#include "../node_traits/include.hpp"
 
 // Local Includes:
-#include "functions.hpp"
+#include "fdecl.hpp"
 
 
 namespace ast::node::functions {
-class Function : public NodeInterface {
-  private:
-  std::string m_identifier;
-  NodeListPtr m_params;
-  NodeListPtr m_body;
+// Aliases:
+namespace nt = node_traits;
 
+// Classes:
+class Function : public nt::Identifier,
+                 public nt::Params,
+                 public nt::Type,
+                 public nt::Body {
   public:
-  Function(std::string t_identifier, NodeListPtr&& t_params, NodeListPtr&& t_body);
-
-  auto identifier() const -> std::string_view;
-  auto params() -> NodeListPtr&;
-  auto body() -> NodeListPtr&;
+  Function(std::string_view t_identifier, NodeListPtr&& t_params,
+           std::string_view t_type, NodeListPtr&& t_body);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~Function() override = default;
 };
-} // namespace node::functions
+} // namespace ast::node::functions
 
 #endif // CROW_AST_NODE_FUNCTIONS_FUNCTION_HPP

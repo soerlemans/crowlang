@@ -1,28 +1,27 @@
 #ifndef CROW_AST_NODE_FUNCTIONS_FUNCTION_CALL_HPP
 #define CROW_AST_NODE_FUNCTIONS_FUNCTION_CALL_HPP
 
-// STL Includes:
-#include <string>
-#include <string_view>
-
 // Includes:
 #include "../list.hpp"
-#include "../node_interface.hpp"
+#include "../node_traits/include.hpp"
 
 // Local Includes:
-#include "functions.hpp"
+#include "fdecl.hpp"
 
 
 namespace ast::node::functions {
-class FunctionCall : public NodeInterface {
+// Aliases:
+namespace nt = node_traits;
+
+// Classes:
+class FunctionCall : public nt::Identifier {
   private:
   std::string m_identifier;
   NodeListPtr m_args;
 
   public:
-  FunctionCall(std::string&& t_identifier, NodeListPtr&& t_args);
+  FunctionCall(std::string_view t_identifier, NodeListPtr&& t_args);
 
-  auto identifier() const -> std::string_view;
   auto args() -> NodeListPtr&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);
