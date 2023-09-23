@@ -5,11 +5,13 @@
 
 // Library Includes:
 #include <llvm/IR/LegacyPassManager.h>
+// #include <llvm/IR/PassManager.h>
 #include <llvm/IR/Verifier.h>
 #include <llvm/MC/TargetRegistry.h>
 #include <llvm/Support/CodeGen.h>
 #include <llvm/Support/FileSystem.h>
 #include <llvm/Support/Host.h>
+#include <llvm/Support/TargetSelect.h>
 #include <llvm/Support/raw_ostream.h>
 #include <llvm/Target/TargetMachine.h>
 
@@ -150,6 +152,7 @@ auto LlvmBackend::dump_ir(std::ostream& t_os) -> void
 auto LlvmBackend::compile(const fs::path t_path) -> void
 {
   using namespace llvm;
+  using namespace llvm::sys::fs;
 
   configure_target();
 
@@ -162,13 +165,19 @@ auto LlvmBackend::compile(const fs::path t_path) -> void
     errs() << "Could not open file: " << err_code.message();
   }
 
+  // Initialize all target stuff:
+  InitializeAllTargetInfos();
+  InitializeAllTargets();
+  InitializeAllTargetMCs();
+  InitializeAllAsmParsers();
+  InitializeAllAsmPrinters();
+
   // Resolve target:
   const auto target_str{m_module->getTargetTriple()};
   std::string err;
   auto target{TargetRegistry::lookupTarget(target_str, err)};
-
   if(!target) {
-    errs() << err;
+    errs() << err << '\n';
     // return 1;
     return; // TODO: Fix
   }
@@ -184,7 +193,6 @@ auto LlvmBackend::compile(const fs::path t_path) -> void
 
   // Write object file:
   legacy::PassManager pass;
-  // const auto filetype {CodeGenFileType::ObjectFile};
   const auto fype{CGFT_ObjectFile};
 
   if(target_machine->addPassesToEmitFile(pass, dest, nullptr, fype)) {
@@ -195,4 +203,18 @@ auto LlvmBackend::compile(const fs::path t_path) -> void
 
   pass.run(*m_module);
   dest.flush();
+
+  // Close so that the permissions can be set
+  dest.close();
+
+  // Make object file executable:
+  const perms permissions{others_write | all_read | all_exe};
+  err_code = setPermissions(t_path.c_str(), permissions);
+
+  errs() << err_code.message() << " Done...\n";
+
+  if(err_code) {
+    errs() << "Could not change file permissions: " << err_code.message();
+    return;
+  }
 }
