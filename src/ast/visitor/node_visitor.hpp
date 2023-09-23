@@ -28,7 +28,8 @@ class NodeVisitor {
   virtual auto visit(node::functions::FunctionCall* t_fn_call) -> void = 0;
   virtual auto visit(node::functions::ReturnType* t_rt) -> void = 0;
 
-	// Lvalue:
+  // Lvalue:
+  virtual auto visit(node::lvalue::Const* t_const) -> void = 0;
   virtual auto visit(node::lvalue::Let* t_let) -> void = 0;
   virtual auto visit(node::lvalue::Variable* t_var) -> void = 0;
 
@@ -60,17 +61,19 @@ class NodeVisitor {
   virtual auto visit(node::rvalue::Boolean* t_bool) -> void = 0;
 
   // Typing:
-  virtual auto visit(ast::node::typing::MethodDecl* t_md) -> void = 0;
-  virtual auto visit(ast::node::typing::Interface* t_ifc) -> void = 0;
-  virtual auto visit(ast::node::typing::MemberDecl* t_md) -> void = 0;
-  virtual auto visit(ast::node::typing::Struct* t_struct) -> void = 0;
-  virtual auto visit(ast::node::typing::DefBlock* t_db) -> void = 0;
-  virtual auto visit(ast::node::typing::DotExpr* t_dot_expr) -> void = 0;
+  virtual auto visit(node::typing::MethodDecl* t_md) -> void = 0;
+  virtual auto visit(node::typing::Interface* t_ifc) -> void = 0;
+  virtual auto visit(node::typing::MemberDecl* t_md) -> void = 0;
+  virtual auto visit(node::typing::Struct* t_struct) -> void = 0;
+  virtual auto visit(node::typing::DefBlock* t_db) -> void = 0;
+  virtual auto visit(node::typing::DotExpr* t_dot_expr) -> void = 0;
 
+  // Misc:
   virtual auto visit(node::List* t_list) -> void = 0;
   virtual auto visit(node::Nil* t_nil) -> void = 0;
 
-  virtual auto visit(node::NodeInterface* t_node) -> void;
+  virtual auto visit(node::NodeInterface* t_ptr) -> void;
+  virtual auto traverse(node::NodePtr t_ast) -> void;
 
   virtual ~NodeVisitor() = default;
 };

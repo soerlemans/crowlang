@@ -89,6 +89,7 @@ auto PrintVisitor::visit(FunctionCall* t_fn_call) -> void
 DEF_PV_METHOD(ReturnType)
 
 // Lvalue:
+DEF_PV_METHOD(Const)
 DEF_PV_METHOD(Let)
 
 auto PrintVisitor::visit(Variable* t_var) -> void
@@ -238,9 +239,4 @@ auto PrintVisitor::visit([[maybe_unused]] Nil* t_nil) -> void
   COUNTG_INIT();
 
   print("Nil");
-}
-
-auto PrintVisitor::print(node::NodePtr t_ast) -> void
-{
-  t_ast->accept(this);
 }
