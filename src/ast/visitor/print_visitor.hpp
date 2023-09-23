@@ -2,7 +2,11 @@
 #define CROW_AST_VISITOR_PRINT_VISITOR_HPP
 
 // STL Includes:
+#include <concepts>
 #include <iostream>
+#include <sstream>
+#include <string_view>
+#include <type_traits>
 
 // Local Includes:
 #include "node_visitor.hpp"
@@ -19,8 +23,6 @@ class PrintVisitor : public NodeVisitor {
   private:
   int m_counter{0};
 
-  friend class CountGuard;
-
   auto print_if(std::string_view t_str, ast::node::NodePtr t_ptr) -> void;
 
   template<typename... Args>
@@ -36,26 +38,71 @@ class PrintVisitor : public NodeVisitor {
     std::cout << " - (" << m_counter << ")\n";
   }
 
-  template<typename Derived, typename Base, typename Fn>
-  auto when_derived(const Fn t_fn) -> void
+  template<typename Base, typename Ptr, typename Fn>
+  auto when_derived(Ptr t_ptr, const Fn t_fn) -> bool
   {
-    if constexpr(std::derived_from<Derived, Base>) {
-      t_fn();
+    using Type = std::remove_pointer<decltype(t_ptr)>::type;
+
+    bool is_derived{false};
+
+    if constexpr(std::derived_from<Type, Base>) {
+      t_fn(t_ptr);
+      is_derived = true;
     }
+
+    return is_derived;
   }
 
   template<typename Ptr>
   auto print_traits(Ptr t_ptr) -> void
   {
     using namespace ast::node::node_traits;
-    using N = decltype(*t_ptr);
+    // TODO: Make UnaryOperator and BinaryOperator a trait
+    using namespace ast::node::operators;
 
-    when_derived<N, Identifier>([&] {
-      print("| Identifier: ", t_ptr->identifier());
+    const auto print_ptr{[this](const auto t_vw, auto t_any) {
+      using namespace ast::node;
+
+      std::stringstream ss;
+      ss << "| " << t_vw << ": ";
+
+      if constexpr(std::same_as<decltype(t_any), NodePtr>) {
+        print_if(ss.str(), t_any);
+      } else {
+        print(ss.str(), t_any);
+      }
+    }};
+
+    when_derived<Identifier>(t_ptr, [&](auto t_ptr) {
+      print_ptr("Identifier", t_ptr->identifier());
     });
 
-    when_derived<N, InitExpr>([&] {
-      // print_if("Init Expr", t_ptr->init_expr());
+    when_derived<InitExpr>(t_ptr, [&](auto t_ptr) {
+      print_ptr("Init Expr", t_ptr->init_expr());
+    });
+
+    when_derived<Condition>(t_ptr, [&](auto t_ptr) {
+      print_ptr("Condition", t_ptr->condition());
+    });
+
+    when_derived<Expr>(t_ptr, [&](auto t_ptr) {
+      print_ptr("Expr", t_ptr->expr());
+    });
+
+    when_derived<Params>(t_ptr, [&](auto t_ptr) {
+      print_ptr("Params", t_ptr->params());
+    });
+
+    when_derived<Type>(t_ptr, [&](auto t_ptr) {
+      print("| Type: ", t_ptr->type());
+    });
+
+    when_derived<Body>(t_ptr, [&](auto t_ptr) {
+      print_ptr("Body", t_ptr->body());
+    });
+
+    when_derived<UnaryOperator>(t_ptr, [&](auto t_ptr) {
+      print_ptr("Left", t_ptr->body());
     });
   }
 
