@@ -8,7 +8,7 @@
 #include "fdecl.hpp"
 
 
-namespace ast::node::operators {
+namespace ast::node::node_traits {
 class UnaryOperator : public NodeInterface {
   private:
   NodePtr m_left;
@@ -22,6 +22,6 @@ class UnaryOperator : public NodeInterface {
 
   ~UnaryOperator() override = default;
 };
-} // namespace ast::node::operators
+} // namespace ast::node::node_traits
 
 #endif // CROW_AST_NODE_OPERATORS_UNARY_OPERATOR_HPP

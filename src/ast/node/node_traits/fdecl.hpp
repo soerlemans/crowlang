@@ -10,6 +10,9 @@ class Identifier;
 class InitExpr;
 class Params;
 class Type;
+
+class UnaryOperator;
+class BinaryOperator;
 } // namespace ast::node::node_traits
 
 #endif // CROW_AST_NODE_NODE_TRAITS_FDECL_HPP

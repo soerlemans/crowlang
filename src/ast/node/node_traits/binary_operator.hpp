@@ -6,7 +6,7 @@
 #include "unary_operator.hpp"
 
 
-namespace ast::node::operators {
+namespace ast::node::node_traits {
 class BinaryOperator : public UnaryOperator {
   private:
   NodePtr m_right;
@@ -20,6 +20,6 @@ class BinaryOperator : public UnaryOperator {
 
   ~BinaryOperator() override = default;
 };
-} // namespace ast::node::operators
+} // namespace ast::node::node_traits
 
 #endif // CROW_AST_NODE_OPERATORS_BINARY_OPERATOR_HPP

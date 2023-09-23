@@ -1,12 +1,17 @@
 #ifndef CROW_AST_NODE_OPERATORS_ARITHMETIC_HPP
 #define CROW_AST_NODE_OPERATORS_ARITHMETIC_HPP
 
+// Includes:
+#include "../node_traits/include.hpp"
+
 // Local Includes:
-#include "binary_operator.hpp"
 #include "fdecl.hpp"
 
 
 namespace ast::node::operators {
+// Namespace aliases:
+namespace nt = node_traits;
+
 // Enums:
 enum class ArithmeticOp {
   POWER = 0,
@@ -20,7 +25,7 @@ enum class ArithmeticOp {
 };
 
 // Classes:
-class Arithmetic : public BinaryOperator {
+class Arithmetic : public nt::BinaryOperator {
   private:
   ArithmeticOp m_op;
 

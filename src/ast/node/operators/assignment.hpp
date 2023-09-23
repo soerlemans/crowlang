@@ -1,12 +1,17 @@
 #ifndef CROW_AST_NODE_OPERATORS_ASSIGNMENT_HPP
 #define CROW_AST_NODE_OPERATORS_ASSIGNMENT_HPP
 
+// Includes:
+#include "../node_traits/include.hpp"
+
 // Local Includes:
-#include "binary_operator.hpp"
 #include "fdecl.hpp"
 
 
 namespace ast::node::operators {
+// Namespace aliases:
+namespace nt = node_traits;
+
 // Enums:
 enum AssignmentOp {
   MULTIPLY = 0,
@@ -20,7 +25,7 @@ enum AssignmentOp {
 };
 
 // Classes:
-class Assignment : public BinaryOperator {
+class Assignment : public nt::BinaryOperator {
   private:
   AssignmentOp m_op;
 
@@ -33,6 +38,6 @@ class Assignment : public BinaryOperator {
 
   ~Assignment() override = default;
 };
-} // namespace node::operators
+} // namespace ast::node::operators
 
 #endif // CROW_AST_NODE_OPERATORS_ASSIGNMENT_HPP

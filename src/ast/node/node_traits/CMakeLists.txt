@@ -7,4 +7,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 	init_expr.cpp
 	params.cpp
 	type.cpp
+
+	unary_operator.cpp
+	binary_operator.cpp
 )
