@@ -16,6 +16,11 @@
 
 
 namespace ast::visitor {
+// Concept:
+template<typename Type, typename... Args>
+concept IsAnyOf = (std::same_as<Args, Type> || ...);
+
+// Classes:
 /*! Visitor made for printing the AST Node per node
  * Has a unique overload for every print
  */
@@ -44,7 +49,6 @@ class PrintVisitor : public NodeVisitor {
     using Type = std::remove_pointer<decltype(t_ptr)>::type;
 
     bool is_derived{false};
-
     if constexpr(std::derived_from<Type, Base>) {
       t_fn(t_ptr);
       is_derived = true;
@@ -63,10 +67,12 @@ class PrintVisitor : public NodeVisitor {
     const auto print_ptr{[this](const auto t_vw, auto t_any) {
       using namespace ast::node;
 
+      using Type = std::remove_pointer<decltype(t_any)>::type;
+
       std::stringstream ss;
       ss << "| " << t_vw << ": ";
 
-      if constexpr(std::same_as<decltype(t_any), NodePtr>) {
+      if constexpr(IsAnyOf<Type, NodePtr, NodeListPtr>) {
         print_if(ss.str(), t_any);
       } else {
         print(ss.str(), t_any);
