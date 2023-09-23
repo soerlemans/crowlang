@@ -2,6 +2,7 @@
 #define CROW_CODEGEN_LLVM_CODEGEN_HPP
 
 // STL Includes:
+#include <filesystem>
 #include <memory>
 
 // Library Includes:
@@ -16,6 +17,9 @@
 namespace backend::llvm_backend {
 // Using statements:
 using namespace ast;
+
+// Namespace aliases:
+namespace fs = std::filesystem;
 
 // Aliases:
 using ContextPtr = std::shared_ptr<llvm::LLVMContext>;
@@ -94,7 +98,7 @@ class LlvmBackend : public ast::visitor::NodeVisitor {
   // Util:
   auto configure_target() -> void;
   auto dump_ir(std::ostream& t_os) -> void;
-  auto compile() -> void;
+  auto compile(fs::path t_path) -> void;
 
   ~LlvmBackend() override = default;
 };

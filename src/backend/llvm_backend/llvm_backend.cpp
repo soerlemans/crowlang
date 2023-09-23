@@ -147,14 +147,14 @@ auto LlvmBackend::dump_ir(std::ostream& t_os) -> void
   t_os << str;
 }
 
-auto LlvmBackend::compile() -> void
+auto LlvmBackend::compile(const fs::path t_path) -> void
 {
   using namespace llvm;
 
   configure_target();
 
   // Obtain filehandle to destination file
-  const auto filename{"main.out"};
+  const auto filename{t_path.c_str()};
   std::error_code err_code;
   raw_fd_ostream dest{filename, err_code, sys::fs::OF_None};
 
