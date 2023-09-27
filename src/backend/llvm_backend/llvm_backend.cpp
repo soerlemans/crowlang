@@ -1,7 +1,8 @@
 #include "llvm_backend.hpp"
 
 // STL Includes:
-#include <any>
+#include <iostream>
+#include <optional>
 #include <vector>
 
 // Library Includes:
@@ -71,17 +72,38 @@ auto LlvmBackend::visit(If* t_if) -> Any
 {
   using namespace llvm;
 
+  llvm::Function* fn{m_builder->GetInsertBlock()->getParent()};
+
   auto* condv{get_value(t_if->condition())};
   auto* constant{ConstantInt::get(*m_context, APInt(8, 0, true))};
   condv = m_builder->CreateICmpNE(condv, constant, "cond");
 
-  auto* then{BasicBlock::Create(*m_context, "then")};
-  // Walk then branch
-
+  auto* then{BasicBlock::Create(*m_context, "then", fn)};
   auto* alt{BasicBlock::Create(*m_context, "alt")};
-  // Walk alt branch
+  auto* merge{BasicBlock::Create(*m_context, "merge")};
 
   m_builder->CreateCondBr(condv, then, alt);
+
+  m_builder->SetInsertPoint(then);
+  t_if->then()->accept(this);
+  m_builder->CreateBr(merge);
+  then = m_builder->GetInsertBlock();
+
+  // Insert alt block at end
+  // fn->insert(fn->end(), alt);
+
+  m_builder->SetInsertPoint(alt);
+  t_if->alt()->accept(this);
+  m_builder->CreateBr(merge);
+  alt = m_builder->GetInsertBlock();
+
+  fn->insert(fn->end(), merge);
+  m_builder->SetInsertPoint(merge);
+  auto* pn{
+    m_builder->CreatePHI(llvm::Type::getDoubleTy(*m_context), 2, "iftmp")};
+
+  // PN->addIncoming(ThenV, ThenBB);
+  // PN->addIncoming(ElseV, ElseBB);
 
   return {};
 }
@@ -112,7 +134,7 @@ auto LlvmBackend::visit(Function* t_fn) -> Any
   auto* fn{llvm::Function::Create(fn_type, llvm::Function::ExternalLinkage,
                                   t_fn->identifier(), m_module.get())};
 
-  auto* body{llvm::BasicBlock::Create(*m_context, "entry", fn)};
+  auto* body{BasicBlock::Create(*m_context, "entry", fn)};
   m_builder->SetInsertPoint(body);
 
   // Codegen for the body
@@ -142,23 +164,23 @@ auto LlvmBackend::visit(Arithmetic* t_arith) -> Any
 
   switch(t_arith->op()) {
     case ArithmeticOp::MULTIPLY:
-      expr = m_builder->CreateFMul(lhs, rhs, "addtmp");
+      expr = m_builder->CreateMul(lhs, rhs, "multmp");
       break;
 
     case ArithmeticOp::DIVIDE:
-      expr = m_builder->CreateFDiv(lhs, rhs, "divtmp");
+      expr = m_builder->CreateSDiv(lhs, rhs, "divtmp");
       break;
 
     case ArithmeticOp::MODULO:
-      expr = m_builder->CreateFDiv(lhs, rhs, "modtmp");
+      // expr = m_builder->CreateDiv(lhs, rhs, "modtmp");
       break;
 
     case ArithmeticOp::ADD:
-      expr = m_builder->CreateFAdd(lhs, rhs, "addtmp");
+      expr = m_builder->CreateAdd(lhs, rhs, "addtmp");
       break;
 
     case ArithmeticOp::SUBTRACT:
-      expr = m_builder->CreateFSub(lhs, rhs, "subtmp");
+      expr = m_builder->CreateSub(lhs, rhs, "subtmp");
       break;
 
     default:
@@ -294,7 +316,7 @@ auto LlvmBackend::compile(const fs::path t_path) -> void
   const auto Features{""};
 
   TargetOptions opt;
-  Optional<Reloc::Model> reloc_model;
+  std::optional<Reloc::Model> reloc_model;
   auto target_machine{
     target->createTargetMachine(target_str, cpu, Features, opt, reloc_model)};
 
