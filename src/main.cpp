@@ -140,7 +140,7 @@ auto generate(ast::node::NodePtr t_ast) -> void
 
   LlvmBackend backend;
   backend.codegen(t_ast);
-  backend.compile("main.out");
+  // backend.compile("main.out");
 
 #if DEBUG
   std::stringstream ss;

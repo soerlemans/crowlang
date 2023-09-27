@@ -20,9 +20,11 @@
 
 
 // Macros:
-#define STUB(t_type)                                            \
-  auto LlvmBackend::visit([[maybe_unused]] t_type* t_ptr)->void \
-  {}
+#define STUB(t_type)                                           \
+  auto LlvmBackend::visit([[maybe_unused]] t_type* t_ptr)->Any \
+  {                                                            \
+    return {};                                                 \
+  }
 
 // Using Statements:
 using namespace backend::llvm_backend;
@@ -45,7 +47,7 @@ LlvmBackend::LlvmBackend()
     m_pgen{m_builder, m_context, m_module}
 {}
 
-auto LlvmBackend::visit(If* t_if) -> void
+auto LlvmBackend::visit(If* t_if) -> Any
 {
   using namespace llvm;
 
@@ -59,32 +61,36 @@ auto LlvmBackend::visit(If* t_if) -> void
   auto* alt{BasicBlock::Create(*m_context, "alt")};
 
   m_builder->CreateCondBr(condv, then, alt);
+
+  return {};
 }
 
 STUB(Loop)
 STUB(Continue)
 STUB(Break)
 
-auto LlvmBackend::visit(Return* t_ret) -> void
+auto LlvmBackend::visit(Return* t_ret) -> Any
 {
   using namespace llvm;
 
   APInt ret_val{32, 0, true};
 
   m_builder->CreateRet(ConstantInt::get(*m_context, ret_val));
+
+  return {};
 }
 
 // Functions:
-auto LlvmBackend::visit(Function* t_fn) -> void
+auto LlvmBackend::visit(Function* t_fn) -> Any
 {
   using namespace llvm;
 
-  auto* fn{m_module->getFunction(t_fn->identifier())};
-  if(!fn) {
-    // Throw if no function was found
-  }
+  auto params{std::vector<llvm::Type*>()};
+  auto* fn_type{
+    FunctionType::get(IntegerType::getInt32Ty(*m_context), params, false)};
 
-	// Check for body before we do this
+  auto* fn{llvm::Function::Create(fn_type, llvm::Function::ExternalLinkage,
+                                  t_fn->identifier(), m_module.get())};
 
   auto* body{llvm::BasicBlock::Create(*m_context, "entry", fn)};
   m_builder->SetInsertPoint(body);
@@ -93,6 +99,8 @@ auto LlvmBackend::visit(Function* t_fn) -> void
   t_fn->body()->accept(this);
 
   llvm::verifyFunction(*fn);
+
+  return {t_fn};
 }
 
 STUB(FunctionCall)
@@ -124,7 +132,7 @@ STUB(Impl)
 STUB(DotExpr)
 
 // Util:
-auto LlvmBackend::configure_target() -> void
+auto LlvmBackend::configure_target() -> viod
 {
   const auto target{llvm::sys::getDefaultTargetTriple()};
 

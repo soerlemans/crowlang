@@ -27,10 +27,10 @@ auto PrologueGenerator::visit(Function* t_fn) -> void
 {
   using namespace llvm;
 
-  auto params{std::vector<llvm::Type*>()};
-  auto* fn_type{
-    FunctionType::get(IntegerType::getInt32Ty(*m_context), params, false)};
+  // auto params{std::vector<llvm::Type*>()};
+  // auto* fn_type{
+  //   FunctionType::get(IntegerType::getInt32Ty(*m_context), params, false)};
 
-  auto* fn{llvm::Function::Create(fn_type, llvm::Function::ExternalLinkage,
-                                  t_fn->identifier(), m_module.get())};
+  // auto* fn{llvm::Function::Create(fn_type, llvm::Function::ExternalLinkage,
+  //                                 t_fn->identifier(), m_module.get())};
 }

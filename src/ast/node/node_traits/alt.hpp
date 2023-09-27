@@ -18,7 +18,7 @@ class Alt : virtual public NodeInterface {
 
   virtual auto alt() -> NodePtr&;
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override = 0;
+  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   ~Alt() override = default;
 };

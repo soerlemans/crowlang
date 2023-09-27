@@ -18,7 +18,7 @@ class Then : virtual public NodeInterface {
 
   virtual auto then() -> NodePtr&;
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override = 0;
+  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   ~Then() override = default;
 };

@@ -23,10 +23,12 @@ using namespace ast::node::typing;
 using namespace ast::node::node_traits;
 
 
-#define STUB(t_type)                                                    \
-  auto NodeVisitor::visit([[maybe_unused]] t_type* t_ptr)->void         \
-  {                                                                     \
+#define STUB(t_type)                                                     \
+  auto NodeVisitor::visit([[maybe_unused]] t_type* t_ptr)->Any           \
+  {                                                                      \
     DBG_WARNING("NodeVisitor::visit(", #t_type, "*) is not overriden!"); \
+                                                                         \
+    return {};                                                           \
   }
 
 STUB(If)
@@ -64,26 +66,34 @@ STUB(Impl)
 STUB(DotExpr)
 
 // Misc:
-auto NodeVisitor::visit(List* t_list) -> void
+auto NodeVisitor::visit(List* t_list) -> Any
 {
   for(NodePtr& node : *t_list) {
     node->accept(this);
   }
+
+	return {};
 }
 
-auto NodeVisitor::visit([[maybe_unused]] Nil* t_nil) -> void
+auto NodeVisitor::visit([[maybe_unused]] Nil* t_nil) -> Any
 {
   DBG_INFO("Visited a Nil node");
+
+	return {};
 }
 
 //! This catches the error case where a node does not have its own method
-auto NodeVisitor::visit(NodeInterface* t_ptr) -> void
+auto NodeVisitor::visit(NodeInterface* t_ptr) -> Any
 {
   assert_msg("NodeVisitor: Received a NodeInterface*", t_ptr);
+
+	return {};
 }
 
 //! Traverse all nodes neatly
-auto NodeVisitor::traverse(NodePtr t_ast) -> void
+auto NodeVisitor::traverse(NodePtr t_ast) -> Any
 {
   t_ast->accept(this);
+
+	return {};
 }

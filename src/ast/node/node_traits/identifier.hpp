@@ -21,7 +21,7 @@ class Identifier : virtual public NodeInterface {
 
   virtual auto identifier() const -> std::string_view;
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override = 0;
+  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   ~Identifier() override = default;
 };

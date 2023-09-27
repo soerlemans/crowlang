@@ -18,7 +18,7 @@ class Expr : virtual public NodeInterface {
 
   virtual auto expr() -> NodePtr&;
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override = 0;
+  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   ~Expr() override = default;
 };
