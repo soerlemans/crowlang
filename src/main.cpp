@@ -172,7 +172,7 @@ auto run() -> void
 
 auto main(int t_argc, char* t_argv[]) -> int
 {
-  CLI::App app{"Crow(lang)"};
+  CLI::App app{"Compiler for Crow(lang)"};
 
   DBG_SET_LOGLEVEL(INFO);
   try {

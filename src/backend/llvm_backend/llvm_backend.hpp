@@ -3,15 +3,26 @@
 
 // STL Includes:
 #include <filesystem>
+#include <memory>
 
-// Local Includes:
-#include "prologue_generator.hpp"
+// Library Includes:
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Module.h>
+
+// Includes:
+#include "../../ast/visitor/node_visitor.hpp"
 
 
 namespace backend::llvm_backend {
 // Using statements:
 using namespace ast;
 using visitable::Any;
+
+// Aliases:
+using ContextPtr = std::shared_ptr<llvm::LLVMContext>;
+using IrBuilderPtr = std::shared_ptr<llvm::IRBuilder<>>;
+using ModulePtr = std::shared_ptr<llvm::Module>;
 
 // Namespace aliases:
 namespace fs = std::filesystem;
@@ -23,7 +34,8 @@ class LlvmBackend : public ast::visitor::NodeVisitor {
   IrBuilderPtr m_builder;
   ModulePtr m_module;
 
-  PrologueGenerator m_pgen;
+  protected:
+  auto get_value(node::NodePtr t_ptr) -> llvm::Value*;
 
   public:
   LlvmBackend();
@@ -46,9 +58,9 @@ class LlvmBackend : public ast::visitor::NodeVisitor {
   auto visit(node::lvalue::Variable* t_var) -> Any override;
 
   // Operators:
-  auto visit(node::operators::Arithmetic* t_arithmetic) -> Any override;
-  auto visit(node::operators::Assignment* t_assignment) -> Any override;
-  auto visit(node::operators::Comparison* t_comparison) -> Any override;
+  auto visit(node::operators::Arithmetic* t_arith) -> Any override;
+  auto visit(node::operators::Assignment* t_assig) -> Any override;
+  auto visit(node::operators::Comparison* t_comp) -> Any override;
 
   auto visit(node::operators::Increment* t_inc) -> Any override;
   auto visit(node::operators::Decrement* t_dec) -> Any override;

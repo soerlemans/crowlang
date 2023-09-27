@@ -1,6 +1,7 @@
 #include "llvm_backend.hpp"
 
 // STL Includes:
+#include <any>
 #include <vector>
 
 // Library Includes:
@@ -40,25 +41,45 @@ using namespace ast::node::typing;
 using namespace ast::node::node_traits;
 
 // Methods:
+auto LlvmBackend::get_value(node::NodePtr t_ptr) -> llvm::Value*
+{
+  using namespace llvm;
+
+  Value* t_val{nullptr};
+
+  auto any{t_ptr->accept(this)};
+  if(any.has_value()) {
+    try {
+      t_val = std::any_cast<Value*>(any);
+    } catch(const std::bad_any_cast& e) {
+      // TODO: Error handling
+      throw e; // For now just rethrow
+    }
+  }
+
+  return t_val;
+}
+
 LlvmBackend::LlvmBackend()
   : m_context{std::make_shared<llvm::LLVMContext>()},
     m_builder{std::make_shared<llvm::IRBuilder<>>(*m_context)},
-    m_module{std::make_shared<llvm::Module>("Module", *m_context)},
-    m_pgen{m_builder, m_context, m_module}
+    m_module{std::make_shared<llvm::Module>("Module", *m_context)}
 {}
 
+// Control:
 auto LlvmBackend::visit(If* t_if) -> Any
 {
   using namespace llvm;
 
-  APInt val{32, 0, true}; // TODO: This should be computed
-
-  Value* condv{ConstantInt::get(*m_context, val)};
-  // condv = m_builder->CreateFCmpONE(
-  //   condv, ConstantInt::get(*m_context, APInt(32, 0, true)), "cond");
+  auto* condv{get_value(t_if->condition())};
+  auto* constant{ConstantInt::get(*m_context, APInt(8, 0, true))};
+  condv = m_builder->CreateICmpNE(condv, constant, "cond");
 
   auto* then{BasicBlock::Create(*m_context, "then")};
+  // Walk then branch
+
   auto* alt{BasicBlock::Create(*m_context, "alt")};
+  // Walk alt branch
 
   m_builder->CreateCondBr(condv, then, alt);
 
@@ -73,9 +94,8 @@ auto LlvmBackend::visit(Return* t_ret) -> Any
 {
   using namespace llvm;
 
-  APInt ret_val{32, 0, true};
-
-  m_builder->CreateRet(ConstantInt::get(*m_context, ret_val));
+  auto* val{get_value(t_ret->expr())};
+  m_builder->CreateRet(val);
 
   return {};
 }
@@ -105,25 +125,105 @@ auto LlvmBackend::visit(Function* t_fn) -> Any
 
 STUB(FunctionCall)
 STUB(ReturnType)
+
+// Lvalue:
 STUB(Const)
 STUB(Let)
 STUB(Variable)
-STUB(Arithmetic)
+
+// Operators:
+auto LlvmBackend::visit(Arithmetic* t_arith) -> Any
+{
+  using namespace llvm;
+
+  Value* expr;
+  auto* lhs{get_value(t_arith->left())};
+  auto* rhs{get_value(t_arith->right())};
+
+  switch(t_arith->op()) {
+    case ArithmeticOp::MULTIPLY:
+      expr = m_builder->CreateFMul(lhs, rhs, "addtmp");
+      break;
+
+    case ArithmeticOp::DIVIDE:
+      expr = m_builder->CreateFDiv(lhs, rhs, "divtmp");
+      break;
+
+    case ArithmeticOp::MODULO:
+      expr = m_builder->CreateFDiv(lhs, rhs, "modtmp");
+      break;
+
+    case ArithmeticOp::ADD:
+      expr = m_builder->CreateFAdd(lhs, rhs, "addtmp");
+      break;
+
+    case ArithmeticOp::SUBTRACT:
+      expr = m_builder->CreateFSub(lhs, rhs, "subtmp");
+      break;
+
+    default:
+      throw; // TODO: Throw something
+      break;
+  }
+
+  return std::make_any<Value*>(expr);
+}
+
 STUB(Assignment)
 STUB(Comparison)
 STUB(Increment)
 STUB(Decrement)
 STUB(UnaryPrefix)
+
+// Logical:
 STUB(Not)
 STUB(And)
 STUB(Or)
 STUB(Ternary)
+
+// Packaging:
 STUB(Import)
 STUB(ModuleDecl)
-STUB(Float)
-STUB(Integer)
-STUB(String)
-STUB(Boolean)
+
+// RValue:
+auto LlvmBackend::visit(Float* t_float) -> Any
+{
+  using namespace llvm;
+
+  APFloat num{t_float->get()};
+  auto* constant{ConstantFP::get(*m_context, num)};
+
+  return std::make_any<Value*>(constant);
+}
+
+auto LlvmBackend::visit(Integer* t_int) -> Any
+{
+  using namespace llvm;
+
+  APInt num{32, t_int->get(), true};
+  auto* constant{ConstantInt::get(*m_context, num)};
+
+  return std::make_any<Value*>(constant);
+}
+
+// TODO: Implement
+auto LlvmBackend::visit([[maybe_unused]] String* t_str) -> Any
+{
+  return {};
+}
+
+auto LlvmBackend::visit(Boolean* t_bool) -> Any
+{
+  using namespace llvm;
+
+  auto result{(t_bool->get()) ? 1 : 0};
+  APInt num{8, result, false};
+  auto* constant{ConstantInt::get(*m_context, num)};
+
+  return std::make_any<Value*>(constant);
+}
+
+// Typing:
 STUB(MethodDecl)
 STUB(Interface)
 STUB(MemberDecl)
@@ -132,7 +232,7 @@ STUB(Impl)
 STUB(DotExpr)
 
 // Util:
-auto LlvmBackend::configure_target() -> viod
+auto LlvmBackend::configure_target() -> void
 {
   const auto target{llvm::sys::getDefaultTargetTriple()};
 
@@ -142,8 +242,6 @@ auto LlvmBackend::configure_target() -> viod
 auto LlvmBackend::codegen(NodePtr t_ast) -> void
 {
   configure_target();
-
-  m_pgen.traverse(t_ast);
 
   traverse(t_ast);
 }
