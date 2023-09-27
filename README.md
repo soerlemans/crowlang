@@ -13,10 +13,11 @@ I aim to keep dependencies to a minimum but the following is required:
 - Make (Used to invoke CMake and scripts)
 - Cmake  (Main buildsysstem)
 - [CLI11](https://github.com/CLIUtils/CLI11) (CLI option parsing library)
+- [rang](https://github.com/agauniyal/rang/tree/master) (cross platform terminal coloring library)
 - [tabulate](https://github.com/p-ranav/tabulate) (Text table library)
 - [LLVM](https://llvm.org) (LLVM codegen library)
 
-Tabulate is downloaded using CMake and statically linked but CLI11 and LLVM are dynamically linked (CMake searches for it on your system).
+Rang and tabulate are downloaded using CMake and statically linked but CLI11 and LLVM are dynamically linked (CMake searches for it on your system).
 You can install the dependencies with the following aptitude command:
 
 ```shell
