@@ -179,7 +179,7 @@ class PrintVisitor : public NodeVisitor {
   auto visit(node::typing::Interface* t_ifc) -> void override;
   auto visit(node::typing::MemberDecl* t_md) -> void override;
   auto visit(node::typing::Struct* t_struct) -> void override;
-  auto visit(node::typing::DefBlock* t_db) -> void override;
+  auto visit(node::typing::Impl* t_impl) -> void override;
   auto visit(node::typing::DotExpr* t_dot_expr) -> void override;
 
   // Misc:

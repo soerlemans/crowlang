@@ -108,7 +108,7 @@ auto pprint([[maybe_unused]] ast::node::NodePtr t_ast) -> void
   PrintVisitor pprint{ss};
   pprint.traverse(t_ast);
 
-  DBG_LOG(INFO, ss.str());
+  DBG_INFO(ss.str());
 
   DBG_PRINTLN("$");
 #endif // DEBUG
@@ -138,8 +138,7 @@ auto generate(ast::node::NodePtr t_ast) -> void
   DBG_PRINTLN("|> Code generation:");
 
   LlvmBackend backend;
-  backend.configure_target();
-  backend.traverse(t_ast);
+  backend.codegen(t_ast);
   backend.compile("main.out");
 
 #if DEBUG
@@ -148,7 +147,7 @@ auto generate(ast::node::NodePtr t_ast) -> void
 
   backend.dump_ir(ss);
 
-  DBG_LOG(INFO, ss.str());
+  DBG_INFO(ss.str());
 
   DBG_PRINTLN("$");
 #endif // DEBUG

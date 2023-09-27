@@ -22,4 +22,21 @@ auto set_loglevel(const LogLevel t_loglevel) -> void
 {
   g_loglevel = t_loglevel;
 }
+
+auto operator<<(std::ostream& t_os, const LogLevel t_loglevel) -> std::ostream&
+{
+  std::stringstream ss;
+
+  t_os << rang::style::bold << rang::fg::red << "Test ";
+
+  ss << loglevel2color(t_loglevel);
+  ss << loglevel2str(t_loglevel);
+
+  ss << rang::fg::reset;
+
+  t_os << ss.str();
+
+
+  return t_os;
+}
 } // namespace debug

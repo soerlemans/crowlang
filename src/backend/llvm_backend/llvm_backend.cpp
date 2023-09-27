@@ -41,7 +41,8 @@ using namespace ast::node::node_traits;
 LlvmBackend::LlvmBackend()
   : m_context{std::make_shared<llvm::LLVMContext>()},
     m_builder{std::make_shared<llvm::IRBuilder<>>(*m_context)},
-    m_module{std::make_shared<llvm::Module>("Module", *m_context)}
+    m_module{std::make_shared<llvm::Module>("Module", *m_context)},
+    m_pgen{m_builder, m_context}
 {}
 
 auto LlvmBackend::visit(If* t_if) -> void
@@ -118,18 +119,8 @@ STUB(MethodDecl)
 STUB(Interface)
 STUB(MemberDecl)
 STUB(Struct)
-STUB(DefBlock)
+STUB(Impl)
 STUB(DotExpr)
-
-// Misc:
-auto LlvmBackend::visit(List* t_list) -> void
-{
-  for(NodePtr& node : *t_list) {
-    node->accept(this);
-  }
-}
-
-STUB(Nil);
 
 // Util:
 auto LlvmBackend::configure_target() -> void
@@ -137,6 +128,15 @@ auto LlvmBackend::configure_target() -> void
   const auto target{llvm::sys::getDefaultTargetTriple()};
 
   m_module->setTargetTriple(target);
+}
+
+auto LlvmBackend::codegen(NodePtr t_ast) -> void
+{
+  configure_target();
+
+  m_pgen.traverse(t_ast);
+
+  traverse(t_ast);
 }
 
 auto LlvmBackend::dump_ir(std::ostream& t_os) -> void

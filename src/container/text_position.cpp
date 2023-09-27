@@ -10,10 +10,11 @@ TextPosition::TextPosition(): m_lineno{0}, m_columno{0}
 {}
 
 // Its important to note that lines are zero indexed
-TextPosition::TextPosition(std::string t_source, std::string t_line,
-                           std::size_t t_lineno, std::size_t t_columnno)
-  : m_source{std::move(t_source)},
-    m_line{std::move(t_line)},
+TextPosition::TextPosition(const std::string_view t_source,
+                           const std::string_view t_line, std::size_t t_lineno,
+                           std::size_t t_columnno)
+  : m_source{t_source},
+    m_line{t_line},
     m_lineno{t_lineno},
     m_columno{t_columnno}
 {}

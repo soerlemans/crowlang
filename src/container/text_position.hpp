@@ -3,6 +3,7 @@
 
 // STL Includes:
 #include <string>
+#include <string_view>
 
 
 namespace container {
@@ -16,8 +17,8 @@ struct TextPosition {
 
   // Methods:
   TextPosition();
-  TextPosition(std::string t_source, std::string t_line, std::size_t t_lineno,
-               std::size_t t_columnno);
+  TextPosition(std::string_view t_source, std::string_view t_line,
+               std::size_t t_lineno, std::size_t t_columnno);
 
   friend auto operator<<(std::ostream& t_os, const TextPosition& t_fp)
     -> std::ostream&;

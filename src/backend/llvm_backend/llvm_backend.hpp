@@ -1,17 +1,11 @@
-#ifndef CROW_CODEGEN_LLVM_CODEGEN_HPP
-#define CROW_CODEGEN_LLVM_CODEGEN_HPP
+#ifndef CROW_BACKEND_LLVM_BACKEND_LLVM_BACKEND_HPP
+#define CROW_BACKEND_LLVM_BACKEND_LLVM_BACKEND_HPP
 
 // STL Includes:
 #include <filesystem>
-#include <memory>
 
-// Library Includes:
-#include <llvm/IR/IRBuilder.h>
-#include <llvm/IR/LLVMContext.h>
-#include <llvm/IR/Module.h>
-
-// Includes:
-#include "../../ast/visitor/node_visitor.hpp"
+// Local Includes:
+#include "prologue_generator.hpp"
 
 
 namespace backend::llvm_backend {
@@ -21,11 +15,6 @@ using namespace ast;
 // Namespace aliases:
 namespace fs = std::filesystem;
 
-// Aliases:
-using ContextPtr = std::shared_ptr<llvm::LLVMContext>;
-using IrBuilderPtr = std::shared_ptr<llvm::IRBuilder<>>;
-using ModulePtr = std::shared_ptr<llvm::Module>;
-
 // Classes:
 class LlvmBackend : public ast::visitor::NodeVisitor {
   private:
@@ -33,8 +22,7 @@ class LlvmBackend : public ast::visitor::NodeVisitor {
   IrBuilderPtr m_builder;
   ModulePtr m_module;
 
-  protected:
-  auto codegen(ast::node::NodePtr t_ptr) -> void;
+  PrologueGenerator m_pgen;
 
   public:
   LlvmBackend();
@@ -88,15 +76,12 @@ class LlvmBackend : public ast::visitor::NodeVisitor {
   auto visit(ast::node::typing::Interface* t_ifc) -> void override;
   auto visit(ast::node::typing::MemberDecl* t_md) -> void override;
   auto visit(ast::node::typing::Struct* t_struct) -> void override;
-  auto visit(ast::node::typing::DefBlock* t_db) -> void override;
+  auto visit(ast::node::typing::Impl* t_impl) -> void override;
   auto visit(ast::node::typing::DotExpr* t_dot_expr) -> void override;
-
-  // Misc:
-  auto visit(node::List* t_list) -> void override;
-  auto visit(node::Nil* t_nil) -> void override;
 
   // Util:
   auto configure_target() -> void;
+  auto codegen(ast::node::NodePtr t_ast) -> void;
   auto dump_ir(std::ostream& t_os) -> void;
   auto compile(fs::path t_path) -> void;
 
@@ -104,4 +89,4 @@ class LlvmBackend : public ast::visitor::NodeVisitor {
 };
 } // namespace backend::llvm_backend
 
-#endif // CROW_CODEGEN_LLVM_CODEGEN_HPP
+#endif // CROW_BACKEND_LLVM_BACKEND_LLVM_BACKEND_HPP

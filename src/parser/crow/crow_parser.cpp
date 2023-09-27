@@ -1,10 +1,12 @@
 #include "crow_parser.hpp"
 
+// STL Includes:
+#include <exception>
+#include <string>
+
 // Includes:
 #include "../../ast/node/include.hpp"
 #include "../../debug/trace.hpp"
-#include <exception>
-#include <string>
 
 
 // Using statements:
@@ -543,7 +545,7 @@ auto CrowParser::def_block() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  if(next_if(TokenType::DEF)) {
+  if(next_if(TokenType::IMPL)) {
     const auto id{expect(TokenType::IDENTIFIER).str()};
     newline_opt();
 
@@ -551,7 +553,7 @@ auto CrowParser::def_block() -> NodePtr
       return def_list();
     })};
 
-    node = make_node<DefBlock>(id, std::move(functions));
+    node = make_node<Impl>(id, std::move(functions));
   }
 
   return node;

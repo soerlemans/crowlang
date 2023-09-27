@@ -60,12 +60,21 @@ STUB(MethodDecl)
 STUB(Interface)
 STUB(MemberDecl)
 STUB(Struct)
-STUB(DefBlock)
+STUB(Impl)
 STUB(DotExpr)
 
 // Misc:
-STUB(List)
-STUB(Nil)
+auto NodeVisitor::visit(List* t_list) -> void
+{
+  for(NodePtr& node : *t_list) {
+    node->accept(this);
+  }
+}
+
+auto NodeVisitor::visit([[maybe_unused]] Nil* t_nil) -> void
+{
+  DBG_INFO("Visited a Nil node");
+}
 
 //! This catches the error case where a node does not have its own method
 auto NodeVisitor::visit(NodeInterface* t_ptr) -> void

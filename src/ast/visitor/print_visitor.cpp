@@ -63,8 +63,7 @@ auto PrintVisitor::print_if(std::string_view t_str, NodePtr t_ptr) -> void
   }
 }
 
-PrintVisitor::PrintVisitor(std::ostream& t_os)
-	:m_os{t_os}
+PrintVisitor::PrintVisitor(std::ostream& t_os): m_os{t_os}
 {}
 
 // Control:
@@ -220,7 +219,7 @@ DEF_PV_METHOD(MethodDecl)
 DEF_PV_METHOD(Interface)
 DEF_PV_METHOD(MemberDecl)
 DEF_PV_METHOD(Struct)
-DEF_PV_METHOD(DefBlock)
+DEF_PV_METHOD(Impl)
 DEF_PV_METHOD(DotExpr)
 
 // Misc:

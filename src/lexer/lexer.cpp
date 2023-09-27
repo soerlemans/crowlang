@@ -14,8 +14,7 @@
 
 
 // Macros:
-#define LOG_TOK(t_msg, t_str) \
-  DBG_LOG(INFO, t_msg, std::quoted(std::string{t_str}))
+#define LOG_TOK(t_msg, t_str) DBG_INFO(t_msg, std::quoted(std::string{t_str}))
 
 // Using statements:
 using namespace lexer;
@@ -304,7 +303,7 @@ auto Lexer::tokenize() -> TokenStream
     if(std::isspace(ch)) {
       // Just ignore whitespace, but do not ignore newlines
       if(ch == g_newline.m_identifier) {
-        DBG_LOG(INFO, "NEWLINE");
+        DBG_INFO("NEWLINE");
         m_ts.push_back(create_token(TokenType::NEWLINE));
       }
     } else if(ch == '#') {
@@ -312,7 +311,7 @@ auto Lexer::tokenize() -> TokenStream
       // If we just skip to the next line we ignore the \n at the end, so we
       // Must add a NEWLINE explicitly!
       // FIXME: Inserting NEWLINE is not needed?
-      DBG_LOG(INFO, "INSERTING NEWLINE");
+      DBG_INFO("INSERTING NEWLINE");
       m_ts.push_back(create_token(TokenType::NEWLINE));
 
       // Skip to next line
