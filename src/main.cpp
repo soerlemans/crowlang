@@ -7,6 +7,7 @@
 #include <CLI/App.hpp>
 #include <CLI/CLI.hpp>
 #include <CLI/Validators.hpp>
+#include <rang.hpp>
 
 // Includes:
 #include "ast/node/include.hpp"
@@ -186,7 +187,15 @@ auto main(int t_argc, char* t_argv[]) -> int
   try {
     run();
   } catch(std::exception& e) {
-    std::cerr << '\n' << "EXCEPTION - \n" << e.what() << '\n';
+    using namespace rang;
+
+    std::cerr << "\n";
+    std::cerr << style::bold << " - ";
+    std::cerr << fg::red << "EXCEPTION";
+    std::cerr << fg::reset << " - \n" << style::reset;
+
+		// Print error message:
+    std::cerr << e.what() << std::endl;
 
     return ExitCode::EXCEPTION;
   }

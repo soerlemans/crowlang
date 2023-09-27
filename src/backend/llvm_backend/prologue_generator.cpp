@@ -18,18 +18,19 @@ using namespace ast::node::typing;
 using namespace ast::node::node_traits;
 
 // Methods:
-PrologueGenerator::PrologueGenerator(IrBuilderPtr& t_builder, ContextPtr& t_context)
-  : m_builder{t_builder}, m_context{t_context}
+PrologueGenerator::PrologueGenerator(IrBuilderPtr& t_builder,
+                                     ContextPtr& t_context, ModulePtr& t_module)
+  : m_builder{t_builder}, m_context{t_context}, m_module{t_module}
 {}
 
 auto PrologueGenerator::visit(Function* t_fn) -> void
 {
   using namespace llvm;
 
-  // auto params{std::vector<llvm::Type*>()};
-  // auto* fn_type{
-  //   FunctionType::get(IntegerType::getInt32Ty(*m_context), params, false)};
+  auto params{std::vector<llvm::Type*>()};
+  auto* fn_type{
+    FunctionType::get(IntegerType::getInt32Ty(*m_context), params, false)};
 
-  // auto* fn
-  // {llvm::Function::Create(fn_type, llvm::Function::ExternalLinkage,
+  auto* fn{llvm::Function::Create(fn_type, llvm::Function::ExternalLinkage,
+                                  t_fn->identifier(), m_module.get())};
 }

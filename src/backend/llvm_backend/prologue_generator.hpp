@@ -31,12 +31,14 @@ class PrologueGenerator : public ast::visitor::NodeVisitor {
   private:
   IrBuilderPtr m_builder;
   ContextPtr m_context;
+  ModulePtr m_module;
 
   // Function:
   auto visit(node::functions::Function* t_fn) -> void override;
 
   public:
-  PrologueGenerator(IrBuilderPtr& t_builder, ContextPtr& t_context);
+  PrologueGenerator(IrBuilderPtr& t_builder, ContextPtr& t_context,
+                    ModulePtr& t_module);
 
   virtual ~PrologueGenerator() = default;
 };

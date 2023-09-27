@@ -42,7 +42,7 @@ LlvmBackend::LlvmBackend()
   : m_context{std::make_shared<llvm::LLVMContext>()},
     m_builder{std::make_shared<llvm::IRBuilder<>>(*m_context)},
     m_module{std::make_shared<llvm::Module>("Module", *m_context)},
-    m_pgen{m_builder, m_context}
+    m_pgen{m_builder, m_context, m_module}
 {}
 
 auto LlvmBackend::visit(If* t_if) -> void
@@ -79,12 +79,13 @@ auto LlvmBackend::visit(Function* t_fn) -> void
 {
   using namespace llvm;
 
-  auto params{std::vector<llvm::Type*>()};
-  auto* fn_type{
-    FunctionType::get(IntegerType::getInt32Ty(*m_context), params, false)};
+  auto* fn{m_module->getFunction(t_fn->identifier())};
+  if(!fn) {
+    // Throw if no function was found
+  }
 
-  auto* fn{llvm::Function::Create(fn_type, llvm::Function::ExternalLinkage,
-                                  t_fn->identifier(), m_module.get())};
+	// Check for body before we do this
+
   auto* body{llvm::BasicBlock::Create(*m_context, "entry", fn)};
   m_builder->SetInsertPoint(body);
 
