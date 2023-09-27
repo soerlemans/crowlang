@@ -166,11 +166,11 @@ auto LlvmBackend::compile(const fs::path t_path) -> void
   }
 
   // Initialize all target stuff:
-  InitializeAllTargetInfos();
-  InitializeAllTargets();
-  InitializeAllTargetMCs();
-  InitializeAllAsmParsers();
-  InitializeAllAsmPrinters();
+  // InitializeAllTargetInfos();
+  // InitializeAllTargets();
+  // InitializeAllTargetMCs();
+  // InitializeAllAsmParsers();
+  // InitializeAllAsmPrinters();
 
   // Resolve target:
   const auto target_str{m_module->getTargetTriple()};
