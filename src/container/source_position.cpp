@@ -1,7 +1,7 @@
 #include "source_position.hpp"
 
-// STL Includes:
-#include <sstream>
+// Library includes:
+#include <rang.hpp>
 
 
 using namespace container;
@@ -15,12 +15,10 @@ SourcePosition::SourcePosition(const std::string_view t_source,
 namespace container {
 auto operator<<(std::ostream& t_os, const SourcePosition& t_fp) -> std::ostream&
 {
-  std::stringstream ss;
+  using namespace rang;
 
-  ss << t_fp.m_source << ":" << t_fp.m_line_nr;
-  ss << " -> " << t_fp.m_function << "()";
-
-  t_os << ss.str();
+  t_os << t_fp.m_source << ":" << style::bold << t_fp.m_line_nr << style::reset;
+  t_os << " -> " << t_fp.m_function << "()";
 
   return t_os;
 }

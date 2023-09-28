@@ -19,6 +19,7 @@
 #include "lexer/lexer.hpp"
 #include "parser/crow/crow_parser.hpp"
 #include "token/token.hpp"
+#include "typing/type_checker.hpp"
 
 // Local Includes:
 #include "version.hpp"
@@ -129,8 +130,16 @@ auto parse(const token::TokenStream& t_ts) -> ast::node::NodePtr
   return ast;
 }
 
-auto interpret() -> void
-{}
+auto check_types() -> void
+{
+  using namespace typing;
+
+  DBG_PRINTLN("|> Type checking:");
+
+  TypeChecker type_checker;
+
+  DBG_PRINTLN("$");
+}
 
 auto generate(ast::node::NodePtr t_ast) -> void
 {

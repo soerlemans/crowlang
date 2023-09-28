@@ -14,4 +14,6 @@ add_subdirectory(token)
 add_subdirectory(ast)
 add_subdirectory(parser)
 
+add_subdirectory(typing)
+
 add_subdirectory(codegen)

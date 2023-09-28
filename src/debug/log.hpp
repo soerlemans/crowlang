@@ -96,13 +96,15 @@ template<typename... Args>
 inline auto log(const container::SourcePosition t_pos, LogLevel t_loglevel,
                 Args&&... t_args) -> void
 {
+  using namespace rang;
+
   // Ignore higher log levels
   if(is_lower_loglevel(t_loglevel)) {
     // Denote loglevel
     print('[', t_loglevel, ']');
 
     // Module information
-    print('[', t_pos, "] => ");
+    print('[', t_pos, "]: ");
 
     // Log what we want to log
     println(std::forward<Args>(t_args)...);
