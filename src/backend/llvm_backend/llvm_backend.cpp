@@ -19,6 +19,7 @@
 
 // Includes:
 #include "../../ast/node/include.hpp"
+#include "../../types.hpp"
 
 
 // Macros:
@@ -74,36 +75,45 @@ auto LlvmBackend::visit(If* t_if) -> Any
 
   llvm::Function* fn{m_builder->GetInsertBlock()->getParent()};
 
+
+  // Generate branch selection logic
   auto* condv{get_value(t_if->condition())};
   auto* constant{ConstantInt::get(*m_context, APInt(8, 0, true))};
   condv = m_builder->CreateICmpNE(condv, constant, "cond");
 
-  auto* then{BasicBlock::Create(*m_context, "then", fn)};
+  // Define blocks
+  auto* then{BasicBlock::Create(*m_context, "then")};
   auto* alt{BasicBlock::Create(*m_context, "alt")};
   auto* merge{BasicBlock::Create(*m_context, "merge")};
 
   m_builder->CreateCondBr(condv, then, alt);
 
-  m_builder->SetInsertPoint(then);
-  t_if->then()->accept(this);
-  m_builder->CreateBr(merge);
-  then = m_builder->GetInsertBlock();
+  const auto block{[&](auto* t_block, auto t_lambda) {
+    fn->insert(fn->end(), t_block);
+    m_builder->SetInsertPoint(t_block);
 
-  // Insert alt block at end
-  // fn->insert(fn->end(), alt);
+    t_lambda();
 
-  m_builder->SetInsertPoint(alt);
-  t_if->alt()->accept(this);
-  m_builder->CreateBr(merge);
-  alt = m_builder->GetInsertBlock();
+    m_builder->CreateBr(merge);
+    t_block = m_builder->GetInsertBlock();
+  }};
+
+  block(then, [&] {
+    t_if->then()->accept(this);
+  });
+
+  block(alt, [&] {
+    t_if->alt()->accept(this);
+  });
 
   fn->insert(fn->end(), merge);
   m_builder->SetInsertPoint(merge);
   auto* pn{
     m_builder->CreatePHI(llvm::Type::getDoubleTy(*m_context), 2, "iftmp")};
 
-  // PN->addIncoming(ThenV, ThenBB);
-  // PN->addIncoming(ElseV, ElseBB);
+  // Figure this out?
+  // pn->addIncoming(ThenV, ThenBB);
+  // pn->addIncoming(ElseV, ElseBB);
 
   return {};
 }
@@ -222,7 +232,7 @@ auto LlvmBackend::visit(Integer* t_int) -> Any
 {
   using namespace llvm;
 
-  APInt num{32, t_int->get(), true};
+  APInt num{32, (u64)t_int->get(), true};
   auto* constant{ConstantInt::get(*m_context, num)};
 
   return std::make_any<Value*>(constant);
@@ -239,7 +249,7 @@ auto LlvmBackend::visit(Boolean* t_bool) -> Any
   using namespace llvm;
 
   auto result{(t_bool->get()) ? 1 : 0};
-  APInt num{8, result, false};
+  APInt num{8, (u64)result, false};
   auto* constant{ConstantInt::get(*m_context, num)};
 
   return std::make_any<Value*>(constant);
