@@ -4,6 +4,6 @@ target_sources(${PROJECT_NAME} PRIVATE
 	interface.cpp
 	member_decl.cpp
 	struct.cpp
-	def_block.cpp
+	impl.cpp
 	dot_expr.cpp
 )

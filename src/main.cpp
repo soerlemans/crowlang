@@ -7,11 +7,12 @@
 #include <CLI/App.hpp>
 #include <CLI/CLI.hpp>
 #include <CLI/Validators.hpp>
+#include <rang.hpp>
 
 // Includes:
 #include "ast/node/include.hpp"
 #include "ast/visitor/print_visitor.hpp"
-#include "backend/llvm_ir/llvm_ir_backend.hpp"
+#include "codegen/llvm_backend/llvm_backend.hpp"
 #include "container/text_buffer.hpp"
 #include "debug/log.hpp"
 #include "debug/log_macros.hpp"
@@ -108,7 +109,7 @@ auto pprint([[maybe_unused]] ast::node::NodePtr t_ast) -> void
   PrintVisitor pprint{ss};
   pprint.traverse(t_ast);
 
-  DBG_LOG(INFO, ss.str());
+  DBG_INFO(ss.str());
 
   DBG_PRINTLN("$");
 #endif // DEBUG
@@ -133,12 +134,13 @@ auto interpret() -> void
 
 auto generate(ast::node::NodePtr t_ast) -> void
 {
-  using namespace backend::llvm_ir;
+  using namespace codegen::llvm_backend;
 
   DBG_PRINTLN("|> Code generation:");
 
-  LlvmIrBackend backend;
-  backend.traverse(t_ast);
+  LlvmBackend backend;
+  backend.codegen(t_ast);
+  // backend.compile("main.out");
 
 #if DEBUG
   std::stringstream ss;
@@ -146,7 +148,7 @@ auto generate(ast::node::NodePtr t_ast) -> void
 
   backend.dump_ir(ss);
 
-  DBG_LOG(INFO, ss.str());
+  DBG_INFO(ss.str());
 
   DBG_PRINTLN("$");
 #endif // DEBUG
@@ -170,7 +172,7 @@ auto run() -> void
 
 auto main(int t_argc, char* t_argv[]) -> int
 {
-  CLI::App app{"Crow(lang)"};
+  CLI::App app{"Compiler for Crow(lang)"};
 
   DBG_SET_LOGLEVEL(INFO);
   try {
@@ -185,7 +187,15 @@ auto main(int t_argc, char* t_argv[]) -> int
   try {
     run();
   } catch(std::exception& e) {
-    std::cerr << '\n' << "EXCEPTION - \n" << e.what() << '\n';
+    using namespace rang;
+
+    std::cerr << "\n";
+    std::cerr << style::bold << " - ";
+    std::cerr << fg::red << "EXCEPTION";
+    std::cerr << fg::reset << " - \n" << style::reset;
+
+    // Print error message:
+    std::cerr << e.what() << std::endl;
 
     return ExitCode::EXCEPTION;
   }

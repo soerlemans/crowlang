@@ -18,7 +18,7 @@ class Params : virtual public NodeInterface {
 
   virtual auto params() -> NodeListPtr&;
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override = 0;
+  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   ~Params() override = default;
 };

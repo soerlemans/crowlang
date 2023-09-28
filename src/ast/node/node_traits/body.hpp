@@ -18,7 +18,7 @@ class Body : virtual public NodeInterface {
 
   virtual auto body() -> NodeListPtr&;
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override = 0;
+  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   ~Body() override = default;
 };

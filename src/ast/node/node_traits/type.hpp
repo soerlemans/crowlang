@@ -21,7 +21,7 @@ class Type : virtual public NodeInterface {
 
   virtual auto type() const -> std::string_view;
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override = 0;
+  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   ~Type() override = default;
 };

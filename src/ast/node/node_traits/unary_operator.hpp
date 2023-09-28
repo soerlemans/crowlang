@@ -18,7 +18,7 @@ class UnaryOperator : virtual public NodeInterface {
 
   virtual auto left() -> NodePtr&;
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override = 0;
+  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   ~UnaryOperator() override = default;
 };

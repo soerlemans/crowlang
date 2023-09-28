@@ -1,14 +1,19 @@
 #ifndef CROW_DEBUG_LOG_MACROS_HPP
 #define CROW_DEBUG_LOG_MACROS_HPP
 
-
 // Macros:
 #if DEBUG
 #define DBG_PRINTLN(...) debug::println(__VA_ARGS__)
 
-#define DBG_LOG(loglevel, ...)                                        \
-  debug::log(__FILE__, __func__, __LINE__, debug::LogLevel::loglevel, \
-             __VA_ARGS__)
+//! Creates a SourcePosition of a line
+#define DBG_SOURCE_POS()         \
+  container::SourcePosition      \
+  {                              \
+    __FILE__, __LINE__, __func__ \
+  }
+
+#define DBG_LOG(loglevel, ...) \
+  debug::log(DBG_SOURCE_POS(), debug::LogLevel::loglevel, __VA_ARGS__)
 
 #define DBG_SET_LOGLEVEL(loglevel) \
   debug::set_loglevel(debug::LogLevel::loglevel)

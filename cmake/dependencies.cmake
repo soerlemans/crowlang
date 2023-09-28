@@ -2,6 +2,13 @@
 include(FetchContent)
 set(FETCHCONTENT_QUIET FALSE)
 
+# Rang (terminal goodies library):
+FetchContent_Declare(
+  rang
+  GIT_REPOSITORY https://github.com/agauniyal/rang.git
+  GIT_TAG v3.2
+  GIT_PROGRESS TRUE)
+
 # Tabulate (Terminal table library):
 FetchContent_Declare(
   tabulate
@@ -9,7 +16,8 @@ FetchContent_Declare(
   GIT_TAG v1.5
   GIT_PROGRESS TRUE)
 
-FetchContent_MakeAvailable(tabulate)
+# Make available:
+FetchContent_MakeAvailable(tabulate rang)
 
 # Pthread support:
 set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -19,7 +27,7 @@ find_package(Threads REQUIRED)
 find_package(CLI11 CONFIG REQUIRED)
 
 # LLVM (Compiler toolchain libraries):
-find_package(LLVM 15 CONFIG REQUIRED)
+find_package(LLVM 16 CONFIG REQUIRED)
 
 include_directories(SYSTEM ${LLVM_INCLUDE_DIRS})
 separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
@@ -35,6 +43,7 @@ llvm_map_components_to_libnames(LLVM_LIBS
 # Link libraries:
 target_link_libraries(
 	${PROJECT_NAME}
+	rang
 	tabulate::tabulate
 	Threads::Threads
 	CLI11::CLI11

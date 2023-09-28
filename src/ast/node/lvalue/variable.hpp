@@ -13,15 +13,10 @@ namespace ast::node::lvalue {
 namespace nt = node_traits;
 
 // Classes:
-class Variable : public nt::Identifier {
-  private:
-  std::string m_type;
-
+class Variable : public nt::Identifier, public nt::Type {
   public:
   Variable(std::string_view t_identifier);
   Variable(std::string_view t_identifier, std::string_view t_type);
-
-  auto type() const -> std::string_view;
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

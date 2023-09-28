@@ -2,12 +2,16 @@
 #define CROW_DEBUG_LOG_HPP
 
 // STL Includes:
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <stdexcept>
 #include <string_view>
 
+// Library Includes:
+#include <rang.hpp>
+
 // Includes:
+#include "../container/source_position.hpp"
 #include "../types.hpp"
 
 // Local Includes:
@@ -22,29 +26,53 @@ enum class LogLevel : u16 { CRITICAL = 0, ERROR, WARNING, INFO, VERBOSE };
 // Logging faciltiies
 #if DEBUG
 // Macros:
-//! Helper macro for converting LogLevel enum val to string representation
-#define DBG_CASE_STRINGIFY_LOGLEVEL(loglevel) \
-  case LogLevel::loglevel:                    \
+//! Helper macro for converting LogLevel to string representation
+#define DBG_CASE_LOGLEVEL2STR(loglevel) \
+  case LogLevel::loglevel:              \
     return {#loglevel};
+
+//! Helper macro for converting LogLevel to rang foreground color
+#define DBG_CASE_LOGLEVEL2COLOR(loglevel, t_color) \
+  case LogLevel::loglevel:                         \
+    return rang::fg::t_color;
 
 // Functions:
 constexpr auto loglevel2str(const LogLevel t_loglevel) -> std::string_view
 {
   switch(t_loglevel) {
-    DBG_CASE_STRINGIFY_LOGLEVEL(CRITICAL);
-    DBG_CASE_STRINGIFY_LOGLEVEL(ERROR);
-    DBG_CASE_STRINGIFY_LOGLEVEL(WARNING);
-    DBG_CASE_STRINGIFY_LOGLEVEL(INFO);
-    DBG_CASE_STRINGIFY_LOGLEVEL(VERBOSE);
+    DBG_CASE_LOGLEVEL2STR(CRITICAL);
+    DBG_CASE_LOGLEVEL2STR(ERROR);
+    DBG_CASE_LOGLEVEL2STR(WARNING);
+    DBG_CASE_LOGLEVEL2STR(INFO);
+    DBG_CASE_LOGLEVEL2STR(VERBOSE);
 
     default:
-      throw std::invalid_argument{""};
+      throw std::invalid_argument{
+        "loglevel2str() could not convert loglevel to string"};
+      break;
+  }
+}
+
+constexpr auto loglevel2color(const LogLevel t_loglevel) -> rang::fg
+{
+  switch(t_loglevel) {
+    DBG_CASE_LOGLEVEL2COLOR(CRITICAL, red);
+    DBG_CASE_LOGLEVEL2COLOR(ERROR, red);
+    DBG_CASE_LOGLEVEL2COLOR(WARNING, yellow);
+    DBG_CASE_LOGLEVEL2COLOR(INFO, green);
+    DBG_CASE_LOGLEVEL2COLOR(VERBOSE, cyan);
+
+    default:
+      throw std::invalid_argument{
+        "loglevel2color() could not convert loglevel to string"};
       break;
   }
 }
 
 auto is_lower_loglevel(LogLevel t_loglevel) -> bool;
 auto set_loglevel(LogLevel t_loglevel) -> void;
+
+auto operator<<(std::ostream& t_os, const LogLevel t_loglevel) -> std::ostream&;
 
 // We use std::clog for logging
 template<typename... Args>
@@ -65,16 +93,16 @@ auto println(Args&&... t_args) -> void
 // Handle them and give an obscure tuple error
 // TODO: Maybe inline log? We will be using it a lot for debugging
 template<typename... Args>
-auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
-         LogLevel t_loglevel, Args&&... t_args) -> void
+inline auto log(const container::SourcePosition t_pos, LogLevel t_loglevel,
+                Args&&... t_args) -> void
 {
   // Ignore higher log levels
   if(is_lower_loglevel(t_loglevel)) {
     // Denote loglevel
-    print('[', loglevel2str(t_loglevel), ']');
+    print('[', t_loglevel, ']');
 
     // Module information
-    print('[', t_file, ':', t_lineno, " -> ", t_function, "()] => ");
+    print('[', t_pos, "] => ");
 
     // Log what we want to log
     println(std::forward<Args>(t_args)...);

@@ -18,7 +18,7 @@ class Condition : virtual public NodeInterface {
 
   virtual auto condition() -> NodePtr&;
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override = 0;
+  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   ~Condition() override = default;
 };

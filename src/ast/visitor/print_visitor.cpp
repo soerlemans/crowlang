@@ -14,13 +14,15 @@
   }
 
 //! Defines a PrintVisitor method, that will print all traits
-#define DEF_PV_METHOD(t_type)                                    \
-  auto PrintVisitor::visit([[maybe_unused]] t_type* t_ptr)->void \
-  {                                                              \
-    COUNTG_INIT();                                               \
-                                                                 \
-    print(#t_type);                                              \
-    print_traits(t_ptr);                                         \
+#define DEF_PV_METHOD(t_type)                                   \
+  auto PrintVisitor::visit([[maybe_unused]] t_type* t_ptr)->Any \
+  {                                                             \
+    COUNTG_INIT();                                              \
+                                                                \
+    print(#t_type);                                             \
+    print_traits(t_ptr);                                        \
+                                                                \
+    return {};                                                  \
   }
 
 // Using statements:
@@ -63,8 +65,7 @@ auto PrintVisitor::print_if(std::string_view t_str, NodePtr t_ptr) -> void
   }
 }
 
-PrintVisitor::PrintVisitor(std::ostream& t_os)
-	:m_os{t_os}
+PrintVisitor::PrintVisitor(std::ostream& t_os): m_os{t_os}
 {}
 
 // Control:
@@ -77,13 +78,15 @@ DEF_PV_METHOD(Return)
 // Function:
 DEF_PV_METHOD(Function)
 
-auto PrintVisitor::visit(FunctionCall* t_fn_call) -> void
+auto PrintVisitor::visit(FunctionCall* t_fn_call) -> Any
 {
   COUNTG_INIT();
 
   print("Function call");
   print("| Identifier: ", t_fn_call->identifier());
   print_if("Arguments: ", t_fn_call->args());
+
+  return {};
 }
 
 DEF_PV_METHOD(ReturnType)
@@ -92,66 +95,80 @@ DEF_PV_METHOD(ReturnType)
 DEF_PV_METHOD(Const)
 DEF_PV_METHOD(Let)
 
-auto PrintVisitor::visit(Variable* t_var) -> void
+auto PrintVisitor::visit(Variable* t_var) -> Any
 {
   COUNTG_INIT();
 
   print("Variable: ", t_var->identifier());
+
+  return {};
 }
 
 // Operators:
-auto PrintVisitor::visit(Arithmetic* t_arithmetic) -> void
+auto PrintVisitor::visit(Arithmetic* t_arithmetic) -> Any
 {
   COUNTG_INIT();
 
   print("Arithmetic");
   print_traits(t_arithmetic);
   // print("| OP: TODO!");
+
+  return {};
 }
 
-auto PrintVisitor::visit(Assignment* t_assignment) -> void
+auto PrintVisitor::visit(Assignment* t_assignment) -> Any
 {
   COUNTG_INIT();
 
   print("Assignment");
   print_traits(t_assignment);
   // print("| OP: TODO!");
+
+  return {};
 }
 
-auto PrintVisitor::visit(Comparison* t_comparison) -> void
+auto PrintVisitor::visit(Comparison* t_comparison) -> Any
 {
   COUNTG_INIT();
 
   print("Comparison");
   print_traits(t_comparison);
   // print("| OP: TODO!");
+
+  return {};
 }
 
-auto PrintVisitor::visit(Increment* t_inc) -> void
+auto PrintVisitor::visit(Increment* t_inc) -> Any
 {
   COUNTG_INIT();
 
   print("Increment");
   print("| Prefix: ", t_inc->prefix());
   print_traits(t_inc);
+
+  return {};
 }
 
-auto PrintVisitor::visit(Decrement* t_dec) -> void
+auto PrintVisitor::visit(Decrement* t_dec) -> Any
 {
   COUNTG_INIT();
 
   print("Decrement");
   print("| Prefix: ", t_dec->prefix());
   print_traits(t_dec);
+
+  return {};
 }
 
-auto PrintVisitor::visit(UnaryPrefix* t_unary_prefix) -> void
+auto PrintVisitor::visit(UnaryPrefix* t_unary_prefix) -> Any
 {
   COUNTG_INIT();
 
   print("UnaryPrefix");
   print_traits(t_unary_prefix);
   print("| OP: TODO!");
+
+  return {};
 }
 
 // Logical:
@@ -159,16 +176,18 @@ DEF_PV_METHOD(Not)
 DEF_PV_METHOD(And)
 DEF_PV_METHOD(Or)
 
-auto PrintVisitor::visit(Ternary* t_ternary) -> void
+auto PrintVisitor::visit(Ternary* t_ternary) -> Any
 {
   COUNTG_INIT();
 
   print("Ternary");
   print_traits(t_ternary);
+
+  return {};
 }
 
 // Packaging:
-auto PrintVisitor::visit(Import* t_import) -> void
+auto PrintVisitor::visit(Import* t_import) -> Any
 {
   COUNTG_INIT();
 
@@ -182,37 +201,47 @@ auto PrintVisitor::visit(Import* t_import) -> void
 
     print("| Pkg: ", std::quoted(pair.first), ss.str());
   }
+
+  return {};
 }
 
 DEF_PV_METHOD(ModuleDecl)
 
 // Rvalue:
-auto PrintVisitor::visit(Float* t_float) -> void
+auto PrintVisitor::visit(Float* t_float) -> Any
 {
   COUNTG_INIT();
 
   print("Float: ", t_float->get());
+
+  return {};
 }
 
-auto PrintVisitor::visit(Integer* t_int) -> void
+auto PrintVisitor::visit(Integer* t_int) -> Any
 {
   COUNTG_INIT();
 
   print("Integer: ", t_int->get());
+
+  return {};
 }
 
-auto PrintVisitor::visit(String* t_str) -> void
+auto PrintVisitor::visit(String* t_str) -> Any
 {
   COUNTG_INIT();
 
   print("String: ", t_str->get());
+
+  return {};
 }
 
-auto PrintVisitor::visit(Boolean* t_bool) -> void
+auto PrintVisitor::visit(Boolean* t_bool) -> Any
 {
   COUNTG_INIT();
 
   print("Boolean: ", t_bool->get());
+
+  return {};
 }
 
 // Typing:
@@ -220,11 +249,11 @@ DEF_PV_METHOD(MethodDecl)
 DEF_PV_METHOD(Interface)
 DEF_PV_METHOD(MemberDecl)
 DEF_PV_METHOD(Struct)
-DEF_PV_METHOD(DefBlock)
+DEF_PV_METHOD(Impl)
 DEF_PV_METHOD(DotExpr)
 
 // Misc:
-auto PrintVisitor::visit(List* t_list) -> void
+auto PrintVisitor::visit(List* t_list) -> Any
 {
   COUNTG_INIT();
 
@@ -232,11 +261,15 @@ auto PrintVisitor::visit(List* t_list) -> void
   for(NodePtr& node : *t_list) {
     node->accept(this);
   }
+
+  return {};
 }
 
-auto PrintVisitor::visit([[maybe_unused]] Nil* t_nil) -> void
+auto PrintVisitor::visit([[maybe_unused]] Nil* t_nil) -> Any
 {
   COUNTG_INIT();
 
   print("Nil");
+
+  return {};
 }

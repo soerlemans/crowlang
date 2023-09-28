@@ -4,7 +4,8 @@
 #include <cassert>
 
 // Includes:
-#include "../node/node_interface.hpp"
+#include "../../debug/log.hpp"
+#include "../node/include.hpp"
 
 
 // Macros:
@@ -12,14 +13,87 @@
 
 using namespace ast::visitor;
 using namespace ast::node;
+using namespace ast::node::control;
+using namespace ast::node::functions;
+using namespace ast::node::lvalue;
+using namespace ast::node::operators;
+using namespace ast::node::packaging;
+using namespace ast::node::rvalue;
+using namespace ast::node::typing;
+using namespace ast::node::node_traits;
 
-//! This catches the error case where an oaolvred is not defined for a
-auto NodeVisitor::visit(NodeInterface* t_ptr) -> void
+
+#define STUB(t_type)                                                     \
+  auto NodeVisitor::visit([[maybe_unused]] t_type* t_ptr)->Any           \
+  {                                                                      \
+    DBG_WARNING("NodeVisitor::visit(", #t_type, "*) is not overriden!"); \
+                                                                         \
+    return {};                                                           \
+  }
+
+STUB(If)
+STUB(Loop)
+STUB(Continue)
+STUB(Break)
+STUB(Return)
+STUB(Function)
+STUB(FunctionCall)
+STUB(ReturnType)
+STUB(Const)
+STUB(Let)
+STUB(Variable)
+STUB(Arithmetic)
+STUB(Assignment)
+STUB(Comparison)
+STUB(Increment)
+STUB(Decrement)
+STUB(UnaryPrefix)
+STUB(Not)
+STUB(And)
+STUB(Or)
+STUB(Ternary)
+STUB(Import)
+STUB(ModuleDecl)
+STUB(Float)
+STUB(Integer)
+STUB(String)
+STUB(Boolean)
+STUB(MethodDecl)
+STUB(Interface)
+STUB(MemberDecl)
+STUB(Struct)
+STUB(Impl)
+STUB(DotExpr)
+
+// Misc:
+auto NodeVisitor::visit(List* t_list) -> Any
 {
-  assert_msg("NodeVisitor: Received a NodeInterface*", t_ptr);
+  for(NodePtr& node : *t_list) {
+    node->accept(this);
+  }
+
+	return {};
 }
 
-auto NodeVisitor::traverse(NodePtr t_ast) -> void
+auto NodeVisitor::visit([[maybe_unused]] Nil* t_nil) -> Any
+{
+  DBG_INFO("Visited a Nil node");
+
+	return {};
+}
+
+//! This catches the error case where a node does not have its own method
+auto NodeVisitor::visit(NodeInterface* t_ptr) -> Any
+{
+  assert_msg("NodeVisitor: Received a NodeInterface*", t_ptr);
+
+	return {};
+}
+
+//! Traverse all nodes neatly
+auto NodeVisitor::traverse(NodePtr t_ast) -> Any
 {
   t_ast->accept(this);
+
+	return {};
 }

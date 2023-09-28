@@ -1,21 +1,30 @@
 #ifndef CROW_VISITABLE_VISITABLE_HPP
 #define CROW_VISITABLE_VISITABLE_HPP
 
+// STL Includes:
+#include <any>
 
-namespace visitable {
+
 // Macros:
-#define MAKE_VISITABLE(VisitorType)                  \
-  auto accept(VisitorType* t_visitor)->void override \
-  {                                                  \
-    t_visitor->visit(this);                          \
+#define MAKE_VISITABLE(t_visitor_type)                            \
+  auto accept(t_visitor_type* t_visitor)->visitable::Any override \
+  {                                                               \
+    return {t_visitor->visit(this)};                              \
   }
 
+#define VISITABLE_PURE_ACCEPT(t_vis_type) \
+  auto accept(t_vis_type*)->visitable::Any override = 0
+
+namespace visitable {
+// We use std::any to allow a visitor to return anything
+using Any = std::any;
+
 // Classes:
-//! Interface that defines the method that must be implemented for a
-template<typename T>
+//! Inheriting from this interface forces the class structure to be visitable
+template<typename VisitorType, typename RetType = Any>
 class Visitable {
   public:
-  virtual auto accept(T* t_visitor) -> void = 0;
+  virtual auto accept(VisitorType* t_visitor) -> RetType = 0;
 };
 } // namespace visitable
 

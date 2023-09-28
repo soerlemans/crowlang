@@ -11,7 +11,7 @@
 namespace ast::node {
 class NodeInterface : public visitable::Visitable<visitor::NodeVisitor> {
   public:
-  virtual auto accept(visitor::NodeVisitor* t_visitor) -> void = 0;
+  virtual auto accept(visitor::NodeVisitor* t_visitor) -> visitable::Any = 0;
 
   virtual ~NodeInterface() = default;
 };
