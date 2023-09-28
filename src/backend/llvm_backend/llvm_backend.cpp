@@ -232,7 +232,8 @@ auto LlvmBackend::visit(Integer* t_int) -> Any
 {
   using namespace llvm;
 
-  APInt num{32, (u64)t_int->get(), true};
+  const auto result{static_cast<u64>(t_int->get())};
+  const APInt num{32, result, true};
   auto* constant{ConstantInt::get(*m_context, num)};
 
   return std::make_any<Value*>(constant);
@@ -248,8 +249,8 @@ auto LlvmBackend::visit(Boolean* t_bool) -> Any
 {
   using namespace llvm;
 
-  auto result{(t_bool->get()) ? 1 : 0};
-  APInt num{8, (u64)result, false};
+  const auto result{static_cast<u64>((t_bool->get()) ? 1 : 0)};
+  const APInt num{8, result, false};
   auto* constant{ConstantInt::get(*m_context, num)};
 
   return std::make_any<Value*>(constant);
