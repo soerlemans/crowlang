@@ -16,7 +16,6 @@ using visitable::Any;
  * So all nodes need to be forward declared in this header
  */
 class NodeVisitor {
-  private:
   public:
   NodeVisitor() = default;
 

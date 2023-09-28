@@ -12,7 +12,7 @@
 // Includes:
 #include "ast/node/include.hpp"
 #include "ast/visitor/print_visitor.hpp"
-#include "backend/llvm_backend/llvm_backend.hpp"
+#include "codegen/llvm_backend/llvm_backend.hpp"
 #include "container/text_buffer.hpp"
 #include "debug/log.hpp"
 #include "debug/log_macros.hpp"
@@ -134,7 +134,7 @@ auto interpret() -> void
 
 auto generate(ast::node::NodePtr t_ast) -> void
 {
-  using namespace backend::llvm_backend;
+  using namespace codegen::llvm_backend;
 
   DBG_PRINTLN("|> Code generation:");
 
@@ -194,7 +194,7 @@ auto main(int t_argc, char* t_argv[]) -> int
     std::cerr << fg::red << "EXCEPTION";
     std::cerr << fg::reset << " - \n" << style::reset;
 
-		// Print error message:
+    // Print error message:
     std::cerr << e.what() << std::endl;
 
     return ExitCode::EXCEPTION;

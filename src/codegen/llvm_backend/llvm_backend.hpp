@@ -14,7 +14,7 @@
 #include "../../ast/visitor/node_visitor.hpp"
 
 
-namespace backend::llvm_backend {
+namespace codegen::llvm_backend {
 // Using statements:
 using namespace ast;
 using visitable::Any;
