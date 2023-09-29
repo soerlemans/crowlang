@@ -6,7 +6,7 @@
 #include "../visitor/node_visitor.hpp"
 
 // Local Includes:
-#include "node.hpp"
+#include "fdecl.hpp"
 
 namespace ast::node {
 class NodeInterface : public visitable::Visitable<visitor::NodeVisitor> {

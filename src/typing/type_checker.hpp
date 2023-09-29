@@ -18,14 +18,14 @@ namespace typing {
 using namespace ast;
 using visitable::Any;
 
+// Aliases:
+using TypeV = std::variant<NativeType>;
+using Env = std::map<std::string, TypeV>;
+using EnvStack = std::list<Env>;
+
+// Classes:
 class TypeChecker : public ast::visitor::NodeVisitor {
   private:
-  // Aliases:
-  using TypeV = std::variant<NativeType>;
-  using Env = std::map<std::string, TypeV>;
-  using EnvStack = std::list<Env>;
-
-  // Members:
   EnvStack m_env;
 
   protected:
@@ -74,10 +74,10 @@ class TypeChecker : public ast::visitor::NodeVisitor {
   // auto visit(node::packaging::ModuleDecl* t_mod) -> Any override;
 
   // // Rvalue:
-  // auto visit(node::rvalue::Float* t_float) -> Any override;
-  // auto visit(node::rvalue::Integer* t_int) -> Any override;
-  // auto visit(node::rvalue::String* t_str) -> Any override;
-  // auto visit(node::rvalue::Boolean* t_bool) -> Any override;
+  auto visit(node::rvalue::Float* t_float) -> Any override;
+  auto visit(node::rvalue::Integer* t_int) -> Any override;
+  auto visit(node::rvalue::String* t_str) -> Any override;
+  auto visit(node::rvalue::Boolean* t_bool) -> Any override;
 
   // // Typing:
   // auto visit(node::typing::MethodDecl* t_md) -> Any override;

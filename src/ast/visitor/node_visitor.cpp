@@ -11,17 +11,10 @@
 // Macros:
 #define assert_msg(t_msg, t_expr) assert(((void)t_msg, t_expr))
 
+// Using statements:
 using namespace ast::visitor;
-using namespace ast::node;
-using namespace ast::node::control;
-using namespace ast::node::functions;
-using namespace ast::node::lvalue;
-using namespace ast::node::operators;
-using namespace ast::node::packaging;
-using namespace ast::node::rvalue;
-using namespace ast::node::typing;
-using namespace ast::node::node_traits;
 
+NODE_USING_ALL_NAMESPACES()
 
 #define STUB(t_type)                                                     \
   auto NodeVisitor::visit([[maybe_unused]] t_type* t_ptr)->Any           \
@@ -72,14 +65,14 @@ auto NodeVisitor::visit(List* t_list) -> Any
     node->accept(this);
   }
 
-	return {};
+  return {};
 }
 
 auto NodeVisitor::visit([[maybe_unused]] Nil* t_nil) -> Any
 {
   DBG_INFO("Visited a Nil node");
 
-	return {};
+  return {};
 }
 
 //! This catches the error case where a node does not have its own method
@@ -87,7 +80,7 @@ auto NodeVisitor::visit(NodeInterface* t_ptr) -> Any
 {
   assert_msg("NodeVisitor: Received a NodeInterface*", t_ptr);
 
-	return {};
+  return {};
 }
 
 //! Traverse all nodes neatly
@@ -95,5 +88,5 @@ auto NodeVisitor::traverse(NodePtr t_ast) -> Any
 {
   t_ast->accept(this);
 
-	return {};
+  return {};
 }

@@ -32,15 +32,8 @@
 // Using Statements:
 using namespace codegen::llvm_backend;
 using namespace ast::visitor;
-using namespace ast::node;
-using namespace ast::node::control;
-using namespace ast::node::functions;
-using namespace ast::node::lvalue;
-using namespace ast::node::operators;
-using namespace ast::node::packaging;
-using namespace ast::node::rvalue;
-using namespace ast::node::typing;
-using namespace ast::node::node_traits;
+
+NODE_USING_ALL_NAMESPACES()
 
 // Methods:
 auto LlvmBackend::get_value(node::NodePtr t_ptr) -> llvm::Value*

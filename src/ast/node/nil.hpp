@@ -2,7 +2,7 @@
 #define CROW_AST_NODE_NIL_HPP
 
 // Local Includes:
-#include "node.hpp"
+#include "fdecl.hpp"
 #include "node_interface.hpp"
 
 

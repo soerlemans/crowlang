@@ -41,8 +41,8 @@ To reach this version the following must be implemented:
   - [x] Modules & Imports
   - [x] Functions
   - [x] Interfaces
-  - [] Structs
-  - [] Implementation
+  - [x] Structs
+  - [x] Implementation
 
 ## Version 0.2.0
 To reach this version the following must be implemented:
@@ -72,14 +72,14 @@ To reach this version the following must be implemented:
   - [x] Imports
   - [x] Functions
   - [x] Interfaces
-  - [] Structs
-  - [] Implementation
+  - [x] Structs
+  - [x] Implementation
 
 ## Version 0.4.0
 To reach this version the following must be implemented:
 
-- [] Code generation
-  - [] LLVM
+- [x] Code generation
+  - [x] LLVM
   - [] Tree walk interpreter
 
 ## Version 0.5.0

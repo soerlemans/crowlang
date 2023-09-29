@@ -1,7 +1,13 @@
 #include "type_checker.hpp"
 
+// Includes:
+#include "../ast/node/include.hpp"
 
+
+// Using Statements:
 using namespace typing;
+
+NODE_USING_ALL_NAMESPACES()
 
 // Methods:
 auto TypeChecker::global_env() -> Env&
@@ -21,7 +27,14 @@ TypeChecker::TypeChecker(): m_env{}
 }
 
 // Rvalue:
-// auto visit(node::rvalue::Float* t_float) -> Any override;
-// auto visit(node::rvalue::Integer* t_int) -> Any override;
-// auto visit(node::rvalue::String* t_str) -> Any override;
-// auto visit(node::rvalue::Boolean* t_bool) -> Any override;
+auto TypeChecker::visit(node::rvalue::Float* t_float) -> Any
+{}
+
+auto TypeChecker::visit(node::rvalue::Integer* t_int) -> Any
+{}
+
+auto TypeChecker::visit(node::rvalue::String* t_str) -> Any
+{}
+
+auto TypeChecker::visit(node::rvalue::Boolean* t_bool) -> Any
+{}

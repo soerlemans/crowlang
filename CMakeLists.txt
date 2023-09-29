@@ -11,8 +11,8 @@ set(CMAKE_CXX_COMPILER "g++")
 
 # Define the project
 project(crow
-	VERSION 0.0.0
-	DESCRIPTION ""
+	VERSION 0.4.0
+	DESCRIPTION "Compiler for crowlang."
 	LANGUAGES CXX C
 )
 

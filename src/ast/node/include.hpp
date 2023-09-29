@@ -5,6 +5,11 @@
  * Node, this to
  */
 
+// Macros:
+//! Include the namespaces of all nodes
+#define NODE_USE_ALL_NS() \
+
+
 // Top level:
 #include "fdecl.hpp"
 #include "list.hpp"
