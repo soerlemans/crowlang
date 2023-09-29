@@ -54,7 +54,7 @@ auto PrintVisitor::print_if(std::string_view t_str, NodePtr t_ptr) -> void
 {
   if(t_ptr) {
     print(t_str);
-    t_ptr->accept(this);
+		traverse(t_ptr);
   }
 }
 

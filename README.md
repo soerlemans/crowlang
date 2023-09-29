@@ -15,19 +15,19 @@ I aim to keep dependencies to a minimum but the following is required:
 - [CLI11](https://github.com/CLIUtils/CLI11) (CLI option parsing library)
 - [rang](https://github.com/agauniyal/rang/tree/master) (cross platform terminal coloring library)
 - [tabulate](https://github.com/p-ranav/tabulate) (Text table library)
+- [Boost]() (Utility libraries for C++)
 - [LLVM](https://llvm.org) (LLVM codegen library)
 
-Rang and tabulate are downloaded using CMake and statically linked but CLI11 and LLVM are dynamically linked (CMake searches for it on your system).
+Rang and tabulate are downloaded using CMake and statically linked but CLI11, Boost and LLVM are dynamically linked (CMake searches for it on your system).
 You can install the dependencies with the following aptitude command:
 
 ```shell
-apt install -y libcli11-dev llvm-14-dev
+apt install -y libcli11-dev libboost-all-dev llvm-16-dev
 ```
 
 ## Progress
 Crow is currently in active development and is currently not even at version 0.1.0.
 This section will promptly describe Crow's roadmap:
-
 
 ## Version 0.1.0
 To reach this version the following must be implemented:

@@ -3,7 +3,6 @@
 
 // STL Includes:
 #include <list>
-#include <map>
 #include <variant>
 
 // Includes:
@@ -19,7 +18,8 @@ using namespace ast;
 using visitable::Any;
 
 // Aliases:
-using TypeV = std::variant<NativeType>;
+using TypeV = std::variant<NativeType, std::string>;
+using NameTypeP = std::pair<std::string, TypeV>;
 using Env = std::map<std::string, TypeV>;
 using EnvStack = std::list<Env>;
 
@@ -29,8 +29,7 @@ class TypeChecker : public ast::visitor::NodeVisitor {
   EnvStack m_env;
 
   protected:
-  auto global_env() -> Env&;
-  auto current_env() -> Env&;
+  auto add_pairing(NameTypeP t_pair) -> void;
 
   public:
   TypeChecker();
@@ -43,13 +42,13 @@ class TypeChecker : public ast::visitor::NodeVisitor {
   // auto visit(node::control::Return* t_return) -> Any override;
 
   // // Function:
-  // auto visit(node::functions::Function* t_fn) -> Any override;
+  auto visit(node::functions::Function* t_fn) -> Any override;
   // auto visit(node::functions::FunctionCall* t_fn_call) -> Any override;
   // auto visit(node::functions::ReturnType* t_rt) -> Any override;
 
   // // Lvalue:
   // auto visit(node::lvalue::Const* t_const) -> Any override;
-  // auto visit(node::lvalue::Let* t_let) -> Any override;
+  auto visit(node::lvalue::Let* t_let) -> Any override;
   // auto visit(node::lvalue::Variable* t_var) -> Any override;
 
   // // Operators:

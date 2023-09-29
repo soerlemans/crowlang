@@ -6,6 +6,9 @@ import (
 )
 
 fn main() {
+  let num = 10
+  let num2 = 10
+
 	if false {
 	  return 10 * 10
   } else {

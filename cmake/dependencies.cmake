@@ -26,10 +26,16 @@ find_package(Threads REQUIRED)
 # CLI11 (Terminal flag library):
 find_package(CLI11 CONFIG REQUIRED)
 
+# Boost (C++ utility libraries):
+find_package(Boost 1.74 COMPONENTS program_options REQUIRED )
+
 # LLVM (Compiler toolchain libraries):
 find_package(LLVM 16 CONFIG REQUIRED)
 
-include_directories(SYSTEM ${LLVM_INCLUDE_DIRS})
+include_directories(SYSTEM
+	${LLVM_INCLUDE_DIRS}
+	${Boost_INCLUDE_DIR}
+)
 separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
 add_definitions(${LLVM_DEFINITIONS_LIST})
 

@@ -62,7 +62,7 @@ STUB(DotExpr)
 auto NodeVisitor::visit(List* t_list) -> Any
 {
   for(NodePtr& node : *t_list) {
-    node->accept(this);
+    traverse(node);
   }
 
   return {};
@@ -86,7 +86,5 @@ auto NodeVisitor::visit(NodeInterface* t_ptr) -> Any
 //! Traverse all nodes neatly
 auto NodeVisitor::traverse(NodePtr t_ast) -> Any
 {
-  t_ast->accept(this);
-
-  return {};
+  return t_ast->accept(this);
 }

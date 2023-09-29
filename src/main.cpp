@@ -10,6 +10,7 @@
 #include <rang.hpp>
 
 // Includes:
+#include "ast/node/fdecl.hpp"
 #include "ast/node/include.hpp"
 #include "ast/visitor/print_visitor.hpp"
 #include "codegen/llvm_backend/llvm_backend.hpp"
@@ -130,13 +131,14 @@ auto parse(const token::TokenStream& t_ts) -> ast::node::NodePtr
   return ast;
 }
 
-auto check_types() -> void
+auto check_types(ast::node::NodePtr t_ast) -> void
 {
   using namespace typing;
 
   DBG_PRINTLN("|> Type checking:");
 
   TypeChecker type_checker;
+  type_checker.traverse(t_ast);
 
   DBG_PRINTLN("$");
 }
@@ -175,6 +177,7 @@ auto run() -> void
 
     pprint(ast);
 
+    check_types(ast);
     generate(ast);
   }
 }

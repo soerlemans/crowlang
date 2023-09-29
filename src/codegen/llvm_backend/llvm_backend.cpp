@@ -42,7 +42,7 @@ auto LlvmBackend::get_value(node::NodePtr t_ptr) -> llvm::Value*
 
   Value* t_val{nullptr};
 
-  auto any{t_ptr->accept(this)};
+  auto any{traverse(t_ptr)};
   if(any.has_value()) {
     try {
       t_val = std::any_cast<Value*>(any);
@@ -92,11 +92,11 @@ auto LlvmBackend::visit(If* t_if) -> Any
   }};
 
   block(then, [&] {
-    t_if->then()->accept(this);
+		traverse(t_if->then());
   });
 
   block(alt, [&] {
-    t_if->alt()->accept(this);
+		traverse(t_if->alt());
   });
 
   fn->insert(fn->end(), merge);
@@ -141,7 +141,7 @@ auto LlvmBackend::visit(Function* t_fn) -> Any
   m_builder->SetInsertPoint(body);
 
   // Codegen for the body
-  t_fn->body()->accept(this);
+	traverse(t_fn->body());
 
   llvm::verifyFunction(*fn);
 

@@ -10,7 +10,6 @@
 #include "terminal.hpp"
 
 
-namespace token::reserved {
 // Macros:
 #define DEFINE_TERMINAL(t_name, t_id, t_token) \
   constexpr Terminal t_name                    \
@@ -18,6 +17,7 @@ namespace token::reserved {
     t_id, TokenType::t_token                   \
   }
 
+namespace token::reserved {
 // clang-format off
 // Language reserved keywords
 namespace keywords {
