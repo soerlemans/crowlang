@@ -7,30 +7,26 @@
 #include <map>
 #include <string_view>
 
+// Library Includes:
+#include <boost/algorithm/string/case_conv.hpp>
+#include <boost/bimap.hpp>
+
 
 // Macros:
-#define TYPING_NTYPE_PAIR(t_ntype)         \
-  NTypeP                                   \
-  {                                        \
-    tolower(#t_ntype), NativeType::t_ntype \
+#define TYPING_NTYPE_PAIR(t_ntype)                          \
+  NTypeP                                                    \
+  {                                                         \
+    boost::algorithm::to_lower_copy(std::string{#t_ntype}), \
+      NativeType::t_ntype                                   \
   }
 
 namespace typing {
-// TODO: Move
-auto tolower(std::string t_str) -> std::string
-{
-  std::transform(t_str.begin(), t_str.end(), t_str.begin(),
-                 [](unsigned char t_ch) {
-                   return std::tolower(t_ch);
-                 });
-  return t_str;
-}
-
 // Forward Declarations:
 enum class NativeType;
 
 // Aliases:
-using NTypeP = std::pair<std::string, NativeType>;
+using NTypeM = boost::bimap<std::string, NativeType>;
+using NTypeP = NTypeM::value_type;
 
 // Enums:
 enum class NativeType {
@@ -57,21 +53,34 @@ enum class NativeType {
   BOOL
 };
 
-const std::map<std::string, NativeType> type_map{
-  // Floats:
-  TYPING_NTYPE_PAIR(F32), TYPING_NTYPE_PAIR(F64),
+// clang-format off
+// const NTypeM type_map{
+//   // Floats:
+//   TYPING_NTYPE_PAIR(F32),
+// 	TYPING_NTYPE_PAIR(F64),
 
-  // Integers:
-  TYPING_NTYPE_PAIR(INT), TYPING_NTYPE_PAIR(I8), TYPING_NTYPE_PAIR(I16),
-  TYPING_NTYPE_PAIR(I32), TYPING_NTYPE_PAIR(I64), TYPING_NTYPE_PAIR(I128),
+//   // Integers:
+//   TYPING_NTYPE_PAIR(INT),
+// 	TYPING_NTYPE_PAIR(I8),
+// 	TYPING_NTYPE_PAIR(I16),
+//   TYPING_NTYPE_PAIR(I32),
+// 	TYPING_NTYPE_PAIR(I64),
+// 	TYPING_NTYPE_PAIR(I128),
 
-  TYPING_NTYPE_PAIR(UINT), TYPING_NTYPE_PAIR(U8), TYPING_NTYPE_PAIR(U16),
-  TYPING_NTYPE_PAIR(U32), TYPING_NTYPE_PAIR(U64), TYPING_NTYPE_PAIR(U128),
+//   TYPING_NTYPE_PAIR(UINT),
+// 	TYPING_NTYPE_PAIR(U8),
+// 	TYPING_NTYPE_PAIR(U16),
+//   TYPING_NTYPE_PAIR(U32),
+// 	TYPING_NTYPE_PAIR(U64),
+// 	TYPING_NTYPE_PAIR(U128),
 
-  // Boolean:
-  TYPING_NTYPE_PAIR(BOOL)};
+//   // Boolean:
+//   TYPING_NTYPE_PAIR(BOOL)
+//};
+// clang-format on
 
-// TODO: Create mappin
+// Functions:
+auto nativetype2str(NativeType t_ntype) -> std::string;
 } // namespace typing
 
 #endif // NATIVE_TYPES_HPP

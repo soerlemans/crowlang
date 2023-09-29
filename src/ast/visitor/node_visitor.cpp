@@ -19,7 +19,7 @@ NODE_USING_ALL_NAMESPACES()
 #define STUB(t_type)                                                     \
   auto NodeVisitor::visit([[maybe_unused]] t_type* t_ptr)->Any           \
   {                                                                      \
-    DBG_WARNING("NodeVisitor::visit(", #t_type, "*) is not overriden!"); \
+    DBG_WARNING("Not overriden!"); \
                                                                          \
     return {};                                                           \
   }

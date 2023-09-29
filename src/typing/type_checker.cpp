@@ -42,7 +42,7 @@ auto TypeChecker::visit(Let* t_let) -> Any
   const auto type{std::any_cast<TypeV>(any)};
 
   std::visit(
-    [&](auto v) {
+    [&]([[maybe_unused]] auto v) {
       DBG_CRITICAL("Type pairing: { Identifier: ", t_let->identifier(),
                    ", Type: ", "}");
     },
