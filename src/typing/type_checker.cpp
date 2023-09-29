@@ -20,6 +20,22 @@ auto TypeChecker::add_pairing(NameTypeP t_pair) -> void
   m_env.back().insert(t_pair);
 }
 
+auto TypeChecker::get_typev(NodePtr t_ptr) -> TypeV
+{
+  TypeV typev;
+
+  auto any{traverse(t_ptr)};
+  if(any.has_value()) {
+    try {
+      typev = std::any_cast<TypeV>(any);
+    } catch(const std::bad_any_cast& e) {
+      DBG_CRITICAL(e.what());
+    }
+  }
+
+  return typev;
+}
+
 TypeChecker::TypeChecker(): m_env{}
 {
   // There should always be a global environment
@@ -38,8 +54,7 @@ auto TypeChecker::visit(Function* t_fn) -> Any
 // // Lvalue:
 auto TypeChecker::visit(Let* t_let) -> Any
 {
-  auto any{traverse(t_let->init_expr())};
-  const auto type{std::any_cast<TypeV>(any)};
+  const auto type{get_typev(t_let->init_expr())};
 
   DBG_CRITICAL("Type pairing: { Identifier: ", t_let->identifier(),
                ", Type: ", nativetype2str(std::get<NativeType>(type)), "}");

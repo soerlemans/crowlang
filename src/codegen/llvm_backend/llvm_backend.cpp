@@ -19,6 +19,7 @@
 
 // Includes:
 #include "../../ast/node/include.hpp"
+#include "../../debug/log.hpp"
 #include "../../types.hpp"
 
 
@@ -40,19 +41,18 @@ auto LlvmBackend::get_value(node::NodePtr t_ptr) -> llvm::Value*
 {
   using namespace llvm;
 
-  Value* t_val{nullptr};
+  Value* val{nullptr};
 
   auto any{traverse(t_ptr)};
   if(any.has_value()) {
     try {
-      t_val = std::any_cast<Value*>(any);
+      val = std::any_cast<Value*>(any);
     } catch(const std::bad_any_cast& e) {
-      // TODO: Error handling
-      throw e; // For now just rethrow
+      DBG_CRITICAL(e.what());
     }
   }
 
-  return t_val;
+  return val;
 }
 
 LlvmBackend::LlvmBackend()
@@ -92,11 +92,11 @@ auto LlvmBackend::visit(If* t_if) -> Any
   }};
 
   block(then, [&] {
-		traverse(t_if->then());
+    traverse(t_if->then());
   });
 
   block(alt, [&] {
-		traverse(t_if->alt());
+    traverse(t_if->alt());
   });
 
   fn->insert(fn->end(), merge);
@@ -141,7 +141,7 @@ auto LlvmBackend::visit(Function* t_fn) -> Any
   m_builder->SetInsertPoint(body);
 
   // Codegen for the body
-	traverse(t_fn->body());
+  traverse(t_fn->body());
 
   llvm::verifyFunction(*fn);
 

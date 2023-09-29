@@ -31,6 +31,8 @@ class TypeChecker : public ast::visitor::NodeVisitor {
   protected:
   auto add_pairing(NameTypeP t_pair) -> void;
 
+  auto get_typev(ast::node::NodePtr t_ptr) -> TypeV;
+
   public:
   TypeChecker();
 
