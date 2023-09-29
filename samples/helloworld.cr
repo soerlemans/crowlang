@@ -7,7 +7,7 @@ import (
 
 fn main() {
   let num = 10
-  let num2 = 10
+  let num2 = false
 
 	if false {
 	  return 10 * 10

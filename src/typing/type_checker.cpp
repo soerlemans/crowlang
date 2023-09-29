@@ -41,12 +41,8 @@ auto TypeChecker::visit(Let* t_let) -> Any
   auto any{traverse(t_let->init_expr())};
   const auto type{std::any_cast<TypeV>(any)};
 
-  std::visit(
-    [&]([[maybe_unused]] auto v) {
-      DBG_CRITICAL("Type pairing: { Identifier: ", t_let->identifier(),
-                   ", Type: ", "}");
-    },
-    type);
+  DBG_CRITICAL("Type pairing: { Identifier: ", t_let->identifier(),
+               ", Type: ", nativetype2str(std::get<NativeType>(type)), "}");
 
   NameTypeP pair{t_let->identifier(), type};
   add_pairing(pair);
