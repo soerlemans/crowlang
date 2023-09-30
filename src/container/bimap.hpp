@@ -1,5 +1,5 @@
-#ifndef BIMAP_HPP
-#define BIMAP_HPP
+#ifndef CROW_CONTAINER_BIMAP_HPP
+#define CROW_CONTAINER_BIMAP_HPP
 
 // STL Includes:
 #include <initializer_list>
@@ -20,4 +20,4 @@ class BiMap : public boost::bimap<Key, Value> {
 };
 } // namespace container
 
-#endif // BIMAP_HPP
+#endif // CROW_CONTAINER_BIMAP_HPP

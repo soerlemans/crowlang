@@ -77,10 +77,9 @@ auto CrowParser::decl_expr() -> NodePtr
     PARSER_FOUND(TokenType::LET);
     const auto id{expect(TokenType::IDENTIFIER)};
 
+    std::string type;
     if(next_if(TokenType::COLON)) {
-      expect(TokenType::IDENTIFIER);
-
-      // TODO: Implement type inference
+      type = expect(TokenType::IDENTIFIER).str();
     }
 
     NodePtr expr_ptr;
@@ -89,7 +88,7 @@ auto CrowParser::decl_expr() -> NodePtr
       expr_ptr = expr();
     }
 
-    node = make_node<Let>(id.str(), std::move(expr_ptr));
+    node = make_node<Let>(id.str(), type, std::move(expr_ptr));
   }
 
   return node;

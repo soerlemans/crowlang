@@ -24,7 +24,8 @@ using namespace container;
 // Error handling:
 auto Lexer::syntax_error(std::string_view t_msg) const -> void
 {
-  // Throws a SyntaxError with a message
+  using namespace exception;
+
   throw SyntaxError{std::string{t_msg}, m_text->position()};
 }
 

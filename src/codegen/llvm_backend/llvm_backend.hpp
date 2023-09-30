@@ -1,5 +1,5 @@
-#ifndef CROW_BACKEND_LLVM_BACKEND_LLVM_BACKEND_HPP
-#define CROW_BACKEND_LLVM_BACKEND_LLVM_BACKEND_HPP
+#ifndef CROW_CODEGEN_LLVM_BACKEND_LLVM_BACKEND_HPP
+#define CROW_CODEGEN_LLVM_BACKEND_LLVM_BACKEND_HPP
 
 // STL Includes:
 #include <filesystem>
@@ -102,4 +102,4 @@ class LlvmBackend : public ast::visitor::NodeVisitor {
 };
 } // namespace backend::llvm_backend
 
-#endif // CROW_BACKEND_LLVM_BACKEND_LLVM_BACKEND_HPP
+#endif // CROW_CODEGEN_LLVM_BACKEND_LLVM_BACKEND_HPP

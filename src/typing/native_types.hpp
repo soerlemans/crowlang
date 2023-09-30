@@ -1,5 +1,5 @@
-#ifndef NATIVE_TYPES_HPP
-#define NATIVE_TYPES_HPP
+#ifndef CROW_TYPING_NATIVE_TYPES_HPP
+#define CROW_TYPING_NATIVE_TYPES_HPP
 
 // STL Includes:
 #include <algorithm>
@@ -31,7 +31,7 @@ using NTypeMap = boost::bimap<std::string, NativeType>;
 // Enums:
 enum class NativeType {
   // Floats:
-  F32,
+  F32 = 0,
   F64,
 
   // Integers:
@@ -57,7 +57,7 @@ enum class NativeType {
 };
 
 // clang-format off
-const NTypeMap ntype_map = boost::assign::list_of<NTypeMap::relation>
+const NTypeMap reserved_types = boost::assign::list_of<NTypeMap::relation>
   // Floats:
   (TYPING_NTYPE_PAIR(F32))
 	(TYPING_NTYPE_PAIR(F64))
@@ -89,4 +89,4 @@ const NTypeMap ntype_map = boost::assign::list_of<NTypeMap::relation>
 auto nativetype2str(NativeType t_ntype) -> std::string;
 } // namespace typing
 
-#endif // NATIVE_TYPES_HPP
+#endif // CROW_TYPING_NATIVE_TYPES_HPP

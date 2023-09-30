@@ -23,13 +23,6 @@
 #include "../../types.hpp"
 
 
-// Macros:
-#define STUB(t_type)                                           \
-  auto LlvmBackend::visit([[maybe_unused]] t_type* t_ptr)->Any \
-  {                                                            \
-    return {};                                                 \
-  }
-
 // Using Statements:
 using namespace codegen::llvm_backend;
 using namespace ast::visitor;
@@ -101,7 +94,7 @@ auto LlvmBackend::visit(If* t_if) -> Any
 
   fn->insert(fn->end(), merge);
   m_builder->SetInsertPoint(merge);
-  auto* pn{
+  [[maybe_unused]] auto* pn{
     m_builder->CreatePHI(llvm::Type::getDoubleTy(*m_context), 2, "iftmp")};
 
   // Figure this out?
@@ -111,9 +104,9 @@ auto LlvmBackend::visit(If* t_if) -> Any
   return {};
 }
 
-STUB(Loop)
-STUB(Continue)
-STUB(Break)
+AST_VISITOR_STUB(LlvmBackend, Loop)
+AST_VISITOR_STUB(LlvmBackend, Continue)
+AST_VISITOR_STUB(LlvmBackend, Break)
 
 auto LlvmBackend::visit(Return* t_ret) -> Any
 {
@@ -148,13 +141,13 @@ auto LlvmBackend::visit(Function* t_fn) -> Any
   return {t_fn};
 }
 
-STUB(FunctionCall)
-STUB(ReturnType)
+AST_VISITOR_STUB(LlvmBackend, FunctionCall)
+AST_VISITOR_STUB(LlvmBackend, ReturnType)
 
 // Lvalue:
-STUB(Const)
-STUB(Let)
-STUB(Variable)
+AST_VISITOR_STUB(LlvmBackend, Const)
+AST_VISITOR_STUB(LlvmBackend, Let)
+AST_VISITOR_STUB(LlvmBackend, Variable)
 
 // Operators:
 auto LlvmBackend::visit(Arithmetic* t_arith) -> Any
@@ -194,21 +187,21 @@ auto LlvmBackend::visit(Arithmetic* t_arith) -> Any
   return std::make_any<Value*>(expr);
 }
 
-STUB(Assignment)
-STUB(Comparison)
-STUB(Increment)
-STUB(Decrement)
-STUB(UnaryPrefix)
+AST_VISITOR_STUB(LlvmBackend, Assignment)
+AST_VISITOR_STUB(LlvmBackend, Comparison)
+AST_VISITOR_STUB(LlvmBackend, Increment)
+AST_VISITOR_STUB(LlvmBackend, Decrement)
+AST_VISITOR_STUB(LlvmBackend, UnaryPrefix)
 
 // Logical:
-STUB(Not)
-STUB(And)
-STUB(Or)
-STUB(Ternary)
+AST_VISITOR_STUB(LlvmBackend, Not)
+AST_VISITOR_STUB(LlvmBackend, And)
+AST_VISITOR_STUB(LlvmBackend, Or)
+AST_VISITOR_STUB(LlvmBackend, Ternary)
 
 // Packaging:
-STUB(Import)
-STUB(ModuleDecl)
+AST_VISITOR_STUB(LlvmBackend, Import)
+AST_VISITOR_STUB(LlvmBackend, ModuleDecl)
 
 // RValue:
 auto LlvmBackend::visit(Float* t_float) -> Any
@@ -250,12 +243,12 @@ auto LlvmBackend::visit(Boolean* t_bool) -> Any
 }
 
 // Typing:
-STUB(MethodDecl)
-STUB(Interface)
-STUB(MemberDecl)
-STUB(Struct)
-STUB(Impl)
-STUB(DotExpr)
+AST_VISITOR_STUB(LlvmBackend, MethodDecl)
+AST_VISITOR_STUB(LlvmBackend, Interface)
+AST_VISITOR_STUB(LlvmBackend, MemberDecl)
+AST_VISITOR_STUB(LlvmBackend, Struct)
+AST_VISITOR_STUB(LlvmBackend, Impl)
+AST_VISITOR_STUB(LlvmBackend, DotExpr)
 
 // Util:
 auto LlvmBackend::configure_target() -> void

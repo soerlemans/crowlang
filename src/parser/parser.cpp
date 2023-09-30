@@ -14,6 +14,8 @@ using namespace ast::node;
 // Methods:
 auto Parser::syntax_error(std::string_view t_msg) const -> void
 {
+  using namespace exception;
+
   const auto token{get_token()};
 
   throw SyntaxError{std::string{t_msg}, token.position()};

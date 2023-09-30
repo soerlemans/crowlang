@@ -1,5 +1,5 @@
-#ifndef TYPE_CHECKER_HPP
-#define TYPE_CHECKER_HPP
+#ifndef CROW_TYPING_TYPE_CHECKER_HPP
+#define CROW_TYPING_TYPE_CHECKER_HPP
 
 // STL Includes:
 #include <list>
@@ -9,7 +9,7 @@
 #include "../ast/visitor/node_visitor.hpp"
 
 // Local includes:
-#include "reserved_types.hpp"
+#include "native_types.hpp"
 
 
 namespace typing {
@@ -37,11 +37,11 @@ class TypeChecker : public ast::visitor::NodeVisitor {
   TypeChecker();
 
   // Control:
-  // auto visit(node::control::If* t_if) -> Any override;
-  // auto visit(node::control::Loop* t_loop) -> Any override;
-  // auto visit(node::control::Continue* t_continue) -> Any override;
-  // auto visit(node::control::Break* t_break) -> Any override;
-  // auto visit(node::control::Return* t_return) -> Any override;
+  auto visit(node::control::If* t_if) -> Any override;
+  auto visit(node::control::Loop* t_loop) -> Any override;
+  auto visit(node::control::Continue* t_continue) -> Any override;
+  auto visit(node::control::Break* t_break) -> Any override;
+  auto visit(node::control::Return* t_return) -> Any override;
 
   // // Function:
   auto visit(node::functions::Function* t_fn) -> Any override;
@@ -54,9 +54,9 @@ class TypeChecker : public ast::visitor::NodeVisitor {
   // auto visit(node::lvalue::Variable* t_var) -> Any override;
 
   // // Operators:
-  // auto visit(node::operators::Arithmetic* t_arithmetic) -> Any override;
+  auto visit(node::operators::Arithmetic* t_arith) -> Any override;
   // auto visit(node::operators::Assignment* t_assignment) -> Any override;
-  // auto visit(node::operators::Comparison* t_comparison) -> Any override;
+  auto visit(node::operators::Comparison* t_comp) -> Any override;
 
   // auto visit(node::operators::Increment* t_inc) -> Any override;
   // auto visit(node::operators::Decrement* t_dec) -> Any override;
@@ -71,8 +71,8 @@ class TypeChecker : public ast::visitor::NodeVisitor {
   // auto visit(node::operators::Ternary* t_ternary) -> Any override;
 
   // // Packaging:
-  // auto visit(node::packaging::Import* t_import) -> Any override;
-  // auto visit(node::packaging::ModuleDecl* t_mod) -> Any override;
+  auto visit(node::packaging::Import* t_import) -> Any override;
+  auto visit(node::packaging::ModuleDecl* t_mod) -> Any override;
 
   // // Rvalue:
   auto visit(node::rvalue::Float* t_float) -> Any override;
@@ -92,4 +92,4 @@ class TypeChecker : public ast::visitor::NodeVisitor {
 };
 } // namespace typing
 
-#endif // TYPE_CHECKER_HPP
+#endif // CROW_TYPING_TYPE_CHECKER_HPP

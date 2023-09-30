@@ -13,12 +13,9 @@ namespace ast::node::lvalue {
 namespace nt = node_traits;
 
 // Classes:
-class Let : public nt::Identifier, public nt::InitExpr {
-  private:
-  NodePtr m_init;
-
+class Let : public nt::Identifier, public nt::Type, public nt::InitExpr {
   public:
-  Let(std::string_view t_identifier, NodePtr&& t_init);
+  Let(std::string_view t_identifier, std::string_view t_str, NodePtr&& t_init);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

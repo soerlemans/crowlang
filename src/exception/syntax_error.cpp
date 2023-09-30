@@ -6,6 +6,9 @@
 #include <string>
 
 
+// Using statements:
+using namespace exception;
+
 SyntaxError::SyntaxError(const std::string_view t_msg,
                          const container::TextPosition& t_pos)
   : m_pos(t_pos)

@@ -6,6 +6,13 @@
 #include "../node/fdecl.hpp"
 
 
+// Macros:
+#define AST_VISITOR_STUB(t_class, t_type)                      \
+  auto t_class::visit([[maybe_unused]] t_type* t_ptr)->Any \
+  {                                                        \
+    return {};                                             \
+  }
+
 namespace ast::visitor {
 // Using statements:
 using visitable::Any;

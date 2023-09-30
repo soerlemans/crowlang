@@ -80,6 +80,9 @@ auto print(Args&&... t_args) -> void
 {
   // Fold expression
   (std::clog << ... << t_args);
+
+	// Reset any rang modifiers
+  std::clog << rang::style::reset << rang::fg::reset << rang::bg::reset;
 }
 
 template<typename... Args>
