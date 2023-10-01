@@ -15,8 +15,8 @@ namespace nt = node_traits;
 // Classes:
 class Loop : public nt::InitExpr,
              public nt::Condition,
-             public nt::Body,
-             public nt::Expr {
+             public nt::Expr,
+             public nt::Body {
   public:
   Loop(NodePtr&& t_init, NodePtr&& t_condition, NodePtr&& t_expr,
        NodeListPtr&& t_body);

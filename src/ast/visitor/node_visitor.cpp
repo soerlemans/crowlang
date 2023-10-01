@@ -16,12 +16,12 @@ using namespace ast::visitor;
 
 NODE_USING_ALL_NAMESPACES()
 
-#define STUB(t_type)                                                     \
-  auto NodeVisitor::visit([[maybe_unused]] t_type* t_ptr)->Any           \
-  {                                                                      \
-    DBG_WARNING("Not overriden!"); \
-                                                                         \
-    return {};                                                           \
+#define STUB(t_type)                                           \
+  auto NodeVisitor::visit([[maybe_unused]] t_type* t_ptr)->Any \
+  {                                                            \
+    DBG_WARNING("Not overriden!");                             \
+                                                               \
+    return {};                                                 \
   }
 
 STUB(If)
@@ -86,5 +86,11 @@ auto NodeVisitor::visit(NodeInterface* t_ptr) -> Any
 //! Traverse all nodes neatly
 auto NodeVisitor::traverse(NodePtr t_ast) -> Any
 {
-  return t_ast->accept(this);
+  Any any;
+
+  if(t_ast) {
+    any = t_ast->accept(this);
+  }
+
+  return any;
 }

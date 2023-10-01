@@ -3,6 +3,7 @@
 
 // STL Includes:
 #include <list>
+#include <string_view>
 #include <variant>
 
 // Includes:
@@ -29,8 +30,8 @@ class TypeChecker : public ast::visitor::NodeVisitor {
   EnvStack m_env;
 
   protected:
+  auto type_error(std::string_view t_msg) -> void;
   auto add_pairing(NameTypeP t_pair) -> void;
-
   auto get_typev(ast::node::NodePtr t_ptr) -> TypeV;
 
   public:
@@ -58,15 +59,15 @@ class TypeChecker : public ast::visitor::NodeVisitor {
   // auto visit(node::operators::Assignment* t_assignment) -> Any override;
   auto visit(node::operators::Comparison* t_comp) -> Any override;
 
-  // auto visit(node::operators::Increment* t_inc) -> Any override;
-  // auto visit(node::operators::Decrement* t_dec) -> Any override;
+  auto visit(node::operators::Increment* t_inc) -> Any override;
+  auto visit(node::operators::Decrement* t_dec) -> Any override;
 
-  // auto visit(node::operators::UnaryPrefix* t_unary_prefix) -> Any override;
+  auto visit(node::operators::UnaryPrefix* t_up) -> Any override;
 
   // // Logical:
-  // auto visit(node::operators::Not* t_not) -> Any override;
-  // auto visit(node::operators::And* t_and) -> Any override;
-  // auto visit(node::operators::Or* t_or) -> Any override;
+  auto visit(node::operators::Not* t_not) -> Any override;
+  auto visit(node::operators::And* t_and) -> Any override;
+  auto visit(node::operators::Or* t_or) -> Any override;
 
   // auto visit(node::operators::Ternary* t_ternary) -> Any override;
 

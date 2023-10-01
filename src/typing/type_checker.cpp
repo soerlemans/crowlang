@@ -8,7 +8,10 @@
 #include "../ast/node/include.hpp"
 #include "../debug/log.hpp"
 #include "../exception/type_error.hpp"
+
+// Local Includes:
 #include "native_types.hpp"
+
 
 // Using Statements:
 using namespace typing;
@@ -16,18 +19,14 @@ using namespace typing;
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-// Control:
-AST_VISITOR_STUB(TypeChecker, If)
-AST_VISITOR_STUB(TypeChecker, Loop)
-AST_VISITOR_STUB(TypeChecker, Continue)
-AST_VISITOR_STUB(TypeChecker, Break)
 
-auto TypeChecker::visit([[maybe_unused]] Return* t_return) -> Any
+auto TypeChecker::type_error(std::string_view t_msg) -> void
 {
-  return {};
+  using namespace exception;
+
+  throw TypeError{t_msg};
 }
 
-// Methods:
 auto TypeChecker::add_pairing(NameTypeP t_pair) -> void
 {
   m_env.back().insert(t_pair);
@@ -53,6 +52,49 @@ TypeChecker::TypeChecker(): m_env{}
 {
   // There should always be a global environment
   m_env.emplace_back();
+}
+
+// Control:
+auto TypeChecker::visit(If* t_if) -> Any
+{
+  const auto cond{get_typev(t_if->condition())};
+
+  // TODO: Test for numerics
+  if(cond != TypeV{NativeType::BOOL}) {
+    type_error("Expected a numeric or boolean in condition expression");
+  }
+
+  traverse(t_if->init_expr());
+  traverse(t_if->then());
+  traverse(t_if->alt());
+
+  return {};
+}
+
+auto TypeChecker::visit(Loop* t_loop) -> Any
+{
+  const auto cond{get_typev(t_loop->condition())};
+
+  // TODO: Test for numerics
+  if(cond != TypeV{NativeType::BOOL}) {
+    type_error("Expected a numeric or boolean in condition expression");
+  }
+
+  traverse(t_loop->init_expr());
+  traverse(t_loop->body());
+  traverse(t_loop->expr());
+
+  return {};
+}
+
+
+AST_VISITOR_STUB(TypeChecker, Continue)
+AST_VISITOR_STUB(TypeChecker, Break)
+
+auto TypeChecker::visit(Return* t_return) -> Any
+{
+  // TODO: Compare Return Type somehow?
+  return traverse(t_return->expr());
 }
 
 // // Function:
@@ -81,7 +123,7 @@ auto TypeChecker::visit(Let* t_let) -> Any
       DBG_ERROR("Init of ", std::quoted(t_let->identifier()),
                 " contains a type mismatch");
 
-      throw TypeError{"LHS and RHS of 'Let' do not match!"};
+      type_error("LHS and RHS of 'Let' do not match!");
     }
   }
 
@@ -104,7 +146,7 @@ auto TypeChecker::visit(node::operators::Arithmetic* t_arith) -> Any
   if(lhs != rhs) {
     // TODO: Implement type promotion later
 
-    throw TypeError{"LHS and RHS types do not match!"};
+    type_error("LHS and RHS types do not match!");
   }
 
   return lhs;
@@ -120,7 +162,84 @@ auto TypeChecker::visit(Comparison* t_comp) -> Any
   if(lhs != rhs) {
     // TODO: Implement type promotion later
 
-    throw TypeError{"LHS and RHS types do not match!"};
+    type_error("LHS and RHS types do not match!");
+  }
+
+  return TypeV{NativeType::BOOL};
+}
+
+auto TypeChecker::visit(Increment* t_inc) -> Any
+{
+  const auto left{get_typev(t_inc->left())};
+
+  return left;
+}
+
+auto TypeChecker::visit(Decrement* t_dec) -> Any
+{
+  const auto left{get_typev(t_dec->left())};
+
+  return left;
+}
+
+auto TypeChecker::visit(UnaryPrefix* t_up) -> Any
+{
+  const auto left{get_typev(t_up->left())};
+
+  return left;
+}
+
+// // Logical:
+auto TypeChecker::visit(Not* t_not) -> Any
+{
+  using namespace exception;
+
+  const auto lhs{get_typev(t_not->left())};
+
+  const auto is_bool{[](const auto& t_v) {
+    return t_v == TypeV{NativeType::BOOL};
+  }};
+
+  if(is_bool(lhs)) {
+    type_error("LHS and RHS types do not match!");
+  }
+
+  return TypeV{NativeType::BOOL};
+}
+
+// TODO: Create a helper method for these types of type checks
+auto TypeChecker::visit(And* t_and) -> Any
+{
+  using namespace exception;
+
+  const auto lhs{get_typev(t_and->left())};
+  const auto rhs{get_typev(t_and->right())};
+
+  const auto is_bool{[](const auto& t_v) {
+    return t_v == TypeV{NativeType::BOOL};
+  }};
+
+  if(is_bool(lhs) && is_bool(rhs)) {
+    type_error("LHS and RHS types do not match!");
+  }
+
+  return TypeV{NativeType::BOOL};
+}
+
+auto TypeChecker::visit(Or* t_or) -> Any
+{
+
+  using namespace exception;
+
+  const auto lhs{get_typev(t_or->left())};
+  const auto rhs{get_typev(t_or->right())};
+
+  const auto is_bool{[](const auto& t_v) {
+    return t_v == TypeV{NativeType::BOOL};
+  }};
+
+  if(is_bool(lhs) && is_bool(rhs)) {
+    type_error("LHS and RHS types do not match!");
   }
 
   return TypeV{NativeType::BOOL};

@@ -16,8 +16,16 @@ FetchContent_Declare(
   GIT_TAG v1.5
   GIT_PROGRESS TRUE)
 
+# Backward (stack trace library):
+# FetchContent_Declare(
+# 	backward
+#   GIT_REPOSITORY https://github.com/bombela/backward-cpp
+#   GIT_TAG v1.6
+# 	GIT_PROGRESS TRUE)
+
 # Make available:
-FetchContent_MakeAvailable(tabulate rang)
+# FetchContent_MakeAvailable(rang tabulate backward)
+FetchContent_MakeAvailable(rang tabulate)
 
 # Pthread support:
 set(THREADS_PREFER_PTHREAD_FLAG ON)

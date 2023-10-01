@@ -15,6 +15,7 @@ I aim to keep dependencies to a minimum but the following is required:
 - [CLI11](https://github.com/CLIUtils/CLI11) (CLI option parsing library)
 - [rang](https://github.com/agauniyal/rang/tree/master) (cross platform terminal coloring library)
 - [tabulate](https://github.com/p-ranav/tabulate) (Text table library)
+- [backward](https://github.com/bombela/backward-cpp) (library required for getting stack traces in C++)
 - [Boost]() (Utility libraries for C++)
 - [LLVM](https://llvm.org) (LLVM codegen library)
 
@@ -22,7 +23,7 @@ Rang and tabulate are downloaded using CMake and statically linked but CLI11, Bo
 You can install the dependencies with the following aptitude command:
 
 ```shell
-apt install -y libcli11-dev libboost-all-dev llvm-16-dev
+apt install -y libcli11-dev libboost-all-dev  binutils-dev llvm-16-dev
 ```
 
 ## Progress
