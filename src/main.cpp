@@ -23,6 +23,7 @@
 #include "typing/type_checker.hpp"
 
 // Local Includes:
+#include "banner.hpp"
 #include "version.hpp"
 
 
@@ -184,6 +185,8 @@ auto run() -> void
 
 auto main(int t_argc, char* t_argv[]) -> int
 {
+	print_banner();
+
   CLI::App app{"Compiler for Crow(lang)"};
 
   DBG_SET_LOGLEVEL(INFO);
@@ -211,6 +214,6 @@ auto main(int t_argc, char* t_argv[]) -> int
 
     return ExitCode::EXCEPTION;
   }
-	
+
   return ExitCode::OK;
 }

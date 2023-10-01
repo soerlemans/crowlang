@@ -94,7 +94,7 @@ AST_VISITOR_STUB(TypeChecker, Break)
 auto TypeChecker::visit(Return* t_return) -> Any
 {
   // TODO: Compare Return Type somehow?
-  return traverse(t_return->expr());
+  return get_typev(t_return->expr());
 }
 
 // // Function:

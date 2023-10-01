@@ -16,34 +16,54 @@ FetchContent_Declare(
   GIT_TAG v1.5
   GIT_PROGRESS TRUE)
 
-# Backward (stack trace library):
-# FetchContent_Declare(
-# 	backward
-#   GIT_REPOSITORY https://github.com/bombela/backward-cpp
-#   GIT_TAG v1.6
-# 	GIT_PROGRESS TRUE)
-
 # Make available:
-# FetchContent_MakeAvailable(rang tabulate backward)
 FetchContent_MakeAvailable(rang tabulate)
 
 # Pthread support:
 set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads REQUIRED)
+find_package(
+	Threads
+	REQUIRED
+)
 
 # CLI11 (Terminal flag library):
-find_package(CLI11 CONFIG REQUIRED)
+find_package(
+	CLI11
+	CONFIG
+	REQUIRED
+)
 
 # Boost (C++ utility libraries):
-find_package(Boost 1.74 COMPONENTS program_options REQUIRED )
+find_package(
+	Boost
+	1.74
+	COMPONENTS program_options
+	REQUIRED
+)
 
-# LLVM (Compiler toolchain libraries):
-find_package(LLVM 16 CONFIG REQUIRED)
+# Fancier Boost.Stacktrace output
+add_compile_definitions(
+	BOOST_STACKTRACE_USE_ADDR2LINE
+)
 
-include_directories(SYSTEM
-	${LLVM_INCLUDE_DIRS}
+include_directories(
+	SYSTEM
 	${Boost_INCLUDE_DIR}
 )
+
+# LLVM (Compiler toolchain libraries):
+find_package(
+	LLVM
+	16
+	CONFIG
+	REQUIRED
+)
+
+include_directories(
+	SYSTEM
+	${LLVM_INCLUDE_DIRS}
+)
+
 separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
 add_definitions(${LLVM_DEFINITIONS_LIST})
 

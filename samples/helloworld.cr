@@ -2,7 +2,7 @@ module main
 
 
 fn main() {
-  if true {
+  if 10 {
   }
 
 	return 0
