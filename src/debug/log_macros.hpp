@@ -9,6 +9,8 @@
 #if DEBUG
 #define DBG_PRINTLN(...) debug::println(__VA_ARGS__)
 
+#define DBG_PRINT(...) debug::print(__VA_ARGS__)
+
 //! Creates a SourcePosition of a line
 #define DBG_SOURCE_POS()                       \
   container::SourcePosition                    \
@@ -28,13 +30,17 @@
   do {                   \
   } while(0)
 
+#define DBG_PRINT(...) \
+  do {                 \
+  } while(false)
+
 #define DBG_LOG(...) \
   do {               \
-  } while(0)
+  } while(false)
 
 #define DBG_SET_LOGLEVEL(level) \
   do {                          \
-  } while(0)
+  } while(false)
 
 #endif // DEBUG
 

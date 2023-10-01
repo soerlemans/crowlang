@@ -23,6 +23,26 @@ namespace debug {
 //! Specify the different LogLevel's
 enum class LogLevel : u16 { CRITICAL = 0, ERROR, WARNING, INFO, VERBOSE };
 
+// We use std::clog for logging
+template<typename... Args>
+auto print(Args&&... t_args) -> void
+{
+  // Fold expression
+  (std::clog << ... << t_args);
+
+  // Reset any rang modifiers
+  std::clog << rang::style::reset;
+  std::clog << rang::fg::reset << rang::bg::reset;
+}
+
+template<typename... Args>
+auto println(Args&&... t_args) -> void
+{
+  // Fold expression
+  print(std::forward<Args>(t_args)..., '\n');
+}
+
+
 // Logging faciltiies
 #if DEBUG
 // Macros:
@@ -73,24 +93,6 @@ auto is_lower_loglevel(LogLevel t_loglevel) -> bool;
 auto set_loglevel(LogLevel t_loglevel) -> void;
 
 auto operator<<(std::ostream& t_os, const LogLevel t_loglevel) -> std::ostream&;
-
-// We use std::clog for logging
-template<typename... Args>
-auto print(Args&&... t_args) -> void
-{
-  // Fold expression
-  (std::clog << ... << t_args);
-
-	// Reset any rang modifiers
-  std::clog << rang::style::reset << rang::fg::reset << rang::bg::reset;
-}
-
-template<typename... Args>
-auto println(Args&&... t_args) -> void
-{
-  // Fold expression
-  print(std::forward<Args>(t_args)..., '\n');
-}
 
 // Do not use this function with non primitive types it will not know how to
 // Handle them and give an obscure tuple error

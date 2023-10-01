@@ -7,14 +7,16 @@ FetchContent_Declare(
   rang
   GIT_REPOSITORY https://github.com/agauniyal/rang.git
   GIT_TAG v3.2
-  GIT_PROGRESS TRUE)
+  GIT_PROGRESS TRUE
+)
 
 # Tabulate (Terminal table library):
 FetchContent_Declare(
   tabulate
   GIT_REPOSITORY https://github.com/p-ranav/tabulate.git
   GIT_TAG v1.5
-  GIT_PROGRESS TRUE)
+  GIT_PROGRESS TRUE
+)
 
 # Make available:
 FetchContent_MakeAvailable(rang tabulate)
