@@ -1,6 +1,7 @@
 #include "type_checker.hpp"
 
 // STL Includes:
+#include <algorithm>
 #include <any>
 #include <variant>
 
@@ -32,6 +33,23 @@ auto TypeChecker::add_pairing(NameTypeP t_pair) -> void
   m_env.back().insert(t_pair);
 }
 
+auto TypeChecker::get_type_env(std::string_view t_id) -> TypeV
+{
+  TypeV typev;
+
+  std::for_each(m_env.rbegin(), m_env.rend(), [&](const auto& t_env) {
+    const std::string str{t_id};
+    const auto iter{t_env.find(str)};
+    if(iter != t_env.end()) {
+      DBG_INFO("Found ID!: ", t_id);
+
+      typev = iter->second;
+    }
+  });
+
+  return typev;
+}
+
 auto TypeChecker::get_typev(NodePtr t_ptr) -> TypeV
 {
   TypeV typev;
@@ -48,6 +66,49 @@ auto TypeChecker::get_typev(NodePtr t_ptr) -> TypeV
   return typev;
 }
 
+auto TypeChecker::is_integer(const TypeV& t_typev) -> bool
+{
+  // clang-format off
+  return is_any_of(t_typev,
+									 NativeType::INT,
+									 NativeType::I8, NativeType::I16,
+                   NativeType::I32, NativeType::I64,
+									 NativeType::I128,
+
+									 // Unsigned
+									 NativeType::UINT,
+									 NativeType::U8, NativeType::U16,
+									 NativeType::U32, NativeType::U64,
+									 NativeType::U128);
+
+  // clang-format on
+}
+
+auto TypeChecker::is_float(const TypeV& t_typev) -> bool
+{
+  return is_any_of(t_typev, NativeType::F32, NativeType::F64);
+}
+
+auto TypeChecker::is_bool(const TypeV& t_typev) -> bool
+{
+  return t_typev == TypeV{NativeType::BOOL};
+}
+
+//! Checks if a given type is a legal paramter for a condition
+auto TypeChecker::is_condition(const TypeV& t_typev) -> bool
+{
+  if(is_bool(t_typev) || is_integer(t_typev)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+auto TypeChecker::is_numeric(const TypeV& t_typev) -> bool
+{
+  return is_integer(t_typev) || is_float(t_typev);
+}
+
 TypeChecker::TypeChecker(): m_env{}
 {
   // There should always be a global environment
@@ -59,8 +120,9 @@ auto TypeChecker::visit(If* t_if) -> Any
 {
   const auto cond{get_typev(t_if->condition())};
 
-  // TODO: Test for numerics
-  if(cond != TypeV{NativeType::BOOL}) {
+  DBG_INFO("Condition: ", cond);
+
+  if(!is_condition(cond)) {
     type_error("Expected a numeric or boolean in condition expression");
   }
 
@@ -76,7 +138,7 @@ auto TypeChecker::visit(Loop* t_loop) -> Any
   const auto cond{get_typev(t_loop->condition())};
 
   // TODO: Test for numerics
-  if(cond != TypeV{NativeType::BOOL}) {
+  if(!is_condition(cond)) {
     type_error("Expected a numeric or boolean in condition expression");
   }
 
@@ -129,10 +191,20 @@ auto TypeChecker::visit(Let* t_let) -> Any
 
   DBG_INFO(t_let->identifier(), ss.str(), " = <expr>: ", expr_type);
 
-  NameTypeP pair{t_let->identifier(), expr_type};
+  NameTypeP pair{t_let->identifier(), expr_typev};
   add_pairing(pair);
 
   return {};
+}
+
+auto TypeChecker::visit(Variable* t_var) -> Any
+{
+  const auto typev{get_type_env(t_var->identifier())};
+
+  DBG_INFO("Variable ", std::quoted(t_var->identifier(), '\''), " of type ",
+           typev);
+
+  return typev;
 }
 
 // // Operators:
@@ -196,11 +268,7 @@ auto TypeChecker::visit(Not* t_not) -> Any
 
   const auto lhs{get_typev(t_not->left())};
 
-  const auto is_bool{[](const auto& t_v) {
-    return t_v == TypeV{NativeType::BOOL};
-  }};
-
-  if(is_bool(lhs)) {
+  if(!is_condition(lhs)) {
     type_error("LHS and RHS types do not match!");
   }
 
@@ -215,11 +283,7 @@ auto TypeChecker::visit(And* t_and) -> Any
   const auto lhs{get_typev(t_and->left())};
   const auto rhs{get_typev(t_and->right())};
 
-  const auto is_bool{[](const auto& t_v) {
-    return t_v == TypeV{NativeType::BOOL};
-  }};
-
-  if(is_bool(lhs) && is_bool(rhs)) {
+  if(!is_condition(lhs) || !is_condition(rhs)) {
     type_error("LHS and RHS types do not match!");
   }
 
@@ -234,11 +298,7 @@ auto TypeChecker::visit(Or* t_or) -> Any
   const auto lhs{get_typev(t_or->left())};
   const auto rhs{get_typev(t_or->right())};
 
-  const auto is_bool{[](const auto& t_v) {
-    return t_v == TypeV{NativeType::BOOL};
-  }};
-
-  if(is_bool(lhs) && is_bool(rhs)) {
+  if(!is_condition(lhs) || !is_condition(rhs)) {
     type_error("LHS and RHS types do not match!");
   }
 
@@ -268,4 +328,15 @@ auto TypeChecker::visit([[maybe_unused]] String* t_str) -> Any
 auto TypeChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
 {
   return TypeV{NativeType::BOOL};
+}
+
+auto operator<<(std::ostream& t_os, const TypeV t_typev) -> std::ostream&
+{
+  std::visit(
+    [&](const auto& t_v) {
+      t_os << t_v;
+    },
+    t_typev);
+
+  return t_os;
 }

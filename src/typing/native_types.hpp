@@ -89,4 +89,7 @@ const NTypeMap reserved_types = boost::assign::list_of<NTypeMap::relation>
 auto nativetype2str(NativeType t_ntype) -> std::string;
 } // namespace typing
 
+auto operator<<(std::ostream& t_os, const typing::NativeType t_type)
+  -> std::ostream&;
+
 #endif // CROW_TYPING_NATIVE_TYPES_HPP

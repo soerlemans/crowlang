@@ -11,15 +11,15 @@ using namespace exception;
 StacktraceException::StacktraceException(const std::string t_msg)
   : STACKTRACE_EXCEPTION_PARENT{}, m_error{}
 {
-	std::stringstream ss;
+  std::stringstream ss;
 
-	ss << t_msg;
+  ss << t_msg;
 
 #ifdef DEBUG
   // TODO: Relocate somewhere else to only be called once
   cpptrace::absorb_trace_exceptions(false);
 
-	ss << "\n";
+  ss << "\n";
 
   // Print the trace to the stream without colors (they mess up the output).
   ss << STACKTRACE_EXCEPTION_PARENT::what() << '\n';

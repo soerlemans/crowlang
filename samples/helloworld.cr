@@ -2,8 +2,12 @@ module main
 
 
 fn main() {
-  if 10 {
+  let var = 10
+
+  if var2 {
   }
+
+  let var2 = true + 10.0
 
 	return 0
 }
