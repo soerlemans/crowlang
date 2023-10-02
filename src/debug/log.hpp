@@ -44,7 +44,7 @@ auto println(Args&&... t_args) -> void
 
 
 // Logging faciltiies
-#if DEBUG
+#ifdef DEBUG
 // Macros:
 //! Helper macro for converting LogLevel to string representation
 #define DBG_CASE_LOGLEVEL2STR(loglevel) \

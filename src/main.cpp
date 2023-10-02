@@ -105,7 +105,7 @@ auto pprint([[maybe_unused]] ast::node::NodePtr t_ast) -> void
   using namespace ast::visitor;
 
   // Pretty print the AST
-#if DEBUG
+#ifdef DEBUG
   DBG_PRINTLN("|> Pretty printing AST:");
   std::stringstream ss;
   ss << "\nAst:\n";
@@ -154,7 +154,7 @@ auto generate(ast::node::NodePtr t_ast) -> void
   backend.codegen(t_ast);
   // backend.compile("main.out");
 
-#if DEBUG
+#ifdef DEBUG
   std::stringstream ss;
   ss << "\nLLVM IR:\n";
 

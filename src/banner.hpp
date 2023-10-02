@@ -66,14 +66,15 @@ Banner g_banner{Letter{"             ",
 //! This is a terrible way to print the banner but it works
 auto print_banner() -> void
 {
-  using namespace debug;
   using namespace rang;
+  using namespace debug;
 
   std::size_t index{0}, line_index{0};
   while(index < g_banner.size() && line_index < g_banner[index].size()) {
     const auto& letter{g_banner[index]};
     const auto& line{letter[line_index]};
 
+		// Color the C with a blue color
     const auto color{(index == 0) ? fg::blue : fg::reset};
     print(color, line);
 

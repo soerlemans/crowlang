@@ -6,10 +6,8 @@
 
 
 // Macros:
-#if DEBUG
+#ifdef DEBUG
 #define DBG_PRINTLN(...) debug::println(__VA_ARGS__)
-
-#define DBG_PRINT(...) debug::print(__VA_ARGS__)
 
 //! Creates a SourcePosition of a line
 #define DBG_SOURCE_POS()                       \
@@ -29,10 +27,6 @@
 #define DBG_PRINTLN(...) \
   do {                   \
   } while(0)
-
-#define DBG_PRINT(...) \
-  do {                 \
-  } while(false)
 
 #define DBG_LOG(...) \
   do {               \

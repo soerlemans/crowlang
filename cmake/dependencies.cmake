@@ -2,12 +2,15 @@
 include(FetchContent)
 set(FETCHCONTENT_QUIET FALSE)
 
+include(ExternalProject)
+
 # Rang (terminal goodies library):
 FetchContent_Declare(
   rang
   GIT_REPOSITORY https://github.com/agauniyal/rang.git
   GIT_TAG v3.2
   GIT_PROGRESS TRUE
+	SYSTEM
 )
 
 # Tabulate (Terminal table library):
@@ -16,10 +19,39 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/p-ranav/tabulate.git
   GIT_TAG v1.5
   GIT_PROGRESS TRUE
+	SYSTEM
 )
 
+# Cpptrace ()
+FetchContent_Declare(
+  cpptrace
+  GIT_REPOSITORY https://github.com/jeremy-rifkin/cpptrace.git
+  # Switch to v0.2.0 tag when it is released
+  # GIT_TAG v0.2.0
+  GIT_TAG origin/main
+	SYSTEM
+)
+
+add_compile_definitions(
+  CPPTRACE_UNWIND_WITH_UNWIND
+  CPPTRACE_GET_SYMBOLS_WITH_LIBDWARF
+)
+
+set(CMAKE_CXX_FLAGS_DEBUG
+	"-g3 -gdwarf"
+)
+
+# On windows copy cpptrace.dll to the same directory as the executable for your_target
+if(WIN32)
+  add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    $<TARGET_FILE:cpptrace> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+  )
+endif()
+
 # Make available:
-FetchContent_MakeAvailable(rang tabulate)
+FetchContent_MakeAvailable(rang tabulate cpptrace)
 
 # Pthread support:
 set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -41,11 +73,6 @@ find_package(
 	1.74
 	COMPONENTS program_options
 	REQUIRED
-)
-
-# Fancier Boost.Stacktrace output
-add_compile_definitions(
-	BOOST_STACKTRACE_USE_ADDR2LINE
 )
 
 include_directories(
@@ -81,6 +108,7 @@ target_link_libraries(
 	${PROJECT_NAME}
 	rang
 	tabulate::tabulate
+	cpptrace
 	Threads::Threads
 	CLI11::CLI11
 	${LLVM_LIBS}

@@ -22,7 +22,7 @@ Rang and tabulate are downloaded using CMake and statically linked but CLI11, Bo
 You can install the dependencies with the following aptitude command:
 
 ```shell
-apt install -y libcli11-dev libboost-all-dev llvm-16-dev
+apt install -y libcli11-dev libcurl4 libboost-all-dev llvm-16-dev
 ```
 
 ## Progress

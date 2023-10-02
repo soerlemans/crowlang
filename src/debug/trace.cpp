@@ -8,7 +8,7 @@
 
 using namespace debug;
 
-#if DEBUG
+#ifdef DEBUG
 // Methods:
 auto Trace::indent_text() -> std::string
 {

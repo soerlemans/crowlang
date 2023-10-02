@@ -14,6 +14,8 @@ class TypeError : public std::exception {
   TypeError(std::string_view t_msg);
 
   auto what() const noexcept -> const char* override;
+
+
 };
 } // namespace exception
 
