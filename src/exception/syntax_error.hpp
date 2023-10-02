@@ -3,23 +3,27 @@
 
 // STL Includes:
 #include <filesystem>
-#include <stdexcept>
 
 // Includes:
 #include "../container/text_position.hpp"
 
+// Local Includes:
+#include "stacktrace_exception.hpp"
+
 
 namespace exception {
 //! SyntaxError is thrown when there is an error in the syntax
-class SyntaxError : public std::exception {
+class SyntaxError : public StacktraceException {
+  private:
+  auto format(std::string_view t_msg) -> std::string override;
+
   protected:
-  std::string m_error;
   container::TextPosition m_pos;
 
   public:
   SyntaxError(std::string_view t_msg, const container::TextPosition& t_pos);
 
-  auto what() const noexcept -> const char* override;
+  ~SyntaxError() override = default;
 };
 } // namespace exception
 

@@ -3,6 +3,7 @@
 
 // STL Includes:
 #include <stdexcept>
+#include <string_view>
 
 // Library Includes:
 #include <cpptrace/cpptrace.hpp>
@@ -21,11 +22,15 @@
 namespace exception {
 //! Exception class that includes a stacktrace when compiling for a DEBUG build
 class StacktraceException : public STACKTRACE_EXCEPTION_PARENT {
+  private:
+	//! format() constructs a std::stringstraam in order to append to the message
+  virtual auto format(std::string_view t_msg) -> std::string = 0;
+
   protected:
   std::string m_error;
 
   public:
-  StacktraceException(std::string_view t_msg);
+  StacktraceException(std::string t_msg);
 
   auto what() const noexcept -> const char* override;
 

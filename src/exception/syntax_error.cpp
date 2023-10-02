@@ -1,4 +1,5 @@
 #include "syntax_error.hpp"
+#include "stacktrace_exception.hpp"
 
 // STL Includes:
 #include <iomanip>
@@ -9,9 +10,7 @@
 // Using statements:
 using namespace exception;
 
-SyntaxError::SyntaxError(const std::string_view t_msg,
-                         const container::TextPosition& t_pos)
-  : m_pos(t_pos)
+auto SyntaxError::format(const std::string_view t_msg) -> std::string
 {
   std::stringstream ss;
   std::stringstream lineno_ss;
@@ -32,10 +31,10 @@ SyntaxError::SyntaxError(const std::string_view t_msg,
   const auto indent{lineno_ss.str().size() + columnno};
   ss << std::string(indent, ' ') << "^__" << '\n';
 
-  m_error = ss.str();
+  return ss.str();
 }
 
-auto SyntaxError::what() const noexcept -> const char*
-{
-  return m_error.c_str();
-}
+SyntaxError::SyntaxError(const std::string_view t_msg,
+                         const container::TextPosition& t_pos)
+  : StacktraceException{format(t_msg)}, m_pos(t_pos)
+{}

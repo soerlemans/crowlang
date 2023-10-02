@@ -210,7 +210,7 @@ auto main(int t_argc, char* t_argv[]) -> int
     std::cerr << fg::reset << " - \n" << style::reset;
 
     // Print error message:
-    std::cerr << e.what() << std::endl;
+    std::cerr << e.what() << std::flush;
 
     return ExitCode::EXCEPTION;
   }

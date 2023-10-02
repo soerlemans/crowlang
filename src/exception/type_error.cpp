@@ -7,25 +7,22 @@
 #include <sstream>
 
 #include "../debug/log.hpp"
+#include "stacktrace_exception.hpp"
 
 
 using namespace exception;
 
-// TODO: Construct a more elaborate error message later
-TypeError::TypeError(const std::string_view t_msg): m_error{}
+// Methods:
+auto TypeError::format(std::string_view t_msg) -> std::string
 {
   std::stringstream ss;
 
-  // Throw exceptions if getting stacktraces fails somehow
-  cpptrace::absorb_trace_exceptions(false);
-
   ss << t_msg << "\n";
-  ss << cpptrace::stacktrace::current() << "\n";
 
-  m_error = ss.str();
+  return ss.str();
 }
 
-auto TypeError::what() const noexcept -> const char*
-{
-  return m_error.c_str();
-}
+// TODO: Construct a more elaborate error message later
+TypeError::TypeError(const std::string_view t_msg)
+  : StacktraceException{format(t_msg)}
+{}
