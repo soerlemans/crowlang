@@ -10,7 +10,7 @@
 #include "../ast/visitor/node_visitor.hpp"
 
 // Local includes:
-#include "native_types.hpp"
+#include "typev_utilities.hpp"
 
 
 namespace typing {
@@ -19,14 +19,12 @@ using namespace ast;
 using visitable::Any;
 
 // Aliases:
-//! This is an abbreviation for TypeVariant
-using TypeV = std::variant<NativeType, std::string>;
 using NameTypeP = std::pair<std::string, TypeV>;
 using Env = std::map<std::string, TypeV>;
 using EnvStack = std::list<Env>;
 
 // Classes:
-class TypeChecker : public ast::visitor::NodeVisitor {
+class TypeChecker : public TypeVVisitor {
   private:
   EnvStack m_env;
 
@@ -34,22 +32,6 @@ class TypeChecker : public ast::visitor::NodeVisitor {
   auto type_error(std::string_view t_msg) -> void;
   auto add_pairing(NameTypeP t_pair) -> void;
   auto get_type_env(std::string_view t_id) -> TypeV;
-  auto get_typev(ast::node::NodePtr t_ptr) -> TypeV;
-
-  // TODO: Move somewhere else? these methods could effectively be static
-  //! Check if a TypeV is one of the following arguments
-  template<typename... Args>
-  auto is_any_of(const TypeV& t_typev, Args&&... t_args) -> bool
-  {
-    return ((t_typev == TypeV{t_args}) || ...);
-  }
-
-  auto is_integer(const TypeV& t_typev) -> bool;
-  auto is_float(const TypeV& t_typev) -> bool;
-  auto is_bool(const TypeV& t_typev) -> bool;
-
-  auto is_condition(const TypeV& t_typev) -> bool;
-  auto is_numeric(const TypeV& t_typev) -> bool;
 
   public:
   TypeChecker();
@@ -109,8 +91,5 @@ class TypeChecker : public ast::visitor::NodeVisitor {
   ~TypeChecker() override = default;
 };
 } // namespace typing
-
-auto operator<<(std::ostream& t_os, const typing::TypeV t_typev)
-  -> std::ostream&;
 
 #endif // CROW_TYPING_TYPE_CHECKER_HPP

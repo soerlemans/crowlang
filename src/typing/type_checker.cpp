@@ -10,9 +10,6 @@
 #include "../debug/log.hpp"
 #include "../exception/type_error.hpp"
 
-// Local Includes:
-#include "native_types.hpp"
-
 
 // Using Statements:
 using namespace typing;
@@ -35,6 +32,7 @@ auto TypeChecker::add_pairing(NameTypeP t_pair) -> void
 
 auto TypeChecker::get_type_env(std::string_view t_id) -> TypeV
 {
+  bool found{false};
   TypeV typev;
 
   std::for_each(m_env.rbegin(), m_env.rend(), [&](const auto& t_env) {
@@ -43,70 +41,16 @@ auto TypeChecker::get_type_env(std::string_view t_id) -> TypeV
     if(iter != t_env.end()) {
       DBG_INFO("Found ID!: ", t_id);
 
+      found = true;
       typev = iter->second;
     }
   });
 
-  return typev;
-}
-
-auto TypeChecker::get_typev(NodePtr t_ptr) -> TypeV
-{
-  TypeV typev;
-
-  auto any{traverse(t_ptr)};
-  if(any.has_value()) {
-    try {
-      typev = std::any_cast<TypeV>(any);
-    } catch(const std::bad_any_cast& e) {
-      DBG_CRITICAL(e.what());
-    }
+  if(!found) {
+    type_error("Identifier is not defined in environment");
   }
 
   return typev;
-}
-
-auto TypeChecker::is_integer(const TypeV& t_typev) -> bool
-{
-  // clang-format off
-  return is_any_of(t_typev,
-									 NativeType::INT,
-									 NativeType::I8, NativeType::I16,
-                   NativeType::I32, NativeType::I64,
-									 NativeType::I128,
-
-									 // Unsigned
-									 NativeType::UINT,
-									 NativeType::U8, NativeType::U16,
-									 NativeType::U32, NativeType::U64,
-									 NativeType::U128);
-
-  // clang-format on
-}
-
-auto TypeChecker::is_float(const TypeV& t_typev) -> bool
-{
-  return is_any_of(t_typev, NativeType::F32, NativeType::F64);
-}
-
-auto TypeChecker::is_bool(const TypeV& t_typev) -> bool
-{
-  return t_typev == TypeV{NativeType::BOOL};
-}
-
-//! Checks if a given type is a legal paramter for a condition
-auto TypeChecker::is_condition(const TypeV& t_typev) -> bool
-{
-  if(is_bool(t_typev) || is_integer(t_typev)) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-auto TypeChecker::is_numeric(const TypeV& t_typev) -> bool
-{
-  return is_integer(t_typev) || is_float(t_typev);
 }
 
 TypeChecker::TypeChecker(): m_env{}
@@ -328,15 +272,4 @@ auto TypeChecker::visit([[maybe_unused]] String* t_str) -> Any
 auto TypeChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
 {
   return TypeV{NativeType::BOOL};
-}
-
-auto operator<<(std::ostream& t_os, const TypeV t_typev) -> std::ostream&
-{
-  std::visit(
-    [&](const auto& t_v) {
-      t_os << t_v;
-    },
-    t_typev);
-
-  return t_os;
 }

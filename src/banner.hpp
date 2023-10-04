@@ -1,5 +1,5 @@
-#ifndef BANNER_HPP
-#define BANNER_HPP
+#ifndef CROW_BANNER_HPP
+#define CROW_BANNER_HPP
 
 // STL Includes:
 #include <array>
@@ -86,4 +86,4 @@ auto print_banner() -> void
   }
 }
 
-#endif // BANNER_HPP
+#endif // CROW_BANNER_HPP

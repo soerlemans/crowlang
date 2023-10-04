@@ -16,7 +16,6 @@
 #include "codegen/llvm_backend/llvm_backend.hpp"
 #include "container/text_buffer.hpp"
 #include "debug/log.hpp"
-#include "debug/log_macros.hpp"
 #include "lexer/lexer.hpp"
 #include "parser/crow/crow_parser.hpp"
 #include "token/token.hpp"
@@ -185,7 +184,7 @@ auto run() -> void
 
 auto main(int t_argc, char* t_argv[]) -> int
 {
-	print_banner();
+  print_banner();
 
   CLI::App app{"Compiler for Crow(lang)"};
 

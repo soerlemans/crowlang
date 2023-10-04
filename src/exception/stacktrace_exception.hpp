@@ -1,5 +1,5 @@
-#ifndef STACKTRACE_EXCEPTION_HPP
-#define STACKTRACE_EXCEPTION_HPP
+#ifndef CROW_EXCEPTION_STACKTRACE_EXCEPTION_HPP
+#define CROW_EXCEPTION_STACKTRACE_EXCEPTION_HPP
 
 // STL Includes:
 #include <stdexcept>
@@ -38,4 +38,4 @@ class StacktraceException : public STACKTRACE_EXCEPTION_PARENT {
 };
 } // namespace exception
 
-#endif // STACKTRACE_EXCEPTION_HPP
+#endif // CROW_EXCEPTION_STACKTRACE_EXCEPTION_HPP
