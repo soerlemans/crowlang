@@ -17,7 +17,6 @@ using namespace typing;
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-
 auto TypeChecker::type_error(std::string_view t_msg) -> void
 {
   using namespace exception;

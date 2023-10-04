@@ -1,6 +1,32 @@
 #include "typev_utilities.hpp"
 
+// Includes:
+#include "../ast/node/include.hpp"
+#include "../debug/log.hpp"
 
+// Using Statements:
+using namespace typing;
+
+NODE_USING_ALL_NAMESPACES()
+
+// Methods:
+auto TypeVVisitor::get_typev(NodePtr t_ptr) -> TypeV
+{
+  TypeV typev;
+
+  auto any{traverse(t_ptr)};
+  if(any.has_value()) {
+    try {
+      typev = std::any_cast<TypeV>(any);
+    } catch(const std::bad_any_cast& e) {
+      DBG_CRITICAL(e.what());
+    }
+  }
+
+  return typev;
+}
+
+// Functions:
 namespace typing {
 auto is_integer(const TypeV& t_typev) -> bool
 {

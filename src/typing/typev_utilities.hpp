@@ -47,7 +47,6 @@ auto is_condition(const TypeV& t_typev) -> bool;
 auto is_numeric(const TypeV& t_typev) -> bool;
 } // namespace typing
 
-
 auto operator<<(std::ostream& t_os, const typing::TypeV t_typev)
   -> std::ostream&;
 
