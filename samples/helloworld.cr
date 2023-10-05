@@ -1,13 +1,12 @@
-module main
+let global = 10
+
+fn test() -> int {
+  return global
+}
 
 
 fn main() {
   let var = 10
-
-  if var2 {
-  }
-
-  let var2 = true + 10.0
 
 	return 0
 }

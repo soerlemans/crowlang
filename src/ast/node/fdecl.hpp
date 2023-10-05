@@ -9,6 +9,7 @@
 #include "control/fdecl.hpp"
 #include "functions/fdecl.hpp"
 #include "lvalue/fdecl.hpp"
+#include "node_traits/fdecl.hpp"
 #include "operators/fdecl.hpp"
 #include "packaging/fdecl.hpp"
 #include "rvalue/fdecl.hpp"

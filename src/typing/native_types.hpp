@@ -25,6 +25,8 @@ namespace typing {
 // Forward Declarations:
 enum class NativeType;
 
+struct TypeProperties;
+
 // Aliases:
 using NTypeMap = boost::bimap<std::string, NativeType>;
 
@@ -50,10 +52,10 @@ enum class NativeType {
   U128,
 
   // String:
-  // STRING,
+  // STRING_LITERAL,
 
   // Boolean:
-  BOOL
+  BOOL,
 };
 
 // clang-format off
@@ -86,10 +88,16 @@ const NTypeMap reserved_types = boost::assign::list_of<NTypeMap::relation>
 // clang-format on
 
 // Functions:
+auto is_integer(const NativeType t_typev) -> bool;
+auto is_float(const NativeType t_typev) -> bool;
+auto is_bool(const NativeType t_typev) -> bool;
+
+auto is_condition(const NativeType t_typev) -> bool;
+auto is_numeric(const NativeType t_typev) -> bool;
+
 auto nativetype2str(NativeType t_ntype) -> std::string;
 } // namespace typing
 
-auto operator<<(std::ostream& t_os, const typing::NativeType t_type)
-  -> std::ostream&;
+auto operator<<(std::ostream& t_os, typing::NativeType t_type) -> std::ostream&;
 
 #endif // CROW_TYPING_NATIVE_TYPES_HPP

@@ -29,10 +29,10 @@ auto TypeChecker::add_pairing(NameTypeP t_pair) -> void
   m_env.back().insert(t_pair);
 }
 
-auto TypeChecker::get_type_env(std::string_view t_id) -> TypeV
+auto TypeChecker::get_type_env(std::string_view t_id) -> TypeVariant
 {
   bool found{false};
-  TypeV typev;
+  TypeVariant variant;
 
   std::for_each(m_env.rbegin(), m_env.rend(), [&](const auto& t_env) {
     const std::string str{t_id};
@@ -41,7 +41,7 @@ auto TypeChecker::get_type_env(std::string_view t_id) -> TypeV
       DBG_INFO("Found ID!: ", t_id);
 
       found = true;
-      typev = iter->second;
+      variant = iter->second;
     }
   });
 
@@ -49,7 +49,7 @@ auto TypeChecker::get_type_env(std::string_view t_id) -> TypeV
     type_error("Identifier is not defined in environment");
   }
 
-  return typev;
+  return variant;
 }
 
 TypeChecker::TypeChecker(): m_env{}
@@ -61,11 +61,11 @@ TypeChecker::TypeChecker(): m_env{}
 // Control:
 auto TypeChecker::visit(If* t_if) -> Any
 {
-  const auto cond{get_typev(t_if->condition())};
+  const auto cond{get_variant(t_if->condition())};
 
   DBG_INFO("Condition: ", cond);
 
-  if(!is_condition(cond)) {
+  if(!is_condition(cond.get_type())) {
     type_error("Expected a numeric or boolean in condition expression");
   }
 
@@ -78,10 +78,10 @@ auto TypeChecker::visit(If* t_if) -> Any
 
 auto TypeChecker::visit(Loop* t_loop) -> Any
 {
-  const auto cond{get_typev(t_loop->condition())};
+  const auto cond{get_variant(t_loop->condition())};
 
   // TODO: Test for numerics
-  if(!is_condition(cond)) {
+  if(!is_condition(cond.get_type())) {
     type_error("Expected a numeric or boolean in condition expression");
   }
 
@@ -99,7 +99,7 @@ AST_VISITOR_STUB(TypeChecker, Break)
 auto TypeChecker::visit(Return* t_return) -> Any
 {
   // TODO: Compare Return Type somehow?
-  return get_typev(t_return->expr());
+  return get_variant(t_return->expr());
 }
 
 // // Function:
@@ -117,7 +117,7 @@ auto TypeChecker::visit(Let* t_let) -> Any
   using namespace exception;
 
   const auto type{t_let->type()};
-  const auto expr_typev{get_typev(t_let->init_expr())};
+  const auto expr_typev{get_variant(t_let->init_expr())};
   const auto expr_type{nativetype2str(std::get<NativeType>(expr_typev))};
 
   std::stringstream ss;
@@ -142,12 +142,12 @@ auto TypeChecker::visit(Let* t_let) -> Any
 
 auto TypeChecker::visit(Variable* t_var) -> Any
 {
-  const auto typev{get_type_env(t_var->identifier())};
+  const auto variant{get_type_env(t_var->identifier())};
 
   DBG_INFO("Variable ", std::quoted(t_var->identifier(), '\''), " of type ",
-           typev);
+           variant);
 
-  return typev;
+  return variant;
 }
 
 // // Operators:
@@ -155,8 +155,8 @@ auto TypeChecker::visit(node::operators::Arithmetic* t_arith) -> Any
 {
   using namespace exception;
 
-  const auto lhs{get_typev(t_arith->left())};
-  const auto rhs{get_typev(t_arith->right())};
+  const auto lhs{get_variant(t_arith->left())};
+  const auto rhs{get_variant(t_arith->right())};
 
   if(lhs != rhs) {
     // TODO: Implement type promotion later
@@ -171,8 +171,8 @@ auto TypeChecker::visit(Comparison* t_comp) -> Any
 {
   using namespace exception;
 
-  const auto lhs{get_typev(t_comp->left())};
-  const auto rhs{get_typev(t_comp->right())};
+  const auto lhs{get_variant(t_comp->left())};
+  const auto rhs{get_variant(t_comp->right())};
 
   if(lhs != rhs) {
     // TODO: Implement type promotion later
@@ -180,26 +180,26 @@ auto TypeChecker::visit(Comparison* t_comp) -> Any
     type_error("LHS and RHS types do not match!");
   }
 
-  return TypeV{NativeType::BOOL};
+  return TypeVariant{NativeType::BOOL};
 }
 
 auto TypeChecker::visit(Increment* t_inc) -> Any
 {
-  const auto left{get_typev(t_inc->left())};
+  const auto left{get_variant(t_inc->left())};
 
   return left;
 }
 
 auto TypeChecker::visit(Decrement* t_dec) -> Any
 {
-  const auto left{get_typev(t_dec->left())};
+  const auto left{get_variant(t_dec->left())};
 
   return left;
 }
 
 auto TypeChecker::visit(UnaryPrefix* t_up) -> Any
 {
-  const auto left{get_typev(t_up->left())};
+  const auto left{get_variant(t_up->left())};
 
   return left;
 }
@@ -209,13 +209,13 @@ auto TypeChecker::visit(Not* t_not) -> Any
 {
   using namespace exception;
 
-  const auto lhs{get_typev(t_not->left())};
+  const auto lhs{get_variant(t_not->left())};
 
-  if(!is_condition(lhs)) {
+  if(!is_condition(lhs.get_type())) {
     type_error("LHS and RHS types do not match!");
   }
 
-  return TypeV{NativeType::BOOL};
+  return TypeVariant{NativeType::BOOL};
 }
 
 // TODO: Create a helper method for these types of type checks
@@ -223,14 +223,14 @@ auto TypeChecker::visit(And* t_and) -> Any
 {
   using namespace exception;
 
-  const auto lhs{get_typev(t_and->left())};
-  const auto rhs{get_typev(t_and->right())};
+  const auto lhs{get_variant(t_and->left())};
+  const auto rhs{get_variant(t_and->right())};
 
-  if(!is_condition(lhs) || !is_condition(rhs)) {
+  if(!is_condition(lhs.get_type()) || !is_condition(rhs.get_type())) {
     type_error("LHS and RHS types do not match!");
   }
 
-  return TypeV{NativeType::BOOL};
+  return TypeVariant{NativeType::BOOL};
 }
 
 auto TypeChecker::visit(Or* t_or) -> Any
@@ -238,14 +238,14 @@ auto TypeChecker::visit(Or* t_or) -> Any
 
   using namespace exception;
 
-  const auto lhs{get_typev(t_or->left())};
-  const auto rhs{get_typev(t_or->right())};
+  const auto lhs{get_variant(t_or->left())};
+  const auto rhs{get_variant(t_or->right())};
 
-  if(!is_condition(lhs) || !is_condition(rhs)) {
+  if(!is_condition(lhs.get_type()) || !is_condition(rhs.get_type())) {
     type_error("LHS and RHS types do not match!");
   }
 
-  return TypeV{NativeType::BOOL};
+  return TypeVariant{NativeType::BOOL};
 }
 
 // Packaging:
@@ -255,20 +255,20 @@ AST_VISITOR_STUB(TypeChecker, ModuleDecl)
 // Rvalue:
 auto TypeChecker::visit([[maybe_unused]] Float* t_float) -> Any
 {
-  return TypeV{NativeType::F64};
+  return TypeVariant{NativeType::F64};
 }
 
 auto TypeChecker::visit([[maybe_unused]] Integer* t_int) -> Any
 {
-  return TypeV{NativeType::INT};
+  return TypeVariant{NativeType::INT};
 }
 
 auto TypeChecker::visit([[maybe_unused]] String* t_str) -> Any
 {
-  return TypeV{};
+  return TypeVariant{};
 }
 
 auto TypeChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
 {
-  return TypeV{NativeType::BOOL};
+  return TypeVariant{NativeType::BOOL};
 }
