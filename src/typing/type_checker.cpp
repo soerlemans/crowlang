@@ -10,6 +10,9 @@
 #include "../debug/log.hpp"
 #include "../exception/type_error.hpp"
 
+// Local Includes:
+#include "entity_type_checker.hpp"
+
 
 // Using Statements:
 using namespace typing;
@@ -53,10 +56,7 @@ auto TypeChecker::get_type_env(std::string_view t_id) -> TypeVariant
 }
 
 TypeChecker::TypeChecker(): m_env{}
-{
-  // There should always be a global environment
-  m_env.emplace_back();
-}
+{}
 
 // Control:
 auto TypeChecker::visit(If* t_if) -> Any
@@ -271,4 +271,14 @@ auto TypeChecker::visit([[maybe_unused]] String* t_str) -> Any
 auto TypeChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
 {
   return TypeVariant{NativeType::BOOL};
+}
+
+auto TypeChecker::check(NodePtr t_ast) -> void
+{
+  EntityTypeChecker etc;
+
+  m_env.clear();
+  m_env.push_back(etc.check(t_ast));
+
+  traverse(t_ast);
 }

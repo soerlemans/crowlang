@@ -7,7 +7,7 @@
 
 
 // Macros:
-#define AST_VISITOR_STUB(t_class, t_type)                      \
+#define AST_VISITOR_STUB(t_class, t_type)                  \
   auto t_class::visit([[maybe_unused]] t_type* t_ptr)->Any \
   {                                                        \
     return {};                                             \
@@ -23,6 +23,9 @@ using visitable::Any;
  * So all nodes need to be forward declared in this header
  */
 class NodeVisitor {
+  protected:
+  virtual auto traverse(node::NodePtr t_ast) -> Any;
+
   public:
   NodeVisitor() = default;
 
@@ -83,7 +86,6 @@ class NodeVisitor {
   virtual auto visit(node::Nil* t_nil) -> Any;
 
   virtual auto visit(node::NodeInterface* t_ptr) -> Any;
-  virtual auto traverse(node::NodePtr t_ast) -> Any;
 
   virtual ~NodeVisitor() = default;
 };

@@ -2,7 +2,6 @@
 
 // Includes:
 #include "../debug/log.hpp"
-#include "../overload.hpp"
 
 
 // Using Statements:
@@ -45,6 +44,11 @@ auto get_ntype(const VarTypePtr t_var) -> NativeType
 
   return type;
 }
+
+auto get_ntype(const NativeType t_type) -> NativeType
+{
+  return t_type;
+}
 } // namespace
 
 // Methods:
@@ -53,13 +57,11 @@ TypeVariant::TypeVariant(const NativeType t_type): Variant{t_type}
 
 auto TypeVariant::get_type() const -> NativeType
 {
-  return std::visit(Overload{[](const auto& t_type) {
-                               return get_ntype(t_type);
-                             },
-                             [](const NativeType t_type) {
-                               return t_type;
-                             }},
-                    *this);
+  return std::visit(
+    [](const auto& t_type) {
+      return get_ntype(t_type);
+    },
+    *this);
 }
 
 // Functions:

@@ -18,12 +18,17 @@ struct StructType;
 struct FnType;
 struct VarType;
 
+class TypeVariant;
+
 // Aliases:
 using StructTypePtr = std::shared_ptr<VarType>;
 using FnTypePtr = std ::shared_ptr<FnType>;
 using VarTypePtr = std::shared_ptr<VarType>;
 
+using TypeVec = std::vector<TypeVariant>;
+
 using Variant = std::variant<FnTypePtr, VarTypePtr, NativeType>;
+
 
 // Classes:
 //! This is an abbreviation for TypeVariant
@@ -43,7 +48,7 @@ class TypeVariant : public Variant {
 struct StructType {};
 
 struct FnType {
-  std::vector<TypeVariant> m_params;
+  TypeVec m_params;
   TypeVariant m_return_type;
 };
 

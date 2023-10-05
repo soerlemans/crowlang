@@ -11,11 +11,6 @@
 // Macros:
 #define assert_msg(t_msg, t_expr) assert(((void)t_msg, t_expr))
 
-// Using statements:
-using namespace ast::visitor;
-
-NODE_USING_ALL_NAMESPACES()
-
 #define STUB(t_type)                                           \
   auto NodeVisitor::visit([[maybe_unused]] t_type* t_ptr)->Any \
   {                                                            \
@@ -24,6 +19,25 @@ NODE_USING_ALL_NAMESPACES()
     return {};                                                 \
   }
 
+// Using statements:
+using namespace ast::visitor;
+
+NODE_USING_ALL_NAMESPACES()
+
+// Methods:
+//! Traverse all nodes neatly
+auto NodeVisitor::traverse(NodePtr t_ast) -> Any
+{
+  Any any;
+
+  if(t_ast) {
+    any = t_ast->accept(this);
+  }
+
+  return any;
+}
+
+// Control:
 STUB(If)
 STUB(Loop)
 STUB(Continue)
@@ -81,16 +95,4 @@ auto NodeVisitor::visit(NodeInterface* t_ptr) -> Any
   assert_msg("NodeVisitor: Received a NodeInterface*", t_ptr);
 
   return {};
-}
-
-//! Traverse all nodes neatly
-auto NodeVisitor::traverse(NodePtr t_ast) -> Any
-{
-  Any any;
-
-  if(t_ast) {
-    any = t_ast->accept(this);
-  }
-
-  return any;
 }

@@ -109,7 +109,7 @@ auto pprint([[maybe_unused]] ast::node::NodePtr t_ast) -> void
   std::stringstream ss;
   ss << "\nAst:\n";
   PrintVisitor pprint{ss};
-  pprint.traverse(t_ast);
+  pprint.print(t_ast);
 
   DBG_INFO(ss.str());
 
@@ -138,7 +138,7 @@ auto check_types(ast::node::NodePtr t_ast) -> void
   DBG_PRINTLN("|> Type checking:");
 
   TypeChecker type_checker;
-  type_checker.traverse(t_ast);
+  type_checker.check(t_ast);
 
   DBG_PRINTLN("$");
 }

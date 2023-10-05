@@ -23,7 +23,16 @@ class EntityTypeChecker : public TypeVariantHelper {
   Env m_env;
 
   protected:
-  auto add_entity(TypePair t_pair) -> void;
+  template<typename Value>
+  auto add_entity(const std::string_view t_id, Value t_type) -> void
+  {
+    std::pair<std::string, Value> pair{t_id, t_type};
+
+    const auto inserted{m_env.insert(pair).second};
+    if(!inserted) {
+      // TODO: Throw exception, that name was already defined
+    }
+  }
 
   public:
   EntityTypeChecker() = default;
@@ -35,7 +44,7 @@ class EntityTypeChecker : public TypeVariantHelper {
   auto visit(node::packaging::Import* t_import) -> Any override;
   auto visit(node::packaging::ModuleDecl* t_mod) -> Any override;
 
-  auto resolve(node::NodePtr t_ast) -> Env;
+  auto check(node::NodePtr t_ast) -> Env;
 
   virtual ~EntityTypeChecker() = default;
 };

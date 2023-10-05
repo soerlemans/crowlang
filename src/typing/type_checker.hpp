@@ -85,6 +85,8 @@ class TypeChecker : public TypeVariantHelper {
   // auto visit(node::typing::Impl* t_impl) -> Any override;
   // auto visit(node::typing::DotExpr* t_dot_expr) -> Any override;
 
+  auto check(node::NodePtr t_ast) -> void;
+
   ~TypeChecker() override = default;
 };
 } // namespace typing

@@ -54,7 +54,7 @@ auto PrintVisitor::print_if(std::string_view t_str, NodePtr t_ptr) -> void
 {
   if(t_ptr) {
     print(t_str);
-		traverse(t_ptr);
+    traverse(t_ptr);
   }
 }
 
@@ -265,4 +265,9 @@ auto PrintVisitor::visit([[maybe_unused]] Nil* t_nil) -> Any
   print("Nil");
 
   return {};
+}
+
+auto PrintVisitor::print(NodePtr t_ast) -> void
+{
+  traverse(t_ast);
 }

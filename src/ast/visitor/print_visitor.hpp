@@ -186,6 +186,8 @@ class PrintVisitor : public NodeVisitor {
   auto visit(node::List* t_list) -> Any override;
   auto visit(node::Nil* t_nil) -> Any override;
 
+  auto print(node::NodePtr t_ast) -> void;
+
   ~PrintVisitor() override = default;
 };
 } // namespace ast::visitor
