@@ -16,7 +16,7 @@ using namespace ast;
 using visitable::Any;
 
 // Aliases:
-using NameTypeP = std::pair<std::string, TypeVariant>;
+using TypePair = std::pair<std::string, TypeVariant>;
 using Env = std::map<std::string, TypeVariant>;
 using EnvStack = std::list<Env>;
 
@@ -27,8 +27,12 @@ class TypeChecker : public TypeVariantHelper {
 
   protected:
   auto type_error(std::string_view t_msg) -> void;
-  auto add_pairing(NameTypeP t_pair) -> void;
-  auto get_type_env(std::string_view t_id) -> TypeVariant;
+
+  auto add_entity(std::string_view t_id, TypeVariant t_variant) -> void;
+  auto get_entity(std::string_view t_id) -> TypeVariant;
+
+  // auto add_variable() -> void;
+  // auto add_function() -> void;
 
   public:
   TypeChecker();

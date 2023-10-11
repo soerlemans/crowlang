@@ -62,7 +62,7 @@ auto is_numeric(const NativeType t_typev) -> bool
 auto nativetype2str(const NativeType t_ntype) -> std::string
 {
   std::string id;
-  auto& rmap{reserved_types.right};
+  auto& rmap{native_types.right};
 
   const auto iter{rmap.find(t_ntype)};
   if(iter != rmap.end()) {

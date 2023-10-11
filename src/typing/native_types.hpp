@@ -59,7 +59,7 @@ enum class NativeType {
 };
 
 // clang-format off
-const NTypeMap reserved_types = boost::assign::list_of<NTypeMap::relation>
+const NTypeMap native_types = boost::assign::list_of<NTypeMap::relation>
   // Floats:
   (TYPING_NTYPE_PAIR(F32))
 	(TYPING_NTYPE_PAIR(F64))

@@ -35,8 +35,8 @@ using Variant = std::variant<FnTypePtr, VarTypePtr, NativeType>;
 class TypeVariant : public Variant {
   private:
   public:
-  TypeVariant() = default;
-  TypeVariant(NativeType t_type);
+	// Forward all constructors to base class
+  using Variant::Variant;
 
   auto get_type() const -> NativeType;
 
@@ -56,8 +56,6 @@ struct VarType {
   bool m_const;
   TypeVariant m_type;
 };
-
-
 } // namespace typing
 
 // auto operator<<(std::ostream& t_os, typing::StructTypePtr t_struct)

@@ -52,9 +52,6 @@ auto get_ntype(const NativeType t_type) -> NativeType
 } // namespace
 
 // Methods:
-TypeVariant::TypeVariant(const NativeType t_type): Variant{t_type}
-{}
-
 auto TypeVariant::get_type() const -> NativeType
 {
   return std::visit(

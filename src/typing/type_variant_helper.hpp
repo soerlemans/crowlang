@@ -21,7 +21,8 @@ using visitable::Any;
 class TypeVariantHelper : public visitor::NodeVisitor {
   protected:
   auto get_variant(ast::node::NodePtr t_ptr) -> TypeVariant;
-  auto get_type(TypeVariant t_variant) -> NativeType;
+  auto get_list(ast::node::NodeListPtr t_list) -> TypeVec;
+  // auto get_type(TypeVariant t_variant) -> NativeType;
 
   public:
   TypeVariantHelper() = default;

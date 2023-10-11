@@ -3,15 +3,13 @@
 // STL Includes:
 #include <algorithm>
 #include <any>
+#include <memory>
 #include <variant>
 
 // Includes:
 #include "../ast/node/include.hpp"
 #include "../debug/log.hpp"
 #include "../exception/type_error.hpp"
-
-// Local Includes:
-#include "entity_type_checker.hpp"
 
 
 // Using Statements:
@@ -27,12 +25,18 @@ auto TypeChecker::type_error(std::string_view t_msg) -> void
   throw TypeError{t_msg};
 }
 
-auto TypeChecker::add_pairing(NameTypeP t_pair) -> void
+auto TypeChecker::add_entity(const std::string_view t_id, TypeVariant t_variant)
+  -> void
 {
-  m_env.back().insert(t_pair);
+  TypePair pair{t_id, t_variant};
+
+  const auto result{m_env.back().insert(pair)};
+  if(!result.second) {
+    // TODO: Throw exception, that name was already defined
+  }
 }
 
-auto TypeChecker::get_type_env(std::string_view t_id) -> TypeVariant
+auto TypeChecker::get_entity(std::string_view t_id) -> TypeVariant
 {
   bool found{false};
   TypeVariant variant;
@@ -105,6 +109,8 @@ auto TypeChecker::visit(Return* t_return) -> Any
 // // Function:
 auto TypeChecker::visit(Function* t_fn) -> Any
 {
+  const auto id{t_fn->identifier()};
+
   // TODO: Implement
   traverse(t_fn->body());
 
@@ -118,6 +124,8 @@ auto TypeChecker::visit(Let* t_let) -> Any
 
   const auto type{t_let->type()};
   const auto expr_typev{get_variant(t_let->init_expr())};
+
+	//! TODO: Find a more sophisticated way of getting an index
   const auto expr_type{nativetype2str(std::get<NativeType>(expr_typev))};
 
   std::stringstream ss;
@@ -134,15 +142,15 @@ auto TypeChecker::visit(Let* t_let) -> Any
 
   DBG_INFO(t_let->identifier(), ss.str(), " = <expr>: ", expr_type);
 
-  NameTypeP pair{t_let->identifier(), expr_typev};
-  add_pairing(pair);
+  TypeVariant variant{std::make_shared<VarType>(false, expr_typev)};
+  add_entity(t_let->identifier(), variant);
 
   return {};
 }
 
 auto TypeChecker::visit(Variable* t_var) -> Any
 {
-  const auto variant{get_type_env(t_var->identifier())};
+  const auto variant{get_entity(t_var->identifier())};
 
   DBG_INFO("Variable ", std::quoted(t_var->identifier(), '\''), " of type ",
            variant);
@@ -275,10 +283,8 @@ auto TypeChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
 
 auto TypeChecker::check(NodePtr t_ast) -> void
 {
-  EntityTypeChecker etc;
-
   m_env.clear();
-  m_env.push_back(etc.check(t_ast));
+  m_env.emplace_back();
 
   traverse(t_ast);
 }

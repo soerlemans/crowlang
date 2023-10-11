@@ -32,3 +32,14 @@ auto TypeVariantHelper::get_variant(NodePtr t_ptr) -> TypeVariant
 
   return variant;
 }
+
+auto TypeVariantHelper::get_list(NodeListPtr t_list) -> TypeVec
+{
+  TypeVec vec;
+
+  for(auto& ptr : *t_list) {
+    vec.push_back(get_variant(ptr));
+  }
+
+  return vec;
+}
