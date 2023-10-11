@@ -25,7 +25,7 @@ using StructTypePtr = std::shared_ptr<VarType>;
 using FnTypePtr = std ::shared_ptr<FnType>;
 using VarTypePtr = std::shared_ptr<VarType>;
 
-using TypeVec = std::vector<TypeVariant>;
+using TypeList = std::vector<TypeVariant>;
 
 using Variant = std::variant<FnTypePtr, VarTypePtr, NativeType>;
 
@@ -35,20 +35,30 @@ using Variant = std::variant<FnTypePtr, VarTypePtr, NativeType>;
 class TypeVariant : public Variant {
   private:
   public:
-	// Forward all constructors to base class
+  // Forward all constructors to base class
   using Variant::Variant;
 
   auto get_type() const -> NativeType;
+
+  // auto operator==(StructTypePtr t_ptr) -> bool;
+  auto operator==(FnTypePtr t_ptr) -> bool;
+  auto operator==(VarTypePtr t_ptr) -> bool;
+  auto operator==(NativeType t_ptr) -> bool;
+  auto operator==(TypeVariant t_variant) -> bool;
 
   virtual ~TypeVariant() = default;
 };
 
 // Structs:
 // TODO: use VarTypePtr and FnTypePtr in combination with a map?
-struct StructType {};
+struct StructType {
+  std::string m_identifier;
+
+	// TODO: Add members and methods
+};
 
 struct FnType {
-  TypeVec m_params;
+  TypeList m_params;
   TypeVariant m_return_type;
 };
 
@@ -58,13 +68,11 @@ struct VarType {
 };
 } // namespace typing
 
-// auto operator<<(std::ostream& t_os, typing::StructTypePtr t_struct)
-//   -> std::ostream&;
-
+// Functions:
+auto operator<<(std::ostream& t_os, typing::StructTypePtr t_struct)
+  -> std::ostream&;
 auto operator<<(std::ostream& t_os, typing::FnTypePtr t_fn) -> std::ostream&;
-
 auto operator<<(std::ostream& t_os, typing::VarTypePtr t_var) -> std::ostream&;
-
 auto operator<<(std::ostream& t_os, typing::TypeVariant t_variant)
   -> std::ostream&;
 

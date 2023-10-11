@@ -61,13 +61,20 @@ auto TypeVariant::get_type() const -> NativeType
     *this);
 }
 
+auto operator==(const TypeVariant t_variant) -> bool
+{}
+
 // Functions:
-// auto operator<<(std::ostream& t_os, StructType t_struct) -> std::ostream&
-// {
-//   DBG_ERROR("TODO: StructType is not implemented yet;\n");
-//
-//   return t_os;
-// }
+auto operator<<(std::ostream& t_os, StructTypePtr t_struct) -> std::ostream&
+{
+  if(t_struct) {
+    t_os << "Identifier: " << t_struct->m_identifier;
+  } else {
+    DBG_ERROR("StructTypePtr t_struct is nullptr!");
+  }
+
+  return t_os;
+}
 
 auto operator<<(std::ostream& t_os, FnTypePtr t_fn) -> std::ostream&
 {
@@ -80,7 +87,7 @@ auto operator<<(std::ostream& t_os, FnTypePtr t_fn) -> std::ostream&
 
     t_os << "Return type: " << t_fn->m_return_type << "\n";
   } else {
-    DBG_ERROR("FnTypePtr t_var is nullptr!");
+    DBG_ERROR("FnTypePtr t_fn is nullptr!");
   }
 
   return t_os;
