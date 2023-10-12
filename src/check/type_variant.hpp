@@ -8,7 +8,7 @@
 #include "native_types.hpp"
 
 
-namespace typing {
+namespace check {
 // Using statements:
 using namespace ast;
 using visitable::Any;
@@ -21,7 +21,7 @@ struct VarType;
 class TypeVariant;
 
 // Aliases:
-using StructTypePtr = std::shared_ptr<VarType>;
+using StructTypePtr = std::shared_ptr<StructType>;
 using FnTypePtr = std ::shared_ptr<FnType>;
 using VarTypePtr = std::shared_ptr<VarType>;
 
@@ -43,7 +43,7 @@ class TypeVariant : public Variant {
   // auto operator==(StructTypePtr t_ptr) -> bool;
   auto operator==(FnTypePtr t_ptr) -> bool;
   auto operator==(VarTypePtr t_ptr) -> bool;
-  auto operator==(NativeType t_ptr) -> bool;
+  auto operator==(NativeType t_type) -> bool;
   auto operator==(TypeVariant t_variant) -> bool;
 
   virtual ~TypeVariant() = default;
@@ -69,11 +69,11 @@ struct VarType {
 } // namespace typing
 
 // Functions:
-auto operator<<(std::ostream& t_os, typing::StructTypePtr t_struct)
+auto operator<<(std::ostream& t_os, check::StructTypePtr t_struct)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, typing::FnTypePtr t_fn) -> std::ostream&;
-auto operator<<(std::ostream& t_os, typing::VarTypePtr t_var) -> std::ostream&;
-auto operator<<(std::ostream& t_os, typing::TypeVariant t_variant)
+auto operator<<(std::ostream& t_os, check::FnTypePtr t_fn) -> std::ostream&;
+auto operator<<(std::ostream& t_os, check::VarTypePtr t_var) -> std::ostream&;
+auto operator<<(std::ostream& t_os, check::TypeVariant t_variant)
   -> std::ostream&;
 
 #endif // CROW_TYPING_TYPE_VARIANT_HPP

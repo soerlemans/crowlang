@@ -13,7 +13,7 @@
 
 
 // Using Statements:
-using namespace typing;
+using namespace check;
 
 NODE_USING_ALL_NAMESPACES()
 

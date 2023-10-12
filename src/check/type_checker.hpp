@@ -10,7 +10,7 @@
 #include "type_variant_helper.hpp"
 
 
-namespace typing {
+namespace check {
 // Using statements:
 using namespace ast;
 using visitable::Any;
@@ -93,6 +93,6 @@ class TypeChecker : public TypeVariantHelper {
 
   ~TypeChecker() override = default;
 };
-} // namespace typing
+} // namespace check
 
 #endif // CROW_TYPING_TYPE_CHECKER_HPP

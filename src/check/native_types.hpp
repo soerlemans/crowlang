@@ -21,7 +21,7 @@
       NativeType::t_ntype                                   \
   }
 
-namespace typing {
+namespace check {
 // Forward Declarations:
 enum class NativeType;
 
@@ -98,6 +98,6 @@ auto is_numeric(const NativeType t_typev) -> bool;
 auto nativetype2str(NativeType t_ntype) -> std::string;
 } // namespace typing
 
-auto operator<<(std::ostream& t_os, typing::NativeType t_type) -> std::ostream&;
+auto operator<<(std::ostream& t_os, check::NativeType t_type) -> std::ostream&;
 
 #endif // CROW_TYPING_NATIVE_TYPES_HPP

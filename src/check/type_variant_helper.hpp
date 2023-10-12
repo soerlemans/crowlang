@@ -9,7 +9,7 @@
 #include "type_variant.hpp"
 
 
-namespace typing {
+namespace check {
 // Using statements:
 using namespace ast;
 using visitable::Any;
@@ -21,7 +21,7 @@ using visitable::Any;
 class TypeVariantHelper : public visitor::NodeVisitor {
   protected:
   auto get_variant(ast::node::NodePtr t_ptr) -> TypeVariant;
-  auto get_list(ast::node::NodeListPtr t_list) -> TypeVec;
+  auto get_list(ast::node::NodeListPtr t_list) -> TypeList;
   // auto get_type(TypeVariant t_variant) -> NativeType;
 
   public:

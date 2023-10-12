@@ -3,7 +3,7 @@
 
 namespace {
 // Using Statements:
-using namespace typing;
+using namespace check;
 
 //! Check if a NativeType is one of the following arguments
 template<typename... Args>
@@ -13,7 +13,7 @@ constexpr auto nt_any_of(const NativeType& t_nt, Args&&... t_args) -> bool
 }
 } // namespace
 
-namespace typing {
+namespace check {
 // Functions:
 auto is_integer(const NativeType t_nt) -> bool
 {
@@ -71,12 +71,11 @@ auto nativetype2str(const NativeType t_ntype) -> std::string
 
   return id;
 }
-} // namespace typing
+} // namespace check
 
-auto operator<<(std::ostream& t_os, const typing::NativeType t_type)
-  -> std::ostream&
+auto operator<<(std::ostream& t_os, const NativeType t_type) -> std::ostream&
 {
-  t_os << typing::nativetype2str(t_type);
+  t_os << nativetype2str(t_type);
 
   return t_os;
 }

@@ -5,7 +5,7 @@
 
 
 // Using Statements:
-using namespace typing;
+using namespace check;
 
 NODE_USING_ALL_NAMESPACES()
 
@@ -61,8 +61,37 @@ auto TypeVariant::get_type() const -> NativeType
     *this);
 }
 
-auto operator==(const TypeVariant t_variant) -> bool
-{}
+auto TypeVariant::operator==(FnTypePtr t_ptr) -> bool
+{
+  if(t_ptr) {
+    return *this == t_ptr->m_return_type;
+  } else {
+    return false;
+  }
+}
+
+auto TypeVariant::operator==(VarTypePtr t_ptr) -> bool
+{
+  if(t_ptr) {
+    return *this == t_ptr->m_type;
+  } else {
+    return false;
+  }
+}
+
+auto TypeVariant::operator==(const NativeType t_type) -> bool
+{
+  return *this == TypeVariant{t_type};
+}
+
+auto TypeVariant::operator==(TypeVariant t_variant) -> bool
+{
+  return std::visit(
+    [this](auto&& t_v) {
+      return *this == t_v;
+    },
+    t_variant);
+}
 
 // Functions:
 auto operator<<(std::ostream& t_os, StructTypePtr t_struct) -> std::ostream&

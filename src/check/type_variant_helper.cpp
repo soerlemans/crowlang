@@ -9,7 +9,7 @@
 
 
 // Using Statements:
-using namespace typing;
+using namespace check;
 
 NODE_USING_ALL_NAMESPACES()
 
@@ -33,13 +33,13 @@ auto TypeVariantHelper::get_variant(NodePtr t_ptr) -> TypeVariant
   return variant;
 }
 
-auto TypeVariantHelper::get_list(NodeListPtr t_list) -> TypeVec
+auto TypeVariantHelper::get_list(NodeListPtr t_list) -> TypeList
 {
-  TypeVec vec;
+  TypeList list;
 
   for(auto& ptr : *t_list) {
-    vec.push_back(get_variant(ptr));
+    list.push_back(get_variant(ptr));
   }
 
-  return vec;
+  return list;
 }
