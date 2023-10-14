@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <any>
 #include <memory>
-#include <variant>
+#include <ranges>
 
 // Includes:
 #include "../ast/node/include.hpp"
@@ -18,7 +18,7 @@ using namespace check;
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-auto TypeChecker::type_error(std::string_view t_msg) -> void
+auto TypeChecker::type_error(const std::string_view t_msg) -> void
 {
   using namespace exception;
 
@@ -30,7 +30,7 @@ auto TypeChecker::add_entity(const std::string_view t_id, TypeVariant t_variant)
 {
   TypePair pair{t_id, t_variant};
 
-  const auto result{m_env.back().insert(pair)};
+  const auto result{m_envs.back().insert(pair)};
   if(!result.second) {
     // TODO: Throw exception, that name was already defined
   }
@@ -41,16 +41,17 @@ auto TypeChecker::get_entity(std::string_view t_id) -> TypeVariant
   bool found{false};
   TypeVariant variant;
 
-  std::for_each(m_env.rbegin(), m_env.rend(), [&](const auto& t_env) {
+  // We want to traverse the scopes from inner to outer
+  for(const auto& env : m_envs | std::views::reverse) {
     const std::string str{t_id};
-    const auto iter{t_env.find(str)};
-    if(iter != t_env.end()) {
+    const auto iter{env.find(str)};
+    if(iter != env.end()) {
       DBG_INFO("Found ID!: ", t_id);
 
       found = true;
       variant = iter->second;
     }
-  });
+  }
 
   if(!found) {
     type_error("Identifier is not defined in environment");
@@ -59,7 +60,7 @@ auto TypeChecker::get_entity(std::string_view t_id) -> TypeVariant
   return variant;
 }
 
-TypeChecker::TypeChecker(): m_env{}
+TypeChecker::TypeChecker(): m_envs{}
 {}
 
 // Control:
@@ -125,8 +126,9 @@ auto TypeChecker::visit(Let* t_let) -> Any
   const auto type{t_let->type()};
   const auto expr_typev{get_variant(t_let->init_expr())};
 
-	//! TODO: Find a more sophisticated way of getting an index
-  const auto expr_type{nativetype2str(std::get<NativeType>(expr_typev))};
+  //! TODO: Find a more sophisticated way of getting an index
+  // const auto expr_type{nativetype2str(std::get<NativeType>(expr_typev))};
+  const auto expr_type{"Test"};
 
   std::stringstream ss;
   if(!type.empty()) {
@@ -142,7 +144,7 @@ auto TypeChecker::visit(Let* t_let) -> Any
 
   DBG_INFO(t_let->identifier(), ss.str(), " = <expr>: ", expr_type);
 
-  TypeVariant variant{std::make_shared<VarType>(false, expr_typev)};
+  TypeVariant variant{define_variable(false, expr_typev)};
   add_entity(t_let->identifier(), variant);
 
   return {};
@@ -283,8 +285,8 @@ auto TypeChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
 
 auto TypeChecker::check(NodePtr t_ast) -> void
 {
-  m_env.clear();
-  m_env.emplace_back();
+  m_envs.clear();
+  m_envs.emplace_back();
 
   traverse(t_ast);
 }

@@ -1,5 +1,5 @@
-#ifndef CROW_TYPING_TYPE_CHECKER_HPP
-#define CROW_TYPING_TYPE_CHECKER_HPP
+#ifndef CROW_CHECK_TYPE_CHECKER_HPP
+#define CROW_CHECK_TYPE_CHECKER_HPP
 
 // STL Includes:
 #include <list>
@@ -23,7 +23,7 @@ using EnvStack = std::list<Env>;
 // Classes:
 class TypeChecker : public TypeVariantHelper {
   private:
-  EnvStack m_env;
+  EnvStack m_envs;
 
   protected:
   auto type_error(std::string_view t_msg) -> void;
@@ -95,4 +95,4 @@ class TypeChecker : public TypeVariantHelper {
 };
 } // namespace check
 
-#endif // CROW_TYPING_TYPE_CHECKER_HPP
+#endif // CROW_CHECK_TYPE_CHECKER_HPP

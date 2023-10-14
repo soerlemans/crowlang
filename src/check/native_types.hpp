@@ -1,5 +1,5 @@
-#ifndef CROW_TYPING_NATIVE_TYPES_HPP
-#define CROW_TYPING_NATIVE_TYPES_HPP
+#ifndef CROW_CHECK_NATIVE_TYPES_HPP
+#define CROW_CHECK_NATIVE_TYPES_HPP
 
 // STL Includes:
 #include <algorithm>
@@ -100,4 +100,4 @@ auto nativetype2str(NativeType t_ntype) -> std::string;
 
 auto operator<<(std::ostream& t_os, check::NativeType t_type) -> std::ostream&;
 
-#endif // CROW_TYPING_NATIVE_TYPES_HPP
+#endif // CROW_CHECK_NATIVE_TYPES_HPP

@@ -26,9 +26,7 @@ FetchContent_Declare(
 FetchContent_Declare(
   cpptrace
   GIT_REPOSITORY https://github.com/jeremy-rifkin/cpptrace.git
-  # Switch to v0.2.0 tag when it is released
-  # GIT_TAG v0.2.0
-  GIT_TAG origin/main
+  GIT_TAG v0.2.1
 	SYSTEM
 )
 

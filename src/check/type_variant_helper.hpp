@@ -1,5 +1,5 @@
-#ifndef CROW_TYPING_TYPE_VARIANT_HELPER_HPP
-#define CROW_TYPING_TYPE_VARIANT_HELPER_HPP
+#ifndef CROW_CHECK_TYPE_VARIANT_HELPER_HPP
+#define CROW_CHECK_TYPE_VARIANT_HELPER_HPP
 
 
 // Includes:
@@ -20,6 +20,24 @@ using visitable::Any;
  */
 class TypeVariantHelper : public visitor::NodeVisitor {
   protected:
+  template<typename T, typename... Args>
+  inline auto define_type_variant(Args&&... t_args) -> TypeVariant
+  {
+    return {std::make_shared<T>(std::forward<Args>(t_args)...)};
+  }
+
+  template<typename... Args>
+  inline auto define_function(Args&&... t_args) -> TypeVariant
+  {
+    return {define_type_variant<FnType>(std::forward<Args>(t_args)...)};
+  }
+
+  template<typename... Args>
+  inline auto define_variable(Args&&... t_args) -> TypeVariant
+  {
+    return {define_type_variant<VarType>(std::forward<Args>(t_args)...)};
+  }
+
   auto get_variant(ast::node::NodePtr t_ptr) -> TypeVariant;
   auto get_list(ast::node::NodeListPtr t_list) -> TypeList;
   // auto get_type(TypeVariant t_variant) -> NativeType;
@@ -29,6 +47,6 @@ class TypeVariantHelper : public visitor::NodeVisitor {
 
   ~TypeVariantHelper() override = default;
 };
-} // namespace typing
+} // namespace check
 
-#endif // CROW_TYPING_TYPE_VARIANT_HELPER_HPP
+#endif // CROW_CHECK_TYPE_VARIANT_HELPER_HPP

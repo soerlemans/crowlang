@@ -1,5 +1,5 @@
-#ifndef CROW_TYPING_TYPE_VARIANT_HPP
-#define CROW_TYPING_TYPE_VARIANT_HPP
+#ifndef CROW_CHECK_TYPE_VARIANT_HPP
+#define CROW_CHECK_TYPE_VARIANT_HPP
 
 // Includes:
 #include "../ast/visitor/node_visitor.hpp"
@@ -76,4 +76,4 @@ auto operator<<(std::ostream& t_os, check::VarTypePtr t_var) -> std::ostream&;
 auto operator<<(std::ostream& t_os, check::TypeVariant t_variant)
   -> std::ostream&;
 
-#endif // CROW_TYPING_TYPE_VARIANT_HPP
+#endif // CROW_CHECK_TYPE_VARIANT_HPP
