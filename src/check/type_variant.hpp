@@ -14,11 +14,11 @@ using namespace ast;
 using visitable::Any;
 
 // Forward Declarations:
+class TypeVariant;
+
 struct StructType;
 struct FnType;
 struct VarType;
-
-class TypeVariant;
 
 // Aliases:
 using StructTypePtr = std::shared_ptr<StructType>;
@@ -33,18 +33,11 @@ using Variant = std::variant<FnTypePtr, VarTypePtr, NativeType>;
 // Classes:
 //! This is an abbreviation for TypeVariant
 class TypeVariant : public Variant {
-  private:
   public:
   // Forward all constructors to base class
   using Variant::Variant;
 
   auto get_type() const -> NativeType;
-
-  // auto operator==(StructTypePtr t_ptr) -> bool;
-  auto operator==(FnTypePtr t_ptr) -> bool;
-  auto operator==(VarTypePtr t_ptr) -> bool;
-  auto operator==(NativeType t_type) -> bool;
-  auto operator==(TypeVariant t_variant) -> bool;
 
   virtual ~TypeVariant() = default;
 };
@@ -53,8 +46,6 @@ class TypeVariant : public Variant {
 // TODO: use VarTypePtr and FnTypePtr in combination with a map?
 struct StructType {
   std::string m_identifier;
-
-	// TODO: Add members and methods
 };
 
 struct FnType {
@@ -66,7 +57,7 @@ struct VarType {
   bool m_const;
   TypeVariant m_type;
 };
-} // namespace typing
+} // namespace check
 
 // Functions:
 auto operator<<(std::ostream& t_os, check::StructTypePtr t_struct)

@@ -10,6 +10,8 @@
 #include "../ast/node/include.hpp"
 #include "../debug/log.hpp"
 #include "../exception/type_error.hpp"
+#include "native_types.hpp"
+#include "type_variant.hpp"
 
 
 // Using Statements:
@@ -25,8 +27,8 @@ auto TypeChecker::type_error(const std::string_view t_msg) -> void
   throw TypeError{t_msg};
 }
 
-auto TypeChecker::add_entity(const std::string_view t_id, TypeVariant t_variant)
-  -> void
+auto TypeChecker::add_entity(const std::string_view t_id,
+                             const TypeVariant t_variant) -> void
 {
   TypePair pair{t_id, t_variant};
 
@@ -112,10 +114,26 @@ auto TypeChecker::visit(Function* t_fn) -> Any
 {
   const auto id{t_fn->identifier()};
 
-  // TODO: Implement
+  const auto type{str2nativetype(t_fn->type())};
+  const auto params{get_list(t_fn->params())};
+
+  TypeVariant ptr{define_function(params, type)};
+  add_entity(id, ptr);
+
   traverse(t_fn->body());
 
   return {};
+}
+
+auto TypeChecker::visit(FunctionCall* t_fn_call) -> Any
+{
+  auto variant{get_entity(t_fn_call->identifier())};
+
+  // TODO: Improve this code to be more generic and clean, error if this is not
+  // a function name
+  const auto fn{std::get<FnTypePtr>(variant)};
+
+  return TypeVariant{fn->m_return_type};
 }
 
 // // Lvalue:
@@ -124,28 +142,29 @@ auto TypeChecker::visit(Let* t_let) -> Any
   using namespace exception;
 
   const auto type{t_let->type()};
-  const auto expr_typev{get_variant(t_let->init_expr())};
-
-  //! TODO: Find a more sophisticated way of getting an index
-  // const auto expr_type{nativetype2str(std::get<NativeType>(expr_typev))};
-  const auto expr_type{"Test"};
+  const auto expr{get_variant(t_let->init_expr())};
 
   std::stringstream ss;
   if(!type.empty()) {
     ss << ": " << type;
 
-    if(type != expr_type) {
+    // TODO: Resolve non native types
+    const TypeVariant variant{str2nativetype(type)};
+    if(variant != expr) {
       DBG_ERROR("Init of ", std::quoted(t_let->identifier()),
                 " contains a type mismatch");
+
+      DBG_ERROR(variant, " != ", expr);
 
       type_error("LHS and RHS of 'Let' do not match!");
     }
   }
 
-  DBG_INFO(t_let->identifier(), ss.str(), " = <expr>: ", expr_type);
+  DBG_INFO(t_let->identifier(), ss.str(), " = <expr>: ", expr);
 
-  TypeVariant variant{define_variable(false, expr_typev)};
-  add_entity(t_let->identifier(), variant);
+  // Work with variables that contain metadata later
+  // TypeVariant variant{define_variable(false, expr)};
+  add_entity(t_let->identifier(), expr);
 
   return {};
 }
@@ -161,7 +180,7 @@ auto TypeChecker::visit(Variable* t_var) -> Any
 }
 
 // // Operators:
-auto TypeChecker::visit(node::operators::Arithmetic* t_arith) -> Any
+auto TypeChecker::visit(Arithmetic* t_arith) -> Any
 {
   using namespace exception;
 
@@ -170,6 +189,8 @@ auto TypeChecker::visit(node::operators::Arithmetic* t_arith) -> Any
 
   if(lhs != rhs) {
     // TODO: Implement type promotion later
+
+    DBG_ERROR("Typeof: ", lhs, " != ", rhs);
 
     type_error("LHS and RHS types do not match!");
   }

@@ -46,7 +46,7 @@ class TypeChecker : public TypeVariantHelper {
 
   // // Function:
   auto visit(node::functions::Function* t_fn) -> Any override;
-  // auto visit(node::functions::FunctionCall* t_fn_call) -> Any override;
+  auto visit(node::functions::FunctionCall* t_fn_call) -> Any override;
   // auto visit(node::functions::ReturnType* t_rt) -> Any override;
 
   // // Lvalue:

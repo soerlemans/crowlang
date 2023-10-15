@@ -95,8 +95,9 @@ auto is_bool(const NativeType t_typev) -> bool;
 auto is_condition(const NativeType t_typev) -> bool;
 auto is_numeric(const NativeType t_typev) -> bool;
 
+auto str2nativetype(std::string_view t_str) -> NativeType;
 auto nativetype2str(NativeType t_ntype) -> std::string;
-} // namespace typing
+} // namespace check
 
 auto operator<<(std::ostream& t_os, check::NativeType t_type) -> std::ostream&;
 

@@ -4,10 +4,12 @@ fn test() -> int {
   return global
 }
 
-fn main() {
+fn main() -> int {
   let var = 10
 
-  let var2: f32 = var
+  let var2 = var
+
+  let result = test()
 
 	return 0
 }

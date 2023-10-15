@@ -61,45 +61,13 @@ auto TypeVariant::get_type() const -> NativeType
     *this);
 }
 
-auto TypeVariant::operator==(FnTypePtr t_ptr) -> bool
-{
-  if(t_ptr) {
-    return *this == t_ptr->m_return_type;
-  } else {
-    return false;
-  }
-}
-
-auto TypeVariant::operator==(VarTypePtr t_ptr) -> bool
-{
-  if(t_ptr) {
-    return *this == t_ptr->m_type;
-  } else {
-    return false;
-  }
-}
-
-auto TypeVariant::operator==(const NativeType t_type) -> bool
-{
-  return *this == TypeVariant{t_type};
-}
-
-auto TypeVariant::operator==(TypeVariant t_variant) -> bool
-{
-  return std::visit(
-    [this](auto&& t_v) {
-      return *this == t_v;
-    },
-    t_variant);
-}
-
 // Functions:
 auto operator<<(std::ostream& t_os, StructTypePtr t_struct) -> std::ostream&
 {
   if(t_struct) {
     t_os << "Identifier: " << t_struct->m_identifier;
   } else {
-    DBG_ERROR("StructTypePtr t_struct is nullptr!");
+    DBG_ERROR("StructTypePtr nullptr!");
   }
 
   return t_os;
@@ -116,7 +84,7 @@ auto operator<<(std::ostream& t_os, FnTypePtr t_fn) -> std::ostream&
 
     t_os << "Return type: " << t_fn->m_return_type << "\n";
   } else {
-    DBG_ERROR("FnTypePtr t_fn is nullptr!");
+    DBG_ERROR("FnTypePtr nullptr!");
   }
 
   return t_os;
@@ -129,9 +97,9 @@ auto operator<<(std::ostream& t_os, VarTypePtr t_var) -> std::ostream&
       t_os << "Const ";
     }
 
-    t_os << t_var->m_type << "\n";
+    t_os << t_var->m_type;
   } else {
-    DBG_ERROR("VarTypePtr t_var is nullptr!");
+    DBG_ERROR("VarTypePtr nullptr!");
   }
 
   return t_os;

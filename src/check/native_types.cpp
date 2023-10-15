@@ -1,5 +1,9 @@
 #include "native_types.hpp"
 
+// Includes:
+#include "../debug/log.hpp"
+#include <stdexcept>
+
 
 namespace {
 // Using Statements:
@@ -59,6 +63,26 @@ auto is_numeric(const NativeType t_typev) -> bool
   return is_integer(t_typev) || is_float(t_typev);
 }
 
+auto str2nativetype(const std::string_view t_str) -> NativeType
+{
+  NativeType type;
+  auto& lmap{native_types.left};
+
+  const std::string str{t_str};
+
+  // We need to compare using a std::string
+  const auto iter{lmap.find(str)};
+  if(iter != lmap.end()) {
+    type = iter->second;
+  } else {
+    DBG_CRITICAL("Cant convert ", std::quoted(t_str), " to NativeType!");
+
+    throw std::runtime_error{""};
+  }
+
+  return type;
+}
+
 auto nativetype2str(const NativeType t_ntype) -> std::string
 {
   std::string id;
@@ -67,6 +91,10 @@ auto nativetype2str(const NativeType t_ntype) -> std::string
   const auto iter{rmap.find(t_ntype)};
   if(iter != rmap.end()) {
     id = iter->second;
+  } else {
+    DBG_CRITICAL("NativeType key not found in native_types map!");
+
+    throw std::runtime_error{""};
   }
 
   return id;

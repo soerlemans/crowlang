@@ -168,8 +168,7 @@ auto PrattParser::precrement() -> NodePtr
   return node;
 }
 
-// This function parses function calls, it parses builtin functions as well as
-// User defined
+//! This function parses function calls
 auto PrattParser::function_call() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -178,6 +177,13 @@ auto PrattParser::function_call() -> NodePtr
   const auto token{get_token()};
 
   if(next_if(TokenType::IDENTIFIER)) {
+    // Dont prematurely confuse variables and function calls
+    if(!check(TokenType::PAREN_OPEN)) {
+      prev();
+
+      return node;
+    }
+
     auto args{parens([this] {
       return this->expr_list_opt();
     })};
@@ -204,11 +210,11 @@ auto PrattParser::prefix() -> NodePtr
     node = std::move(ptr);
   } else if(auto ptr{literal()}; ptr) {
     node = std::move(ptr);
+  } else if(auto ptr{function_call()}; ptr) {
+    node = std::move(ptr);
   } else if(auto ptr{lvalue()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{precrement()}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{function_call()}; ptr) {
     node = std::move(ptr);
   }
 
