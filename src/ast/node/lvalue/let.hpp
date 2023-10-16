@@ -13,9 +13,13 @@ namespace ast::node::lvalue {
 namespace nt = node_traits;
 
 // Classes:
-class Let : public nt::Identifier, public nt::Type, public nt::InitExpr {
+class Let : public nt::NodePosition,
+            public nt::Identifier,
+            public nt::Type,
+            public nt::InitExpr {
   public:
-  Let(std::string_view t_identifier, std::string_view t_str, NodePtr&& t_init);
+  Let(container::TextPosition t_pos, std::string_view t_identifier,
+      std::string_view t_str, NodePtr&& t_init);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

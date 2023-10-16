@@ -4,10 +4,9 @@
 // STL Includes:
 #include <list>
 #include <string_view>
-#include <variant>
 
 // Local includes:
-#include "type_variant_helper.hpp"
+#include "symbol_helper.hpp"
 
 
 namespace check {
@@ -16,20 +15,20 @@ using namespace ast;
 using visitable::Any;
 
 // Aliases:
-using TypePair = std::pair<std::string, TypeVariant>;
-using Env = std::map<std::string, TypeVariant>;
+using TypePair = std::pair<std::string, SymbolData>;
+using Env = std::map<std::string, SymbolData>;
 using EnvStack = std::list<Env>;
 
 // Classes:
-class TypeChecker : public TypeVariantHelper {
+class TypeChecker : public SymbolHelper {
   private:
   EnvStack m_envs;
 
   protected:
   auto type_error(std::string_view t_msg) -> void;
 
-  auto add_entity(std::string_view t_id, TypeVariant t_variant) -> void;
-  auto get_entity(std::string_view t_id) -> TypeVariant;
+  auto add_symbol(std::string_view t_id, SymbolData t_variant) -> void;
+  auto get_symbol(std::string_view t_id) -> SymbolData;
 
   // auto add_variable() -> void;
   // auto add_function() -> void;

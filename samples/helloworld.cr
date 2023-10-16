@@ -6,10 +6,9 @@ fn test() -> int {
 
 fn main() -> int {
   let var = 10
-
   let var2 = var
 
-  let result = test()
+  let result = test() + var2
 
 	return 0
 }

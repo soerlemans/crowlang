@@ -15,7 +15,7 @@
 
 // Macros:
 #define TYPING_NTYPE_PAIR(t_ntype)                          \
-  NTypeMap::value_type                                      \
+  NativeTypeMap::value_type                                 \
   {                                                         \
     boost::algorithm::to_lower_copy(std::string{#t_ntype}), \
       NativeType::t_ntype                                   \
@@ -25,15 +25,15 @@ namespace check {
 // Forward Declarations:
 enum class NativeType;
 
-struct TypeProperties;
-
 // Aliases:
-using NTypeMap = boost::bimap<std::string, NativeType>;
+using NativeTypeMap = boost::bimap<std::string, NativeType>;
 
 // Enums:
 enum class NativeType {
+  VOID = 0,
+
   // Floats:
-  F32 = 0,
+  F32,
   F64,
 
   // Integers:
@@ -52,14 +52,16 @@ enum class NativeType {
   U128,
 
   // String:
-  // STRING_LITERAL,
+  STRING,
 
   // Boolean:
   BOOL,
 };
 
 // clang-format off
-const NTypeMap native_types = boost::assign::list_of<NTypeMap::relation>
+const NativeTypeMap native_types = boost::assign::list_of<NativeTypeMap::relation>
+  (TYPING_NTYPE_PAIR(VOID))
+
   // Floats:
   (TYPING_NTYPE_PAIR(F32))
 	(TYPING_NTYPE_PAIR(F64))
@@ -80,7 +82,7 @@ const NTypeMap native_types = boost::assign::list_of<NTypeMap::relation>
   (TYPING_NTYPE_PAIR(U128))
 
 	// String:
-  // (TYPING_NTYPE_PAIR(STRING))
+  (TYPING_NTYPE_PAIR(STRING))
 
   // // Boolean:
   (TYPING_NTYPE_PAIR(BOOL))

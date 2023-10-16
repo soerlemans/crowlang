@@ -73,6 +73,7 @@ auto CrowParser::decl_expr() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
+  const auto pos{get_token().position()};
   if(next_if(TokenType::LET)) {
     PARSER_FOUND(TokenType::LET);
     const auto id{expect(TokenType::IDENTIFIER)};
@@ -88,7 +89,7 @@ auto CrowParser::decl_expr() -> NodePtr
       expr_ptr = expr();
     }
 
-    node = make_node<Let>(id.str(), type, std::move(expr_ptr));
+    node = make_node<Let>(pos, id.str(), type, std::move(expr_ptr));
   }
 
   return node;

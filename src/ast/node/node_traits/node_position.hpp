@@ -1,5 +1,5 @@
-#ifndef CROW_AST_NODE_NODE_TRAITS_POSITION_HPP
-#define CROW_AST_NODE_NODE_TRAITS_POSITION_HPP
+#ifndef CROW_AST_NODE_NODE_TRAITS_NODE_POSITION_HPP
+#define CROW_AST_NODE_NODE_TRAITS_NODE_POSITION_HPP
 
 
 // Includes:
@@ -27,4 +27,4 @@ class NodePosition : virtual public NodeInterface {
 };
 } // namespace ast::node::node_traits
 
-#endif // CROW_AST_NODE_NODE_TRAITS_POSITION_HPP
+#endif // CROW_AST_NODE_NODE_TRAITS_NODE_POSITION_HPP

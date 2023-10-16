@@ -8,9 +8,12 @@
 // Local Includes:
 #include "fdecl.hpp"
 
+
 namespace ast::node {
 class NodeInterface : public visitable::Visitable<visitor::NodeVisitor> {
   public:
+  NodeInterface() = default;
+
   virtual auto accept(visitor::NodeVisitor* t_visitor) -> visitable::Any = 0;
 
   virtual ~NodeInterface() = default;

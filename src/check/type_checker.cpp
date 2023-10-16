@@ -10,8 +10,7 @@
 #include "../ast/node/include.hpp"
 #include "../debug/log.hpp"
 #include "../exception/type_error.hpp"
-#include "native_types.hpp"
-#include "type_variant.hpp"
+#include "symbol_types.hpp"
 
 
 // Using Statements:
@@ -27,8 +26,8 @@ auto TypeChecker::type_error(const std::string_view t_msg) -> void
   throw TypeError{t_msg};
 }
 
-auto TypeChecker::add_entity(const std::string_view t_id,
-                             const TypeVariant t_variant) -> void
+auto TypeChecker::add_symbol(const std::string_view t_id,
+                             const SymbolData t_variant) -> void
 {
   TypePair pair{t_id, t_variant};
 
@@ -38,17 +37,17 @@ auto TypeChecker::add_entity(const std::string_view t_id,
   }
 }
 
-auto TypeChecker::get_entity(std::string_view t_id) -> TypeVariant
+auto TypeChecker::get_symbol(std::string_view t_id) -> SymbolData
 {
   bool found{false};
-  TypeVariant variant;
+  SymbolData variant;
 
   // We want to traverse the scopes from inner to outer
   for(const auto& env : m_envs | std::views::reverse) {
     const std::string str{t_id};
     const auto iter{env.find(str)};
     if(iter != env.end()) {
-      DBG_INFO("Found ID!: ", t_id);
+      DBG_INFO("Found Symbol ", std::quoted(t_id), " in Env!");
 
       found = true;
       variant = iter->second;
@@ -72,8 +71,12 @@ auto TypeChecker::visit(If* t_if) -> Any
 
   DBG_INFO("Condition: ", cond);
 
-  if(!is_condition(cond.get_type())) {
-    type_error("Expected a numeric or boolean in condition expression");
+  if(const auto opt{cond.native_type()}; opt) {
+    if(!is_condition(opt.value())) {
+      type_error("Expected a numeric or boolean in condition expression");
+    }
+  } else {
+    type_error("Non native type can not be resolved to \"bool\"");
   }
 
   traverse(t_if->init_expr());
@@ -87,9 +90,12 @@ auto TypeChecker::visit(Loop* t_loop) -> Any
 {
   const auto cond{get_variant(t_loop->condition())};
 
-  // TODO: Test for numerics
-  if(!is_condition(cond.get_type())) {
-    type_error("Expected a numeric or boolean in condition expression");
+  if(const auto opt{cond.native_type()}; opt) {
+    if(!is_condition(opt.value())) {
+      type_error("Expected a numeric or boolean in condition expression");
+    }
+  } else {
+    type_error("Non native type can not be resolved to \"bool\"");
   }
 
   traverse(t_loop->init_expr());
@@ -117,8 +123,8 @@ auto TypeChecker::visit(Function* t_fn) -> Any
   const auto type{str2nativetype(t_fn->type())};
   const auto params{get_list(t_fn->params())};
 
-  TypeVariant ptr{define_function(params, type)};
-  add_entity(id, ptr);
+  SymbolData ptr{define_function(params, type)};
+  add_symbol(id, ptr);
 
   traverse(t_fn->body());
 
@@ -127,13 +133,13 @@ auto TypeChecker::visit(Function* t_fn) -> Any
 
 auto TypeChecker::visit(FunctionCall* t_fn_call) -> Any
 {
-  auto variant{get_entity(t_fn_call->identifier())};
+  auto variant{get_symbol(t_fn_call->identifier())};
 
   // TODO: Improve this code to be more generic and clean, error if this is not
   // a function name
   const auto fn{std::get<FnTypePtr>(variant)};
 
-  return TypeVariant{fn->m_return_type};
+  return fn->m_return_type;
 }
 
 // // Lvalue:
@@ -149,7 +155,7 @@ auto TypeChecker::visit(Let* t_let) -> Any
     ss << ": " << type;
 
     // TODO: Resolve non native types
-    const TypeVariant variant{str2nativetype(type)};
+    const SymbolData variant{str2nativetype(type)};
     if(variant != expr) {
       DBG_ERROR("Init of ", std::quoted(t_let->identifier()),
                 " contains a type mismatch");
@@ -163,15 +169,15 @@ auto TypeChecker::visit(Let* t_let) -> Any
   DBG_INFO(t_let->identifier(), ss.str(), " = <expr>: ", expr);
 
   // Work with variables that contain metadata later
-  // TypeVariant variant{define_variable(false, expr)};
-  add_entity(t_let->identifier(), expr);
+  SymbolData data{define_variable(false, expr)};
+  add_symbol(t_let->identifier(), data);
 
   return {};
 }
 
 auto TypeChecker::visit(Variable* t_var) -> Any
 {
-  const auto variant{get_entity(t_var->identifier())};
+  const auto variant{get_symbol(t_var->identifier())};
 
   DBG_INFO("Variable ", std::quoted(t_var->identifier(), '\''), " of type ",
            variant);
@@ -184,8 +190,10 @@ auto TypeChecker::visit(Arithmetic* t_arith) -> Any
 {
   using namespace exception;
 
-  const auto lhs{get_variant(t_arith->left())};
-  const auto rhs{get_variant(t_arith->right())};
+  const auto ret{get_variant(t_arith->left())};
+
+  const auto lhs{ret.native_type()};
+  const auto rhs{get_variant(t_arith->right()).native_type()};
 
   if(lhs != rhs) {
     // TODO: Implement type promotion later
@@ -195,15 +203,15 @@ auto TypeChecker::visit(Arithmetic* t_arith) -> Any
     type_error("LHS and RHS types do not match!");
   }
 
-  return lhs;
+  return ret;
 }
 
 auto TypeChecker::visit(Comparison* t_comp) -> Any
 {
   using namespace exception;
 
-  const auto lhs{get_variant(t_comp->left())};
-  const auto rhs{get_variant(t_comp->right())};
+  const auto lhs{get_variant(t_comp->left()).native_type()};
+  const auto rhs{get_variant(t_comp->right()).native_type()};
 
   if(lhs != rhs) {
     // TODO: Implement type promotion later
@@ -211,7 +219,7 @@ auto TypeChecker::visit(Comparison* t_comp) -> Any
     type_error("LHS and RHS types do not match!");
   }
 
-  return TypeVariant{NativeType::BOOL};
+  return SymbolData{NativeType::BOOL};
 }
 
 auto TypeChecker::visit(Increment* t_inc) -> Any
@@ -242,11 +250,15 @@ auto TypeChecker::visit(Not* t_not) -> Any
 
   const auto lhs{get_variant(t_not->left())};
 
-  if(!is_condition(lhs.get_type())) {
-    type_error("LHS and RHS types do not match!");
+  if(const auto opt{lhs.native_type()}; opt) {
+    if(!is_condition(opt.value())) {
+      type_error("Expected a numeric or boolean in condition expression");
+    }
+  } else {
+    type_error("Non native type can not be resolved to \"bool\"");
   }
 
-  return TypeVariant{NativeType::BOOL};
+  return SymbolData{NativeType::BOOL};
 }
 
 // TODO: Create a helper method for these types of type checks
@@ -254,14 +266,18 @@ auto TypeChecker::visit(And* t_and) -> Any
 {
   using namespace exception;
 
-  const auto lhs{get_variant(t_and->left())};
-  const auto rhs{get_variant(t_and->right())};
+  const auto lhs{get_variant(t_and->left()).native_type()};
+  const auto rhs{get_variant(t_and->right()).native_type()};
 
-  if(!is_condition(lhs.get_type()) || !is_condition(rhs.get_type())) {
-    type_error("LHS and RHS types do not match!");
+  if(lhs && rhs) {
+    if(!is_condition(lhs.value()) || !is_condition(rhs.value())) {
+      type_error("LHS and RHS types do not match!");
+    }
+  } else {
+    type_error("Both operands must be native types!");
   }
 
-  return TypeVariant{NativeType::BOOL};
+  return SymbolData{NativeType::BOOL};
 }
 
 auto TypeChecker::visit(Or* t_or) -> Any
@@ -269,14 +285,18 @@ auto TypeChecker::visit(Or* t_or) -> Any
 
   using namespace exception;
 
-  const auto lhs{get_variant(t_or->left())};
-  const auto rhs{get_variant(t_or->right())};
+  const auto lhs{get_variant(t_or->left()).native_type()};
+  const auto rhs{get_variant(t_or->right()).native_type()};
 
-  if(!is_condition(lhs.get_type()) || !is_condition(rhs.get_type())) {
-    type_error("LHS and RHS types do not match!");
+  if(lhs && rhs) {
+    if(!is_condition(lhs.value()) || !is_condition(rhs.value())) {
+      type_error("LHS and RHS types do not match!");
+    }
+  } else {
+    type_error("Both operands must be native types!");
   }
 
-  return TypeVariant{NativeType::BOOL};
+  return SymbolData{NativeType::BOOL};
 }
 
 // Packaging:
@@ -286,22 +306,22 @@ AST_VISITOR_STUB(TypeChecker, ModuleDecl)
 // Rvalue:
 auto TypeChecker::visit([[maybe_unused]] Float* t_float) -> Any
 {
-  return TypeVariant{NativeType::F64};
+  return SymbolData{NativeType::F64};
 }
 
 auto TypeChecker::visit([[maybe_unused]] Integer* t_int) -> Any
 {
-  return TypeVariant{NativeType::INT};
+  return SymbolData{NativeType::INT};
 }
 
 auto TypeChecker::visit([[maybe_unused]] String* t_str) -> Any
 {
-  return TypeVariant{};
+  return SymbolData{NativeType::STRING};
 }
 
 auto TypeChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
 {
-  return TypeVariant{NativeType::BOOL};
+  return SymbolData{NativeType::BOOL};
 }
 
 auto TypeChecker::check(NodePtr t_ast) -> void

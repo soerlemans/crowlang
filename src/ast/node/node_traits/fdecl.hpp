@@ -8,6 +8,7 @@ class Condition;
 class Expr;
 class Identifier;
 class InitExpr;
+class NodePosition;
 class Params;
 class Type;
 class Then;

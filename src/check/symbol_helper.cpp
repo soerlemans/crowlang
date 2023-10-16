@@ -1,4 +1,4 @@
-#include "type_variant_helper.hpp"
+#include "symbol_helper.hpp"
 
 // STL Includes:
 #include <stdexcept>
@@ -14,14 +14,14 @@ using namespace check;
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-auto TypeVariantHelper::get_variant(NodePtr t_ptr) -> TypeVariant
+auto SymbolHelper::get_variant(NodePtr t_ptr) -> SymbolData
 {
-  TypeVariant variant;
+  SymbolData variant;
 
   auto any{traverse(t_ptr)};
   if(any.has_value()) {
     try {
-      variant = std::any_cast<TypeVariant>(any);
+      variant = std::any_cast<SymbolData>(any);
     } catch(const std::bad_any_cast& e) {
       DBG_CRITICAL(e.what());
 
@@ -33,7 +33,7 @@ auto TypeVariantHelper::get_variant(NodePtr t_ptr) -> TypeVariant
   return variant;
 }
 
-auto TypeVariantHelper::get_list(NodeListPtr t_list) -> TypeList
+auto SymbolHelper::get_list(NodeListPtr t_list) -> TypeList
 {
   TypeList list;
 
