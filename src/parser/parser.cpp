@@ -85,6 +85,11 @@ auto Parser::get_token() const -> Token&
   return m_tokenstream.current();
 }
 
+auto Parser::get_position() const -> const container::TextPosition&
+{
+	return get_token().position();
+}
+
 //! This method is used to verify if a certain token is located after newlines
 auto Parser::after_newlines(const token::TokenType t_type) -> bool
 {

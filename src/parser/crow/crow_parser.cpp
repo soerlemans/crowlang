@@ -73,7 +73,7 @@ auto CrowParser::decl_expr() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  const auto pos{get_token().position()};
+  const auto pos{get_position()};
   if(next_if(TokenType::LET)) {
     PARSER_FOUND(TokenType::LET);
     const auto id{expect(TokenType::IDENTIFIER)};
@@ -285,6 +285,7 @@ auto CrowParser::loop_statement() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
+  const auto pos{get_position()};
   if(next_if(TokenType::LOOP)) {
     auto [init, cond] = eval_expr();
 
@@ -295,7 +296,7 @@ auto CrowParser::loop_statement() -> NodePtr
 
     auto body_ptr{body()};
 
-    node = make_node<Loop>(std::move(init), std::move(cond),
+    node = make_node<Loop>(pos, std::move(init), std::move(cond),
                            std::move(expr_ptr), std::move(body_ptr));
   }
 
@@ -307,6 +308,7 @@ auto CrowParser::branch_statement(const TokenType t_type) -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
+  const auto pos{get_position()};
   if(next_if(t_type)) {
     auto [init, cond] = eval_expr();
     if(!cond) {
@@ -324,8 +326,8 @@ auto CrowParser::branch_statement(const TokenType t_type) -> NodePtr
       alt_ptr->push_back(std::move(ptr));
     }
 
-    node = make_node<If>(std::move(init), std::move(cond), std::move(then_ptr),
-                         std::move(alt_ptr));
+    node = make_node<If>(pos, std::move(init), std::move(cond),
+                         std::move(then_ptr), std::move(alt_ptr));
   }
 
   return node;
@@ -577,6 +579,7 @@ auto CrowParser::param_list_opt() -> NodeListPtr
   DBG_TRACE_FN(VERBOSE);
   auto nodes{make_node<List>()};
 
+  auto pos{get_position()};
   if(check(TokenType::IDENTIFIER)) {
     PARSER_FOUND(TokenType::IDENTIFIER);
 
@@ -584,20 +587,21 @@ auto CrowParser::param_list_opt() -> NodeListPtr
     expect(TokenType::COLON);
     const auto type{expect(TokenType::IDENTIFIER).str()};
 
-    nodes->push_back(make_node<Variable>(id, type));
-  }
+    nodes->push_back(make_node<Variable>(pos, id, type));
 
-  while(!eos()) {
-    if(next_if(TokenType::COMMA)) {
-      const auto id{expect(TokenType::IDENTIFIER).str()};
-      PARSER_FOUND(TokenType::COMMA, "'IDENTIFIER'");
+    while(!eos()) {
+      if(next_if(TokenType::COMMA)) {
+        pos = get_position();
+        const auto id{expect(TokenType::IDENTIFIER).str()};
+        PARSER_FOUND(TokenType::COMMA, "'IDENTIFIER'");
 
-      expect(TokenType::COLON);
-      const auto type{expect(TokenType::IDENTIFIER).str()};
+        expect(TokenType::COLON);
+        const auto type{expect(TokenType::IDENTIFIER).str()};
 
-      nodes->push_back(make_node<Variable>(id, type));
-    } else {
-      break;
+        nodes->push_back(make_node<Variable>(pos, id, type));
+      } else {
+        break;
+      }
     }
   }
 

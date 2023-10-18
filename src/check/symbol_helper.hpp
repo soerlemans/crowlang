@@ -15,8 +15,8 @@ using namespace ast;
 using visitable::Any;
 
 // Classes:
-/*! This class defines some utiilties for dealing with a SymbolData in Visitor
- * context
+/*! This class defines some utiilties and helpers for dealing with the
+ * SymbolData class
  */
 class SymbolHelper : public visitor::NodeVisitor {
   protected:
@@ -38,8 +38,8 @@ class SymbolHelper : public visitor::NodeVisitor {
     return {define_type_variant<VarType>(std::forward<Args>(t_args)...)};
   }
 
-  auto get_variant(ast::node::NodePtr t_ptr) -> SymbolData;
-  auto get_list(ast::node::NodeListPtr t_list) -> TypeList;
+  auto get_symbol_data(ast::node::NodePtr t_ptr) -> SymbolData;
+  auto get_type_list(ast::node::NodeListPtr t_list) -> TypeList;
 
   public:
   SymbolHelper() = default;

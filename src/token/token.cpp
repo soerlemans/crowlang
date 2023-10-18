@@ -33,7 +33,7 @@ auto Token::double_() const -> double
   return get<double>();
 }
 
-auto Token::position() const -> TextPosition
+auto Token::position() const -> const TextPosition&
 {
   return m_tp;
 }

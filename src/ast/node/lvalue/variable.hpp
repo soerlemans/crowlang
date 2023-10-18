@@ -11,12 +11,16 @@
 namespace ast::node::lvalue {
 // Aliases:
 namespace nt = node_traits;
+namespace ct = container;
 
 // Classes:
-class Variable : public nt::Identifier, public nt::Type {
+class Variable : public nt::NodePosition,
+                 public nt::Identifier,
+                 public nt::Type {
   public:
-  Variable(std::string_view t_identifier);
-  Variable(std::string_view t_identifier, std::string_view t_type);
+  Variable(ct::TextPosition t_pos, std::string_view t_identifier);
+  Variable(ct::TextPosition t_pos, std::string_view t_identifier,
+           std::string_view t_type);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

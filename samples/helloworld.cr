@@ -5,9 +5,11 @@ fn test() -> int {
 }
 
 fn main() -> int {
-  let var: f32 = 10
-  let var2 = var
+  let var = 10.0
 
+  let result = 10
+
+  result = var
 
 	return 0
 }

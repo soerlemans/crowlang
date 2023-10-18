@@ -59,13 +59,13 @@ class LlvmBackend : public ast::visitor::NodeVisitor {
 
   // Operators:
   auto visit(node::operators::Arithmetic* t_arith) -> Any override;
-  auto visit(node::operators::Assignment* t_assig) -> Any override;
+  auto visit(node::operators::Assignment* t_assign) -> Any override;
   auto visit(node::operators::Comparison* t_comp) -> Any override;
 
   auto visit(node::operators::Increment* t_inc) -> Any override;
   auto visit(node::operators::Decrement* t_dec) -> Any override;
 
-  auto visit(node::operators::UnaryPrefix* t_unary_prefix) -> Any override;
+  auto visit(node::operators::UnaryPrefix* t_up) -> Any override;
 
   // Logical:
   auto visit(node::operators::Not* t_not) -> Any override;

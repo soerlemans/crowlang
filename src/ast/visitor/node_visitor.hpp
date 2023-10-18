@@ -47,14 +47,14 @@ class NodeVisitor {
   virtual auto visit(node::lvalue::Variable* t_var) -> Any;
 
   // Operators:
-  virtual auto visit(node::operators::Arithmetic* t_arithmetic) -> Any;
-  virtual auto visit(node::operators::Assignment* t_assignment) -> Any;
-  virtual auto visit(node::operators::Comparison* t_comparison) -> Any;
+  virtual auto visit(node::operators::Arithmetic* t_arith) -> Any;
+  virtual auto visit(node::operators::Assignment* t_assign) -> Any;
+  virtual auto visit(node::operators::Comparison* t_comp) -> Any;
 
-  virtual auto visit(node::operators::Increment* t_increment) -> Any;
-  virtual auto visit(node::operators::Decrement* t_decrement) -> Any;
+  virtual auto visit(node::operators::Increment* t_inc) -> Any;
+  virtual auto visit(node::operators::Decrement* t_dec) -> Any;
 
-  virtual auto visit(node::operators::UnaryPrefix* t_unary_prefix) -> Any;
+  virtual auto visit(node::operators::UnaryPrefix* t_up) -> Any;
 
   // Logical:
   virtual auto visit(node::operators::Not* t_not) -> Any;

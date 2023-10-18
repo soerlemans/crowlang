@@ -22,6 +22,33 @@ using namespace check;
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
+auto TypeChecker::handle_condition(const SymbolData& t_data,
+                                   const container::TextPosition& t_pos) const
+  -> void
+{
+  std::stringstream ss;
+
+  if(const auto opt{t_data.native_type()}; opt) {
+    if(!is_condition(opt.value())) {
+      ss << "Expected a pointer, integer or a boolean for a conditional "
+            "expression."
+         << "\n\n";
+
+      ss << t_pos;
+
+      type_error(ss.str());
+    }
+  } else {
+    ss << "Non native types can not casted to ";
+    ss << std::quoted("bool") << "."
+       << "\n\n";
+
+    ss << t_pos;
+
+    type_error(ss.str());
+  }
+}
+
 auto TypeChecker::add_symbol(const std::string_view t_id,
                              const SymbolData t_variant) -> void
 {
@@ -63,17 +90,11 @@ TypeChecker::TypeChecker(): m_envs{}
 // Control:
 auto TypeChecker::visit(If* t_if) -> Any
 {
-  const auto cond{get_variant(t_if->condition())};
+  const auto cond{get_symbol_data(t_if->condition())};
 
   DBG_INFO("Condition: ", cond);
 
-  if(const auto opt{cond.native_type()}; opt) {
-    if(!is_condition(opt.value())) {
-      type_error("Expected a numeric or boolean in condition expression");
-    }
-  } else {
-    type_error("Non native type can not be resolved to \"bool\"");
-  }
+  handle_condition(cond, t_if->position());
 
   traverse(t_if->init_expr());
   traverse(t_if->then());
@@ -84,15 +105,9 @@ auto TypeChecker::visit(If* t_if) -> Any
 
 auto TypeChecker::visit(Loop* t_loop) -> Any
 {
-  const auto cond{get_variant(t_loop->condition())};
+  const auto cond{get_symbol_data(t_loop->condition())};
 
-  if(const auto opt{cond.native_type()}; opt) {
-    if(!is_condition(opt.value())) {
-      type_error("Expected a numeric or boolean in condition expression");
-    }
-  } else {
-    type_error("Non native type can not be resolved to \"bool\"");
-  }
+  handle_condition(cond, t_loop->position());
 
   traverse(t_loop->init_expr());
   traverse(t_loop->body());
@@ -107,8 +122,10 @@ AST_VISITOR_STUB(TypeChecker, Break)
 
 auto TypeChecker::visit(Return* t_return) -> Any
 {
-  // TODO: Compare Return Type somehow?
-  return get_variant(t_return->expr());
+  const auto data{get_symbol_data(t_return->expr())};
+
+  // TODO: Compare or indicate ReturnType to function somehow?
+  return data;
 }
 
 // // Function:
@@ -117,7 +134,7 @@ auto TypeChecker::visit(Function* t_fn) -> Any
   const auto id{t_fn->identifier()};
 
   const auto type{str2nativetype(t_fn->type())};
-  const auto params{get_list(t_fn->params())};
+  const auto params{get_type_list(t_fn->params())};
 
   SymbolData ptr{define_function(params, type)};
   add_symbol(id, ptr);
@@ -149,7 +166,7 @@ auto TypeChecker::visit(Let* t_let) -> Any
   using namespace exception;
 
   const auto type{t_let->type()};
-  const auto expr{get_variant(t_let->init_expr())};
+  const auto expr{get_symbol_data(t_let->init_expr())};
 
   std::stringstream ss;
   if(!type.empty()) {
@@ -159,10 +176,13 @@ auto TypeChecker::visit(Let* t_let) -> Any
     const SymbolData variant{str2nativetype(type)};
     if(variant != expr) {
       std::stringstream ss;
-      const auto id{t_let->identifier()};
+      const auto id{std::quoted(t_let->identifier())};
 
-      ss << "Init of " << std::quoted(id) << "contains a type mismatch\n";
-      ss << id << ": " << variant << " != <expr>:" << expr << "\n";
+      ss << "Init of " << id << " contains a type mismatch.\n\n";
+
+      ss << "typeof " << id << " = " << variant << "\n";
+      ss << "typeof expr = " << expr << "\n\n";
+
       ss << t_let->position();
 
       type_error(ss.str());
@@ -193,10 +213,10 @@ auto TypeChecker::visit(Arithmetic* t_arith) -> Any
 {
   using namespace exception;
 
-  const auto ret{get_variant(t_arith->left())};
+  const auto ret{get_symbol_data(t_arith->left())};
 
   const auto lhs{ret.native_type()};
-  const auto rhs{get_variant(t_arith->right()).native_type()};
+  const auto rhs{get_symbol_data(t_arith->right()).native_type()};
 
   if(lhs != rhs) {
     // TODO: Implement type promotion later
@@ -209,12 +229,33 @@ auto TypeChecker::visit(Arithmetic* t_arith) -> Any
   return ret;
 }
 
+auto TypeChecker::visit(Assignment* t_assign) -> Any
+{
+  using namespace exception;
+
+  const auto var{get_symbol_data(t_assign->left())};
+  const auto expr{get_symbol_data(t_assign->right())};
+
+  if(var != expr) {
+    std::stringstream ss;
+
+    ss << "Types do not match on assignment.\n\n";
+
+    ss << "typeof left hand side = " << var << "\n";
+    ss << "typeof expr = " << expr << "\n";
+
+    type_error(ss.str());
+  }
+
+  return var;
+}
+
 auto TypeChecker::visit(Comparison* t_comp) -> Any
 {
   using namespace exception;
 
-  const auto lhs{get_variant(t_comp->left()).native_type()};
-  const auto rhs{get_variant(t_comp->right()).native_type()};
+  const auto lhs{get_symbol_data(t_comp->left()).native_type()};
+  const auto rhs{get_symbol_data(t_comp->right()).native_type()};
 
   if(lhs != rhs) {
     // TODO: Implement type promotion later
@@ -227,21 +268,21 @@ auto TypeChecker::visit(Comparison* t_comp) -> Any
 
 auto TypeChecker::visit(Increment* t_inc) -> Any
 {
-  const auto left{get_variant(t_inc->left())};
+  const auto left{get_symbol_data(t_inc->left())};
 
   return left;
 }
 
 auto TypeChecker::visit(Decrement* t_dec) -> Any
 {
-  const auto left{get_variant(t_dec->left())};
+  const auto left{get_symbol_data(t_dec->left())};
 
   return left;
 }
 
 auto TypeChecker::visit(UnaryPrefix* t_up) -> Any
 {
-  const auto left{get_variant(t_up->left())};
+  const auto left{get_symbol_data(t_up->left())};
 
   return left;
 }
@@ -251,15 +292,9 @@ auto TypeChecker::visit(Not* t_not) -> Any
 {
   using namespace exception;
 
-  const auto lhs{get_variant(t_not->left())};
+  const auto lhs{get_symbol_data(t_not->left())};
 
-  if(const auto opt{lhs.native_type()}; opt) {
-    if(!is_condition(opt.value())) {
-      type_error("Expected a numeric or boolean in condition expression");
-    }
-  } else {
-    type_error("Non native type can not be resolved to \"bool\"");
-  }
+  handle_condition(lhs, t_not->position());
 
   return SymbolData{NativeType::BOOL};
 }
@@ -269,8 +304,8 @@ auto TypeChecker::visit(And* t_and) -> Any
 {
   using namespace exception;
 
-  const auto lhs{get_variant(t_and->left()).native_type()};
-  const auto rhs{get_variant(t_and->right()).native_type()};
+  const auto lhs{get_symbol_data(t_and->left()).native_type()};
+  const auto rhs{get_symbol_data(t_and->right()).native_type()};
 
   if(lhs && rhs) {
     if(!is_condition(lhs.value()) || !is_condition(rhs.value())) {
@@ -288,8 +323,8 @@ auto TypeChecker::visit(Or* t_or) -> Any
 
   using namespace exception;
 
-  const auto lhs{get_variant(t_or->left()).native_type()};
-  const auto rhs{get_variant(t_or->right()).native_type()};
+  const auto lhs{get_symbol_data(t_or->left()).native_type()};
+  const auto rhs{get_symbol_data(t_or->right()).native_type()};
 
   if(lhs && rhs) {
     if(!is_condition(lhs.value()) || !is_condition(rhs.value())) {

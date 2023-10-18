@@ -5,7 +5,8 @@ using namespace ast::node::operators;
 using namespace ast::node::node_traits;
 
 // Not:
-Not::Not(NodePtr&& t_left): UnaryOperator{std::move(t_left)}
+Not::Not(ct::TextPosition t_pos, NodePtr&& t_left)
+  : NodePosition{std::move(t_pos)}, UnaryOperator{std::move(t_left)}
 {}
 
 

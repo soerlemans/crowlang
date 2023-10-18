@@ -6,6 +6,7 @@
 #include <string_view>
 
 // Includes:
+#include "../container/text_position.hpp"
 #include "../exception/type_error.hpp"
 
 // Local includes:
@@ -29,7 +30,7 @@ class TypeChecker : public SymbolHelper {
 
   protected:
   template<typename... Args>
-  auto type_error(Args&&... t_args) -> void
+  auto type_error(Args&&... t_args) const -> void
   {
     using namespace exception;
 
@@ -40,6 +41,9 @@ class TypeChecker : public SymbolHelper {
 
     throw TypeError{ss.str()};
   }
+
+  auto handle_condition(const SymbolData& t_data,
+                        const container::TextPosition& t_pos) const -> void;
 
   auto add_symbol(std::string_view t_id, SymbolData t_variant) -> void;
   auto get_symbol(std::string_view t_id) -> SymbolData;
@@ -69,7 +73,7 @@ class TypeChecker : public SymbolHelper {
 
   // // Operators:
   auto visit(node::operators::Arithmetic* t_arith) -> Any override;
-  // auto visit(node::operators::Assignment* t_assignment) -> Any override;
+  auto visit(node::operators::Assignment* t_assign) -> Any override;
   auto visit(node::operators::Comparison* t_comp) -> Any override;
 
   auto visit(node::operators::Increment* t_inc) -> Any override;

@@ -98,34 +98,34 @@ auto PrintVisitor::visit(Variable* t_var) -> Any
 }
 
 // Operators:
-auto PrintVisitor::visit(Arithmetic* t_arithmetic) -> Any
+auto PrintVisitor::visit(Arithmetic* t_arith) -> Any
 {
   COUNTG_INIT();
 
   print("Arithmetic");
-  print_traits(t_arithmetic);
+  print_traits(t_arith);
   // print("| OP: TODO!");
 
   return {};
 }
 
-auto PrintVisitor::visit(Assignment* t_assignment) -> Any
+auto PrintVisitor::visit(Assignment* t_assign) -> Any
 {
   COUNTG_INIT();
 
   print("Assignment");
-  print_traits(t_assignment);
+  print_traits(t_assign);
   // print("| OP: TODO!");
 
   return {};
 }
 
-auto PrintVisitor::visit(Comparison* t_comparison) -> Any
+auto PrintVisitor::visit(Comparison* t_comp) -> Any
 {
   COUNTG_INIT();
 
   print("Comparison");
-  print_traits(t_comparison);
+  print_traits(t_comp);
   // print("| OP: TODO!");
 
   return {};
@@ -153,12 +153,12 @@ auto PrintVisitor::visit(Decrement* t_dec) -> Any
   return {};
 }
 
-auto PrintVisitor::visit(UnaryPrefix* t_unary_prefix) -> Any
+auto PrintVisitor::visit(UnaryPrefix* t_up) -> Any
 {
   COUNTG_INIT();
 
   print("UnaryPrefix");
-  print_traits(t_unary_prefix);
+  print_traits(t_up);
   print("| OP: TODO!");
 
   return {};

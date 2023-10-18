@@ -3,6 +3,10 @@
 
 
 namespace ast::node::node_traits {
+// Aliases:
+namespace nt = node_traits;
+
+// Forward Declarations:
 class Body;
 class Condition;
 class Expr;

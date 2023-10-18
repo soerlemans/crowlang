@@ -14,7 +14,7 @@ using namespace check;
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-auto SymbolHelper::get_variant(NodePtr t_ptr) -> SymbolData
+auto SymbolHelper::get_symbol_data(NodePtr t_ptr) -> SymbolData
 {
   SymbolData variant;
 
@@ -33,12 +33,12 @@ auto SymbolHelper::get_variant(NodePtr t_ptr) -> SymbolData
   return variant;
 }
 
-auto SymbolHelper::get_list(NodeListPtr t_list) -> TypeList
+auto SymbolHelper::get_type_list(NodeListPtr t_list) -> TypeList
 {
   TypeList list;
 
-  for(auto& ptr : *t_list) {
-    list.push_back(get_variant(ptr));
+  for(const auto& ptr : *t_list) {
+    list.push_back(get_symbol_data(ptr));
   }
 
   return list;

@@ -59,6 +59,8 @@ class Parser {
   auto prev() -> token::Token&;
   auto get_token() const -> token::Token&;
 
+  auto get_position() const -> const container::TextPosition&;
+
   template<typename... Args>
   auto next_if(Args&&... t_args) -> bool
   {

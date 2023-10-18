@@ -52,7 +52,7 @@ class Token {
   auto int_() const -> int;
   auto double_() const -> double;
 
-  auto position() const -> TextPosition;
+  auto position() const -> const TextPosition&;
 
   virtual ~Token() = default;
 };

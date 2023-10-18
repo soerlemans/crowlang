@@ -41,7 +41,7 @@ auto PrattParser::lvalue() -> NodePtr
   if(next_if(TokenType::IDENTIFIER)) {
     const auto id{token.str()};
     DBG_TRACE_PRINT(INFO, "Found 'VARIABLE': ", id);
-    node = make_node<Variable>(id);
+    node = make_node<Variable>(token.position(), id);
   }
 
   return node;
@@ -103,11 +103,12 @@ auto PrattParser::negation() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
+  const auto pos{get_position()};
   if(next_if(TokenType::NOT)) {
     PARSER_FOUND(TokenType::NOT);
 
     if(auto ptr{prefix_expr(TokenType::NOT)}; ptr) {
-      node = make_node<Not>(std::move(ptr));
+      node = make_node<Not>(pos, std::move(ptr));
     } else {
       syntax_error("After a negation (!) an expression must follow");
     }
