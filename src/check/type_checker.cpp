@@ -9,7 +9,9 @@
 // Includes:
 #include "../ast/node/include.hpp"
 #include "../debug/log.hpp"
-#include "../exception/type_error.hpp"
+
+// Local Includes:
+#include "native_types.hpp"
 #include "symbol_types.hpp"
 
 
@@ -19,13 +21,6 @@ using namespace check;
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-auto TypeChecker::type_error(const std::string_view t_msg) -> void
-{
-  using namespace exception;
-
-  throw TypeError{t_msg};
-}
-
 auto TypeChecker::add_symbol(const std::string_view t_id,
                              const SymbolData t_variant) -> void
 {
@@ -142,6 +137,11 @@ auto TypeChecker::visit(FunctionCall* t_fn_call) -> Any
   return fn->m_return_type;
 }
 
+auto TypeChecker::visit(ReturnType* t_rt) -> Any
+{
+  return SymbolData{str2nativetype(t_rt->type())};
+}
+
 // // Lvalue:
 auto TypeChecker::visit(Let* t_let) -> Any
 {
@@ -162,7 +162,7 @@ auto TypeChecker::visit(Let* t_let) -> Any
 
       DBG_ERROR(variant, " != ", expr);
 
-      type_error("LHS and RHS of 'Let' do not match!");
+      type_error("LHS and RHS of 'Let' do not match!\n", t_let->position());
     }
   }
 

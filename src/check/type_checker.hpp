@@ -5,6 +5,9 @@
 #include <list>
 #include <string_view>
 
+// Includes:
+#include "../exception/type_error.hpp"
+
 // Local includes:
 #include "symbol_helper.hpp"
 
@@ -25,7 +28,18 @@ class TypeChecker : public SymbolHelper {
   EnvStack m_envs;
 
   protected:
-  auto type_error(std::string_view t_msg) -> void;
+  template<typename... Args>
+  auto type_error(Args&&... t_args) -> void
+  {
+    using namespace exception;
+
+    std::stringstream ss;
+
+    // Fold expression
+    (ss << ... << t_args);
+
+    throw TypeError{ss.str()};
+  }
 
   auto add_symbol(std::string_view t_id, SymbolData t_variant) -> void;
   auto get_symbol(std::string_view t_id) -> SymbolData;
@@ -46,7 +60,7 @@ class TypeChecker : public SymbolHelper {
   // // Function:
   auto visit(node::functions::Function* t_fn) -> Any override;
   auto visit(node::functions::FunctionCall* t_fn_call) -> Any override;
-  // auto visit(node::functions::ReturnType* t_rt) -> Any override;
+  auto visit(node::functions::ReturnType* t_rt) -> Any override;
 
   // // Lvalue:
   // auto visit(node::lvalue::Const* t_const) -> Any override;
