@@ -3,6 +3,7 @@
 // STL Includes:
 #include <algorithm>
 #include <any>
+#include <iomanip>
 #include <memory>
 #include <ranges>
 
@@ -157,12 +158,14 @@ auto TypeChecker::visit(Let* t_let) -> Any
     // TODO: Resolve non native types
     const SymbolData variant{str2nativetype(type)};
     if(variant != expr) {
-      DBG_ERROR("Init of ", std::quoted(t_let->identifier()),
-                " contains a type mismatch");
+      std::stringstream ss;
+      const auto id{t_let->identifier()};
 
-      DBG_ERROR(variant, " != ", expr);
+      ss << "Init of " << std::quoted(id) << "contains a type mismatch\n";
+      ss << id << ": " << variant << " != <expr>:" << expr << "\n";
+      ss << t_let->position();
 
-      type_error("LHS and RHS of 'Let' do not match!\n", t_let->position());
+      type_error(ss.str());
     }
   }
 
