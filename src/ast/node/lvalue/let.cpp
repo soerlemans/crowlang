@@ -6,8 +6,5 @@ using namespace ast::node::node_traits;
 
 Let::Let(ct::TextPosition t_pos, const std::string_view t_identifier,
          const std::string_view t_type, NodePtr&& t_init)
-  : NodePosition{std::move(t_pos)},
-    Identifier{t_identifier},
-    Type{t_type},
-    InitExpr{std::move(t_init)}
+  : DeclExpr{std::move(t_pos), t_identifier, t_type, std::move(t_init)}
 {}

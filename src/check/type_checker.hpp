@@ -10,6 +10,7 @@
 #include "../exception/type_error.hpp"
 
 // Local includes:
+#include "symbol_data.hpp"
 #include "symbol_helper.hpp"
 
 
@@ -67,7 +68,8 @@ class TypeChecker : public SymbolHelper {
   auto visit(node::functions::ReturnType* t_rt) -> Any override;
 
   // // Lvalue:
-  // auto visit(node::lvalue::Const* t_const) -> Any override;
+  auto decl_expr(node::node_traits::DeclExpr* t_decl) -> SymbolData;
+  auto visit(node::lvalue::Const* t_const) -> Any override;
   auto visit(node::lvalue::Let* t_let) -> Any override;
   auto visit(node::lvalue::Variable* t_var) -> Any override;
 

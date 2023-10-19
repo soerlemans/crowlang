@@ -9,6 +9,7 @@ namespace nt = node_traits;
 // Forward Declarations:
 class Body;
 class Condition;
+class DeclExpr;
 class Expr;
 class Identifier;
 class InitExpr;

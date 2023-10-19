@@ -68,37 +68,82 @@ auto CrowParser::expr_opt() -> NodePtr
   return expr();
 }
 
-auto CrowParser::decl_expr() -> NodePtr
+// FIXME: This is "temporary fix"
+auto CrowParser::init_expr(const token::TokenType t_type) -> NodePtr
 {
+  using namespace token;
+
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
   const auto pos{get_position()};
-  if(next_if(TokenType::LET)) {
-    PARSER_FOUND(TokenType::LET);
+  if(next_if(t_type)) {
+    PARSER_FOUND(t_type);
+
     const auto id{expect(TokenType::IDENTIFIER)};
-
     std::string type;
-    if(next_if(TokenType::COLON)) {
-      type = expect(TokenType::IDENTIFIER).str();
-    }
-
     NodePtr expr_ptr;
-    if(next_if(TokenType::ASSIGNMENT)) {
+
+    const auto get_expr{[&]() {
       newline_opt();
       expr_ptr = expr();
+    }};
+
+    if(next_if(TokenType::COLON)) {
+      type = expect(TokenType::IDENTIFIER).str();
+
+      if(next_if(TokenType::ASSIGNMENT)) {
+        get_expr();
+      }
+    } else {
+      expect(TokenType::ASSIGNMENT);
+      get_expr();
     }
 
-    node = make_node<Let>(pos, id.str(), type, std::move(expr_ptr));
+    if(t_type == TokenType::CONST) {
+      node = make_node<Const>(pos, id.str(), type, std::move(expr_ptr));
+    } else if(t_type == TokenType::LET) {
+      node = make_node<Let>(pos, id.str(), type, std::move(expr_ptr));
+    } else {
+      // TODO: Error
+    }
   }
 
   return node;
 }
 
-auto CrowParser::eval_expr() -> NodePair
+auto CrowParser::const_expr() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePair pair;
+
+  return init_expr(TokenType::CONST);
+}
+
+auto CrowParser::let_expr() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+
+  return init_expr(TokenType::LET);
+}
+
+auto CrowParser::decl_expr() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  if(auto ptr{const_expr()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{let_expr()}; ptr) {
+    node = std::move(ptr);
+  }
+
+  return node;
+}
+
+auto CrowParser::eval_expr() -> EvalPair
+{
+  DBG_TRACE_FN(VERBOSE);
+  EvalPair pair;
 
   if(auto ptr{decl_expr()}; ptr) {
     expect(TokenType::SEMICOLON);

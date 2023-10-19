@@ -1,9 +1,11 @@
 #ifndef CROW_PARSER_CROW_CROW_PARSER_HPP
 #define CROW_PARSER_CROW_CROW_PARSER_HPP
 
+// STL Includes:
+#include <string>
+
 // Includes:
 #include "../pratt/pratt_parser.hpp"
-#include <string>
 
 
 namespace parser::crow {
@@ -11,7 +13,7 @@ namespace parser::crow {
 namespace pkg = ast::node::packaging;
 
 // Aliases:
-using NodePair = std::pair<n::NodePtr, n::NodePtr>;
+using EvalPair = std::pair<n::NodePtr, n::NodePtr>;
 
 // Classes:
 /*! Top down parser of the Crow language.
@@ -28,8 +30,11 @@ class CrowParser : public pratt::PrattParser {
   // Expressions:
   virtual auto expr_opt() -> n::NodePtr;
 
+  virtual auto init_expr(token::TokenType t_type) -> n::NodePtr;
+  virtual auto const_expr() -> n::NodePtr;
+  virtual auto let_expr() -> n::NodePtr;
   virtual auto decl_expr() -> n::NodePtr;
-  virtual auto eval_expr() -> NodePair;
+  virtual auto eval_expr() -> EvalPair;
 
   virtual auto expr_statement() -> n::NodePtr;
 

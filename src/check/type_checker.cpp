@@ -13,6 +13,7 @@
 
 // Local Includes:
 #include "native_types.hpp"
+#include "symbol_data.hpp"
 #include "symbol_types.hpp"
 
 
@@ -161,12 +162,13 @@ auto TypeChecker::visit(ReturnType* t_rt) -> Any
 }
 
 // // Lvalue:
-auto TypeChecker::visit(Let* t_let) -> Any
+// TODO: Account for when init expr is a nullptr
+auto TypeChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
 {
-  using namespace exception;
+  const auto type{t_decl->type()};
+  const auto expr{get_symbol_data(t_decl->init_expr())};
 
-  const auto type{t_let->type()};
-  const auto expr{get_symbol_data(t_let->init_expr())};
+  const auto id{t_decl->identifier()};
 
   std::stringstream ss;
   if(!type.empty()) {
@@ -176,24 +178,44 @@ auto TypeChecker::visit(Let* t_let) -> Any
     const SymbolData variant{str2nativetype(type)};
     if(variant != expr) {
       std::stringstream ss;
-      const auto id{std::quoted(t_let->identifier())};
+      const auto var{std::quoted(t_decl->identifier())};
 
-      ss << "Init of " << id << " contains a type mismatch.\n\n";
+      ss << "Init of " << var << " contains a type mismatch.\n\n";
 
-      ss << "typeof " << id << " = " << variant << "\n";
+      ss << "typeof " << var << " = " << variant << "\n";
       ss << "typeof expr = " << expr << "\n\n";
 
-      ss << t_let->position();
+      ss << t_decl->position();
 
       type_error(ss.str());
     }
   }
 
-  DBG_INFO(t_let->identifier(), ss.str(), " = <expr>: ", expr);
+  DBG_INFO(id, ss.str(), " = <expr>: ", expr);
+
+  return expr;
+}
+
+auto TypeChecker::visit(Const* t_const) -> Any
+{
+  const auto id{t_const->identifier()};
+  const auto expr_data{decl_expr(t_const)};
 
   // Work with variables that contain metadata later
-  SymbolData data{define_variable(false, expr)};
-  add_symbol(t_let->identifier(), data);
+  SymbolData data{define_variable(true, expr_data)};
+  add_symbol(id, data);
+
+  return {};
+}
+
+auto TypeChecker::visit(Let* t_let) -> Any
+{
+  const auto id{t_let->identifier()};
+  const auto expr_data{decl_expr(t_let)};
+
+  // Work with variables that contain metadata later
+  SymbolData data{define_variable(true, expr_data)};
+  add_symbol(id, data);
 
   return {};
 }
@@ -229,6 +251,7 @@ auto TypeChecker::visit(Arithmetic* t_arith) -> Any
   return ret;
 }
 
+// TODO: Deal with const variables
 auto TypeChecker::visit(Assignment* t_assign) -> Any
 {
   using namespace exception;

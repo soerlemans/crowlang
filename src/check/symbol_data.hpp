@@ -39,6 +39,7 @@ struct FnType {
   SymbolData m_return_type;
 };
 
+// TODO: Ignore m_const value when comparing
 struct VarType {
   bool m_const;
   SymbolData m_type;
