@@ -257,7 +257,8 @@ auto TypeChecker::visit(Assignment* t_assign) -> Any
   using namespace exception;
 
   const auto var{get_symbol_data(t_assign->left())};
-  const auto expr{get_symbol_data(t_assign->right())};
+  const auto expr{get_symbol_data(t_assign->right()).resolve_type()};
+
 
   std::stringstream ss;
 
@@ -273,7 +274,7 @@ auto TypeChecker::visit(Assignment* t_assign) -> Any
     type_error(ss.str());
   }
 
-  if(var != expr) {
+  if(var.resolve_type() != expr) {
     ss << "Types do not match on assignment.\n\n";
 
     ss << "<left hand side> = <expr>\n";

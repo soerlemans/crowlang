@@ -14,9 +14,7 @@ using namespace check;
 auto SymbolData::native_type(
   [[maybe_unused]] const StructTypePtr t_struct) const -> NativeTypeOpt
 {
-  NativeTypeOpt opt;
-
-  return opt;
+  return {};
 }
 
 auto SymbolData::native_type(const FnTypePtr t_fn) const -> NativeTypeOpt
@@ -67,8 +65,6 @@ auto SymbolData::is_const() const -> bool
 
   const auto var_type{[&](const VarTypePtr& t_data) {
     if(t_data) {
-      std::cout << "The fuck??\n";
-
       return t_data->m_const;
     }
 
@@ -82,6 +78,20 @@ auto SymbolData::is_const() const -> bool
   result = std::visit(Overload{var_type, not_const}, *this);
 
   return result;
+}
+
+//! All data except information related to types is stripped
+auto SymbolData::resolve_type() const -> SymbolData
+{
+  SymbolData data;
+
+  if(auto opt{native_type()}; opt) {
+    data = opt.value();
+  } else {
+    data = *this;
+  }
+
+  return data;
 }
 
 //! Resolves a Symbol's data  to a NativeType if possible
