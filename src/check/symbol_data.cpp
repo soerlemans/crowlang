@@ -2,14 +2,17 @@
 
 // Includes:
 #include "../debug/log.hpp"
+#include "../overload.hpp"
+#include "native_types.hpp"
+#include "symbol_types.hpp"
 
 
 // Using Statements:
 using namespace check;
 
 //! Structs can not be resolved to Native types
-auto SymbolData::native_type([[maybe_unused]] const StructTypePtr t_struct)
-  const -> NativeTypeOpt
+auto SymbolData::native_type(
+  [[maybe_unused]] const StructTypePtr t_struct) const -> NativeTypeOpt
 {
   NativeTypeOpt opt;
 
@@ -42,33 +45,71 @@ auto SymbolData::native_type(const VarTypePtr t_var) const -> NativeTypeOpt
   return opt;
 }
 
-auto SymbolData::native_type(const NativeType t_type) const -> NativeTypeOpt
+// Methods:
+auto SymbolData::struct_() -> StructTypePtr
 {
-  return t_type;
+  return std::get<StructTypePtr>(*this);
 }
 
-// Methods:
+auto SymbolData::function() -> FnTypePtr
+{
+  return std::get<FnTypePtr>(*this);
+}
+
+auto SymbolData::var() -> VarTypePtr
+{
+  return std::get<VarTypePtr>(*this);
+}
+
+auto SymbolData::is_const() const -> bool
+{
+  bool result{false};
+
+  const auto var_type{[&](const VarTypePtr& t_data) {
+    if(t_data) {
+      std::cout << "The fuck??\n";
+
+      return t_data->m_const;
+    }
+
+    return false;
+  }};
+
+  const auto not_const{[]([[maybe_unused]] const auto& t_data) {
+    return false;
+  }};
+
+  result = std::visit(Overload{var_type, not_const}, *this);
+
+  return result;
+}
+
+//! Resolves a Symbol's data  to a NativeType if possible
 auto SymbolData::native_type() const -> NativeTypeOpt
 {
   NativeTypeOpt opt;
 
-  std::visit(
-    [&](const auto& t_data) {
-      opt = native_type(t_data);
-    },
-    *this);
+  const auto native{[&](const NativeType t_type) -> NativeTypeOpt {
+    return t_type;
+  }};
+
+  const auto methods{[&](const auto& t_data) {
+    return native_type(t_data);
+  }};
+
+  opt = std::visit(Overload{native, methods}, *this);
 
   return opt;
 }
 
 // Functions:
-auto operator<<(std::ostream& t_os, const SymbolData t_variant) -> std::ostream&
+auto operator<<(std::ostream& t_os, const SymbolData& t_data) -> std::ostream&
 {
   std::visit(
     [&](const auto& t_v) {
       t_os << t_v;
     },
-    t_variant);
+    t_data);
 
   return t_os;
 }

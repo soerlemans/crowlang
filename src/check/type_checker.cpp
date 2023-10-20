@@ -147,11 +147,11 @@ auto TypeChecker::visit(Function* t_fn) -> Any
 
 auto TypeChecker::visit(FunctionCall* t_fn_call) -> Any
 {
-  auto variant{get_symbol(t_fn_call->identifier())};
+  auto data{get_symbol(t_fn_call->identifier())};
 
   // TODO: Improve this code to be more generic and clean, error if this is not
   // a function name
-  const auto fn{std::get<FnTypePtr>(variant)};
+  const auto fn{data.function()};
 
   return fn->m_return_type;
 }
@@ -201,7 +201,7 @@ auto TypeChecker::visit(Const* t_const) -> Any
   const auto id{t_const->identifier()};
   const auto expr_data{decl_expr(t_const)};
 
-  // Work with variables that contain metadata later
+  // Create the SymbolData for a variable
   SymbolData data{define_variable(true, expr_data)};
   add_symbol(id, data);
 
@@ -213,8 +213,8 @@ auto TypeChecker::visit(Let* t_let) -> Any
   const auto id{t_let->identifier()};
   const auto expr_data{decl_expr(t_let)};
 
-  // Work with variables that contain metadata later
-  SymbolData data{define_variable(true, expr_data)};
+  // Create the SymbolData for a variable
+  SymbolData data{define_variable(false, expr_data)};
   add_symbol(id, data);
 
   return {};
@@ -259,13 +259,28 @@ auto TypeChecker::visit(Assignment* t_assign) -> Any
   const auto var{get_symbol_data(t_assign->left())};
   const auto expr{get_symbol_data(t_assign->right())};
 
-  if(var != expr) {
-    std::stringstream ss;
+  std::stringstream ss;
 
+  if(var.is_const()) {
+    ss << "Assignment is illegal to a const variable.\n\n";
+
+    ss << "<left hand side> = <expr>\n";
+    ss << "typeof left hand side = " << var << "\n";
+    ss << "typeof expr = " << expr << "\n\n";
+
+    ss << t_assign->position();
+
+    type_error(ss.str());
+  }
+
+  if(var != expr) {
     ss << "Types do not match on assignment.\n\n";
 
+    ss << "<left hand side> = <expr>\n";
     ss << "typeof left hand side = " << var << "\n";
-    ss << "typeof expr = " << expr << "\n";
+    ss << "typeof expr = " << expr << "\n\n";
+
+    ss << t_assign->position();
 
     type_error(ss.str());
   }

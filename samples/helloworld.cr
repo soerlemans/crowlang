@@ -6,7 +6,6 @@ fn test() -> int {
 
 fn main() -> int {
   const var = 10
-  let var = 10.0
 
   let result = 10
 

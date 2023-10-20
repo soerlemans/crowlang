@@ -293,12 +293,14 @@ auto PrattParser::comparison(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   NodePtr node;
 
   if(t_lhs) {
-    const auto lambda{[&](ComparisonOp t_op) {
+    const auto pos{get_position()};
+    const auto lambda{[&](const ComparisonOp t_op) {
       const auto token{get_token()};
       next();
 
       if(auto rhs{t_fn(token.type())}; rhs) {
-        node = make_node<Comparison>(t_op, std::move(t_lhs), std::move(rhs));
+        node =
+          make_node<Comparison>(pos, t_op, std::move(t_lhs), std::move(rhs));
       }
     }};
 

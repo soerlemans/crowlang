@@ -235,11 +235,11 @@ auto CrowParser::assignment() -> NodePtr
   NodePtr node;
 
   if(auto lhs{lvalue()}; lhs) {
-    const auto token{get_token()};
-    const auto lambda{[&](AssignmentOp t_op) {
+    const auto pos{get_position()};
+    const auto lambda{[&](const AssignmentOp t_op) {
       newline_opt();
       if(auto rhs{expr()}; rhs) {
-        node = make_node<Assignment>(t_op, std::move(lhs), std::move(rhs));
+        node = make_node<Assignment>(pos, t_op, std::move(lhs), std::move(rhs));
       }
     }};
 

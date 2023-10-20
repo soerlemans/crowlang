@@ -16,13 +16,16 @@ class SymbolData : public Variant {
   auto native_type(StructTypePtr t_struct) const -> NativeTypeOpt;
   auto native_type(FnTypePtr t_fn) const -> NativeTypeOpt;
   auto native_type(VarTypePtr t_var) const -> NativeTypeOpt;
-  auto native_type(NativeType t_type) const -> NativeTypeOpt;
 
   public:
-  // Forward all constructors to base class
+  // Use the constructors of the base class
   using Variant::Variant;
 
-  //! Resolves a Symbol's data  to a NativeType if possible
+  auto struct_() -> StructTypePtr;
+  auto function() -> FnTypePtr;
+  auto var() -> VarTypePtr;
+
+  auto is_const() const -> bool;
   auto native_type() const -> NativeTypeOpt;
 
   virtual ~SymbolData() = default;
@@ -48,7 +51,6 @@ struct VarType {
 } // namespace check
 
 // Functions:
-auto operator<<(std::ostream& t_os, check::SymbolData t_variant)
-  -> std::ostream&;
+auto operator<<(std::ostream& t_os, const check::SymbolData& t_data) -> std::ostream&;
 
 #endif // CROW_CHECK_SYMBOL_DATA_HPP

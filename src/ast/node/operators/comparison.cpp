@@ -1,14 +1,13 @@
 #include "comparison.hpp"
 
 
+using namespace container;
 using namespace ast::node::operators;
 using namespace ast::node::node_traits;
 
-Comparison::Comparison(ComparisonOp t_op, NodePtr&& t_lhs, NodePtr&& t_rhs)
-  : BinaryOperator{std::move(t_lhs), std::move(t_rhs)}, m_op{t_op}
+Comparison::Comparison(TextPosition t_pos, ComparisonOp t_op, NodePtr&& t_left,
+                       NodePtr&& t_right)
+  : NodePosition{std::move(t_pos)},
+    Op{t_op},
+    BinaryOperator{std::move(t_left), std::move(t_right)}
 {}
-
-auto Comparison::op() const -> ComparisonOp
-{
-  return m_op;
-}

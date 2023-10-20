@@ -16,12 +16,12 @@ NODE_USING_ALL_NAMESPACES()
 // Methods:
 auto SymbolHelper::get_symbol_data(NodePtr t_ptr) -> SymbolData
 {
-  SymbolData variant;
+  SymbolData data;
 
   auto any{traverse(t_ptr)};
   if(any.has_value()) {
     try {
-      variant = std::any_cast<SymbolData>(any);
+      data = std::any_cast<SymbolData>(any);
     } catch(const std::bad_any_cast& e) {
       DBG_CRITICAL(e.what());
 
@@ -30,7 +30,7 @@ auto SymbolHelper::get_symbol_data(NodePtr t_ptr) -> SymbolData
     }
   }
 
-  return variant;
+  return data;
 }
 
 auto SymbolHelper::get_type_list(NodeListPtr t_list) -> TypeList
