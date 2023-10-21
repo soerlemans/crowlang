@@ -1,5 +1,5 @@
-#ifndef AWX_INTERPRETER_OVERLOAD_HPP
-#define AWX_INTERPRETER_OVERLOAD_HPP
+#ifndef CROW_OVERLOAD_HPP
+#define CROW_OVERLOAD_HPP
 
 
 // Overload pattern:
@@ -14,4 +14,4 @@ struct Overload : Ts... {
 template<class... Ts>
 Overload(Ts...) -> Overload<Ts...>;
 
-#endif // AWX_INTERPRETER_OVERLOAD_HPP
+#endif // CROW_OVERLOAD_HPP

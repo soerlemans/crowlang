@@ -1,5 +1,5 @@
-#ifndef OPERATION_HPP
-#define OPERATION_HPP
+#ifndef CROW_AST_NODE_NODE_TRAITS_OPERATION_HPP
+#define CROW_AST_NODE_NODE_TRAITS_OPERATION_HPP
 
 // Includes:
 #include "../node_interface.hpp"
@@ -29,4 +29,4 @@ class Op : virtual public NodeInterface {
 };
 } // namespace ast::node::node_traits
 
-#endif // OPERATION_HPP
+#endif // CROW_AST_NODE_NODE_TRAITS_OPERATION_HPP

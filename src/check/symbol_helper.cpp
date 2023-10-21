@@ -33,6 +33,16 @@ auto SymbolHelper::get_symbol_data(NodePtr t_ptr) -> SymbolData
   return data;
 }
 
+auto SymbolHelper::get_resolved_type(NodePtr t_ptr) -> SymbolData
+{
+  return get_symbol_data(t_ptr).resolve_type();
+}
+
+auto SymbolHelper::get_native_type(NodePtr t_ptr) -> NativeTypeOpt
+{
+  return get_symbol_data(t_ptr).native_type();
+}
+
 auto SymbolHelper::get_type_list(NodeListPtr t_list) -> TypeList
 {
   TypeList list;

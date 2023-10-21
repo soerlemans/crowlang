@@ -39,6 +39,8 @@ class SymbolHelper : public visitor::NodeVisitor {
   }
 
   auto get_symbol_data(ast::node::NodePtr t_ptr) -> SymbolData;
+  auto get_resolved_type(ast::node::NodePtr t_ptr) -> SymbolData;
+  auto get_native_type(ast::node::NodePtr t_ptr) -> NativeTypeOpt;
   auto get_type_list(ast::node::NodeListPtr t_list) -> TypeList;
 
   public:

@@ -222,12 +222,12 @@ auto TypeChecker::visit(Let* t_let) -> Any
 
 auto TypeChecker::visit(Variable* t_var) -> Any
 {
-  const auto variant{get_symbol(t_var->identifier())};
+  const auto var{get_symbol(t_var->identifier())};
 
   DBG_INFO("Variable ", std::quoted(t_var->identifier(), '\''), " of type ",
-           variant);
+           var);
 
-  return variant;
+  return var;
 }
 
 // // Operators:
@@ -237,8 +237,8 @@ auto TypeChecker::visit(Arithmetic* t_arith) -> Any
 
   const auto ret{get_symbol_data(t_arith->left())};
 
-  const auto lhs{ret.native_type()};
-  const auto rhs{get_symbol_data(t_arith->right()).native_type()};
+  const auto lhs{ret.resolve_type()};
+  const auto rhs{get_resolved_type(t_arith->right())};
 
   if(lhs != rhs) {
     // TODO: Implement type promotion later
@@ -293,13 +293,18 @@ auto TypeChecker::visit(Comparison* t_comp) -> Any
 {
   using namespace exception;
 
-  const auto lhs{get_symbol_data(t_comp->left()).native_type()};
-  const auto rhs{get_symbol_data(t_comp->right()).native_type()};
+  const auto lhs{get_native_type(t_comp->left())};
+  const auto rhs{get_native_type(t_comp->right())};
 
   if(lhs != rhs) {
+    std::stringstream ss;
+
+    ss << "LHS and RHS types do not match.\n";
+
+    ss << t_comp->position();
     // TODO: Implement type promotion later
 
-    type_error("LHS and RHS types do not match!");
+    type_error(ss.str());
   }
 
   return SymbolData{NativeType::BOOL};
@@ -307,21 +312,49 @@ auto TypeChecker::visit(Comparison* t_comp) -> Any
 
 auto TypeChecker::visit(Increment* t_inc) -> Any
 {
-  const auto left{get_symbol_data(t_inc->left())};
+  const auto opt{get_native_type(t_inc->left())};
 
-  return left;
+  if(!opt) {
+    // TODO: Add position
+    type_error("Trying to increment a non native type is illegal.");
+  }
+
+  if(!is_integer(opt.value())) {
+    std::stringstream ss;
+
+    ss << "Trying to increment a variable that is not an integer.\n";
+
+    type_error(ss.str());
+  }
+
+  return SymbolData{opt.value()};
 }
 
 auto TypeChecker::visit(Decrement* t_dec) -> Any
 {
-  const auto left{get_symbol_data(t_dec->left())};
+  const auto opt{get_native_type(t_dec->left())};
 
-  return left;
+  if(!opt) {
+    // TODO: Add position
+    type_error("Trying to decrement a non native type is illegal.");
+  }
+
+  if(!is_integer(opt.value())) {
+    std::stringstream ss;
+
+    ss << "Trying to decrement a variable that is not an integer.\n";
+
+    type_error(ss.str());
+  }
+
+  return SymbolData{opt.value()};
 }
 
 auto TypeChecker::visit(UnaryPrefix* t_up) -> Any
 {
   const auto left{get_symbol_data(t_up->left())};
+
+  // TODO: Implement
 
   return left;
 }
@@ -343,8 +376,8 @@ auto TypeChecker::visit(And* t_and) -> Any
 {
   using namespace exception;
 
-  const auto lhs{get_symbol_data(t_and->left()).native_type()};
-  const auto rhs{get_symbol_data(t_and->right()).native_type()};
+  const auto lhs{get_native_type(t_and->left())};
+  const auto rhs{get_native_type(t_and->right())};
 
   if(lhs && rhs) {
     if(!is_condition(lhs.value()) || !is_condition(rhs.value())) {
@@ -359,11 +392,8 @@ auto TypeChecker::visit(And* t_and) -> Any
 
 auto TypeChecker::visit(Or* t_or) -> Any
 {
-
-  using namespace exception;
-
-  const auto lhs{get_symbol_data(t_or->left()).native_type()};
-  const auto rhs{get_symbol_data(t_or->right()).native_type()};
+  const auto lhs{get_native_type(t_or->left())};
+  const auto rhs{get_native_type(t_or->right())};
 
   if(lhs && rhs) {
     if(!is_condition(lhs.value()) || !is_condition(rhs.value())) {
