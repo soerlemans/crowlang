@@ -1,5 +1,9 @@
 let global = 10
 
+fn hello(t_var: int, t_var2: f32) -> int {
+  return 0
+}
+
 fn test() -> int {
   return global
 }

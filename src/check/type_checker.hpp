@@ -46,7 +46,7 @@ class TypeChecker : public SymbolHelper {
   auto handle_condition(const SymbolData& t_data,
                         const container::TextPosition& t_pos) const -> void;
 
-  auto add_symbol(std::string_view t_id, SymbolData t_variant) -> void;
+  auto add_symbol(std::string_view t_id, SymbolData t_data) -> void;
   auto get_symbol(std::string_view t_id) -> SymbolData;
 
   // auto add_variable() -> void;

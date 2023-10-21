@@ -10,7 +10,7 @@
 using namespace check;
 
 // Functions:
-auto operator<<(std::ostream& t_os, NativeTypeOpt t_opt) -> std::ostream&
+auto operator<<(std::ostream& t_os, const NativeTypeOpt& t_opt) -> std::ostream&
 {
   if(t_opt) {
     t_os << t_opt.value();
@@ -65,6 +65,19 @@ auto operator<<(std::ostream& t_os, VarTypePtr t_var) -> std::ostream&
     DBG_ERROR("(VarTypePtr) nullptr!");
 
     t_os << "nullptr";
+  }
+
+  return t_os;
+}
+
+auto operator<<(std::ostream& t_os, const TypeList& t_list) -> std::ostream&
+{
+  for(auto iter{t_list.cbegin()}; iter != t_list.cend(); iter++) {
+    if(iter != t_list.cbegin()) {
+      t_os << ", ";
+    }
+
+    t_os << *iter;
   }
 
   return t_os;

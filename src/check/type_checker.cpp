@@ -51,9 +51,9 @@ auto TypeChecker::handle_condition(const SymbolData& t_data,
 }
 
 auto TypeChecker::add_symbol(const std::string_view t_id,
-                             const SymbolData t_variant) -> void
+                             const SymbolData t_data) -> void
 {
-  TypePair pair{t_id, t_variant};
+  TypePair pair{t_id, t_data};
 
   const auto result{m_envs.back().insert(pair)};
   if(!result.second) {
@@ -61,7 +61,7 @@ auto TypeChecker::add_symbol(const std::string_view t_id,
   }
 }
 
-auto TypeChecker::get_symbol(std::string_view t_id) -> SymbolData
+auto TypeChecker::get_symbol(const std::string_view t_id) -> SymbolData
 {
   bool found{false};
   SymbolData variant;
@@ -79,7 +79,8 @@ auto TypeChecker::get_symbol(std::string_view t_id) -> SymbolData
   }
 
   if(!found) {
-    type_error("Identifier is not defined in environment");
+    type_error("Identifier ", std::quoted(t_id),
+               " is not defined in environment");
   }
 
   return variant;
@@ -108,6 +109,8 @@ auto TypeChecker::visit(Loop* t_loop) -> Any
 {
   const auto cond{get_symbol_data(t_loop->condition())};
 
+  DBG_INFO("Condition: ", cond);
+
   handle_condition(cond, t_loop->position());
 
   traverse(t_loop->init_expr());
@@ -126,6 +129,8 @@ auto TypeChecker::visit(Return* t_return) -> Any
   const auto data{get_symbol_data(t_return->expr())};
 
   // TODO: Compare or indicate ReturnType to function somehow?
+  // Return is the only statement that returns data, use that? (very error prone
+  // approach)
   return data;
 }
 
@@ -135,10 +140,15 @@ auto TypeChecker::visit(Function* t_fn) -> Any
   const auto id{t_fn->identifier()};
 
   const auto type{str2nativetype(t_fn->type())};
+
+  // FIXME: Parameters are stored in the AST as a Variable, this does not
+  // properly resolve in the TypeChecker as they are not defined ahead
   const auto params{get_type_list(t_fn->params())};
 
   SymbolData ptr{define_function(params, type)};
   add_symbol(id, ptr);
+
+  DBG_INFO("Function: ", id, "(", params, ") -> ", type);
 
   traverse(t_fn->body());
 
@@ -147,7 +157,7 @@ auto TypeChecker::visit(Function* t_fn) -> Any
 
 auto TypeChecker::visit(FunctionCall* t_fn_call) -> Any
 {
-  auto data{get_symbol(t_fn_call->identifier())};
+  const auto data{get_symbol(t_fn_call->identifier())};
 
   // TODO: Improve this code to be more generic and clean, error if this is not
   // a function name
