@@ -39,7 +39,6 @@ class CrowParser : public pratt::PrattParser {
   virtual auto expr_statement() -> n::NodePtr;
 
   // Expression lists:
-  virtual auto multiple_expr_list() -> n::NodeListPtr;
   virtual auto expr_list() -> n::NodeListPtr;
   auto expr_list_opt() -> n::NodeListPtr override;
 

@@ -1,7 +1,7 @@
 #include "function_call.hpp"
 
 
-using namespace ast::node::functions;
+using namespace ast::node::function;
 using namespace ast::node::node_traits;
 
 FunctionCall::FunctionCall(const std::string_view t_identifier,

@@ -21,9 +21,9 @@ class SymbolData : public Variant {
   // Use the constructors of the variant
   using Variant::Variant;
 
-  auto struct_() -> StructTypePtr;
-  auto function() -> FnTypePtr;
-  auto var() -> VarTypePtr;
+  auto struct_() const -> StructTypePtr;
+  auto function() const -> FnTypePtr;
+  auto var() const -> VarTypePtr;
 
   auto is_const() const -> bool;
   auto resolve_type() const -> SymbolData;

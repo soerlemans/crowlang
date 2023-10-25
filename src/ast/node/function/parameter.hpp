@@ -1,0 +1,30 @@
+#ifndef PARAMETER_HPP
+#define PARAMETER_HPP
+
+// Includes:
+#include "../node_traits/include.hpp"
+
+// Local Includes:
+#include "fdecl.hpp"
+
+
+namespace ast::node::function {
+// Aliases:
+namespace nt = node_traits;
+namespace ct = container;
+
+// Classes:
+class Parameter : public nt::NodePosition,
+                  public nt::Identifier,
+                  public nt::Type {
+  public:
+  Parameter(ct::TextPosition t_pos, std::string_view t_identifier,
+            std::string_view t_type);
+
+  MAKE_VISITABLE(visitor::NodeVisitor);
+
+  ~Parameter() override = default;
+};
+} // namespace ast::node::lvalue
+
+#endif // PARAMETER_HPP

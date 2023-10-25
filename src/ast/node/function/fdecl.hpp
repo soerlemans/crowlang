@@ -5,14 +5,12 @@
 #include <memory>
 
 
-namespace ast::node::functions {
+namespace ast::node::function {
 // Forward Declarations:
+class Parameter;
 class Function;
 class FunctionCall;
 class ReturnType;
-
-// Aliases:
-using NodeFnPtr = std::shared_ptr<Function>;
 } // namespace ast::node::functions
 
 #endif // CROW_AST_NODE_FUNCTIONS_FDECL_HPP

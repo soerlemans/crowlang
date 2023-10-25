@@ -1,7 +1,7 @@
 #include "function.hpp"
 
 
-using namespace ast::node::functions;
+using namespace ast::node::function;
 using namespace ast::node::node_traits;
 
 Function::Function(const std::string_view t_identifier, NodeListPtr&& t_params,

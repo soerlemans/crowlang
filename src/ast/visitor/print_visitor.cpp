@@ -69,6 +69,7 @@ DEF_PV_METHOD(Break)
 DEF_PV_METHOD(Return)
 
 // Function:
+DEF_PV_METHOD(Parameter)
 DEF_PV_METHOD(Function)
 
 auto PrintVisitor::visit(FunctionCall* t_fn_call) -> Any

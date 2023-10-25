@@ -135,6 +135,14 @@ auto TypeChecker::visit(Return* t_return) -> Any
 }
 
 // // Function:
+auto TypeChecker::visit(Parameter* t_param) -> Any
+{
+  // For now only deal with native types as arguments
+  const auto type{str2nativetype(t_param->type())};
+
+  return SymbolData{type};
+}
+
 auto TypeChecker::visit(Function* t_fn) -> Any
 {
   const auto id{t_fn->identifier()};
@@ -157,11 +165,23 @@ auto TypeChecker::visit(Function* t_fn) -> Any
 
 auto TypeChecker::visit(FunctionCall* t_fn_call) -> Any
 {
-  const auto data{get_symbol(t_fn_call->identifier())};
-
   // TODO: Improve this code to be more generic and clean, error if this is not
   // a function name
+  const auto id{t_fn_call->identifier()};
+  const auto data{get_symbol(id)};
+  const auto args{get_type_list(t_fn_call->args())};
+
   const auto fn{data.function()};
+  const auto params{fn->m_params};
+
+  if(args != params) {
+    std::stringstream ss;
+
+    ss << "Arguments passed to " << std::quoted(id)
+       << " do not match parameters.\n";
+
+    type_error(ss.str());
+  }
 
   return fn->m_return_type;
 }

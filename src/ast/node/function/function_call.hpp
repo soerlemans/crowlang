@@ -9,7 +9,7 @@
 #include "fdecl.hpp"
 
 
-namespace ast::node::functions {
+namespace ast::node::function {
 // Aliases:
 namespace nt = node_traits;
 

@@ -11,14 +11,11 @@
 // Using statements:
 using namespace parser::pratt;
 using namespace token;
-using namespace ast::node;
-using namespace ast::node::operators;
-using namespace ast::node::rvalue;
-using namespace ast::node::lvalue;
-using namespace ast::node::functions;
+
+NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-PrattParser::PrattParser(token::TokenStream&& t_tokenstream)
+PrattParser::PrattParser(TokenStream&& t_tokenstream)
   : Parser{std::move(t_tokenstream)}
 {}
 

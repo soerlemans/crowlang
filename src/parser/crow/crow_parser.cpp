@@ -11,17 +11,9 @@
 
 // Using statements:
 using namespace parser::crow;
-
 using namespace token;
 
-using namespace ast::node;
-using namespace ast::node::control;
-using namespace ast::node::functions;
-using namespace ast::node::lvalue;
-using namespace ast::node::operators;
-using namespace ast::node::packaging;
-using namespace ast::node::rvalue;
-using namespace ast::node::typing;
+NODE_USING_ALL_NAMESPACES()
 
 // Aliases:
 namespace nt = ast::node::node_traits;
@@ -173,7 +165,19 @@ auto CrowParser::expr_statement() -> NodePtr
   return node;
 }
 
-auto CrowParser::multiple_expr_list() -> NodeListPtr
+auto CrowParser::expr_list() -> NodeListPtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  auto nodes{expr_list_opt()};
+
+  if(nodes->empty()) {
+    syntax_error("Expected a list of expressions");
+  }
+
+  return nodes;
+}
+
+auto CrowParser::expr_list_opt() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
   auto nodes{make_node<List>()};
@@ -197,32 +201,6 @@ auto CrowParser::multiple_expr_list() -> NodeListPtr
     } else {
       break;
     }
-  }
-
-  return nodes;
-}
-
-auto CrowParser::expr_list() -> NodeListPtr
-{
-  DBG_TRACE_FN(VERBOSE);
-  auto nodes{expr_list_opt()};
-
-  if(nodes->empty()) {
-    syntax_error("Expected a list of expressions");
-  }
-
-  return nodes;
-}
-
-auto CrowParser::expr_list_opt() -> NodeListPtr
-{
-  DBG_TRACE_FN(VERBOSE);
-  auto nodes{make_node<List>()};
-
-  if(auto ptr{expr()}; ptr) {
-    nodes->push_back(std::move(ptr));
-  } else if(auto ptr{multiple_expr_list()}; ptr) {
-    nodes = std::move(ptr);
   }
 
   return nodes;
@@ -632,7 +610,7 @@ auto CrowParser::param_list_opt() -> NodeListPtr
     expect(TokenType::COLON);
     const auto type{expect(TokenType::IDENTIFIER).str()};
 
-    nodes->push_back(make_node<Variable>(pos, id, type));
+    nodes->push_back(make_node<Parameter>(pos, id, type));
 
     while(!eos()) {
       if(next_if(TokenType::COMMA)) {
@@ -643,7 +621,7 @@ auto CrowParser::param_list_opt() -> NodeListPtr
         expect(TokenType::COLON);
         const auto type{expect(TokenType::IDENTIFIER).str()};
 
-        nodes->push_back(make_node<Variable>(pos, id, type));
+        nodes->push_back(make_node<Parameter>(pos, id, type));
       } else {
         break;
       }

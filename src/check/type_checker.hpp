@@ -63,9 +63,10 @@ class TypeChecker : public SymbolHelper {
   auto visit(node::control::Return* t_return) -> Any override;
 
   // // Function:
-  auto visit(node::functions::Function* t_fn) -> Any override;
-  auto visit(node::functions::FunctionCall* t_fn_call) -> Any override;
-  auto visit(node::functions::ReturnType* t_rt) -> Any override;
+  auto visit(node::function::Parameter* t_param) -> Any override;
+  auto visit(node::function::Function* t_fn) -> Any override;
+  auto visit(node::function::FunctionCall* t_fn_call) -> Any override;
+  auto visit(node::function::ReturnType* t_rt) -> Any override;
 
   // // Lvalue:
   auto decl_expr(node::node_traits::DeclExpr* t_decl) -> SymbolData;

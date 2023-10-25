@@ -119,6 +119,11 @@ auto LlvmBackend::visit(Return* t_ret) -> Any
 }
 
 // Functions:
+auto LlvmBackend::visit([[maybe_unused]] Parameter* t_param) -> Any
+{
+  return {};
+}
+
 auto LlvmBackend::visit(Function* t_fn) -> Any
 {
   using namespace llvm;

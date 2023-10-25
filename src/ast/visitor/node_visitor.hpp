@@ -37,9 +37,10 @@ class NodeVisitor {
   virtual auto visit(node::control::Return* t_return) -> Any;
 
   // Function:
-  virtual auto visit(node::functions::Function* t_fn) -> Any;
-  virtual auto visit(node::functions::FunctionCall* t_fn_call) -> Any;
-  virtual auto visit(node::functions::ReturnType* t_rt) -> Any;
+  virtual auto visit(node::function::Parameter* t_param) -> Any;
+  virtual auto visit(node::function::Function* t_fn) -> Any;
+  virtual auto visit(node::function::FunctionCall* t_fn_call) -> Any;
+  virtual auto visit(node::function::ReturnType* t_rt) -> Any;
 
   // Lvalue:
   virtual auto visit(node::lvalue::Const* t_const) -> Any;

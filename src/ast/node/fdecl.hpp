@@ -7,7 +7,7 @@
 // Includes:
 // Forward declarations for all Node classes:
 #include "control/fdecl.hpp"
-#include "functions/fdecl.hpp"
+#include "function/fdecl.hpp"
 #include "lvalue/fdecl.hpp"
 #include "node_traits/fdecl.hpp"
 #include "operators/fdecl.hpp"
@@ -20,7 +20,7 @@
 #define NODE_USING_ALL_NAMESPACES()     \
   using namespace ast::node;            \
   using namespace ast::node::control;   \
-  using namespace ast::node::functions; \
+  using namespace ast::node::function; \
   using namespace ast::node::lvalue;    \
   using namespace ast::node::operators; \
   using namespace ast::node::packaging; \

@@ -5,11 +5,6 @@
  * Node, this to
  */
 
-// Macros:
-//! Include the namespaces of all nodes
-#define NODE_USE_ALL_NS() \
-
-
 // Top level:
 #include "fdecl.hpp"
 #include "list.hpp"
@@ -18,7 +13,7 @@
 
 // Includes:
 #include "control/include.hpp"
-#include "functions/include.hpp"
+#include "function/include.hpp"
 #include "lvalue/include.hpp"
 #include "node_traits/include.hpp"
 #include "operators/include.hpp"

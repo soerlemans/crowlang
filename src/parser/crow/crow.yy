@@ -168,13 +168,10 @@ result_statement : decl_expr terminator
                  ;
 
 // Expression lists:
-multiple_expr_list : expr ',' newline_opt expr
-                 | multiple_expr_list ',' newline_opt expr
+expr_list        : expr
+                 | expr_list ',' newline_opt expr
                  ;
 
-expr_list        : expr
-                 | multiple_expr_list
-                 ;
 
 expr_list_opt    : // empty
                  | expr_list

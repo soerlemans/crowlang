@@ -44,17 +44,17 @@ auto SymbolData::native_type(const VarTypePtr t_var) const -> NativeTypeOpt
 }
 
 // Methods:
-auto SymbolData::struct_() -> StructTypePtr
+auto SymbolData::struct_() const -> StructTypePtr
 {
   return std::get<StructTypePtr>(*this);
 }
 
-auto SymbolData::function() -> FnTypePtr
+auto SymbolData::function() const -> FnTypePtr
 {
   return std::get<FnTypePtr>(*this);
 }
 
-auto SymbolData::var() -> VarTypePtr
+auto SymbolData::var() const -> VarTypePtr
 {
   return std::get<VarTypePtr>(*this);
 }
