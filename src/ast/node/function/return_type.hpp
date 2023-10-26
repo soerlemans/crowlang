@@ -1,5 +1,5 @@
-#ifndef CROW_AST_NODE_FUNCTIONS_RETURN_TYPE_HPP
-#define CROW_AST_NODE_FUNCTIONS_RETURN_TYPE_HPP
+#ifndef CROW_AST_NODE_FUNCTION_RETURN_TYPE_HPP
+#define CROW_AST_NODE_FUNCTION_RETURN_TYPE_HPP
 
 // Includes:
 #include "../node_traits/include.hpp"
@@ -23,4 +23,4 @@ class ReturnType : public nt::Type {
 };
 } // namespace ast::node::functions
 
-#endif // CROW_AST_NODE_FUNCTIONS_RETURN_TYPE_HPP
+#endif // CROW_AST_NODE_FUNCTION_RETURN_TYPE_HPP

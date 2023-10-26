@@ -1,5 +1,5 @@
-#ifndef CROW_AST_NODE_FUNCTIONS_FUNCTION_HPP
-#define CROW_AST_NODE_FUNCTIONS_FUNCTION_HPP
+#ifndef CROW_AST_NODE_FUNCTION_FUNCTION_HPP
+#define CROW_AST_NODE_FUNCTION_FUNCTION_HPP
 
 // Includes:
 #include "../node_traits/include.hpp"
@@ -27,4 +27,4 @@ class Function : public nt::Identifier,
 };
 } // namespace ast::node::functions
 
-#endif // CROW_AST_NODE_FUNCTIONS_FUNCTION_HPP
+#endif // CROW_AST_NODE_FUNCTION_FUNCTION_HPP

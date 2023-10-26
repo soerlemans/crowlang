@@ -1,17 +1,13 @@
-#ifndef CROW_TYPES_HPP
-#define CROW_TYPES_HPP
+#ifndef CROW_LIB_TYPES_HPP
+#define CROW_LIB_TYPES_HPP
 
 // STL Includes:
 #include <cstdint>
 #include <string>
 #include <string_view>
-#include <type_traits>
 
 
 // Aliases:
-// using string = std::string;
-// using string_view = std::string_view;
-
 // Integer type aliases:
 using u8 = std::uint8_t;
 using u16 = std::uint16_t;
@@ -23,12 +19,4 @@ using i16 = std::int16_t;
 using i32 = std::int32_t;
 using i64 = std::int64_t;
 
-
-// Functions
-template<typename T>
-constexpr auto enum2int(const T t_value) -> std::underlying_type_t<T>
-{
-  return static_cast<std::underlying_type_t<T>>(t_value);
-}
-
-#endif // CROW_TYPES_HPP
+#endif // CROW_LIB_TYPES_HPP

@@ -1,5 +1,5 @@
-#ifndef CROW_AST_NODE_FUNCTIONS_FUNCTION_CALL_HPP
-#define CROW_AST_NODE_FUNCTIONS_FUNCTION_CALL_HPP
+#ifndef CROW_AST_NODE_FUNCTION_FUNCTION_CALL_HPP
+#define CROW_AST_NODE_FUNCTION_FUNCTION_CALL_HPP
 
 // Includes:
 #include "../list.hpp"
@@ -30,4 +30,4 @@ class FunctionCall : public nt::Identifier {
 };
 } // namespace ast::node::functions
 
-#endif // CROW_AST_NODE_FUNCTIONS_FUNCTION_CALL_HPP
+#endif // CROW_AST_NODE_FUNCTION_FUNCTION_CALL_HPP

@@ -1,5 +1,5 @@
-#ifndef CROW_AST_NODE_FUNCTIONS_FDECL_HPP
-#define CROW_AST_NODE_FUNCTIONS_FDECL_HPP
+#ifndef CROW_AST_NODE_FUNCTION_FDECL_HPP
+#define CROW_AST_NODE_FUNCTION_FDECL_HPP
 
 // STL Includes:
 #include <memory>
@@ -13,4 +13,4 @@ class FunctionCall;
 class ReturnType;
 } // namespace ast::node::functions
 
-#endif // CROW_AST_NODE_FUNCTIONS_FDECL_HPP
+#endif // CROW_AST_NODE_FUNCTION_FDECL_HPP

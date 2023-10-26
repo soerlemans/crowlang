@@ -1,5 +1,5 @@
-#ifndef PARAMETER_HPP
-#define PARAMETER_HPP
+#ifndef CROW_AST_NODE_FUNCTION_PARAMETER_HPP
+#define CROW_AST_NODE_FUNCTION_PARAMETER_HPP
 
 // Includes:
 #include "../node_traits/include.hpp"
@@ -27,4 +27,4 @@ class Parameter : public nt::NodePosition,
 };
 } // namespace ast::node::lvalue
 
-#endif // PARAMETER_HPP
+#endif // CROW_AST_NODE_FUNCTION_PARAMETER_HPP

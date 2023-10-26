@@ -1,10 +1,15 @@
 #include "log.hpp"
 
+// Includes:
+#include "../lib/enum2int.hpp"
 
+
+// Using Statements:
 using namespace debug;
 
 namespace {
 // Private variables:
+//! Global loglevel variable
 LogLevel g_loglevel{LogLevel::WARNING};
 } // namespace
 

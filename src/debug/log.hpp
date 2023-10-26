@@ -11,8 +11,8 @@
 #include <rang.hpp>
 
 // Includes:
-#include "../container/source_position.hpp"
 #include "../lib/types.hpp"
+#include "../container/source_position.hpp"
 
 // Local Includes:
 #include "log_macros.hpp"
