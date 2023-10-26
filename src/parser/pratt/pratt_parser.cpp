@@ -225,12 +225,13 @@ auto PrattParser::arithmetic(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
+  const auto pos{get_position()};
   const auto lambda{[&](ArithmeticOp t_op) {
     const auto token{get_token()};
     next();
 
     if(auto rhs{t_fn(token.type())}; rhs) {
-      node = make_node<Arithmetic>(t_op, std::move(t_lhs), std::move(rhs));
+      node = make_node<Arithmetic>(pos, t_op, std::move(t_lhs), std::move(rhs));
     }
   }};
 
@@ -263,12 +264,13 @@ auto PrattParser::logical(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
+	const auto pos{get_position()};
   auto lambda{[&]<typename T>() {
     const auto token{get_token()};
     next();
 
     if(auto rhs{t_fn(token.type())}; rhs) {
-      node = make_node<T>(std::move(t_lhs), std::move(rhs));
+      node = make_node<T>(pos, std::move(t_lhs), std::move(rhs));
     }
   }};
 

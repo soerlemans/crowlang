@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <memory>
 #include <ranges>
+#include <sstream>
 
 // Includes:
 #include "../ast/node/include.hpp"
@@ -275,12 +276,19 @@ auto TypeChecker::visit(Arithmetic* t_arith) -> Any
   const auto lhs{ret.resolve_type()};
   const auto rhs{get_resolved_type(t_arith->right())};
 
+  // TODO: Implement type promotion later
   if(lhs != rhs) {
-    // TODO: Implement type promotion later
+    std::stringstream ss;
 
     DBG_ERROR("Typeof: ", lhs, " != ", rhs);
 
-    type_error("LHS and RHS types do not match.");
+    ss << "Arithmetic operation contains a type mismatch.\n";
+    ss << "typeof lhs = " << lhs << "\n";
+    ss << "typeof rhs = " << rhs << "\n\n";
+
+    ss << t_arith->position();
+
+    type_error(ss.str());
   }
 
   return ret;
@@ -300,8 +308,8 @@ auto TypeChecker::visit(Assignment* t_assign) -> Any
   if(var.is_const()) {
     ss << "Assignment is illegal to a const variable.\n\n";
 
-    ss << "<left hand side> = <expr>\n";
-    ss << "typeof left hand side = " << var << "\n";
+    ss << "<lhs> = <expr>\n";
+    ss << "typeof lhs = " << var << "\n";
     ss << "typeof expr = " << expr << "\n\n";
 
     ss << t_assign->position();
@@ -312,8 +320,8 @@ auto TypeChecker::visit(Assignment* t_assign) -> Any
   if(var.resolve_type() != expr) {
     ss << "Types do not match on assignment.\n\n";
 
-    ss << "<left hand side> = <expr>\n";
-    ss << "typeof left hand side = " << var << "\n";
+    ss << "<lhs> = <expr>\n";
+    ss << "typeof lhs = " << var << "\n";
     ss << "typeof expr = " << expr << "\n\n";
 
     ss << t_assign->position();
@@ -331,13 +339,15 @@ auto TypeChecker::visit(Comparison* t_comp) -> Any
   const auto lhs{get_native_type(t_comp->left())};
   const auto rhs{get_native_type(t_comp->right())};
 
+  // TODO: Implement type promotion later
   if(lhs != rhs) {
     std::stringstream ss;
 
-    ss << "LHS and RHS types do not match.\n\n";
+    ss << "Comparison operation contains a type mismatch.\n";
+    ss << "typeof lhs = " << lhs << "\n";
+    ss << "typeof rhs = " << rhs << "\n\n";
 
     ss << t_comp->position();
-    // TODO: Implement type promotion later
 
     type_error(ss.str());
   }
