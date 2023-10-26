@@ -9,8 +9,7 @@ fn test() -> int {
 }
 
 fn main() -> int {
-  const var = 10
-  let result = 10 + true
+  const var = test && 10
 
 	return 0
 }

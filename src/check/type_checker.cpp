@@ -136,7 +136,7 @@ auto TypeChecker::visit(Return* t_return) -> Any
   return data;
 }
 
-// // Function:
+// Function:
 auto TypeChecker::visit(Parameter* t_param) -> Any
 {
   // For now only deal with native types as arguments
@@ -197,7 +197,7 @@ auto TypeChecker::visit(ReturnType* t_rt) -> Any
   return SymbolData{str2nativetype(t_rt->type())};
 }
 
-// // Lvalue:
+// Lvalue:
 // TODO: Account for when init expr is a nullptr
 auto TypeChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
 {
@@ -266,15 +266,16 @@ auto TypeChecker::visit(Variable* t_var) -> Any
   return var;
 }
 
-// // Operators:
+// Operators:
 auto TypeChecker::visit(Arithmetic* t_arith) -> Any
 {
-  using namespace exception;
-
   const auto ret{get_symbol_data(t_arith->left())};
 
   const auto lhs{ret.resolve_type()};
   const auto rhs{get_resolved_type(t_arith->right())};
+
+  DBG_INFO("Typeof lhs: ", lhs);
+  DBG_INFO("Typeof rhs: ", rhs);
 
   // TODO: Implement type promotion later
   if(lhs != rhs) {
@@ -334,10 +335,11 @@ auto TypeChecker::visit(Assignment* t_assign) -> Any
 
 auto TypeChecker::visit(Comparison* t_comp) -> Any
 {
-  using namespace exception;
-
   const auto lhs{get_native_type(t_comp->left())};
   const auto rhs{get_native_type(t_comp->right())};
+
+  DBG_INFO("Typeof lhs: ", lhs);
+  DBG_INFO("Typeof rhs: ", rhs);
 
   // TODO: Implement type promotion later
   if(lhs != rhs) {
@@ -404,12 +406,12 @@ auto TypeChecker::visit(UnaryPrefix* t_up) -> Any
   return left;
 }
 
-// // Logical:
+// Logical:
 auto TypeChecker::visit(Not* t_not) -> Any
 {
-  using namespace exception;
-
   const auto lhs{get_symbol_data(t_not->left())};
+
+  DBG_INFO("Typeof lhs: ", lhs);
 
   handle_condition(lhs, t_not->position());
 
@@ -419,34 +421,28 @@ auto TypeChecker::visit(Not* t_not) -> Any
 // TODO: Create a helper method for these types of type checks
 auto TypeChecker::visit(And* t_and) -> Any
 {
-  using namespace exception;
+  const auto lhs{get_symbol_data(t_and->left())};
+  const auto rhs{get_symbol_data(t_and->right())};
 
-  const auto lhs{get_native_type(t_and->left())};
-  const auto rhs{get_native_type(t_and->right())};
+  DBG_INFO("Typeof lhs: ", lhs);
+  DBG_INFO("Typeof rhs: ", rhs);
 
-  if(lhs && rhs) {
-    if(!is_condition(lhs.value()) || !is_condition(rhs.value())) {
-      type_error("LHS and RHS types do not match!");
-    }
-  } else {
-    type_error("Both operands must be native types!");
-  }
+  handle_condition(lhs, t_and->position());
+  handle_condition(rhs, t_and->position());
 
   return SymbolData{NativeType::BOOL};
 }
 
 auto TypeChecker::visit(Or* t_or) -> Any
 {
-  const auto lhs{get_native_type(t_or->left())};
-  const auto rhs{get_native_type(t_or->right())};
+  const auto lhs{get_symbol_data(t_or->left())};
+  const auto rhs{get_symbol_data(t_or->right())};
 
-  if(lhs && rhs) {
-    if(!is_condition(lhs.value()) || !is_condition(rhs.value())) {
-      type_error("LHS and RHS types do not match!");
-    }
-  } else {
-    type_error("Both operands must be native types!");
-  }
+  DBG_INFO("Typeof lhs: ", lhs);
+  DBG_INFO("Typeof rhs: ", rhs);
+
+  handle_condition(lhs, t_or->position());
+  handle_condition(rhs, t_or->position());
 
   return SymbolData{NativeType::BOOL};
 }

@@ -20,17 +20,11 @@ auto SymbolData::native_type(
   return {};
 }
 
-auto SymbolData::native_type(const FnTypePtr t_fn) const -> NativeTypeOpt
+// TODO: In the future this would maybe have too return a function pointer?
+auto SymbolData::native_type([[maybe_unused]] const FnTypePtr t_fn) const
+  -> NativeTypeOpt
 {
-  NativeTypeOpt opt;
-
-  if(t_fn) {
-    opt = t_fn->m_return_type.native_type();
-  } else {
-    throw std::runtime_error{"VarTypePtr is nullptr!"};
-  }
-
-  return opt;
+  return {};
 }
 
 auto SymbolData::native_type(const VarTypePtr t_var) const -> NativeTypeOpt
