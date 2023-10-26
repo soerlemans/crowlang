@@ -2,7 +2,7 @@
 #define CROW_AST_NODE_NODE_INTERFACE_HPP
 
 // Includes:
-#include "../../visitable/visitable.hpp"
+#include "../../lib/visitable/visitable.hpp"
 #include "../visitor/node_visitor.hpp"
 
 // Local Includes:

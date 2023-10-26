@@ -2,7 +2,7 @@
 #define CROW_DEBUG_TRACE_MACROS_HPP
 
 // Includes:
-#include "../macros.hpp"
+#include "../lib/macros.hpp"
 
 
 // Macros:

@@ -23,6 +23,7 @@ using namespace check;
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
+//! Handle the case where a type must be treated as a conditional
 auto TypeChecker::handle_condition(const SymbolData& t_data,
                                    const container::TextPosition& t_pos) const
   -> void
@@ -173,12 +174,16 @@ auto TypeChecker::visit(FunctionCall* t_fn_call) -> Any
 
   const auto fn{data.function()};
   const auto params{fn->m_params};
+  const auto return_type{fn->m_return_type};
 
   if(args != params) {
     std::stringstream ss;
 
     ss << "Arguments passed to " << std::quoted(id)
        << " do not match parameters.\n";
+
+    ss << "Function signature: " << id << "(" << params << ") -> "
+       << return_type;
 
     type_error(ss.str());
   }
@@ -275,7 +280,7 @@ auto TypeChecker::visit(Arithmetic* t_arith) -> Any
 
     DBG_ERROR("Typeof: ", lhs, " != ", rhs);
 
-    type_error("LHS and RHS types do not match!");
+    type_error("LHS and RHS types do not match.");
   }
 
   return ret;
@@ -329,7 +334,7 @@ auto TypeChecker::visit(Comparison* t_comp) -> Any
   if(lhs != rhs) {
     std::stringstream ss;
 
-    ss << "LHS and RHS types do not match.\n";
+    ss << "LHS and RHS types do not match.\n\n";
 
     ss << t_comp->position();
     // TODO: Implement type promotion later
@@ -352,7 +357,7 @@ auto TypeChecker::visit(Increment* t_inc) -> Any
   if(!is_integer(opt.value())) {
     std::stringstream ss;
 
-    ss << "Trying to increment a variable that is not an integer.\n";
+    ss << "Trying to increment a variable that is not an integer.";
 
     type_error(ss.str());
   }
@@ -372,7 +377,7 @@ auto TypeChecker::visit(Decrement* t_dec) -> Any
   if(!is_integer(opt.value())) {
     std::stringstream ss;
 
-    ss << "Trying to decrement a variable that is not an integer.\n";
+    ss << "Trying to decrement a variable that is not an integer.";
 
     type_error(ss.str());
   }

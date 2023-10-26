@@ -6,15 +6,12 @@
 #include <utility>
 
 // Includes:
-#include "../../types.hpp"
+#include "../../lib/types.hpp"
 #include "../parser.hpp"
 #include "binding/maps.hpp"
 
 
 namespace parser::pratt {
-// Aliases:
-using NodeFn = std::function<n::NodePtr()>;
-
 //! This type is used to get the right hand side of a binary expressions
 using RhsFn = std::function<n::NodePtr(token::TokenType)>;
 

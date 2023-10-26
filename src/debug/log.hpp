@@ -12,7 +12,7 @@
 
 // Includes:
 #include "../container/source_position.hpp"
-#include "../types.hpp"
+#include "../lib/types.hpp"
 
 // Local Includes:
 #include "log_macros.hpp"

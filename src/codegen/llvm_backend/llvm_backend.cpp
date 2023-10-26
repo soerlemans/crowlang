@@ -20,7 +20,7 @@
 // Includes:
 #include "../../ast/node/include.hpp"
 #include "../../debug/log.hpp"
-#include "../../types.hpp"
+#include "../../lib/types.hpp"
 
 
 // Using Statements:

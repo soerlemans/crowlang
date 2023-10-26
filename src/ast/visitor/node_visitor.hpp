@@ -2,7 +2,7 @@
 #define CROW_AST_VISITOR_NODE_VISITOR_HPP
 
 // Includes:
-#include "../../visitable/visitable.hpp"
+#include "../../lib/visitable/visitable.hpp"
 #include "../node/fdecl.hpp"
 
 
