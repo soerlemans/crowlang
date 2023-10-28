@@ -55,7 +55,7 @@ auto TypeChecker::handle_condition(const SymbolData& t_data,
 auto TypeChecker::add_symbol(const std::string_view t_id,
                              const SymbolData t_data) -> void
 {
-  TypePair pair{t_id, t_data};
+  Symbol pair{t_id, t_data};
 
   const auto result{m_envs.back().insert(pair)};
   if(!result.second) {
@@ -66,26 +66,26 @@ auto TypeChecker::add_symbol(const std::string_view t_id,
 auto TypeChecker::get_symbol(const std::string_view t_id) -> SymbolData
 {
   bool found{false};
-  SymbolData variant;
+  SymbolData data;
+  const auto str{std::quoted(t_id)};
 
   // We want to traverse the scopes from inner to outer
   for(const auto& env : m_envs | std::views::reverse) {
-    const std::string str{t_id};
-    const auto iter{env.find(str)};
+    const auto iter{env.find(std::string{t_id})};
+
     if(iter != env.end()) {
-      DBG_INFO("Found Symbol ", std::quoted(t_id), " in Env!");
+      DBG_INFO("Found Symbol ", str, " in Env!");
 
       found = true;
-      variant = iter->second;
+      data = iter->second;
     }
   }
 
   if(!found) {
-    type_error("Identifier ", std::quoted(t_id),
-               " is not defined in environment");
+    type_error("Identifier ", str, " is not defined in environment");
   }
 
-  return variant;
+  return data;
 }
 
 TypeChecker::TypeChecker(): m_envs{}
@@ -211,14 +211,15 @@ auto TypeChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
     ss << ": " << type;
 
     // TODO: Resolve non native types
-    const SymbolData variant{str2nativetype(type)};
-    if(variant != expr) {
+    const SymbolData data{str2nativetype(type)};
+
+    if(data != expr) {
       std::stringstream ss;
       const auto var{std::quoted(t_decl->identifier())};
 
       ss << "Init of " << var << " contains a type mismatch.\n\n";
 
-      ss << "typeof " << var << " = " << variant << "\n";
+      ss << "typeof " << var << " = " << data << "\n";
       ss << "typeof expr = " << expr << "\n\n";
 
       ss << t_decl->position();
@@ -258,10 +259,11 @@ auto TypeChecker::visit(Let* t_let) -> Any
 
 auto TypeChecker::visit(Variable* t_var) -> Any
 {
-  const auto var{get_symbol(t_var->identifier())};
+	const auto id{t_var->identifier()};
+  const auto var{get_symbol(id)};
+  const auto str{std::quoted(id)};
 
-  DBG_INFO("Variable ", std::quoted(t_var->identifier(), '\''), " of type ",
-           var);
+  DBG_INFO("Variable ", str, " of type ", var);
 
   return var;
 }
@@ -303,11 +305,10 @@ auto TypeChecker::visit(Assignment* t_assign) -> Any
   const auto var{get_symbol_data(t_assign->left())};
   const auto expr{get_symbol_data(t_assign->right()).resolve_type()};
 
-
   std::stringstream ss;
 
   if(var.is_const()) {
-    ss << "Assignment is illegal to a const variable.\n\n";
+    ss << "Assigning to a const variable is illegal.\n\n";
 
     ss << "<lhs> = <expr>\n";
     ss << "typeof lhs = " << var << "\n";
@@ -471,6 +472,14 @@ auto TypeChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
 {
   return SymbolData{NativeType::BOOL};
 }
+
+// Typing:
+AST_VISITOR_STUB(TypeChecker, MethodDecl)
+AST_VISITOR_STUB(TypeChecker, Interface)
+AST_VISITOR_STUB(TypeChecker, MemberDecl)
+AST_VISITOR_STUB(TypeChecker, Struct)
+AST_VISITOR_STUB(TypeChecker, Impl)
+AST_VISITOR_STUB(TypeChecker, DotExpr)
 
 auto TypeChecker::check(NodePtr t_ast) -> void
 {
