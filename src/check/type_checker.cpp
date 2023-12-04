@@ -52,42 +52,6 @@ auto TypeChecker::handle_condition(const SymbolData& t_data,
   }
 }
 
-auto TypeChecker::add_symbol(const std::string_view t_id,
-                             const SymbolData t_data) -> void
-{
-  Symbol pair{t_id, t_data};
-
-  const auto result{m_envs.back().insert(pair)};
-  if(!result.second) {
-    // TODO: Throw exception, that name was already defined
-  }
-}
-
-auto TypeChecker::get_symbol(const std::string_view t_id) -> SymbolData
-{
-  bool found{false};
-  SymbolData data;
-  const auto str{std::quoted(t_id)};
-
-  // We want to traverse the scopes from inner to outer
-  for(const auto& env : m_envs | std::views::reverse) {
-    const auto iter{env.find(std::string{t_id})};
-
-    if(iter != env.end()) {
-      DBG_INFO("Found Symbol ", str, " in Env!");
-
-      found = true;
-      data = iter->second;
-    }
-  }
-
-  if(!found) {
-    type_error("Identifier ", str, " is not defined in environment");
-  }
-
-  return data;
-}
-
 TypeChecker::TypeChecker(): m_envs{}
 {}
 
@@ -156,7 +120,7 @@ auto TypeChecker::visit(Function* t_fn) -> Any
   const auto params{get_type_list(t_fn->params())};
 
   SymbolData ptr{define_function(params, type)};
-  add_symbol(id, ptr);
+  m_envs.add_symbol(id, ptr);
 
   DBG_INFO("Function: ", id, "(", params, ") -> ", type);
 
@@ -170,7 +134,7 @@ auto TypeChecker::visit(FunctionCall* t_fn_call) -> Any
   // TODO: Improve this code to be more generic and clean, error if this is not
   // a function name
   const auto id{t_fn_call->identifier()};
-  const auto data{get_symbol(id)};
+  const auto data{m_envs.get_symbol(id)};
   const auto args{get_type_list(t_fn_call->args())};
 
   const auto fn{data.function()};
@@ -240,7 +204,7 @@ auto TypeChecker::visit(Const* t_const) -> Any
 
   // Create the SymbolData for a variable
   SymbolData data{define_variable(true, expr_data)};
-  add_symbol(id, data);
+  m_envs.add_symbol(id, data);
 
   return {};
 }
@@ -252,18 +216,17 @@ auto TypeChecker::visit(Let* t_let) -> Any
 
   // Create the SymbolData for a variable
   SymbolData data{define_variable(false, expr_data)};
-  add_symbol(id, data);
+  m_envs.add_symbol(id, data);
 
   return {};
 }
 
 auto TypeChecker::visit(Variable* t_var) -> Any
 {
-	const auto id{t_var->identifier()};
-  const auto var{get_symbol(id)};
-  const auto str{std::quoted(id)};
+  const auto id{t_var->identifier()};
+  const auto var{m_envs.get_symbol(id)};
 
-  DBG_INFO("Variable ", str, " of type ", var);
+  DBG_INFO("Variable ", std::quoted(id), " of type ", var);
 
   return var;
 }
@@ -484,7 +447,6 @@ AST_VISITOR_STUB(TypeChecker, DotExpr)
 auto TypeChecker::check(NodePtr t_ast) -> void
 {
   m_envs.clear();
-  m_envs.emplace_back();
 
   traverse(t_ast);
 }

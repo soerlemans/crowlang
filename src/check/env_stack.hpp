@@ -7,10 +7,27 @@
 
 namespace check {
 // Aliases:
+using Symbol = std::pair<std::string, SymbolData>;
 using Env = std::map<std::string, SymbolData>;
 
 // Classes:
-class EnvStack : public std::list<Env> {};
+class EnvStack {
+  private:
+  std::list<Env> m_envs;
+
+  public:
+  EnvStack();
+
+  auto add_symbol(std::string_view t_id, SymbolData t_data) -> void;
+  auto get_symbol(std::string_view t_id) -> SymbolData;
+
+  auto push_env() -> void;
+  auto pop_env() -> void;
+
+  auto clear() -> void;
+
+  virtual ~EnvStack() = default;
+};
 } // namespace check
 
 #endif // ENV_STACK_HPP
