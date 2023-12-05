@@ -13,7 +13,6 @@ set(
 	-header-filter=src/.*;
 	-extra-arg=-std=c++2b;
 )
-# -checks=*;
 
 set_target_properties(
 	${PROJECT_NAME}

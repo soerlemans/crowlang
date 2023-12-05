@@ -2,6 +2,8 @@
 DEBUG := -DCMAKE_BUILD_TYPE=Debug
 RELWITHDEBINFO := -DCMAKE_BUILD_TYPE=RelWithDebInfo
 
+CLANG_TIDY_ARGS := -header-filter=src/.* -extra-arg=-std=c++2b
+
 .DEFAULT_GOAL := build
 
 # Rules:
@@ -38,7 +40,7 @@ format:
 	find src/ -iname "*.[ch]pp" -exec clang-format -i {} \;
 
 lint:
-	find src/ -iname "*.[ch]pp" -exec clang-tidy {} -- -DDEBUG \;
+	find src/ -iname "*.[ch]pp" -exec clang-tidy $(CLANG_TIDY_ARGS) {} -- -DDEBUG \;
 
 header_guard:
 	PROJECT_NAME=CROW find src/ -name "*.hpp" -exec ./tools/header_guard.awk {} \;

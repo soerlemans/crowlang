@@ -90,12 +90,12 @@ const NativeTypeMap native_types = boost::assign::list_of<NativeTypeMap::relatio
 // clang-format on
 
 // Functions:
-auto is_integer(const NativeType t_typev) -> bool;
-auto is_float(const NativeType t_typev) -> bool;
-auto is_bool(const NativeType t_typev) -> bool;
+auto is_integer(NativeType t_typev) -> bool;
+auto is_float(NativeType t_typev) -> bool;
+auto is_bool(NativeType t_typev) -> bool;
 
-auto is_condition(const NativeType t_typev) -> bool;
-auto is_numeric(const NativeType t_typev) -> bool;
+auto is_condition(NativeType t_typev) -> bool;
+auto is_numeric(NativeType t_typev) -> bool;
 
 auto str2nativetype(std::string_view t_str) -> NativeType;
 auto nativetype2str(NativeType t_ntype) -> std::string;
