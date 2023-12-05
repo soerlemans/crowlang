@@ -1,3 +1,5 @@
+# Install and include dependencies required for the project.
+
 # Find libraries
 include(FetchContent)
 set(FETCHCONTENT_QUIET FALSE)
@@ -22,7 +24,7 @@ FetchContent_Declare(
 	SYSTEM
 )
 
-# Cpptrace ()
+# Cpptrace (Stacktraces for C++)
 FetchContent_Declare(
   cpptrace
   GIT_REPOSITORY https://github.com/jeremy-rifkin/cpptrace.git

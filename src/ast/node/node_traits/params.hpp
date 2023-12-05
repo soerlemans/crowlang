@@ -14,7 +14,7 @@ class Params : virtual public NodeInterface {
   NodeListPtr m_params;
 
   public:
-  Params(NodeListPtr&& t_body);
+  Params(NodeListPtr&& t_params);
 
   virtual auto params() -> NodeListPtr&;
 

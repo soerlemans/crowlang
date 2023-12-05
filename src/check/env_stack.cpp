@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <ranges>
 #include <algorithm>
+#include <any>
 
 // Includes:
 #include "../debug/log.hpp"

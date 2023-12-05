@@ -1,12 +1,9 @@
 #include "type_error.hpp"
 
-// Library Includes:
-#include <cpptrace/cpptrace.hpp>
-
 // STL Includes:
 #include <sstream>
 
-#include "../debug/log.hpp"
+// Local Includes:
 #include "stacktrace_exception.hpp"
 
 
