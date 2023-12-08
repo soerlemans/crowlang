@@ -1,5 +1,5 @@
-#ifndef CROW_AST_NODE_NODE_TRAITS_TYPE_HPP
-#define CROW_AST_NODE_NODE_TRAITS_TYPE_HPP
+#ifndef CROW_AST_NODE_NODE_TRAITS_TYPE_ANNOTATION_HPP
+#define CROW_AST_NODE_NODE_TRAITS_TYPE_ANNOTATION_HPP
 
 // STL Includes:
 #include <string_view>
@@ -27,4 +27,4 @@ class TypeAnnotation : virtual public NodeInterface {
 };
 } // namespace ast::node::node_traits
 
-#endif // CROW_AST_NODE_NODE_TRAITS_TYPE_HPP
+#endif // CROW_AST_NODE_NODE_TRAITS_TYPE_ANNOTATION_HPP

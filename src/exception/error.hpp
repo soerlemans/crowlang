@@ -1,5 +1,5 @@
-#ifndef CROW_EXCEPTION_STACKTRACE_EXCEPTION_HPP
-#define CROW_EXCEPTION_STACKTRACE_EXCEPTION_HPP
+#ifndef CROW_EXCEPTION_ERROR_HPP
+#define CROW_EXCEPTION_ERROR_HPP
 
 // STL Includes:
 #include <sstream>
@@ -53,4 +53,4 @@ inline auto error(Args&&... t_args) -> void
 }
 } // namespace exception
 
-#endif // CROW_EXCEPTION_STACKTRACE_EXCEPTION_HPP
+#endif // CROW_EXCEPTION_ERROR_HPP
