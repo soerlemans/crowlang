@@ -6,7 +6,6 @@
 
 // Includes:
 #include "../container/text_position.hpp"
-#include "../exception/type_error.hpp"
 
 // Local includes:
 #include "env_stack.hpp"

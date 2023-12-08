@@ -9,7 +9,7 @@
 #include "identifier.hpp"
 #include "init_expr.hpp"
 #include "node_position.hpp"
-#include "type.hpp"
+#include "type_annotation.hpp"
 
 
 namespace ast::node::node_traits {
@@ -19,7 +19,7 @@ namespace ct = container;
 // Classes:
 class DeclExpr : public NodePosition,
                  public Identifier,
-                 public Type,
+                 public TypeAnnotation,
                  public InitExpr {
   public:
   DeclExpr(ct::TextPosition&& t_pos, std::string_view t_identifier,

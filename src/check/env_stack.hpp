@@ -1,6 +1,9 @@
 #ifndef CROW_CHECK_ENV_STACK_HPP
 #define CROW_CHECK_ENV_STACK_HPP
 
+// Includes:
+#include "../exception/type_error.hpp"
+
 // Local Includes:
 #include "symbol_data.hpp"
 

@@ -12,11 +12,6 @@ using Variant = std::variant<StructTypePtr, FnTypePtr, VarTypePtr, NativeType>;
 // Classes:
 //! This is an abbreviation for SymbolData
 class SymbolData : public Variant {
-  protected:
-  auto native_type(StructTypePtr t_struct) const -> NativeTypeOpt;
-  auto native_type(FnTypePtr t_fn) const -> NativeTypeOpt;
-  auto native_type(VarTypePtr t_var) const -> NativeTypeOpt;
-
   public:
   // Use the constructors of the variant
   using Variant::Variant;
@@ -36,19 +31,33 @@ class SymbolData : public Variant {
 // TODO: use VarTypePtr and FnTypePtr in combination with a map?
 struct StructType {
   std::string m_identifier;
+
+  auto native_type() const -> NativeTypeOpt
+  {
+    return {};
+  }
 };
 
 struct FnType {
   TypeList m_params;
   SymbolData m_return_type;
+
+  auto native_type() const -> NativeTypeOpt
+  {
+    return {};
+  }
 };
 
 // TODO: Ignore m_const value when comparing
 struct VarType {
   bool m_const;
   SymbolData m_type;
-};
 
+  auto native_type() const -> NativeTypeOpt
+  {
+    return m_type.native_type();
+  }
+};
 } // namespace check
 
 // Functions:

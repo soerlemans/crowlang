@@ -17,7 +17,7 @@ namespace exception {
  */
 class SyntaxError : public Error {
   private:
-  auto format(std::string_view t_msg) -> std::string override;
+  auto format(std::string_view t_msg) -> std::string;
 
   protected:
   container::TextPosition m_pos;

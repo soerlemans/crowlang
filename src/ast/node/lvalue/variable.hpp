@@ -16,7 +16,7 @@ namespace ct = container;
 // Classes:
 class Variable : public nt::NodePosition,
                  public nt::Identifier,
-                 public nt::Type {
+                 public nt::TypeAnnotation {
   public:
   Variable(ct::TextPosition t_pos, std::string_view t_identifier);
   Variable(ct::TextPosition t_pos, std::string_view t_identifier,

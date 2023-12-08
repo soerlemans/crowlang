@@ -9,7 +9,7 @@ namespace exception {
 // Classes:
 class TypeError : public Error {
   private:
-  auto format(std::string_view t_msg) -> std::string override;
+  auto format(std::string_view t_msg) -> std::string;
 
   public:
   TypeError(std::string_view t_msg);

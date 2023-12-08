@@ -2,6 +2,7 @@
 
 // Includes:
 #include "../debug/log.hpp"
+#include "../exception/error.hpp"
 #include "../lib/overload.hpp"
 
 
@@ -12,33 +13,6 @@
 
 // Using Statements:
 using namespace check;
-
-//! Structs can not be resolved to Native types
-auto SymbolData::native_type(
-  [[maybe_unused]] const StructTypePtr t_struct) const -> NativeTypeOpt
-{
-  return {};
-}
-
-// TODO: In the future this would maybe have too return a function pointer?
-auto SymbolData::native_type([[maybe_unused]] const FnTypePtr t_fn) const
-  -> NativeTypeOpt
-{
-  return {};
-}
-
-auto SymbolData::native_type(const VarTypePtr t_var) const -> NativeTypeOpt
-{
-  NativeTypeOpt opt;
-
-  if(t_var) {
-    opt = t_var->m_type.native_type();
-  } else {
-    throw std::runtime_error{"VarTypePtr is nullptr!"};
-  }
-
-  return opt;
-}
 
 // Methods:
 auto SymbolData::struct_() const -> StructTypePtr
@@ -77,7 +51,7 @@ auto SymbolData::is_const() const -> bool
   return result;
 }
 
-//! All data except information related to types is stripped
+//! All data except information related to types is stripped.
 auto SymbolData::resolve_type() const -> SymbolData
 {
   SymbolData data;
@@ -91,17 +65,23 @@ auto SymbolData::resolve_type() const -> SymbolData
   return data;
 }
 
-//! Resolves a Symbol's data  to a NativeType if possible
+//! Resolves a Symbol's data  to a NativeType if possible.
 auto SymbolData::native_type() const -> NativeTypeOpt
 {
+  using namespace exception;
+
   NativeTypeOpt opt;
 
   const auto native{[&](const NativeType t_type) -> NativeTypeOpt {
     return t_type;
   }};
 
-  const auto methods{[&](const auto& t_data) {
-    return native_type(t_data);
+  const auto methods{[&](const std::shared_ptr<auto>& t_data) {
+    if(!t_data) {
+      error("ptr is nullptr!");
+    }
+
+    return t_data->native_type();
   }};
 
   opt = std::visit(Overload{native, methods}, *this);

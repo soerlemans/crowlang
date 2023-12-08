@@ -12,18 +12,18 @@
 
 
 namespace ast::node::node_traits {
-class Type : virtual public NodeInterface {
+class TypeAnnotation : virtual public NodeInterface {
   protected:
   std::string m_type;
 
   public:
-  Type(std::string_view t_type);
+  TypeAnnotation(std::string_view t_type);
 
   virtual auto type() const -> std::string_view;
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~Type() override = default;
+  ~TypeAnnotation() override = default;
 };
 } // namespace ast::node::node_traits
 

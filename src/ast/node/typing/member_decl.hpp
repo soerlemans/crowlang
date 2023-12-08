@@ -13,7 +13,7 @@ namespace ast::node::typing {
 namespace nt = node_traits;
 
 // Classes:
-class MemberDecl : public nt::Identifier, public nt::Type {
+class MemberDecl : public nt::Identifier, public nt::TypeAnnotation {
   public:
   MemberDecl(std::string_view t_identifier, std::string_view t_type);
 

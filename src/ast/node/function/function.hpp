@@ -15,7 +15,7 @@ namespace nt = node_traits;
 // Classes:
 class Function : public nt::Identifier,
                  public nt::Params,
-                 public nt::Type,
+                 public nt::TypeAnnotation,
                  public nt::Body {
   public:
   Function(std::string_view t_identifier, NodeListPtr&& t_params,

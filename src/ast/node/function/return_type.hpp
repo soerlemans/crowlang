@@ -13,7 +13,7 @@ namespace ast::node::function {
 namespace nt = node_traits;
 
 // Classes:
-class ReturnType : public nt::Type {
+class ReturnType : public nt::TypeAnnotation {
   public:
   ReturnType(std::string_view t_type);
 

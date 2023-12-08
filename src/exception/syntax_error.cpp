@@ -15,13 +15,13 @@ auto SyntaxError::format(const std::string_view t_msg) -> std::string
 
   auto [path, line, lineno, columnno] = m_pos;
 
-  // Lineno is zero indexed
+  // Line number is zero indexed
   lineno_ss << " - Line(";
   lineno_ss << lineno + 1;
   lineno_ss << "):";
 
   ss << "Error in file: " << std::quoted(path) << '\n';
-  ss << "Error description: " << std::quoted(t_msg) << "\n";
+  ss << "Error description: " << std::quoted(t_msg) << '\n';
   ss << lineno_ss.str();
 
   ss << line;

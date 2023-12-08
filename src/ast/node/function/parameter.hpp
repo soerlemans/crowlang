@@ -16,7 +16,7 @@ namespace ct = container;
 // Classes:
 class Parameter : public nt::NodePosition,
                   public nt::Identifier,
-                  public nt::Type {
+                  public nt::TypeAnnotation {
   public:
   Parameter(ct::TextPosition t_pos, std::string_view t_identifier,
             std::string_view t_type);

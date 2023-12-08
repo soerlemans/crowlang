@@ -24,10 +24,6 @@ namespace exception {
  * Includes a stacktrace when compiling with the @ref DEBUG macro defined.
  */
 class Error : public ERROR_PARENT {
-  private:
-  //! format() constructs a std::stringstraam in order to append to the message
-  virtual auto format(std::string_view t_msg) -> std::string = 0;
-
   protected:
   std::string m_error;
 
@@ -41,16 +37,19 @@ class Error : public ERROR_PARENT {
 
 
 // Functions:
-template<typename T, typename... Args>
+template<typename T = Error, typename... Args>
   requires std::is_base_of<Error, T>::value
 inline auto error(Args&&... t_args) -> void
 {
   std::stringstream ss;
+  std::string str;
 
   // Add all arguments to the string stream.
   (ss << ... << t_args);
 
-  throw T{ss.view()};
+  str = ss.view();
+
+  throw T{str};
 }
 } // namespace exception
 

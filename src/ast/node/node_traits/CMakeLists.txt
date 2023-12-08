@@ -8,7 +8,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 	init_expr.cpp
 	node_position.cpp
 	params.cpp
-	type.cpp
+	type_annotation.cpp
 	then.cpp
 	alt.cpp
 	unary_operator.cpp

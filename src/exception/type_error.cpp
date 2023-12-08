@@ -7,7 +7,7 @@ auto TypeError::format(std::string_view t_msg) -> std::string
 {
   std::stringstream ss;
 
-  ss << t_msg << "\n";
+  ss << t_msg << '\n';
 
   return ss.str();
 }
