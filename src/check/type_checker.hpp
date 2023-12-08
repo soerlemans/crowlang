@@ -23,27 +23,8 @@ class TypeChecker : public SymbolHelper {
   private:
   EnvStack m_envs;
 
-  protected:
-  template<typename... Args>
-  auto type_error(Args&&... t_args) const -> void
-  {
-    using namespace exception;
-
-    std::stringstream ss;
-
-    // Fold expression
-    (ss << ... << t_args);
-
-    throw TypeError{ss.str()};
-  }
-
   auto handle_condition(const SymbolData& t_data,
                         const container::TextPosition& t_pos) const -> void;
-
-  auto get_symbol(std::string_view t_id) -> SymbolData;
-
-  // auto add_variable() -> void;
-  // auto add_function() -> void;
 
   public:
   TypeChecker();

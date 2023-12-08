@@ -19,6 +19,7 @@
 
 
 // Using Statements:
+using namespace exception;
 using namespace check;
 
 NODE_USING_ALL_NAMESPACES()

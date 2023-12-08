@@ -19,7 +19,7 @@ add_executable(${PROJECT_NAME})
 include(cmake/compiler.cmake)
 
 # Configure include-what-you-use.
-include(cmake/clang-tidy.cmake)
+#include(cmake/clang-tidy.cmake)
 
 # Generate the version header.
 include(cmake/version.cmake)

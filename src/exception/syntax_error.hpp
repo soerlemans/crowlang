@@ -8,12 +8,14 @@
 #include "../container/text_position.hpp"
 
 // Local Includes:
-#include "stacktrace_exception.hpp"
+#include "error.hpp"
 
 
 namespace exception {
-//! SyntaxError is thrown when there is an error in the syntax
-class SyntaxError : public StacktraceException {
+/*!
+ * Is thrown when source code of a crow program contains a syntax error.
+ */
+class SyntaxError : public Error {
   private:
   auto format(std::string_view t_msg) -> std::string override;
 

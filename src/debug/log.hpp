@@ -92,7 +92,7 @@ constexpr auto loglevel2color(const LogLevel t_loglevel) -> rang::fg
 auto is_lower_loglevel(LogLevel t_loglevel) -> bool;
 auto set_loglevel(LogLevel t_loglevel) -> void;
 
-auto operator<<(std::ostream& t_os, const LogLevel t_loglevel) -> std::ostream&;
+auto operator<<(std::ostream& t_os, LogLevel t_loglevel) -> std::ostream&;
 
 // Do not use this function with non primitive types it will not know how to
 // Handle them and give an obscure tuple error

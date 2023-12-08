@@ -1,5 +1,5 @@
-#ifndef ENV_STACK_HPP
-#define ENV_STACK_HPP
+#ifndef CROW_CHECK_ENV_STACK_HPP
+#define CROW_CHECK_ENV_STACK_HPP
 
 // Local Includes:
 #include "symbol_data.hpp"
@@ -30,4 +30,4 @@ class EnvStack {
 };
 } // namespace check
 
-#endif // ENV_STACK_HPP
+#endif // CROW_CHECK_ENV_STACK_HPP

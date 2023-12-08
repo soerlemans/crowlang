@@ -1,9 +1,7 @@
 #include "syntax_error.hpp"
-#include "stacktrace_exception.hpp"
 
 // STL Includes:
 #include <iomanip>
-#include <sstream>
 #include <string>
 
 
@@ -36,5 +34,5 @@ auto SyntaxError::format(const std::string_view t_msg) -> std::string
 
 SyntaxError::SyntaxError(const std::string_view t_msg,
                          const container::TextPosition& t_pos)
-  : StacktraceException{format(t_msg)}, m_pos(t_pos)
+  : Error{format(t_msg)}, m_pos(t_pos)
 {}

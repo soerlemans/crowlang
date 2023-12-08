@@ -1,4 +1,4 @@
-#include "stacktrace_exception.hpp"
+#include "error.hpp"
 
 // STL Includes:
 #include <cassert>
@@ -8,8 +8,7 @@
 using namespace exception;
 
 // Methods:
-StacktraceException::StacktraceException(const std::string t_msg)
-  : STACKTRACE_EXCEPTION_PARENT{}, m_error{}
+Error::Error(const std::string t_msg): ERROR_PARENT{}, m_error{}
 {
   std::stringstream ss;
 
@@ -22,13 +21,13 @@ StacktraceException::StacktraceException(const std::string t_msg)
   ss << "\n";
 
   // Print the trace to the stream without colors (they mess up the output).
-  ss << STACKTRACE_EXCEPTION_PARENT::what() << '\n';
+  ss << ERROR_PARENT::what() << '\n';
 #endif
 
   m_error = ss.str();
 }
 
-auto StacktraceException::what() const noexcept -> const char*
+auto Error::what() const noexcept -> const char*
 {
   return m_error.c_str();
 }
