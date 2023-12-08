@@ -8,17 +8,20 @@
 
 // Macros:
 #define AST_VISITOR_STUB(t_class, t_type)                  \
+  /* NOLINTBEGIN */                                        \
   auto t_class::visit([[maybe_unused]] t_type* t_ptr)->Any \
   {                                                        \
     return {};                                             \
-  }
+  }                                                        \
+  /* NOLINTBEGIN */
 
 namespace ast::visitor {
 // Using statements:
 using visitable::Any;
 
 // Classes:
-/*! Implementation of the Visitor design pattern for Nodes
+/*!
+ * Implementation of the Visitor design pattern for Nodes
  * This creates a recursive dependency on the different kind of nodes
  * So all nodes need to be forward declared in this header
  */
