@@ -15,6 +15,12 @@ add_executable(${PROJECT_NAME})
 # Configure include-what-you-use.
 #include(cmake/iwyu.cmake)
 
+set_target_properties(
+	${PROJECT_NAME}
+	PROPERTIES
+	EXPORT_COMPILE_COMMANDS ON
+)
+
 # Configure the compiler.
 include(cmake/compiler.cmake)
 
