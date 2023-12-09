@@ -1,5 +1,5 @@
-#ifndef CROW_CHECK_NATIVE_TYPES_HPP
-#define CROW_CHECK_NATIVE_TYPES_HPP
+#ifndef CROW_TYPING_NATIVE_TYPES_HPP
+#define CROW_TYPING_NATIVE_TYPES_HPP
 
 // STL Includes:
 #include <algorithm>
@@ -90,17 +90,17 @@ const NativeTypeMap native_types = boost::assign::list_of<NativeTypeMap::relatio
 // clang-format on
 
 // Functions:
-auto is_integer(NativeType t_typev) -> bool;
-auto is_float(NativeType t_typev) -> bool;
-auto is_bool(NativeType t_typev) -> bool;
+auto is_integer(NativeType t_native_type) -> bool;
+auto is_float(NativeType t_native_type) -> bool;
+auto is_bool(NativeType t_native_type) -> bool;
 
-auto is_condition(NativeType t_typev) -> bool;
-auto is_numeric(NativeType t_typev) -> bool;
+auto is_condition(NativeType t_native_type) -> bool;
+auto is_numeric(NativeType t_native_type) -> bool;
 
 auto str2nativetype(std::string_view t_str) -> NativeType;
-auto nativetype2str(NativeType t_ntype) -> std::string;
+auto nativetype2str(NativeType t_native_type) -> std::string;
 } // namespace check
 
-auto operator<<(std::ostream& t_os, check::NativeType t_type) -> std::ostream&;
+auto operator<<(std::ostream& t_os, check::NativeType t_native_type) -> std::ostream&;
 
-#endif // CROW_CHECK_NATIVE_TYPES_HPP
+#endif // CROW_TYPING_NATIVE_TYPES_HPP

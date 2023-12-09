@@ -9,20 +9,21 @@ namespace {
 // Using Statements:
 using namespace check;
 
-//! Check if a NativeType is one of the following arguments
+// TODO: Move to somewhere in crow/src/lib.
+//! Check if a NativeType is one of the following arguments.
 template<typename... Args>
-constexpr auto nt_any_of(const NativeType& t_nt, Args&&... t_args) -> bool
+constexpr auto any_of(const NativeType& t_key, Args&&... t_args) -> bool
 {
-  return ((t_nt == t_args) || ...);
+  return ((t_key == t_args) || ...);
 }
 } // namespace
 
 namespace check {
 // Functions:
-auto is_integer(const NativeType t_nt) -> bool
+auto is_integer(const NativeType t_native_type) -> bool
 {
   // clang-format off
-  return nt_any_of(t_nt,
+  return any_of(t_native_type,
 									 // Signed integers:
 									 NativeType::INT,
 									 NativeType::I8, NativeType::I16,
@@ -38,29 +39,29 @@ auto is_integer(const NativeType t_nt) -> bool
   // clang-format on
 }
 
-auto is_float(const NativeType t_nt) -> bool
+auto is_float(const NativeType t_native_type) -> bool
 {
-  return nt_any_of(t_nt, NativeType::F32, NativeType::F64);
+  return any_of(t_native_type, NativeType::F32, NativeType::F64);
 }
 
-auto is_bool(const NativeType t_typev) -> bool
+auto is_bool(const NativeType t_native_type) -> bool
 {
-  return t_typev == NativeType::BOOL;
+  return t_native_type == NativeType::BOOL;
 }
 
 //! Checks if a given type is a legal paramter for a condition
-auto is_condition(const NativeType t_typev) -> bool
+auto is_condition(const NativeType t_native_type) -> bool
 {
-  if(is_bool(t_typev) || is_integer(t_typev)) {
+  if(is_bool(t_native_type) || is_integer(t_native_type)) {
     return true;
   } else {
     return false;
   }
 }
 
-auto is_numeric(const NativeType t_typev) -> bool
+auto is_numeric(const NativeType t_native_type) -> bool
 {
-  return is_integer(t_typev) || is_float(t_typev);
+  return is_integer(t_native_type) || is_float(t_native_type);
 }
 
 auto str2nativetype(const std::string_view t_str) -> NativeType
@@ -83,12 +84,12 @@ auto str2nativetype(const std::string_view t_str) -> NativeType
   return type;
 }
 
-auto nativetype2str(const NativeType t_ntype) -> std::string
+auto nativetype2str(const NativeType t_native_type) -> std::string
 {
   std::string id;
   auto& rmap{native_types.right};
 
-  const auto iter{rmap.find(t_ntype)};
+  const auto iter{rmap.find(t_native_type)};
   if(iter != rmap.end()) {
     id = iter->second;
   } else {
@@ -101,9 +102,10 @@ auto nativetype2str(const NativeType t_ntype) -> std::string
 }
 } // namespace check
 
-auto operator<<(std::ostream& t_os, const NativeType t_type) -> std::ostream&
+auto operator<<(std::ostream& t_os, const NativeType t_native_type)
+  -> std::ostream&
 {
-  t_os << nativetype2str(t_type);
+  t_os << nativetype2str(t_native_type);
 
   return t_os;
 }
