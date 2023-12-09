@@ -7,6 +7,8 @@
 
 
 // Using Statements:
+using namespace exception;
+using namespace typing;
 using namespace check;
 
 // Methods:
@@ -64,8 +66,6 @@ auto SymbolData::resolve_type() const -> SymbolData
 //! Resolves a Symbol's data  to a NativeType if possible.
 auto SymbolData::native_type() const -> NativeTypeOpt
 {
-  using namespace exception;
-
   NativeTypeOpt opt;
 
   const auto native{[&](const NativeType t_type) -> NativeTypeOpt {

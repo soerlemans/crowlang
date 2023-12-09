@@ -1,13 +1,16 @@
 #include "native_types.hpp"
 
-// Includes:
-#include "../debug/log.hpp"
+// STL Includes:
 #include <stdexcept>
 
+// Includes:
+#include "../debug/log.hpp"
+
+using namespace typing;
 
 namespace {
 // Using Statements:
-using namespace check;
+using namespace typing;
 
 // TODO: Move to somewhere in crow/src/lib.
 //! Check if a NativeType is one of the following arguments.
@@ -18,7 +21,7 @@ constexpr auto any_of(const NativeType& t_key, Args&&... t_args) -> bool
 }
 } // namespace
 
-namespace check {
+namespace typing {
 // Functions:
 auto is_integer(const NativeType t_native_type) -> bool
 {
@@ -103,12 +106,23 @@ auto nativetype2str(const NativeType t_native_type) -> std::string
 
   return id;
 }
-} // namespace check
+} // namespace typing
 
 auto operator<<(std::ostream& t_os, const NativeType t_native_type)
   -> std::ostream&
 {
   t_os << nativetype2str(t_native_type);
+
+  return t_os;
+}
+
+auto operator<<(std::ostream& t_os, const NativeTypeOpt& t_opt) -> std::ostream&
+{
+  if(t_opt) {
+    t_os << t_opt.value();
+  } else {
+    t_os << "<empty>";
+  }
 
   return t_os;
 }

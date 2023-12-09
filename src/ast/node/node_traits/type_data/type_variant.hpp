@@ -1,12 +1,17 @@
-#ifndef CROW_CHECK_SYMBOL_DATA_HPP
-#define CROW_CHECK_SYMBOL_DATA_HPP
+#ifndef CROW_AST_NODE_NODE_TRAITS_TYPE_DATA_TYPE_VARIANT_HPP
+#define CROW_AST_NODE_NODE_TRAITS_TYPE_DATA_TYPE_VARIANT_HPP
+
+// STL Includes:
+#include <variant>
+
+// Includes:
+#include "../../../../typing/native_types.hpp"
 
 // Local Includes:
-#include "../typing/native_types.hpp"
-#include "symbol_types.hpp"
+#include "types.hpp"
 
 
-namespace check {
+namespace ast::node::node_traits::type_data {
 // Aliases:
 using Variant =
   std::variant<StructTypePtr, FnTypePtr, VarTypePtr, typing::NativeType>;
@@ -15,7 +20,7 @@ using Variant =
 /*!
  * Contains all data relating to a symbol.
  */
-class SymbolData : public Variant {
+class TypeVariant : public Variant {
   public:
   // Use the constructors of the variant
   using Variant::Variant;
@@ -24,11 +29,9 @@ class SymbolData : public Variant {
   auto function() const -> FnTypePtr;
   auto var() const -> VarTypePtr;
 
-  auto is_const() const -> bool;
-  auto resolve_type() const -> SymbolData;
   auto native_type() const -> typing::NativeTypeOpt;
 
-  virtual ~SymbolData() = default;
+  virtual ~TypeVariant() = default;
 };
 
 // Structs:
@@ -44,7 +47,7 @@ struct StructType {
 
 struct FnType {
   TypeList m_params;
-  SymbolData m_return_type;
+  TypeVariant m_return_type;
 
   auto native_type() const -> typing::NativeTypeOpt
   {
@@ -52,20 +55,18 @@ struct FnType {
   }
 };
 
-// TODO: Ignore m_const value when comparing
 struct VarType {
-  bool m_const;
-  SymbolData m_type;
+  TypeVariant m_type;
 
   auto native_type() const -> typing::NativeTypeOpt
   {
     return m_type.native_type();
   }
 };
-} // namespace check
 
 // Functions:
-auto operator<<(std::ostream& t_os, const check::SymbolData& t_data)
-  -> std::ostream&;
+// auto operator<<(std::ostream& t_os, const typing::TypeVariant& t_data)
+// -> std::ostream&;
+} // namespace ast::node::node_traits::type_data
 
-#endif // CROW_CHECK_SYMBOL_DATA_HPP
+#endif // CROW_AST_NODE_NODE_TRAITS_TYPE_DATA_TYPE_VARIANT_HPP

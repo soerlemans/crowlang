@@ -5,7 +5,7 @@
 #include "../../node_interface.hpp"
 
 // Local Includes:
-// #include "type_variant.hpp"
+#include "type_variant.hpp"
 
 // Local Includes:
 // #include "fdecl.hpp"

@@ -17,4 +17,6 @@
 #include "type_annotation.hpp"
 #include "unary_operator.hpp"
 
+#include "type_data/type_data.hpp"
+
 #endif // CROW_AST_NODE_NODE_TRAITS_INCLUDE_HPP

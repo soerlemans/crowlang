@@ -2,10 +2,10 @@
 #define CROW_CHECK_SYMBOL_TYPES_HPP
 
 // STL Includes:
+#include <iostream>
+#include <list>
+#include <memory>
 #include <optional>
-
-// Local Includes:
-#include "../typing/native_types.hpp"
 
 
 namespace check {
@@ -22,12 +22,9 @@ using FnTypePtr = std ::shared_ptr<FnType>;
 using VarTypePtr = std::shared_ptr<VarType>;
 
 using TypeList = std::list<SymbolData>;
-using NativeTypeOpt = std::optional<NativeType>;
 } // namespace check
 
 // Functions:
-auto operator<<(std::ostream& t_os, const check::NativeTypeOpt& t_opt)
-  -> std::ostream&;
 auto operator<<(std::ostream& t_os, check::StructTypePtr t_struct)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, check::FnTypePtr t_fn) -> std::ostream&;

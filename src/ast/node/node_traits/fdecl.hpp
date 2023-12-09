@@ -15,12 +15,12 @@ class Identifier;
 class InitExpr;
 class NodePosition;
 class Params;
-class Type;
+class TypeAnnotation;
+class TypeData;
 class Then;
 class Alt;
 class UnaryOperator;
 class BinaryOperator;
-
 
 template<typename T>
 class Op;

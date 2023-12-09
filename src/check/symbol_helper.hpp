@@ -15,8 +15,8 @@ using namespace ast;
 using visitable::Any;
 
 // Classes:
-/*! This class defines some utiilties and helpers for dealing with the
- * SymbolData class
+/*!
+ * Helper class for dealing with @ref SymbolData in a @ref NodeVisitor context.
  */
 class SymbolHelper : public visitor::NodeVisitor {
   protected:

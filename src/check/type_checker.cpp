@@ -12,8 +12,10 @@
 #include "../ast/node/include.hpp"
 #include "../debug/log.hpp"
 
+
 // Using Statements:
 using namespace exception;
+using namespace typing;
 using namespace check;
 
 NODE_USING_ALL_NAMESPACES()
