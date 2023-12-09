@@ -43,6 +43,7 @@ enum class NativeType {
   I32,
   I64,
   I128,
+  ISIZE,
 
   UINT,
   U8,
@@ -50,6 +51,7 @@ enum class NativeType {
   U32,
   U64,
   U128,
+  USIZE,
 
   // String:
   STRING,
@@ -73,6 +75,7 @@ const NativeTypeMap native_types = boost::assign::list_of<NativeTypeMap::relatio
   (TYPING_NTYPE_PAIR(I32))
   (TYPING_NTYPE_PAIR(I64))
   (TYPING_NTYPE_PAIR(I128))
+  (TYPING_NTYPE_PAIR(ISIZE))
 
   (TYPING_NTYPE_PAIR(UINT))
   (TYPING_NTYPE_PAIR(U8))
@@ -80,6 +83,7 @@ const NativeTypeMap native_types = boost::assign::list_of<NativeTypeMap::relatio
   (TYPING_NTYPE_PAIR(U32))
   (TYPING_NTYPE_PAIR(U64))
   (TYPING_NTYPE_PAIR(U128))
+  (TYPING_NTYPE_PAIR(USIZE))
 
 	// String:
   (TYPING_NTYPE_PAIR(STRING))
@@ -101,6 +105,7 @@ auto str2nativetype(std::string_view t_str) -> NativeType;
 auto nativetype2str(NativeType t_native_type) -> std::string;
 } // namespace check
 
-auto operator<<(std::ostream& t_os, check::NativeType t_native_type) -> std::ostream&;
+auto operator<<(std::ostream& t_os, check::NativeType t_native_type)
+  -> std::ostream&;
 
 #endif // CROW_TYPING_NATIVE_TYPES_HPP

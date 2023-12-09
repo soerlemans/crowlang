@@ -28,13 +28,13 @@ auto is_integer(const NativeType t_native_type) -> bool
 									 NativeType::INT,
 									 NativeType::I8, NativeType::I16,
                    NativeType::I32, NativeType::I64,
-									 NativeType::I128,
+								   NativeType::I128, NativeType::ISIZE,
 
 									 // Unsigned integers:
 									 NativeType::UINT,
 									 NativeType::U8, NativeType::U16,
 									 NativeType::U32, NativeType::U64,
-									 NativeType::U128);
+								   NativeType::U128, NativeType::USIZE);
 
   // clang-format on
 }
@@ -49,7 +49,10 @@ auto is_bool(const NativeType t_native_type) -> bool
   return t_native_type == NativeType::BOOL;
 }
 
-//! Checks if a given type is a legal paramter for a condition
+/*!
+ * Checks if a certain @ref NativeType can be used in a condition.
+ * Only booleans and integers may be used for conditionals.
+ */
 auto is_condition(const NativeType t_native_type) -> bool
 {
   if(is_bool(t_native_type) || is_integer(t_native_type)) {
