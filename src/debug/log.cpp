@@ -9,7 +9,7 @@ using namespace debug;
 
 namespace {
 // Private variables:
-//! Global loglevel variable
+//! Private global keeping track of the current loglevel.
 LogLevel g_loglevel{LogLevel::WARNING};
 } // namespace
 

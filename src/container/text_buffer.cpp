@@ -39,7 +39,7 @@ auto TextBuffer::prev_line() const -> void
   m_lineno--;
 }
 
-//! Wraps to the next_line() when at the end of a line
+//! Wraps to the @ref next_line() when at the end of a line.
 auto TextBuffer::next() const -> void
 {
   if(m_columnno + 1 >= line().size()) {

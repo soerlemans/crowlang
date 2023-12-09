@@ -9,7 +9,7 @@
 #ifdef DEBUG
 #define DBG_PRINTLN(...) debug::println(__VA_ARGS__)
 
-//! Creates a SourcePosition of a line
+//! Create a @ref SourcePosition of the line the macro is located on.
 #define DBG_SOURCE_POS()                       \
   container::SourcePosition                    \
   {                                            \

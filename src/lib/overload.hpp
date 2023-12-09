@@ -3,14 +3,15 @@
 
 
 // Overload pattern:
-//! Helper struct that selects the correct lambda to be called when calling
-//! std::visit
+/*!
+ *	Helper struct for overloading callables when using @ref std::visit.
+ */
 template<class... Ts>
 struct Overload : Ts... {
   using Ts::operator()...;
 };
 
-//! Deduction guide for the struct to work
+//! Deduction guide for the overload to work.
 template<class... Ts>
 Overload(Ts...) -> Overload<Ts...>;
 

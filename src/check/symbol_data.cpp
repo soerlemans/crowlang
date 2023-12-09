@@ -6,11 +6,6 @@
 #include "../lib/overload.hpp"
 
 
-// Local Includes:
-#include "native_types.hpp"
-#include "symbol_types.hpp"
-
-
 // Using Statements:
 using namespace check;
 
@@ -30,6 +25,7 @@ auto SymbolData::var() const -> VarTypePtr
   return std::get<VarTypePtr>(*this);
 }
 
+//! Verify if a symbol is const or not.
 auto SymbolData::is_const() const -> bool
 {
   bool result{false};

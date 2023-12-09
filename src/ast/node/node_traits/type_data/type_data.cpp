@@ -2,7 +2,7 @@
 
 
 // Using Statements:
-using namespace ast::node::node_traits;
+using namespace ast::node::node_traits::type_data;
 
 // Methods:
 // auto TypeData::set_data() const -> void

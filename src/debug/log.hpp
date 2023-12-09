@@ -11,8 +11,8 @@
 #include <rang.hpp>
 
 // Includes:
-#include "../lib/types.hpp"
 #include "../container/source_position.hpp"
+#include "../lib/types.hpp"
 
 // Local Includes:
 #include "log_macros.hpp"
@@ -20,7 +20,10 @@
 
 namespace debug {
 // Enums:
-//! Specify the different LogLevel's
+/*!
+ * Enumeration of the different logging levels.
+ * The lower log levels have the most severity.
+ */
 enum class LogLevel : u16 { CRITICAL = 0, ERROR, WARNING, INFO, VERBOSE };
 
 // We use std::clog for logging
@@ -46,12 +49,12 @@ auto println(Args&&... t_args) -> void
 // Logging faciltiies
 #ifdef DEBUG
 // Macros:
-//! Helper macro for converting LogLevel to string representation
+//! Helper macro for converting @ref LogLevel to string representation.
 #define DBG_CASE_LOGLEVEL2STR(loglevel) \
   case LogLevel::loglevel:              \
     return {#loglevel};
 
-//! Helper macro for converting LogLevel to rang foreground color
+//! Helper macro for converting @ref LogLevel to rang foreground color.
 #define DBG_CASE_LOGLEVEL2COLOR(loglevel, t_color) \
   case LogLevel::loglevel:                         \
     return rang::fg::t_color;

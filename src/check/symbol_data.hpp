@@ -10,7 +10,9 @@ namespace check {
 using Variant = std::variant<StructTypePtr, FnTypePtr, VarTypePtr, NativeType>;
 
 // Classes:
-//! This is an abbreviation for SymbolData
+/*
+ * Contains all data relating to a symbol.
+ */
 class SymbolData : public Variant {
   public:
   // Use the constructors of the variant

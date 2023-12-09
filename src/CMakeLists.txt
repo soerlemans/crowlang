@@ -1,24 +1,26 @@
-# Add source files
+# Add source files:
 target_sources(${PROJECT_NAME} PRIVATE
 	main.cpp
 )
 
-# Add subdirectories
-# Utilities
+# Utilities:
 add_subdirectory(debug)
 add_subdirectory(container)
+
+# Error handling:
 add_subdirectory(exception)
 
-# Lex step
+# Lexing phase:
 add_subdirectory(token)
 add_subdirectory(lexer)
 
-# Parse step
+# Parsing phase:
 add_subdirectory(ast)
 add_subdirectory(parser)
 
-# Verify AST/program step
+# Program verification phase:
+add_subdirectory(typing)
 add_subdirectory(check)
 
-# Generate code step
+# Code generation phase:
 add_subdirectory(codegen)

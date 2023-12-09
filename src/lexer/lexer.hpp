@@ -23,7 +23,7 @@ class Lexer {
   token::TokenStream m_ts;
 
   // Token stream handling:
-  //! Create a token with a TextPosition
+  //! Construct a token with the current @ref TextPosition.
   template<typename... Args>
   auto create_token(Args&&... t_args) -> token::Token
   {

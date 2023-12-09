@@ -20,7 +20,9 @@ namespace visitable {
 using Any = std::any;
 
 // Classes:
-//! Inheriting from this interface forces the class structure to be visitable
+/*!
+ * Inheriting from this forces children to be visitable.
+ */
 template<typename VisitorType, typename RetType = Any>
 class Visitable {
   public:
