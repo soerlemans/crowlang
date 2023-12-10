@@ -19,7 +19,6 @@ add_subdirectory(ast)
 add_subdirectory(parser)
 
 # Program verification phase:
-add_subdirectory(typing)
 add_subdirectory(check)
 
 # Code generation phase:

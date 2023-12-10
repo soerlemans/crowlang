@@ -4,14 +4,12 @@
 // STL Includes:
 #include <variant>
 
-// Includes:
-#include "../../../../typing/native_types.hpp"
-
 // Local Includes:
+#include "native_types.hpp"
 #include "types.hpp"
 
 
-namespace ast::node::node_traits::type_data {
+namespace ast::node::node_traits::typing {
 // Aliases:
 using Variant =
   std::variant<StructTypePtr, FnTypePtr, VarTypePtr, typing::NativeType>;

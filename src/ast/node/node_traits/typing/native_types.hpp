@@ -4,7 +4,6 @@
 // STL Includes:
 #include <algorithm>
 #include <cctype>
-#include <map>
 #include <optional>
 #include <string_view>
 
@@ -22,7 +21,7 @@
       NativeType::t_ntype                                   \
   }
 
-namespace typing {
+namespace ast::node::node_traits::typing {
 // Forward Declarations:
 enum class NativeType;
 
@@ -31,6 +30,9 @@ using NativeTypeOpt = std::optional<NativeType>;
 using NativeTypeMap = boost::bimap<std::string, NativeType>;
 
 // Enums:
+/*!
+ * Native types that the language supports.
+ */
 enum class NativeType {
   VOID = 0,
 
@@ -105,11 +107,13 @@ auto is_numeric(NativeType t_native_type) -> bool;
 
 auto str2nativetype(std::string_view t_str) -> NativeType;
 auto nativetype2str(NativeType t_native_type) -> std::string;
-} // namespace typing
+} // namespace ast::node::node_traits::typing
 
-auto operator<<(std::ostream& t_os, typing::NativeType t_native_type)
+auto operator<<(std::ostream& t_os,
+                ast::node::node_traits::typing::NativeType t_native_type)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, const typing::NativeTypeOpt& t_opt)
+auto operator<<(std::ostream& t_os,
+                const ast::node::node_traits::typing::NativeTypeOpt& t_opt)
   -> std::ostream&;
 
 #endif // CROW_TYPING_NATIVE_TYPES_HPP

@@ -12,6 +12,8 @@
 namespace check {
 // Using statements:
 using namespace ast;
+
+using ast::node::node_traits::typing::NativeTypeOpt;
 using visitable::Any;
 
 // Classes:

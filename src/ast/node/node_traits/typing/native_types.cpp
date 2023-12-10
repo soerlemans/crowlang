@@ -4,14 +4,13 @@
 #include <stdexcept>
 
 // Includes:
-#include "../debug/log.hpp"
+#include "../../../../debug/log.hpp"
 
-using namespace typing;
+// Using Statements:
+using ast::node::node_traits::typing::NativeType;
+using ast::node::node_traits::typing::NativeTypeOpt;
 
 namespace {
-// Using Statements:
-using namespace typing;
-
 // TODO: Move to somewhere in crow/src/lib.
 //! Check if a NativeType is one of the following arguments.
 template<typename... Args>
@@ -21,7 +20,7 @@ constexpr auto any_of(const NativeType& t_key, Args&&... t_args) -> bool
 }
 } // namespace
 
-namespace typing {
+namespace ast::node::node_traits::typing {
 // Functions:
 auto is_integer(const NativeType t_native_type) -> bool
 {
@@ -106,7 +105,7 @@ auto nativetype2str(const NativeType t_native_type) -> std::string
 
   return id;
 }
-} // namespace typing
+} // namespace ast::node::node_traits::typing
 
 auto operator<<(std::ostream& t_os, const NativeType t_native_type)
   -> std::ostream&

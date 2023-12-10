@@ -2,11 +2,14 @@
 #define CROW_CHECK_SYMBOL_DATA_HPP
 
 // Local Includes:
-#include "../typing/native_types.hpp"
+#include "../ast/node/node_traits/typing/native_types.hpp"
 #include "symbol_types.hpp"
 
 
 namespace check {
+// Using Statements:
+using namespace ast::node::node_traits;
+
 // Aliases:
 using Variant =
   std::variant<StructTypePtr, FnTypePtr, VarTypePtr, typing::NativeType>;

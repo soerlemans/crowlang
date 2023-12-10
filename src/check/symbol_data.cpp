@@ -7,8 +7,8 @@
 
 
 // Using Statements:
+using namespace ast::node::node_traits::typing;
 using namespace exception;
-using namespace typing;
 using namespace check;
 
 // Methods:

@@ -11,7 +11,7 @@
 // #include "fdecl.hpp"
 
 
-namespace ast::node::node_traits::type_data {
+namespace ast::node::node_traits::typing {
 class TypeData : virtual public NodeInterface {
   private:
   // TypeVariant m_data;

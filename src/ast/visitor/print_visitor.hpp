@@ -102,8 +102,8 @@ class PrintVisitor : public NodeVisitor {
       lambda("Params", t_ptr->params());
     });
 
-    when_derived<Type>(t_ptr, [&](auto t_ptr) {
-      print("| Type: ", t_ptr->type());
+    when_derived<TypeAnnotation>(t_ptr, [&](auto t_ptr) {
+      print("| Type Annotation: ", t_ptr->type());
     });
 
     when_derived<Body>(t_ptr, [&](auto t_ptr) {

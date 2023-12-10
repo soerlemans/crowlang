@@ -16,4 +16,4 @@ target_sources(${PROJECT_NAME} PRIVATE
 )
 
 # Add subdirectories
-add_subdirectory(type_data)
+add_subdirectory(typing)

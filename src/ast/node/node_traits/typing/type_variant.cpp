@@ -2,5 +2,5 @@
 
 
 // Using Statements:
-using namespace ast::node::node_traits::type_data;
+using namespace ast::node::node_traits::typing;
 
