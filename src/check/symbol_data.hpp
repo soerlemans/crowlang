@@ -8,11 +8,11 @@
 
 namespace check {
 // Using Statements:
-using namespace ast::node::node_traits;
+using ast::node::node_traits::typing::NativeType;
+using ast::node::node_traits::typing::NativeTypeOpt;
 
 // Aliases:
-using Variant =
-  std::variant<StructTypePtr, FnTypePtr, VarTypePtr, typing::NativeType>;
+using Variant = std::variant<StructTypePtr, FnTypePtr, VarTypePtr, NativeType>;
 
 // Classes:
 /*!
@@ -29,7 +29,7 @@ class SymbolData : public Variant {
 
   auto is_const() const -> bool;
   auto resolve_type() const -> SymbolData;
-  auto native_type() const -> typing::NativeTypeOpt;
+  auto native_type() const -> NativeTypeOpt;
 
   virtual ~SymbolData() = default;
 };
@@ -39,7 +39,7 @@ class SymbolData : public Variant {
 struct StructType {
   std::string m_identifier;
 
-  auto native_type() const -> typing::NativeTypeOpt
+  auto native_type() const -> NativeTypeOpt
   {
     return {};
   }
@@ -49,7 +49,7 @@ struct FnType {
   TypeList m_params;
   SymbolData m_return_type;
 
-  auto native_type() const -> typing::NativeTypeOpt
+  auto native_type() const -> NativeTypeOpt
   {
     return {};
   }
@@ -60,7 +60,7 @@ struct VarType {
   bool m_const;
   SymbolData m_type;
 
-  auto native_type() const -> typing::NativeTypeOpt
+  auto native_type() const -> NativeTypeOpt
   {
     return m_type.native_type();
   }
