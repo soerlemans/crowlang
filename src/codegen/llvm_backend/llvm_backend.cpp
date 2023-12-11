@@ -23,14 +23,14 @@
 #include "../../lib/types.hpp"
 
 
+namespace codegen::llvm_backend {
 // Using Statements:
-using namespace codegen::llvm_backend;
 using namespace ast::visitor;
 
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-auto LlvmBackend::get_value(node::NodePtr t_ptr) -> llvm::Value*
+auto LlvmBackend::get_value(NodePtr t_ptr) -> llvm::Value*
 {
   using namespace llvm;
 
@@ -349,3 +349,4 @@ auto LlvmBackend::compile(const fs::path t_path) -> void
     return;
   }
 }
+} // namespace codegen::llvm_backend

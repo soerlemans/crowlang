@@ -9,6 +9,7 @@
 
 
 // Macros:
+// TODO: Place somewhere appropriate
 #define assert_msg(t_msg, t_expr) assert(((void)t_msg, t_expr))
 
 #define STUB(t_type)                                           \
@@ -19,9 +20,8 @@
     return {};                                                 \
   }
 
+namespace ast::visitor {
 // Using statements:
-using namespace ast::visitor;
-
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
@@ -97,3 +97,4 @@ auto NodeVisitor::visit(NodeInterface* t_ptr) -> Any
 
   return {};
 }
+} // namespace ast::visitor

@@ -13,15 +13,15 @@
 #include "../debug/log.hpp"
 
 
+namespace check {
 // Using Statements:
-using namespace ast::node::node_traits::typing;
-using namespace exception;
-using namespace check;
+using ast::node::node_traits::typing::NativeType;
+using exception::type_error;
 
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-//! Handle the case where a type must be treated as a conditional
+//! Handle the case where a type must be treated as a conditional.
 auto TypeChecker::handle_condition(const SymbolData& t_data,
                                    const container::TextPosition& t_pos) const
   -> void
@@ -447,3 +447,4 @@ auto TypeChecker::check(NodePtr t_ast) -> void
 
   traverse(t_ast);
 }
+} // namespace check

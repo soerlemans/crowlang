@@ -15,8 +15,9 @@
 
 
 namespace token {
-// Using declarations:
-using namespace container;
+// Using Statements:
+using container::Stream;
+using container::TextPosition;
 
 // Forward Declarations:
 class Token;

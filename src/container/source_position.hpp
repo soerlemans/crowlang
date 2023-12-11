@@ -7,6 +7,9 @@
 
 
 namespace container {
+/*!
+ * Structure contains data of a position Crow's source code.
+ */
 struct SourcePosition {
   // Members:
   std::string m_source;

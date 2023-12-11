@@ -17,6 +17,9 @@
 namespace codegen::llvm_backend {
 // Using statements:
 using namespace ast;
+
+using ast::node::NodePtr;
+
 using visitable::Any;
 
 // Aliases:
@@ -35,7 +38,7 @@ class LlvmBackend : public ast::visitor::NodeVisitor {
   ModulePtr m_module;
 
   protected:
-  auto get_value(node::NodePtr t_ptr) -> llvm::Value*;
+  auto get_value(NodePtr t_ptr) -> llvm::Value*;
 
   public:
   LlvmBackend();
@@ -95,12 +98,12 @@ class LlvmBackend : public ast::visitor::NodeVisitor {
 
   // Util:
   auto configure_target() -> void;
-  auto codegen(ast::node::NodePtr t_ast) -> void;
+  auto codegen(NodePtr t_ast) -> void;
   auto dump_ir(std::ostream& t_os) -> void;
   auto compile(fs::path t_path) -> void;
 
   ~LlvmBackend() override = default;
 };
-} // namespace backend::llvm_backend
+} // namespace codegen::llvm_backend
 
 #endif // CROW_CODEGEN_LLVM_BACKEND_LLVM_BACKEND_HPP

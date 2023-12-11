@@ -6,15 +6,15 @@
 #include "../token/tokentype2str.hpp"
 
 
+namespace parser {
 // Using statements:
-using namespace parser;
-using namespace token;
-using namespace ast::node;
+using ast::node::List;
+using ast::node::NodeListPtr;
 
 // Methods:
-auto Parser::syntax_error(std::string_view t_msg) const -> void
+auto Parser::syntax_error(const std::string_view t_msg) const -> void
 {
-  using namespace exception;
+  using exception::SyntaxError;
 
   const auto token{get_token()};
 
@@ -85,13 +85,13 @@ auto Parser::get_token() const -> Token&
   return m_tokenstream.current();
 }
 
-auto Parser::get_position() const -> const container::TextPosition&
+auto Parser::get_position() const -> const TextPosition&
 {
-	return get_token().position();
+  return get_token().position();
 }
 
 //! This method is used to verify if a certain token is located after newlines
-auto Parser::after_newlines(const token::TokenType t_type) -> bool
+auto Parser::after_newlines(const TokenType t_type) -> bool
 {
   DBG_TRACE_FN(VERBOSE);
 
@@ -120,7 +120,7 @@ auto Parser::after_newlines(const token::TokenType t_type) -> bool
 auto Parser::list_of(const ParseFn t_fn) -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
-  auto nodes{make_node<ast::node::List>()};
+  auto nodes{make_node<List>()};
 
   while(!eos()) {
     if(auto ptr{t_fn()}; ptr) {
@@ -136,3 +136,4 @@ auto Parser::list_of(const ParseFn t_fn) -> NodeListPtr
 Parser::Parser(TokenStream&& t_tokenstream)
   : m_tokenstream{std::forward<TokenStream>(t_tokenstream)}
 {}
+} // namespace parser

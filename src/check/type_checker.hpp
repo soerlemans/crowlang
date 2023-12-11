@@ -15,6 +15,9 @@
 namespace check {
 // Using statements:
 using namespace ast;
+
+using ast::node::NodePtr;
+using container::TextPosition;
 using visitable::Any;
 
 // Classes:
@@ -23,7 +26,7 @@ class TypeChecker : public SymbolHelper {
   EnvStack m_envs;
 
   auto handle_condition(const SymbolData& t_data,
-                        const container::TextPosition& t_pos) const -> void;
+                        const TextPosition& t_pos) const -> void;
 
   public:
   TypeChecker();
@@ -82,7 +85,7 @@ class TypeChecker : public SymbolHelper {
   auto visit(node::typing::Impl* t_impl) -> Any override;
   auto visit(node::typing::DotExpr* t_dot_expr) -> Any override;
 
-  auto check(node::NodePtr t_ast) -> void;
+  auto check(NodePtr t_ast) -> void;
 
   ~TypeChecker() override = default;
 };

@@ -7,13 +7,18 @@
 
 
 // Macros:
+//! TODO: Comment.
 #define COUNTG_INIT() \
   CountGuard guard    \
   {                   \
     m_counter         \
   }
 
-//! Defines a PrintVisitor method, that will print all traits
+/*!
+ * Defines a @ref PrintVisitor method, that will print all traits.
+ *
+ * @param[in] t_type type of Node to accept.
+ */
 #define DEF_PV_METHOD(t_type)                                   \
   auto PrintVisitor::visit([[maybe_unused]] t_type* t_ptr)->Any \
   {                                                             \
@@ -25,9 +30,8 @@
     return {};                                                  \
   }
 
+namespace ast::visitor {
 // Using statements:
-using namespace ast::visitor;
-
 NODE_USING_ALL_NAMESPACES()
 
 // Friend classes:
@@ -272,3 +276,4 @@ auto PrintVisitor::print(NodePtr t_ast) -> void
 {
   traverse(t_ast);
 }
+} // namespace ast::visitor

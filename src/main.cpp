@@ -13,13 +13,13 @@
 #include "ast/node/fdecl.hpp"
 #include "ast/node/include.hpp"
 #include "ast/visitor/print_visitor.hpp"
+#include "check/type_checker.hpp"
 #include "codegen/llvm_backend/llvm_backend.hpp"
 #include "container/text_buffer.hpp"
 #include "debug/log.hpp"
 #include "lexer/lexer.hpp"
 #include "parser/crow/crow_parser.hpp"
 #include "token/token.hpp"
-#include "check/type_checker.hpp"
 
 // Local Includes:
 #include "banner.hpp"
@@ -87,6 +87,7 @@ auto open_file(const fs::path t_path) -> container::TextBuffer
 auto lex(const fs::path& t_path) -> token::TokenStream
 {
   using namespace lexer;
+  using container::TextBuffer;
 
   DBG_PRINTLN("|> Lexing:");
 

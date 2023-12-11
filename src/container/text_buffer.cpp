@@ -1,8 +1,7 @@
 #include "text_buffer.hpp"
 
 
-using namespace container;
-
+namespace container {
 // Methods:
 TextBuffer::TextBuffer(): m_lineno{0}, m_columnno{0}
 {
@@ -93,7 +92,7 @@ auto TextBuffer::position() const -> TextPosition
   return {m_source, line(), m_lineno, m_columnno};
 }
 
-namespace container {
+// Friend methods:
 auto operator<<(std::ostream& t_os, const TextBuffer& t_tb) -> std::ostream&
 {
   for(auto& line : t_tb.m_buffer) {

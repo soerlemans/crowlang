@@ -64,8 +64,6 @@ class PrintVisitor : public NodeVisitor {
   auto print_traits(Ptr t_ptr) -> void
   {
     using namespace ast::node::node_traits;
-    // TODO: Make UnaryOperator and BinaryOperator a trait
-    using namespace ast::node::operators;
 
     const auto lambda{[this](const auto t_vw, auto t_any) {
       using namespace ast::node;

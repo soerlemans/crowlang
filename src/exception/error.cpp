@@ -5,8 +5,7 @@
 #include <sstream>
 
 
-using namespace exception;
-
+namespace exception {
 // Methods:
 Error::Error(const std::string t_msg): ERROR_PARENT{}, m_error{}
 {
@@ -31,3 +30,4 @@ auto Error::what() const noexcept -> const char*
 {
   return m_error.c_str();
 }
+} // namespace exception
