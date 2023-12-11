@@ -16,15 +16,16 @@
 // Macros:
 #define LOG_TOK(t_msg, t_str) DBG_INFO(t_msg, std::quoted(std::string{t_str}))
 
+namespace lexer {
 // Using statements:
-using namespace lexer;
-using namespace token;
-using namespace container;
+using token::Token;
+using token::TokenType;
+using token::TokenTypeOpt;
 
 // Error handling:
-auto Lexer::syntax_error(std::string_view t_msg) const -> void
+auto Lexer::syntax_error(const std::string_view t_msg) const -> void
 {
-  using namespace exception;
+  using exception::SyntaxError;
 
   throw SyntaxError{std::string{t_msg}, m_text->position()};
 }
@@ -36,7 +37,7 @@ Lexer::Lexer(TextStreamPtr t_text): m_text{t_text}
 // Public methods:
 auto Lexer::is_keyword(std::string_view t_identifier) -> TokenTypeOpt
 {
-  using namespace reserved::keywords;
+  using namespace token::reserved::keywords;
 
   TokenTypeOpt opt;
 
@@ -50,7 +51,7 @@ auto Lexer::is_keyword(std::string_view t_identifier) -> TokenTypeOpt
 
 auto Lexer::identifier() -> Token
 {
-  using namespace reserved::symbols;
+  using namespace token::reserved::symbols;
 
   Token token;
   std::stringstream ss;
@@ -128,7 +129,7 @@ auto Lexer::handle_hex() -> Token
 // t_dot indicates if there is already a dot in the string
 auto Lexer::handle_float(std::string_view t_str) -> Token
 {
-  using namespace reserved::symbols;
+  using namespace token::reserved::symbols;
 
   std::stringstream ss;
 
@@ -154,7 +155,7 @@ auto Lexer::handle_float(std::string_view t_str) -> Token
 
 auto Lexer::handle_integer() -> Token
 {
-  using namespace reserved::symbols;
+  using namespace token::reserved::symbols;
 
   std::stringstream ss;
 
@@ -199,7 +200,7 @@ auto Lexer::literal_numeric() -> Token
 
 auto Lexer::literal_string() -> Token
 {
-  using namespace reserved::symbols::none;
+  using namespace token::reserved::symbols::none;
 
   std::stringstream ss;
 
@@ -230,7 +231,7 @@ auto Lexer::literal_string() -> Token
 
 auto Lexer::is_multi_symbol() -> TokenTypeOpt
 {
-  using namespace reserved::symbols;
+  using namespace token::reserved::symbols;
 
   TokenTypeOpt opt;
 
@@ -255,7 +256,7 @@ auto Lexer::is_multi_symbol() -> TokenTypeOpt
 
 auto Lexer::is_single_symbol() -> TokenTypeOpt
 {
-  using namespace reserved::symbols;
+  using namespace token::reserved::symbols;
 
   TokenTypeOpt opt;
   const auto ch{m_text->character()};
@@ -295,8 +296,8 @@ auto Lexer::symbol() -> Token
 // TODO: refactor this
 auto Lexer::tokenize() -> TokenStream
 {
-  using namespace reserved::symbols;
-  using namespace reserved::symbols::none;
+  using namespace token::reserved::symbols;
+  using namespace token::reserved::symbols::none;
 
   while(!m_text->eos()) {
     const auto ch{m_text->character()};
@@ -333,3 +334,4 @@ auto Lexer::tokenize() -> TokenStream
 
   return m_ts;
 }
+} // namespace lexer

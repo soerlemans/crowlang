@@ -9,14 +9,9 @@
 #include "../../debug/trace.hpp"
 
 
+namespace parser::crow {
 // Using statements:
-using namespace parser::crow;
-using namespace token;
-
 NODE_USING_ALL_NAMESPACES()
-
-// Aliases:
-namespace nt = ast::node::node_traits;
 
 // Methods:
 CrowParser::CrowParser(TokenStream t_tokenstream)
@@ -61,7 +56,7 @@ auto CrowParser::expr_opt() -> NodePtr
 }
 
 // FIXME: This is "temporary fix"
-auto CrowParser::init_expr(const token::TokenType t_type) -> NodePtr
+auto CrowParser::init_expr(const TokenType t_type) -> NodePtr
 {
   using namespace token;
 
@@ -250,7 +245,7 @@ auto CrowParser::assignment() -> NodePtr
   return node;
 }
 
-auto CrowParser::result_statement() -> n::NodePtr
+auto CrowParser::result_statement() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
@@ -657,7 +652,7 @@ auto CrowParser::return_type_opt() -> std::string
   return type;
 }
 
-auto CrowParser::lambda() -> n::NodePtr
+auto CrowParser::lambda() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
@@ -847,3 +842,4 @@ auto CrowParser::parse() -> NodePtr
 {
   return program();
 }
+} // namespace parser::crow

@@ -14,13 +14,14 @@
 
 namespace lexer {
 // Using declarations:
-using namespace container;
+using container::TextStreamPtr;
+using token::TokenStream;
 
 // Classes:
 class Lexer {
   private:
   TextStreamPtr m_text;
-  token::TokenStream m_ts;
+  TokenStream m_ts;
 
   // Token stream handling:
   //! Construct a token with the current @ref TextPosition.

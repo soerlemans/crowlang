@@ -8,10 +8,9 @@
 #include "../../ast/node/include.hpp"
 #include "../../debug/log.hpp"
 
-// Using statements:
-using namespace parser::pratt;
-using namespace token;
 
+namespace parser::pratt {
+// Using Statements:
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
@@ -264,7 +263,7 @@ auto PrattParser::logical(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-	const auto pos{get_position()};
+  const auto pos{get_position()};
   auto lambda{[&]<typename T>() {
     const auto token{get_token()};
     next();
@@ -384,3 +383,4 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
 
   return lhs;
 }
+} // namespace parser::pratt

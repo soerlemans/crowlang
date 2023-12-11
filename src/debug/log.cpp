@@ -4,16 +4,13 @@
 #include "../lib/enum2int.hpp"
 
 
-// Using Statements:
-using namespace debug;
-
+namespace debug {
 namespace {
 // Private variables:
 //! Private global keeping track of the current loglevel.
 LogLevel g_loglevel{LogLevel::WARNING};
 } // namespace
 
-namespace debug {
 // Public functions:
 // This function checks if the LogLevel is lower than the current g_loglevel
 // t_loglevel is used in macros use [[maybe_unused]] to silence warnings

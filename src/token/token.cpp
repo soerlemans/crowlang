@@ -1,9 +1,7 @@
 #include "token.hpp"
 
 
-using namespace token;
-using namespace container;
-
+namespace token {
 Token::Token(const TokenType t_type, TextPosition t_tp)
   : m_type{t_type}, m_tp{std::move(t_tp)}
 {}
@@ -37,3 +35,4 @@ auto Token::position() const -> const TextPosition&
 {
   return m_tp;
 }
+} // namespace token

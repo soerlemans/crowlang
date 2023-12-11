@@ -5,15 +5,14 @@
 #include <string>
 
 
-// Using statements:
-using namespace exception;
-
+namespace exception {
+// Methods:
 auto SyntaxError::format(const std::string_view t_msg) -> std::string
 {
   std::stringstream ss;
   std::stringstream lineno_ss;
 
-  auto [path, line, lineno, columnno] = m_pos;
+  const auto [path, line, lineno, columnno] = m_pos;
 
   // Line number is zero indexed
   lineno_ss << " - Line(";
@@ -36,3 +35,4 @@ SyntaxError::SyntaxError(const std::string_view t_msg,
                          const container::TextPosition& t_pos)
   : Error{format(t_msg)}, m_pos(t_pos)
 {}
+} // namespace exception

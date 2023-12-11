@@ -9,101 +9,102 @@
 
 
 namespace parser::crow {
-// Namespace aliases:
-namespace pkg = ast::node::packaging;
+// Using Statements:
+using ast::node::packaging::Import;
 
 // Aliases:
-using EvalPair = std::pair<n::NodePtr, n::NodePtr>;
+using EvalPair = std::pair<NodePtr, NodePtr>;
 
 // Classes:
-/*! Top down parser of the Crow language.
+/*!
+ * Top down parser of the Crow language.
  * See crow.yy for grammar specification (BNF).
  */
 class CrowParser : public pratt::PrattParser {
   public:
-  CrowParser(token::TokenStream t_tokenstream);
+  CrowParser(TokenStream t_tokenstream);
 
   // Grammar:
   auto newline_opt() -> void override;
   virtual auto terminator() -> void;
 
   // Expressions:
-  virtual auto expr_opt() -> n::NodePtr;
+  virtual auto expr_opt() -> NodePtr;
 
-  virtual auto init_expr(token::TokenType t_type) -> n::NodePtr;
-  virtual auto const_expr() -> n::NodePtr;
-  virtual auto let_expr() -> n::NodePtr;
-  virtual auto decl_expr() -> n::NodePtr;
+  virtual auto init_expr(TokenType t_type) -> NodePtr;
+  virtual auto const_expr() -> NodePtr;
+  virtual auto let_expr() -> NodePtr;
+  virtual auto decl_expr() -> NodePtr;
   virtual auto eval_expr() -> EvalPair;
 
-  virtual auto expr_statement() -> n::NodePtr;
+  virtual auto expr_statement() -> NodePtr;
 
   // Expression lists:
-  virtual auto expr_list() -> n::NodeListPtr;
-  auto expr_list_opt() -> n::NodeListPtr override;
+  virtual auto expr_list() -> NodeListPtr;
+  auto expr_list_opt() -> NodeListPtr override;
 
   // Result statement:
-  virtual auto assignment() -> n::NodePtr;
-  virtual auto result_statement() -> n::NodePtr;
+  virtual auto assignment() -> NodePtr;
+  virtual auto result_statement() -> NodePtr;
 
   // Jump statements:
-  virtual auto jump_statement() -> n::NodePtr;
+  virtual auto jump_statement() -> NodePtr;
 
   // Loop statements:
-  virtual auto loop_statement() -> n::NodePtr;
+  virtual auto loop_statement() -> NodePtr;
 
   // Branch statements:
-  virtual auto branch_statement(token::TokenType t_type) -> n::NodePtr;
-  virtual auto if_statement() -> n::NodePtr;
-  virtual auto elif_statement() -> n::NodePtr;
+  virtual auto branch_statement(TokenType t_type) -> NodePtr;
+  virtual auto if_statement() -> NodePtr;
+  virtual auto elif_statement() -> NodePtr;
 
   // Statements:
-  virtual auto statement() -> n::NodePtr;
-  virtual auto statement_list() -> n::NodeListPtr;
+  virtual auto statement() -> NodePtr;
+  virtual auto statement_list() -> NodeListPtr;
 
   // Body:
-  virtual auto body() -> n::NodeListPtr;
+  virtual auto body() -> NodeListPtr;
 
   // Interface:
-  virtual auto method_decl() -> n::NodePtr;
-  virtual auto method_decl_list() -> n::NodeListPtr;
-  virtual auto interface_def() -> n::NodePtr;
+  virtual auto method_decl() -> NodePtr;
+  virtual auto method_decl_list() -> NodeListPtr;
+  virtual auto interface_def() -> NodePtr;
 
   // Struct:
-  virtual auto member_decl() -> n::NodePtr;
-  virtual auto member_decl_list() -> n::NodeListPtr;
-  virtual auto struct_def() -> n::NodePtr;
+  virtual auto member_decl() -> NodePtr;
+  virtual auto member_decl_list() -> NodeListPtr;
+  virtual auto struct_def() -> NodePtr;
 
-  virtual auto type_def() -> n::NodePtr;
+  virtual auto type_def() -> NodePtr;
 
   // Def:
-  virtual auto def_list() -> n::NodeListPtr;
-  virtual auto def_block() -> n::NodePtr;
+  virtual auto def_list() -> NodeListPtr;
+  virtual auto def_block() -> NodePtr;
 
   // Function:
-  virtual auto param_list() -> n::NodeListPtr;
-  virtual auto param_list_opt() -> n::NodeListPtr;
+  virtual auto param_list() -> NodeListPtr;
+  virtual auto param_list_opt() -> NodeListPtr;
 
   virtual auto return_type() -> std::string;
   virtual auto return_type_opt() -> std::string;
 
-  virtual auto lambda() -> n::NodePtr;
-  virtual auto function() -> n::NodePtr;
+  virtual auto lambda() -> NodePtr;
+  virtual auto function() -> NodePtr;
 
   // Import:
-  virtual auto import_expr(pkg::Import& t_import) -> bool;
-  virtual auto import_list(pkg::Import& t_import) -> void;
-  virtual auto import_() -> n::NodePtr;
+  virtual auto import_expr(Import& t_import) -> bool;
+  virtual auto import_list(Import& t_import) -> void;
+  virtual auto import_() -> NodePtr;
 
   // Package:
-  virtual auto module_() -> n::NodePtr;
+  virtual auto module_() -> NodePtr;
 
-  virtual auto item() -> n::NodePtr;
-  virtual auto item_list() -> n::NodeListPtr;
+  virtual auto item() -> NodePtr;
+  virtual auto item_list() -> NodeListPtr;
 
-  virtual auto program() -> n::NodeListPtr;
+  virtual auto program() -> NodeListPtr;
 
-  auto parse() -> n::NodePtr override;
+  auto parse() -> NodePtr override;
 
   ~CrowParser() override = default;
 };
