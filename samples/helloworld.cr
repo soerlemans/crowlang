@@ -1,16 +1,6 @@
-module main
+fn main() -> int {
+  let var = 10
+	var = 4.0
 
-import (
-		"io";
-		fs = "filesystem"
-)
-
-fn main() {
-	if false {
-	  return 10 * 10
-  } else {
-	  return 10 / 10
-  }
-
-	return 0
+	return var
 }

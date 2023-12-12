@@ -6,17 +6,25 @@
 #include <type_traits>
 #include <utility>
 
+// Library Includes:
+#include <boost/assign/list_of.hpp>
+#include <boost/bimap.hpp>
+
 // Local Includes:
 #include "terminal.hpp"
 
 
-namespace token::reserved {
 // Macros:
 #define DEFINE_TERMINAL(t_name, t_id, t_token) \
   constexpr Terminal t_name                    \
   {                                            \
     t_id, TokenType::t_token                   \
   }
+
+namespace token::reserved {
+// Aliases:
+template<typename Key = std::string_view>
+using TTypeMap = boost::bimap<Key, TokenType>;
 
 // clang-format off
 // Language reserved keywords
@@ -54,17 +62,31 @@ namespace keywords {
   DEFINE_TERMINAL(g_true,  "true",  TRUE);
   DEFINE_TERMINAL(g_false, "false", FALSE);
 
+	// TODO: Convert keywords to bimap
+  // const TTypeMap g_keywords = boost::assign::list_of<TTypeMap<std::string_view>::relation>
+	// 	(g_let.pair()) (g_const.pair())
+	// 	(g_module.pair()) (g_import.pair()) (g_priv.pair()) (g_pub.pair())
+	// 	(g_struct.pair()) (g_interface.pair()) (g_impl.pair())
+	//   (g_fn.pair())
+	// 	(g_match.pair())
+	//   (g_if.pair()) (g_else.pair()) (g_elif.pair())
+	//   (g_loop.pair())
+	//   (g_break.pair()) (g_continue.pair()) (g_defer.pair()) (g_return.pair())
+  //   (g_true.pair()) (g_false.pair())
+  //   ;
+
 	const std::map g_keywords {
-		g_let.pair(), g_const.pair(),
-		g_module.pair(), g_import.pair(), g_priv.pair(), g_pub.pair(),
-		g_struct.pair(), g_interface.pair(), g_impl.pair(),
-	  g_fn.pair(),
-		g_match.pair(),
-	  g_if.pair(), g_else.pair(), g_elif.pair(),
-	  g_loop.pair(),
-	  g_break.pair(), g_continue.pair(), g_defer.pair(), g_return.pair(),
+    g_let.pair(), g_const.pair(),
+    g_module.pair(), g_import.pair(), g_priv.pair(), g_pub.pair(),
+    g_struct.pair(), g_interface.pair(), g_impl.pair(),
+    g_fn.pair(),
+    g_match.pair(),
+    g_if.pair(), g_else.pair(), g_elif.pair(),
+    g_loop.pair(),
+    g_break.pair(), g_continue.pair(), g_defer.pair(), g_return.pair(),
     g_true.pair(), g_false.pair()
-	};
+};
+
 } // namespace keywords
 
 // Language reserved symbols

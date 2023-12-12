@@ -4,8 +4,8 @@
 #include <sstream>
 
 
-using namespace container;
-
+namespace container {
+// Methods:
 TextPosition::TextPosition(): m_lineno{0}, m_columno{0}
 {}
 
@@ -19,7 +19,7 @@ TextPosition::TextPosition(const std::string_view t_source,
     m_columno{t_columnno}
 {}
 
-namespace container {
+// Friend methods:
 auto operator<<(std::ostream& t_os, const TextPosition& t_fp) -> std::ostream&
 {
   std::stringstream ss;

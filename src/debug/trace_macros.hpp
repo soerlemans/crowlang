@@ -2,11 +2,11 @@
 #define CROW_DEBUG_TRACE_MACROS_HPP
 
 // Includes:
-#include "../macros.hpp"
+#include "../lib/macros.hpp"
 
 
 // Macros:
-#if DEBUG
+#ifdef DEBUG
 #define DBG_TRACE_INIT() int m_counter{0};
 
 // TRACE is intended for showing which functions call which in a tree like

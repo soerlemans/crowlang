@@ -3,24 +3,30 @@
 
 // STL Includes:
 #include <filesystem>
-#include <stdexcept>
 
 // Includes:
 #include "../container/text_position.hpp"
 
+// Local Includes:
+#include "error.hpp"
 
-// Error classes intended for being thrown as exceptions
-// When a mistake is made
-class SyntaxError : public std::exception {
+
+namespace exception {
+/*!
+ * Is thrown when source code of a crow program contains a syntax error.
+ */
+class SyntaxError : public Error {
+  private:
+  auto format(std::string_view t_msg) -> std::string;
+
   protected:
-  std::string m_error;
   container::TextPosition m_pos;
 
   public:
-  SyntaxError(std::string_view t_msg,
-              const container::TextPosition& t_pos);
+  SyntaxError(std::string_view t_msg, const container::TextPosition& t_pos);
 
-  auto what() const noexcept -> const char* override;
+  ~SyntaxError() override = default;
 };
+} // namespace exception
 
 #endif // CROW_EXCEPTION_SYNTAX_ERROR_HPP

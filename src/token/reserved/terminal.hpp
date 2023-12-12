@@ -2,6 +2,7 @@
 #define CROW_TOKEN_RESERVED_TERMINAL_HPP
 
 // STL Includes:
+#include <sstream>
 #include <type_traits>
 
 // Includes:
@@ -16,7 +17,7 @@ concept StringLike =
 
 // Classes:
 template<typename T = std::string_view>
-requires StringLike<T>
+  requires StringLike<T>
 struct Terminal {
   T m_identifier;
   TokenType m_type;

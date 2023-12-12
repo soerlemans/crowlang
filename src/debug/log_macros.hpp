@@ -1,15 +1,19 @@
 #ifndef CROW_DEBUG_LOG_MACROS_HPP
 #define CROW_DEBUG_LOG_MACROS_HPP
 
+// Library Includes:
+#include <boost/current_function.hpp>
+
+
 // Macros:
-#if DEBUG
+#ifdef DEBUG
 #define DBG_PRINTLN(...) debug::println(__VA_ARGS__)
 
-//! Creates a SourcePosition of a line
-#define DBG_SOURCE_POS()         \
-  container::SourcePosition      \
-  {                              \
-    __FILE__, __LINE__, __func__ \
+//! Create a @ref SourcePosition of the line the macro is located on.
+#define DBG_SOURCE_POS()                       \
+  container::SourcePosition                    \
+  {                                            \
+    __FILE__, __LINE__, BOOST_CURRENT_FUNCTION \
   }
 
 #define DBG_LOG(loglevel, ...) \
@@ -26,11 +30,11 @@
 
 #define DBG_LOG(...) \
   do {               \
-  } while(0)
+  } while(false)
 
 #define DBG_SET_LOGLEVEL(level) \
   do {                          \
-  } while(0)
+  } while(false)
 
 #endif // DEBUG
 

@@ -29,7 +29,7 @@ namespace {
 using StrOpt = std::optional<std::string>;
 
 // Functions:
-//! This reverse lookup is O{n}
+// FIXME: This reverse lookup is O(n), can be more efficient with boost bimap.
 template<typename T>
 auto reverse_lookup(const TokenType t_type, const T& t_map) -> StrOpt
 {
@@ -89,8 +89,7 @@ auto tokentype2str(const token::TokenType t_type) -> std::string
 }
 } // namespace token
 
-auto operator<<(std::ostream& t_os, const TokenType t_type)
-  -> std::ostream&
+auto operator<<(std::ostream& t_os, const TokenType t_type) -> std::ostream&
 {
   t_os << token::tokentype2str(t_type);
 

@@ -7,13 +7,18 @@
 
 
 // Macros:
+//! TODO: Comment.
 #define COUNTG_INIT() \
   CountGuard guard    \
   {                   \
     m_counter         \
   }
 
-//! Defines a PrintVisitor method, that will print all traits
+/*!
+ * Defines a @ref PrintVisitor method, that will print all traits.
+ *
+ * @param[in] t_type type of Node to accept.
+ */
 #define DEF_PV_METHOD(t_type)                                   \
   auto PrintVisitor::visit([[maybe_unused]] t_type* t_ptr)->Any \
   {                                                             \
@@ -25,17 +30,9 @@
     return {};                                                  \
   }
 
+namespace ast::visitor {
 // Using statements:
-using namespace ast::visitor;
-using namespace ast::node;
-using namespace ast::node::control;
-using namespace ast::node::functions;
-using namespace ast::node::lvalue;
-using namespace ast::node::operators;
-using namespace ast::node::packaging;
-using namespace ast::node::rvalue;
-using namespace ast::node::typing;
-using namespace ast::node::node_traits;
+NODE_USING_ALL_NAMESPACES()
 
 // Friend classes:
 namespace {
@@ -61,7 +58,7 @@ auto PrintVisitor::print_if(std::string_view t_str, NodePtr t_ptr) -> void
 {
   if(t_ptr) {
     print(t_str);
-    t_ptr->accept(this);
+    traverse(t_ptr);
   }
 }
 
@@ -76,6 +73,7 @@ DEF_PV_METHOD(Break)
 DEF_PV_METHOD(Return)
 
 // Function:
+DEF_PV_METHOD(Parameter)
 DEF_PV_METHOD(Function)
 
 auto PrintVisitor::visit(FunctionCall* t_fn_call) -> Any
@@ -105,34 +103,34 @@ auto PrintVisitor::visit(Variable* t_var) -> Any
 }
 
 // Operators:
-auto PrintVisitor::visit(Arithmetic* t_arithmetic) -> Any
+auto PrintVisitor::visit(Arithmetic* t_arith) -> Any
 {
   COUNTG_INIT();
 
   print("Arithmetic");
-  print_traits(t_arithmetic);
+  print_traits(t_arith);
   // print("| OP: TODO!");
 
   return {};
 }
 
-auto PrintVisitor::visit(Assignment* t_assignment) -> Any
+auto PrintVisitor::visit(Assignment* t_assign) -> Any
 {
   COUNTG_INIT();
 
   print("Assignment");
-  print_traits(t_assignment);
+  print_traits(t_assign);
   // print("| OP: TODO!");
 
   return {};
 }
 
-auto PrintVisitor::visit(Comparison* t_comparison) -> Any
+auto PrintVisitor::visit(Comparison* t_comp) -> Any
 {
   COUNTG_INIT();
 
   print("Comparison");
-  print_traits(t_comparison);
+  print_traits(t_comp);
   // print("| OP: TODO!");
 
   return {};
@@ -160,12 +158,12 @@ auto PrintVisitor::visit(Decrement* t_dec) -> Any
   return {};
 }
 
-auto PrintVisitor::visit(UnaryPrefix* t_unary_prefix) -> Any
+auto PrintVisitor::visit(UnaryPrefix* t_up) -> Any
 {
   COUNTG_INIT();
 
   print("UnaryPrefix");
-  print_traits(t_unary_prefix);
+  print_traits(t_up);
   print("| OP: TODO!");
 
   return {};
@@ -273,3 +271,9 @@ auto PrintVisitor::visit([[maybe_unused]] Nil* t_nil) -> Any
 
   return {};
 }
+
+auto PrintVisitor::print(NodePtr t_ast) -> void
+{
+  traverse(t_ast);
+}
+} // namespace ast::visitor

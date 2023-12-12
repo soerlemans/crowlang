@@ -11,6 +11,7 @@
 namespace ast::node::operators {
 // Namespace aliases:
 namespace nt = node_traits;
+namespace ct = container;
 
 // Enums:
 enum class ArithmeticOp {
@@ -25,14 +26,12 @@ enum class ArithmeticOp {
 };
 
 // Classes:
-class Arithmetic : public nt::BinaryOperator {
-  private:
-  ArithmeticOp m_op;
-
+class Arithmetic : public nt::NodePosition,
+                   public nt::Op<ArithmeticOp>,
+                   public nt::BinaryOperator {
   public:
-  Arithmetic(ArithmeticOp t_op, NodePtr&& t_left, NodePtr&& t_right);
-
-  auto op() -> ArithmeticOp;
+  Arithmetic(ct::TextPosition t_pos, ArithmeticOp t_op, NodePtr&& t_left,
+             NodePtr&& t_right);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

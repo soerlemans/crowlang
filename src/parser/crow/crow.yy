@@ -133,14 +133,13 @@ const_expr       : Const IDENTIFIER '=' newline_opt expr
                  | Const IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
                  ;
 
-let_expr         : Let IDENTIFIER
+let_expr         : Let IDENTIFIER ':' IDENTIFIER
                  | Let IDENTIFIER '=' newline_opt expr
                  | Let IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
                  ;
 
-decl_expr        : Let IDENTIFIER
-                 | Let IDENTIFIER '=' newline_opt expr
-                 | Let IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
+decl_expr        : const_expr
+                 | let_expr
                  ;
 
 eval_expr        : decl_expr ';' expr
@@ -169,13 +168,10 @@ result_statement : decl_expr terminator
                  ;
 
 // Expression lists:
-multiple_expr_list : expr ',' newline_opt expr
-                 | multiple_expr_list ',' newline_opt expr
+expr_list        : expr
+                 | expr_list ',' newline_opt expr
                  ;
 
-expr_list        : expr
-                 | multiple_expr_list
-                 ;
 
 expr_list_opt    : // empty
                  | expr_list

@@ -2,20 +2,33 @@
 #define CROW_AST_VISITOR_NODE_VISITOR_HPP
 
 // Includes:
-#include "../../visitable/visitable.hpp"
+#include "../../lib/visitable/visitable.hpp"
 #include "../node/fdecl.hpp"
 
+
+// Macros:
+#define AST_VISITOR_STUB(t_class, t_type)                  \
+  /* NOLINTBEGIN */                                        \
+  auto t_class::visit([[maybe_unused]] t_type* t_ptr)->Any \
+  {                                                        \
+    return {};                                             \
+  }                                                        \
+  /* NOLINTBEGIN */
 
 namespace ast::visitor {
 // Using statements:
 using visitable::Any;
 
 // Classes:
-/*! Implementation of the Visitor design pattern for Nodes
+/*!
+ * Implementation of the Visitor design pattern for Nodes
  * This creates a recursive dependency on the different kind of nodes
  * So all nodes need to be forward declared in this header
  */
 class NodeVisitor {
+  protected:
+  virtual auto traverse(node::NodePtr t_ast) -> Any;
+
   public:
   NodeVisitor() = default;
 
@@ -27,9 +40,10 @@ class NodeVisitor {
   virtual auto visit(node::control::Return* t_return) -> Any;
 
   // Function:
-  virtual auto visit(node::functions::Function* t_fn) -> Any;
-  virtual auto visit(node::functions::FunctionCall* t_fn_call) -> Any;
-  virtual auto visit(node::functions::ReturnType* t_rt) -> Any;
+  virtual auto visit(node::function::Parameter* t_param) -> Any;
+  virtual auto visit(node::function::Function* t_fn) -> Any;
+  virtual auto visit(node::function::FunctionCall* t_fn_call) -> Any;
+  virtual auto visit(node::function::ReturnType* t_rt) -> Any;
 
   // Lvalue:
   virtual auto visit(node::lvalue::Const* t_const) -> Any;
@@ -37,14 +51,14 @@ class NodeVisitor {
   virtual auto visit(node::lvalue::Variable* t_var) -> Any;
 
   // Operators:
-  virtual auto visit(node::operators::Arithmetic* t_arithmetic) -> Any;
-  virtual auto visit(node::operators::Assignment* t_assignment) -> Any;
-  virtual auto visit(node::operators::Comparison* t_comparison) -> Any;
+  virtual auto visit(node::operators::Arithmetic* t_arith) -> Any;
+  virtual auto visit(node::operators::Assignment* t_assign) -> Any;
+  virtual auto visit(node::operators::Comparison* t_comp) -> Any;
 
-  virtual auto visit(node::operators::Increment* t_increment) -> Any;
-  virtual auto visit(node::operators::Decrement* t_decrement) -> Any;
+  virtual auto visit(node::operators::Increment* t_inc) -> Any;
+  virtual auto visit(node::operators::Decrement* t_dec) -> Any;
 
-  virtual auto visit(node::operators::UnaryPrefix* t_unary_prefix) -> Any;
+  virtual auto visit(node::operators::UnaryPrefix* t_up) -> Any;
 
   // Logical:
   virtual auto visit(node::operators::Not* t_not) -> Any;
@@ -76,7 +90,6 @@ class NodeVisitor {
   virtual auto visit(node::Nil* t_nil) -> Any;
 
   virtual auto visit(node::NodeInterface* t_ptr) -> Any;
-  virtual auto traverse(node::NodePtr t_ast) -> Any;
 
   virtual ~NodeVisitor() = default;
 };

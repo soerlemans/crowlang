@@ -1,14 +1,16 @@
 #include "log.hpp"
 
+// Includes:
+#include "../lib/enum2int.hpp"
 
-using namespace debug;
 
+namespace debug {
 namespace {
 // Private variables:
+//! Private global keeping track of the current loglevel.
 LogLevel g_loglevel{LogLevel::WARNING};
 } // namespace
 
-namespace debug {
 // Public functions:
 // This function checks if the LogLevel is lower than the current g_loglevel
 // t_loglevel is used in macros use [[maybe_unused]] to silence warnings
@@ -23,6 +25,7 @@ auto set_loglevel(const LogLevel t_loglevel) -> void
   g_loglevel = t_loglevel;
 }
 
+#ifdef DEBUG
 auto operator<<(std::ostream& t_os, const LogLevel t_loglevel) -> std::ostream&
 {
   using namespace rang;
@@ -33,4 +36,5 @@ auto operator<<(std::ostream& t_os, const LogLevel t_loglevel) -> std::ostream&
 
   return t_os;
 }
+#endif
 } // namespace debug

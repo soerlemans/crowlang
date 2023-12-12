@@ -9,22 +9,9 @@
 #include "../../debug/trace.hpp"
 
 
+namespace parser::crow {
 // Using statements:
-using namespace parser::crow;
-
-using namespace token;
-
-using namespace ast::node;
-using namespace ast::node::control;
-using namespace ast::node::functions;
-using namespace ast::node::lvalue;
-using namespace ast::node::operators;
-using namespace ast::node::packaging;
-using namespace ast::node::rvalue;
-using namespace ast::node::typing;
-
-// Aliases:
-namespace nt = ast::node::node_traits;
+NODE_USING_ALL_NAMESPACES()
 
 // Methods:
 CrowParser::CrowParser(TokenStream t_tokenstream)
@@ -68,37 +55,82 @@ auto CrowParser::expr_opt() -> NodePtr
   return expr();
 }
 
-auto CrowParser::decl_expr() -> NodePtr
+// FIXME: This is "temporary fix"
+auto CrowParser::init_expr(const TokenType t_type) -> NodePtr
 {
+  using namespace token;
+
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  if(next_if(TokenType::LET)) {
-    PARSER_FOUND(TokenType::LET);
+  const auto pos{get_position()};
+  if(next_if(t_type)) {
+    PARSER_FOUND(t_type);
+
     const auto id{expect(TokenType::IDENTIFIER)};
-
-    if(next_if(TokenType::COLON)) {
-      expect(TokenType::IDENTIFIER);
-
-      // TODO: Implement type inference
-    }
-
+    std::string type;
     NodePtr expr_ptr;
-    if(next_if(TokenType::ASSIGNMENT)) {
+
+    const auto get_expr{[&]() {
       newline_opt();
       expr_ptr = expr();
+    }};
+
+    if(next_if(TokenType::COLON)) {
+      type = expect(TokenType::IDENTIFIER).str();
+
+      if(next_if(TokenType::ASSIGNMENT)) {
+        get_expr();
+      }
+    } else {
+      expect(TokenType::ASSIGNMENT);
+      get_expr();
     }
 
-    node = make_node<Let>(id.str(), std::move(expr_ptr));
+    if(t_type == TokenType::CONST) {
+      node = make_node<Const>(pos, id.str(), type, std::move(expr_ptr));
+    } else if(t_type == TokenType::LET) {
+      node = make_node<Let>(pos, id.str(), type, std::move(expr_ptr));
+    } else {
+      // TODO: Error
+    }
   }
 
   return node;
 }
 
-auto CrowParser::eval_expr() -> NodePair
+auto CrowParser::const_expr() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePair pair;
+
+  return init_expr(TokenType::CONST);
+}
+
+auto CrowParser::let_expr() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+
+  return init_expr(TokenType::LET);
+}
+
+auto CrowParser::decl_expr() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  if(auto ptr{const_expr()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{let_expr()}; ptr) {
+    node = std::move(ptr);
+  }
+
+  return node;
+}
+
+auto CrowParser::eval_expr() -> EvalPair
+{
+  DBG_TRACE_FN(VERBOSE);
+  EvalPair pair;
 
   if(auto ptr{decl_expr()}; ptr) {
     expect(TokenType::SEMICOLON);
@@ -128,7 +160,19 @@ auto CrowParser::expr_statement() -> NodePtr
   return node;
 }
 
-auto CrowParser::multiple_expr_list() -> NodeListPtr
+auto CrowParser::expr_list() -> NodeListPtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  auto nodes{expr_list_opt()};
+
+  if(nodes->empty()) {
+    syntax_error("Expected a list of expressions");
+  }
+
+  return nodes;
+}
+
+auto CrowParser::expr_list_opt() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
   auto nodes{make_node<List>()};
@@ -157,32 +201,6 @@ auto CrowParser::multiple_expr_list() -> NodeListPtr
   return nodes;
 }
 
-auto CrowParser::expr_list() -> NodeListPtr
-{
-  DBG_TRACE_FN(VERBOSE);
-  auto nodes{expr_list_opt()};
-
-  if(nodes->empty()) {
-    syntax_error("Expected a list of expressions");
-  }
-
-  return nodes;
-}
-
-auto CrowParser::expr_list_opt() -> NodeListPtr
-{
-  DBG_TRACE_FN(VERBOSE);
-  auto nodes{make_node<List>()};
-
-  if(auto ptr{expr()}; ptr) {
-    nodes->push_back(std::move(ptr));
-  } else if(auto ptr{multiple_expr_list()}; ptr) {
-    nodes = std::move(ptr);
-  }
-
-  return nodes;
-}
-
 // Result statement:
 auto CrowParser::assignment() -> NodePtr
 {
@@ -190,11 +208,11 @@ auto CrowParser::assignment() -> NodePtr
   NodePtr node;
 
   if(auto lhs{lvalue()}; lhs) {
-    const auto token{get_token()};
-    const auto lambda{[&](AssignmentOp t_op) {
+    const auto pos{get_position()};
+    const auto lambda{[&](const AssignmentOp t_op) {
       newline_opt();
       if(auto rhs{expr()}; rhs) {
-        node = make_node<Assignment>(t_op, std::move(lhs), std::move(rhs));
+        node = make_node<Assignment>(pos, t_op, std::move(lhs), std::move(rhs));
       }
     }};
 
@@ -227,7 +245,7 @@ auto CrowParser::assignment() -> NodePtr
   return node;
 }
 
-auto CrowParser::result_statement() -> n::NodePtr
+auto CrowParser::result_statement() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
@@ -285,6 +303,7 @@ auto CrowParser::loop_statement() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
+  const auto pos{get_position()};
   if(next_if(TokenType::LOOP)) {
     auto [init, cond] = eval_expr();
 
@@ -295,7 +314,7 @@ auto CrowParser::loop_statement() -> NodePtr
 
     auto body_ptr{body()};
 
-    node = make_node<Loop>(std::move(init), std::move(cond),
+    node = make_node<Loop>(pos, std::move(init), std::move(cond),
                            std::move(expr_ptr), std::move(body_ptr));
   }
 
@@ -307,6 +326,7 @@ auto CrowParser::branch_statement(const TokenType t_type) -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
+  const auto pos{get_position()};
   if(next_if(t_type)) {
     auto [init, cond] = eval_expr();
     if(!cond) {
@@ -324,8 +344,8 @@ auto CrowParser::branch_statement(const TokenType t_type) -> NodePtr
       alt_ptr->push_back(std::move(ptr));
     }
 
-    node = make_node<If>(std::move(init), std::move(cond), std::move(then_ptr),
-                         std::move(alt_ptr));
+    node = make_node<If>(pos, std::move(init), std::move(cond),
+                         std::move(then_ptr), std::move(alt_ptr));
   }
 
   return node;
@@ -577,6 +597,7 @@ auto CrowParser::param_list_opt() -> NodeListPtr
   DBG_TRACE_FN(VERBOSE);
   auto nodes{make_node<List>()};
 
+  auto pos{get_position()};
   if(check(TokenType::IDENTIFIER)) {
     PARSER_FOUND(TokenType::IDENTIFIER);
 
@@ -584,20 +605,21 @@ auto CrowParser::param_list_opt() -> NodeListPtr
     expect(TokenType::COLON);
     const auto type{expect(TokenType::IDENTIFIER).str()};
 
-    nodes->push_back(make_node<Variable>(id, type));
-  }
+    nodes->push_back(make_node<Parameter>(pos, id, type));
 
-  while(!eos()) {
-    if(next_if(TokenType::COMMA)) {
-      const auto id{expect(TokenType::IDENTIFIER).str()};
-      PARSER_FOUND(TokenType::COMMA, "'IDENTIFIER'");
+    while(!eos()) {
+      if(next_if(TokenType::COMMA)) {
+        pos = get_position();
+        const auto id{expect(TokenType::IDENTIFIER).str()};
+        PARSER_FOUND(TokenType::COMMA, "'IDENTIFIER'");
 
-      expect(TokenType::COLON);
-      const auto type{expect(TokenType::IDENTIFIER).str()};
+        expect(TokenType::COLON);
+        const auto type{expect(TokenType::IDENTIFIER).str()};
 
-      nodes->push_back(make_node<Variable>(id, type));
-    } else {
-      break;
+        nodes->push_back(make_node<Parameter>(pos, id, type));
+      } else {
+        break;
+      }
     }
   }
 
@@ -630,7 +652,7 @@ auto CrowParser::return_type_opt() -> std::string
   return type;
 }
 
-auto CrowParser::lambda() -> n::NodePtr
+auto CrowParser::lambda() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
@@ -820,3 +842,4 @@ auto CrowParser::parse() -> NodePtr
 {
   return program();
 }
+} // namespace parser::crow

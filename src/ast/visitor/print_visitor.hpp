@@ -64,8 +64,6 @@ class PrintVisitor : public NodeVisitor {
   auto print_traits(Ptr t_ptr) -> void
   {
     using namespace ast::node::node_traits;
-    // TODO: Make UnaryOperator and BinaryOperator a trait
-    using namespace ast::node::operators;
 
     const auto lambda{[this](const auto t_vw, auto t_any) {
       using namespace ast::node;
@@ -102,8 +100,8 @@ class PrintVisitor : public NodeVisitor {
       lambda("Params", t_ptr->params());
     });
 
-    when_derived<Type>(t_ptr, [&](auto t_ptr) {
-      print("| Type: ", t_ptr->type());
+    when_derived<TypeAnnotation>(t_ptr, [&](auto t_ptr) {
+      print("| Type Annotation: ", t_ptr->type());
     });
 
     when_derived<Body>(t_ptr, [&](auto t_ptr) {
@@ -138,9 +136,10 @@ class PrintVisitor : public NodeVisitor {
   auto visit(node::control::Return* t_return) -> Any override;
 
   // Function:
-  auto visit(node::functions::Function* t_fn) -> Any override;
-  auto visit(node::functions::FunctionCall* t_fn_call) -> Any override;
-  auto visit(node::functions::ReturnType* t_rt) -> Any override;
+  auto visit(node::function::Parameter* t_param) -> Any override;
+  auto visit(node::function::Function* t_fn) -> Any override;
+  auto visit(node::function::FunctionCall* t_fn_call) -> Any override;
+  auto visit(node::function::ReturnType* t_rt) -> Any override;
 
   // Lvalue:
   auto visit(node::lvalue::Const* t_const) -> Any override;
@@ -148,14 +147,14 @@ class PrintVisitor : public NodeVisitor {
   auto visit(node::lvalue::Variable* t_var) -> Any override;
 
   // Operators:
-  auto visit(node::operators::Arithmetic* t_arithmetic) -> Any override;
-  auto visit(node::operators::Assignment* t_assignment) -> Any override;
-  auto visit(node::operators::Comparison* t_comparison) -> Any override;
+  auto visit(node::operators::Arithmetic* t_arith) -> Any override;
+  auto visit(node::operators::Assignment* t_assign) -> Any override;
+  auto visit(node::operators::Comparison* t_comp) -> Any override;
 
   auto visit(node::operators::Increment* t_inc) -> Any override;
   auto visit(node::operators::Decrement* t_dec) -> Any override;
 
-  auto visit(node::operators::UnaryPrefix* t_unary_prefix) -> Any override;
+  auto visit(node::operators::UnaryPrefix* t_up) -> Any override;
 
   // Logical:
   auto visit(node::operators::Not* t_not) -> Any override;
@@ -185,6 +184,8 @@ class PrintVisitor : public NodeVisitor {
   // Misc:
   auto visit(node::List* t_list) -> Any override;
   auto visit(node::Nil* t_nil) -> Any override;
+
+  auto print(node::NodePtr t_ast) -> void;
 
   ~PrintVisitor() override = default;
 };

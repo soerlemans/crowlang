@@ -13,7 +13,7 @@
 
 // Includes:
 #include "control/include.hpp"
-#include "functions/include.hpp"
+#include "function/include.hpp"
 #include "lvalue/include.hpp"
 #include "node_traits/include.hpp"
 #include "operators/include.hpp"

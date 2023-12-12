@@ -15,7 +15,9 @@ namespace ast::node::typing {
 namespace nt = node_traits;
 
 // Classes:
-class MethodDecl : public nt::Identifier, public nt::Params, public nt::Type {
+class MethodDecl : public nt::Identifier,
+                   public nt::Params,
+                   public nt::TypeAnnotation {
   public:
   MethodDecl(std::string_view t_identifier, NodeListPtr&& t_params,
              std::string_view t_type);

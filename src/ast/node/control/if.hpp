@@ -11,15 +11,17 @@
 namespace ast::node::control {
 // Aliases:
 namespace nt = node_traits;
+namespace ct = container;
 
 // Classes:
-class If : public nt::InitExpr,
+class If : public nt::NodePosition,
+           public nt::InitExpr,
            public nt::Condition,
            public nt::Then,
            public nt::Alt {
   public:
-  If(NodePtr&& t_init, NodePtr&& t_condition, NodePtr&& t_then,
-     NodePtr&& t_alt);
+  If(ct::TextPosition t_pos, NodePtr&& t_init,
+     NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_alt);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

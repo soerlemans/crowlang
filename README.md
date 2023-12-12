@@ -1,13 +1,13 @@
 Crow
 ====
-This project is my experimentation with creating my own programming language.
+This project is me experimentation with creating my own programming language.
 For this project I am using C++23.
 
 Crow's syntax is inspired by Swift and Rust.
 Semicolons are completely optional in Crow.
 
 ## Dependencies
-I aim to keep dependencies to a minimum but the following is required:
+In order to compile the project you will need to following dependencies:
 
 - C++ compiler with support for C++23
 - Make (Used to invoke CMake and scripts)
@@ -15,19 +15,19 @@ I aim to keep dependencies to a minimum but the following is required:
 - [CLI11](https://github.com/CLIUtils/CLI11) (CLI option parsing library)
 - [rang](https://github.com/agauniyal/rang/tree/master) (cross platform terminal coloring library)
 - [tabulate](https://github.com/p-ranav/tabulate) (Text table library)
-- [LLVM](https://llvm.org) (LLVM codegen library)
+- [Boost]() (Utility libraries for C++)
+- [LLVM](https://llvm.org) (LLVM for code generation and optimization)
 
-Rang and tabulate are downloaded using CMake and statically linked but CLI11 and LLVM are dynamically linked (CMake searches for it on your system).
+Rang and tabulate are downloaded using CMake and statically linked but CLI11, Boost and LLVM are dynamically linked (CMake searches for it on your system).
 You can install the dependencies with the following aptitude command:
 
 ```shell
-apt install -y libcli11-dev llvm-14-dev
+apt install -y libcli11-dev libcurl4 libboost-all-dev llvm-16-dev
 ```
 
 ## Progress
 Crow is currently in active development and is currently not even at version 0.1.0.
 This section will promptly describe Crow's roadmap:
-
 
 ## Version 0.1.0
 To reach this version the following must be implemented:
@@ -41,8 +41,8 @@ To reach this version the following must be implemented:
   - [x] Modules & Imports
   - [x] Functions
   - [x] Interfaces
-  - [] Structs
-  - [] Implementation
+  - [x] Structs
+  - [x] Implementation
 
 ## Version 0.2.0
 To reach this version the following must be implemented:
@@ -72,14 +72,14 @@ To reach this version the following must be implemented:
   - [x] Imports
   - [x] Functions
   - [x] Interfaces
-  - [] Structs
-  - [] Implementation
+  - [x] Structs
+  - [x] Implementation
 
 ## Version 0.4.0
 To reach this version the following must be implemented:
 
-- [] Code generation
-  - [] LLVM
+- [x] Code generation
+  - [x] LLVM
   - [] Tree walk interpreter
 
 ## Version 0.5.0

@@ -11,11 +11,12 @@
 namespace ast::node::operators {
 // Namespace aliases:
 namespace nt = node_traits;
+namespace ct = container;
 
 // Not:
-class Not : public nt::UnaryOperator {
+class Not : public nt::NodePosition, public nt::UnaryOperator {
   public:
-  Not(NodePtr&& t_left);
+  Not(ct::TextPosition t_pos, NodePtr&& t_left);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
@@ -23,9 +24,9 @@ class Not : public nt::UnaryOperator {
 };
 
 // And:
-class And : public nt::BinaryOperator {
+class And : public nt::NodePosition, public nt::BinaryOperator {
   public:
-  And(NodePtr&& t_left, NodePtr&& t_right);
+  And(ct::TextPosition t_pos, NodePtr&& t_left, NodePtr&& t_right);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
@@ -33,9 +34,9 @@ class And : public nt::BinaryOperator {
 };
 
 // Or:
-class Or : public nt::BinaryOperator {
+class Or : public nt::NodePosition, public nt::BinaryOperator {
   public:
-  Or(NodePtr&& t_left, NodePtr&& t_right);
+  Or(ct::TextPosition t_pos, NodePtr&& t_left, NodePtr&& t_right);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

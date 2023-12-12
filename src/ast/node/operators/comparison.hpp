@@ -9,8 +9,9 @@
 
 
 namespace ast::node::operators {
-// Namespace aliases:
+// Aliases:
 namespace nt = node_traits;
+namespace ct = container;
 
 // Enums:
 enum class ComparisonOp {
@@ -25,14 +26,12 @@ enum class ComparisonOp {
 };
 
 // Classes:
-class Comparison : public nt::BinaryOperator {
-  private:
-  ComparisonOp m_op;
-
+class Comparison : public nt::NodePosition,
+                   nt::Op<ComparisonOp>,
+                   public nt::BinaryOperator {
   public:
-  Comparison(ComparisonOp t_op, NodePtr&& t_left, NodePtr&& t_right);
-
-  auto op() const -> ComparisonOp;
+  Comparison(ct::TextPosition t_pos, ComparisonOp t_op, NodePtr&& t_left,
+             NodePtr&& t_right);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

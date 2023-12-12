@@ -11,15 +11,17 @@
 namespace ast::node::control {
 // Aliases:
 namespace nt = node_traits;
+namespace ct = container;
 
 // Classes:
-class Loop : public nt::InitExpr,
+class Loop : public nt::NodePosition,
+             public nt::InitExpr,
              public nt::Condition,
-             public nt::Body,
-             public nt::Expr {
+             public nt::Expr,
+             public nt::Body {
   public:
-  Loop(NodePtr&& t_init, NodePtr&& t_condition, NodePtr&& t_expr,
-       NodeListPtr&& t_body);
+  Loop(ct::TextPosition t_pos, NodePtr&& t_init,
+       NodePtr&& t_condition, NodePtr&& t_expr, NodeListPtr&& t_body);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

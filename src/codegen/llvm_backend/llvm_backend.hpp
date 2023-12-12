@@ -1,5 +1,5 @@
-#ifndef CROW_BACKEND_LLVM_BACKEND_LLVM_BACKEND_HPP
-#define CROW_BACKEND_LLVM_BACKEND_LLVM_BACKEND_HPP
+#ifndef CROW_CODEGEN_LLVM_BACKEND_LLVM_BACKEND_HPP
+#define CROW_CODEGEN_LLVM_BACKEND_LLVM_BACKEND_HPP
 
 // STL Includes:
 #include <filesystem>
@@ -17,6 +17,9 @@
 namespace codegen::llvm_backend {
 // Using statements:
 using namespace ast;
+
+using ast::node::NodePtr;
+
 using visitable::Any;
 
 // Aliases:
@@ -35,7 +38,7 @@ class LlvmBackend : public ast::visitor::NodeVisitor {
   ModulePtr m_module;
 
   protected:
-  auto get_value(node::NodePtr t_ptr) -> llvm::Value*;
+  auto get_value(NodePtr t_ptr) -> llvm::Value*;
 
   public:
   LlvmBackend();
@@ -48,9 +51,10 @@ class LlvmBackend : public ast::visitor::NodeVisitor {
   auto visit(node::control::Return* t_return) -> Any override;
 
   // Function:
-  auto visit(node::functions::Function* t_fn) -> Any override;
-  auto visit(node::functions::FunctionCall* t_fn_call) -> Any override;
-  auto visit(node::functions::ReturnType* t_rt) -> Any override;
+  auto visit(node::function::Parameter* t_param) -> Any override;
+  auto visit(node::function::Function* t_fn) -> Any override;
+  auto visit(node::function::FunctionCall* t_fn_call) -> Any override;
+  auto visit(node::function::ReturnType* t_rt) -> Any override;
 
   // Lvalue:
   auto visit(node::lvalue::Const* t_const) -> Any override;
@@ -59,13 +63,13 @@ class LlvmBackend : public ast::visitor::NodeVisitor {
 
   // Operators:
   auto visit(node::operators::Arithmetic* t_arith) -> Any override;
-  auto visit(node::operators::Assignment* t_assig) -> Any override;
+  auto visit(node::operators::Assignment* t_assign) -> Any override;
   auto visit(node::operators::Comparison* t_comp) -> Any override;
 
   auto visit(node::operators::Increment* t_inc) -> Any override;
   auto visit(node::operators::Decrement* t_dec) -> Any override;
 
-  auto visit(node::operators::UnaryPrefix* t_unary_prefix) -> Any override;
+  auto visit(node::operators::UnaryPrefix* t_up) -> Any override;
 
   // Logical:
   auto visit(node::operators::Not* t_not) -> Any override;
@@ -94,12 +98,12 @@ class LlvmBackend : public ast::visitor::NodeVisitor {
 
   // Util:
   auto configure_target() -> void;
-  auto codegen(ast::node::NodePtr t_ast) -> void;
+  auto codegen(NodePtr t_ast) -> void;
   auto dump_ir(std::ostream& t_os) -> void;
   auto compile(fs::path t_path) -> void;
 
   ~LlvmBackend() override = default;
 };
-} // namespace backend::llvm_backend
+} // namespace codegen::llvm_backend
 
-#endif // CROW_BACKEND_LLVM_BACKEND_LLVM_BACKEND_HPP
+#endif // CROW_CODEGEN_LLVM_BACKEND_LLVM_BACKEND_HPP

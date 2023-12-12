@@ -10,17 +10,19 @@
 #include <rang.hpp>
 
 // Includes:
+#include "ast/node/fdecl.hpp"
 #include "ast/node/include.hpp"
 #include "ast/visitor/print_visitor.hpp"
+#include "check/type_checker.hpp"
 #include "codegen/llvm_backend/llvm_backend.hpp"
 #include "container/text_buffer.hpp"
 #include "debug/log.hpp"
-#include "debug/log_macros.hpp"
 #include "lexer/lexer.hpp"
 #include "parser/crow/crow_parser.hpp"
 #include "token/token.hpp"
 
 // Local Includes:
+#include "banner.hpp"
 #include "version.hpp"
 
 
@@ -85,6 +87,7 @@ auto open_file(const fs::path t_path) -> container::TextBuffer
 auto lex(const fs::path& t_path) -> token::TokenStream
 {
   using namespace lexer;
+  using container::TextBuffer;
 
   DBG_PRINTLN("|> Lexing:");
 
@@ -102,12 +105,12 @@ auto pprint([[maybe_unused]] ast::node::NodePtr t_ast) -> void
   using namespace ast::visitor;
 
   // Pretty print the AST
-#if DEBUG
+#ifdef DEBUG
   DBG_PRINTLN("|> Pretty printing AST:");
   std::stringstream ss;
   ss << "\nAst:\n";
   PrintVisitor pprint{ss};
-  pprint.traverse(t_ast);
+  pprint.print(t_ast);
 
   DBG_INFO(ss.str());
 
@@ -129,8 +132,17 @@ auto parse(const token::TokenStream& t_ts) -> ast::node::NodePtr
   return ast;
 }
 
-auto interpret() -> void
-{}
+auto check_types(ast::node::NodePtr t_ast) -> void
+{
+  using namespace check;
+
+  DBG_PRINTLN("|> Type checking:");
+
+  TypeChecker type_checker;
+  type_checker.check(t_ast);
+
+  DBG_PRINTLN("$");
+}
 
 auto generate(ast::node::NodePtr t_ast) -> void
 {
@@ -142,7 +154,7 @@ auto generate(ast::node::NodePtr t_ast) -> void
   backend.codegen(t_ast);
   // backend.compile("main.out");
 
-#if DEBUG
+#ifdef DEBUG
   std::stringstream ss;
   ss << "\nLLVM IR:\n";
 
@@ -166,12 +178,15 @@ auto run() -> void
 
     pprint(ast);
 
+    check_types(ast);
     generate(ast);
   }
 }
 
 auto main(int t_argc, char* t_argv[]) -> int
 {
+  print_banner();
+
   CLI::App app{"Compiler for Crow(lang)"};
 
   DBG_SET_LOGLEVEL(INFO);
@@ -195,7 +210,7 @@ auto main(int t_argc, char* t_argv[]) -> int
     std::cerr << fg::reset << " - \n" << style::reset;
 
     // Print error message:
-    std::cerr << e.what() << std::endl;
+    std::cerr << e.what() << std::flush;
 
     return ExitCode::EXCEPTION;
   }

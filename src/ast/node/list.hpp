@@ -6,7 +6,7 @@
 #include <memory>
 
 // Local Includes:
-#include "node.hpp"
+#include "fdecl.hpp"
 #include "node_interface.hpp"
 
 

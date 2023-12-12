@@ -14,16 +14,17 @@
 
 namespace lexer {
 // Using declarations:
-using namespace container;
+using container::TextStreamPtr;
+using token::TokenStream;
 
 // Classes:
 class Lexer {
   private:
   TextStreamPtr m_text;
-  token::TokenStream m_ts;
+  TokenStream m_ts;
 
   // Token stream handling:
-  //! Create a token with a TextPosition
+  //! Construct a token with the current @ref TextPosition.
   template<typename... Args>
   auto create_token(Args&&... t_args) -> token::Token
   {

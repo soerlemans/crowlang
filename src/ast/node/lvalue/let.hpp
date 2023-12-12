@@ -11,14 +11,13 @@
 namespace ast::node::lvalue {
 // Aliases:
 namespace nt = node_traits;
+namespace ct = container;
 
 // Classes:
-class Let : public nt::Identifier, public nt::InitExpr {
-  private:
-  NodePtr m_init;
-
+class Let : public nt::DeclExpr {
   public:
-  Let(std::string_view t_identifier, NodePtr&& t_init);
+  Let(ct::TextPosition t_pos, std::string_view t_identifier,
+      std::string_view t_str, NodePtr&& t_init);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

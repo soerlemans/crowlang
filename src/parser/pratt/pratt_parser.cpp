@@ -8,17 +8,13 @@
 #include "../../ast/node/include.hpp"
 #include "../../debug/log.hpp"
 
-// Using statements:
-using namespace parser::pratt;
-using namespace token;
-using namespace ast::node;
-using namespace ast::node::operators;
-using namespace ast::node::rvalue;
-using namespace ast::node::lvalue;
-using namespace ast::node::functions;
+
+namespace parser::pratt {
+// Using Statements:
+NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-PrattParser::PrattParser(token::TokenStream&& t_tokenstream)
+PrattParser::PrattParser(TokenStream&& t_tokenstream)
   : Parser{std::move(t_tokenstream)}
 {}
 
@@ -41,7 +37,7 @@ auto PrattParser::lvalue() -> NodePtr
   if(next_if(TokenType::IDENTIFIER)) {
     const auto id{token.str()};
     DBG_TRACE_PRINT(INFO, "Found 'VARIABLE': ", id);
-    node = make_node<Variable>(id);
+    node = make_node<Variable>(token.position(), id);
   }
 
   return node;
@@ -103,11 +99,12 @@ auto PrattParser::negation() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
+  const auto pos{get_position()};
   if(next_if(TokenType::NOT)) {
     PARSER_FOUND(TokenType::NOT);
 
     if(auto ptr{prefix_expr(TokenType::NOT)}; ptr) {
-      node = make_node<Not>(std::move(ptr));
+      node = make_node<Not>(pos, std::move(ptr));
     } else {
       syntax_error("After a negation (!) an expression must follow");
     }
@@ -168,8 +165,7 @@ auto PrattParser::precrement() -> NodePtr
   return node;
 }
 
-// This function parses function calls, it parses builtin functions as well as
-// User defined
+//! This function parses function calls
 auto PrattParser::function_call() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -178,6 +174,13 @@ auto PrattParser::function_call() -> NodePtr
   const auto token{get_token()};
 
   if(next_if(TokenType::IDENTIFIER)) {
+    // Dont prematurely confuse variables and function calls
+    if(!check(TokenType::PAREN_OPEN)) {
+      prev();
+
+      return node;
+    }
+
     auto args{parens([this] {
       return this->expr_list_opt();
     })};
@@ -204,11 +207,11 @@ auto PrattParser::prefix() -> NodePtr
     node = std::move(ptr);
   } else if(auto ptr{literal()}; ptr) {
     node = std::move(ptr);
+  } else if(auto ptr{function_call()}; ptr) {
+    node = std::move(ptr);
   } else if(auto ptr{lvalue()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{precrement()}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{function_call()}; ptr) {
     node = std::move(ptr);
   }
 
@@ -221,12 +224,13 @@ auto PrattParser::arithmetic(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
+  const auto pos{get_position()};
   const auto lambda{[&](ArithmeticOp t_op) {
     const auto token{get_token()};
     next();
 
     if(auto rhs{t_fn(token.type())}; rhs) {
-      node = make_node<Arithmetic>(t_op, std::move(t_lhs), std::move(rhs));
+      node = make_node<Arithmetic>(pos, t_op, std::move(t_lhs), std::move(rhs));
     }
   }};
 
@@ -259,12 +263,13 @@ auto PrattParser::logical(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
+  const auto pos{get_position()};
   auto lambda{[&]<typename T>() {
     const auto token{get_token()};
     next();
 
     if(auto rhs{t_fn(token.type())}; rhs) {
-      node = make_node<T>(std::move(t_lhs), std::move(rhs));
+      node = make_node<T>(pos, std::move(t_lhs), std::move(rhs));
     }
   }};
 
@@ -286,12 +291,14 @@ auto PrattParser::comparison(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   NodePtr node;
 
   if(t_lhs) {
-    const auto lambda{[&](ComparisonOp t_op) {
+    const auto pos{get_position()};
+    const auto lambda{[&](const ComparisonOp t_op) {
       const auto token{get_token()};
       next();
 
       if(auto rhs{t_fn(token.type())}; rhs) {
-        node = make_node<Comparison>(t_op, std::move(t_lhs), std::move(rhs));
+        node =
+          make_node<Comparison>(pos, t_op, std::move(t_lhs), std::move(rhs));
       }
     }};
 
@@ -376,3 +383,4 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
 
   return lhs;
 }
+} // namespace parser::pratt

@@ -15,7 +15,7 @@ class TextBuffer : public TextStream {
   private:
   std::vector<std::string> m_buffer;
 
-	std::string m_source;
+  std::string m_source;
 
   // Keep track of current position in the filebuffer
   mutable std::size_t m_lineno, m_columnno;
@@ -34,7 +34,7 @@ class TextBuffer : public TextStream {
   auto peek() const -> CharOpt override;
 
   auto character() const -> char override;
-	auto line() const -> std::string;
+  auto line() const -> std::string;
 
   auto eos() const -> bool override;
 

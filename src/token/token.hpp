@@ -15,8 +15,9 @@
 
 
 namespace token {
-// Using declarations:
-using namespace container;
+// Using Statements:
+using container::Stream;
+using container::TextPosition;
 
 // Forward Declarations:
 class Token;
@@ -30,7 +31,7 @@ using TokenValue = std::variant<int, double, std::string>;
 class Token {
   private:
   TokenType m_type;
-  TokenValue m_tv;
+  TokenValue m_value;
   TextPosition m_tp;
 
   public:
@@ -38,21 +39,21 @@ class Token {
   Token(const Token& t_token) = default;
 
   explicit Token(TokenType t_type, TextPosition t_tp);
-  explicit Token(TokenType t_type, TokenValue t_tv, TextPosition t_tp);
+  explicit Token(TokenType t_type, TokenValue t_value, TextPosition t_tp);
 
   auto type() const -> TokenType;
 
   template<typename T>
   auto get() const -> T
   {
-    return std::get<T>(m_tv);
+    return std::get<T>(m_value);
   }
 
   auto str() const -> std::string;
   auto int_() const -> int;
   auto double_() const -> double;
 
-  auto position() const -> TextPosition;
+  auto position() const -> const TextPosition&;
 
   virtual ~Token() = default;
 };

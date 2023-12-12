@@ -19,47 +19,33 @@
 
 // Includes:
 #include "../../ast/node/include.hpp"
-#include "../../types.hpp"
+#include "../../debug/log.hpp"
+#include "../../lib/types.hpp"
 
 
-// Macros:
-#define STUB(t_type)                                           \
-  auto LlvmBackend::visit([[maybe_unused]] t_type* t_ptr)->Any \
-  {                                                            \
-    return {};                                                 \
-  }
-
+namespace codegen::llvm_backend {
 // Using Statements:
-using namespace codegen::llvm_backend;
 using namespace ast::visitor;
-using namespace ast::node;
-using namespace ast::node::control;
-using namespace ast::node::functions;
-using namespace ast::node::lvalue;
-using namespace ast::node::operators;
-using namespace ast::node::packaging;
-using namespace ast::node::rvalue;
-using namespace ast::node::typing;
-using namespace ast::node::node_traits;
+
+NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-auto LlvmBackend::get_value(node::NodePtr t_ptr) -> llvm::Value*
+auto LlvmBackend::get_value(NodePtr t_ptr) -> llvm::Value*
 {
   using namespace llvm;
 
-  Value* t_val{nullptr};
+  Value* val{nullptr};
 
-  auto any{t_ptr->accept(this)};
+  auto any{traverse(t_ptr)};
   if(any.has_value()) {
     try {
-      t_val = std::any_cast<Value*>(any);
+      val = std::any_cast<Value*>(any);
     } catch(const std::bad_any_cast& e) {
-      // TODO: Error handling
-      throw e; // For now just rethrow
+      DBG_CRITICAL(e.what());
     }
   }
 
-  return t_val;
+  return val;
 }
 
 LlvmBackend::LlvmBackend()
@@ -99,16 +85,16 @@ auto LlvmBackend::visit(If* t_if) -> Any
   }};
 
   block(then, [&] {
-    t_if->then()->accept(this);
+    traverse(t_if->then());
   });
 
   block(alt, [&] {
-    t_if->alt()->accept(this);
+    traverse(t_if->alt());
   });
 
   fn->insert(fn->end(), merge);
   m_builder->SetInsertPoint(merge);
-  auto* pn{
+  [[maybe_unused]] auto* pn{
     m_builder->CreatePHI(llvm::Type::getDoubleTy(*m_context), 2, "iftmp")};
 
   // Figure this out?
@@ -118,9 +104,9 @@ auto LlvmBackend::visit(If* t_if) -> Any
   return {};
 }
 
-STUB(Loop)
-STUB(Continue)
-STUB(Break)
+AST_VISITOR_STUB(LlvmBackend, Loop)
+AST_VISITOR_STUB(LlvmBackend, Continue)
+AST_VISITOR_STUB(LlvmBackend, Break)
 
 auto LlvmBackend::visit(Return* t_ret) -> Any
 {
@@ -133,6 +119,11 @@ auto LlvmBackend::visit(Return* t_ret) -> Any
 }
 
 // Functions:
+auto LlvmBackend::visit([[maybe_unused]] Parameter* t_param) -> Any
+{
+  return {};
+}
+
 auto LlvmBackend::visit(Function* t_fn) -> Any
 {
   using namespace llvm;
@@ -148,20 +139,20 @@ auto LlvmBackend::visit(Function* t_fn) -> Any
   m_builder->SetInsertPoint(body);
 
   // Codegen for the body
-  t_fn->body()->accept(this);
+  traverse(t_fn->body());
 
   llvm::verifyFunction(*fn);
 
   return {t_fn};
 }
 
-STUB(FunctionCall)
-STUB(ReturnType)
+AST_VISITOR_STUB(LlvmBackend, FunctionCall)
+AST_VISITOR_STUB(LlvmBackend, ReturnType)
 
 // Lvalue:
-STUB(Const)
-STUB(Let)
-STUB(Variable)
+AST_VISITOR_STUB(LlvmBackend, Const)
+AST_VISITOR_STUB(LlvmBackend, Let)
+AST_VISITOR_STUB(LlvmBackend, Variable)
 
 // Operators:
 auto LlvmBackend::visit(Arithmetic* t_arith) -> Any
@@ -201,21 +192,21 @@ auto LlvmBackend::visit(Arithmetic* t_arith) -> Any
   return std::make_any<Value*>(expr);
 }
 
-STUB(Assignment)
-STUB(Comparison)
-STUB(Increment)
-STUB(Decrement)
-STUB(UnaryPrefix)
+AST_VISITOR_STUB(LlvmBackend, Assignment)
+AST_VISITOR_STUB(LlvmBackend, Comparison)
+AST_VISITOR_STUB(LlvmBackend, Increment)
+AST_VISITOR_STUB(LlvmBackend, Decrement)
+AST_VISITOR_STUB(LlvmBackend, UnaryPrefix)
 
 // Logical:
-STUB(Not)
-STUB(And)
-STUB(Or)
-STUB(Ternary)
+AST_VISITOR_STUB(LlvmBackend, Not)
+AST_VISITOR_STUB(LlvmBackend, And)
+AST_VISITOR_STUB(LlvmBackend, Or)
+AST_VISITOR_STUB(LlvmBackend, Ternary)
 
 // Packaging:
-STUB(Import)
-STUB(ModuleDecl)
+AST_VISITOR_STUB(LlvmBackend, Import)
+AST_VISITOR_STUB(LlvmBackend, ModuleDecl)
 
 // RValue:
 auto LlvmBackend::visit(Float* t_float) -> Any
@@ -257,12 +248,12 @@ auto LlvmBackend::visit(Boolean* t_bool) -> Any
 }
 
 // Typing:
-STUB(MethodDecl)
-STUB(Interface)
-STUB(MemberDecl)
-STUB(Struct)
-STUB(Impl)
-STUB(DotExpr)
+AST_VISITOR_STUB(LlvmBackend, MethodDecl)
+AST_VISITOR_STUB(LlvmBackend, Interface)
+AST_VISITOR_STUB(LlvmBackend, MemberDecl)
+AST_VISITOR_STUB(LlvmBackend, Struct)
+AST_VISITOR_STUB(LlvmBackend, Impl)
+AST_VISITOR_STUB(LlvmBackend, DotExpr)
 
 // Util:
 auto LlvmBackend::configure_target() -> void
@@ -358,3 +349,4 @@ auto LlvmBackend::compile(const fs::path t_path) -> void
     return;
   }
 }
+} // namespace codegen::llvm_backend

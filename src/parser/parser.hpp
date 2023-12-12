@@ -14,14 +14,22 @@
 // Macros:
 #define PARSER_FOUND(t_tokentype, ...)                    \
   do {                                                    \
-    const auto str{token::tokentype2str(t_tokentype)};    \
+    const auto str{tokentype2str(t_tokentype)};           \
     const auto quoted{std::quoted(str, '\'')};            \
     DBG_TRACE_PRINT(INFO, "Found ", quoted, __VA_ARGS__); \
   } while(false)
 
 namespace parser {
-// Namespace aliases:
-namespace n = ast::node;
+// Using Statements:
+using ast::node::NodePtr;
+using ast::node::NodeListPtr;
+
+using container::TextPosition;
+
+using token::Token;
+using token::TokenStream;
+using token::TokenType;
+using token::tokentype2str;
 
 // Aliases:
 using ParseFn = std::function<ast::node::NodePtr()>;
@@ -32,12 +40,13 @@ using ParseFn = std::function<ast::node::NodePtr()>;
  */
 class Parser {
   private:
-  token::TokenStream m_tokenstream;
+  TokenStream m_tokenstream;
 
   protected:
   DBG_TRACE_INIT()
 
-  /*! Wrapper method for std::make_shared() makes it easy to change smart
+  /*!
+   * Wrapper method for std::make_shared() makes it easy to change smart
    * pointer type later down the line
    */
   template<typename T, typename... Args>
@@ -53,11 +62,13 @@ class Parser {
 
   auto eos() const -> bool;
 
-  auto check(token::TokenType t_type) -> bool;
-  auto next() -> token::Token&;
-  auto expect(token::TokenType t_type) -> token::Token&;
-  auto prev() -> token::Token&;
-  auto get_token() const -> token::Token&;
+  auto check(TokenType t_type) -> bool;
+  auto next() -> Token&;
+  auto expect(TokenType t_type) -> Token&;
+  auto prev() -> Token&;
+  auto get_token() const -> Token&;
+
+  auto get_position() const -> const TextPosition&;
 
   template<typename... Args>
   auto next_if(Args&&... t_args) -> bool
@@ -72,15 +83,13 @@ class Parser {
   }
 
 
-  auto after_newlines(token::TokenType t_type) -> bool;
+  auto after_newlines(TokenType t_type) -> bool;
 
   // TODO: create .tpp for these definitions?
   template<typename Fn>
-  inline auto surround(const token::TokenType t_open,
-                       const token::TokenType t_close, const Fn t_fn)
+  inline auto surround(const TokenType t_open, const TokenType t_close,
+                       const Fn t_fn)
   {
-    using namespace token;
-
     DBG_TRACE_FN(VERBOSE);
 
     expect(t_open);
@@ -93,8 +102,6 @@ class Parser {
   template<typename Fn>
   inline auto parens(const Fn t_fn)
   {
-    using namespace token;
-
     DBG_TRACE_FN(VERBOSE);
 
     return surround(TokenType::PAREN_OPEN, TokenType::PAREN_CLOSE, t_fn);
@@ -103,17 +110,15 @@ class Parser {
   template<typename Fn>
   inline auto accolades(const Fn t_fn)
   {
-    using namespace token;
-
     return surround(TokenType::ACCOLADE_OPEN, TokenType::ACCOLADE_CLOSE, t_fn);
   }
 
   auto list_of(ParseFn t_fn) -> ast::node::NodeListPtr;
 
   public:
-  Parser(token::TokenStream&& t_tokenstream);
+  Parser(TokenStream&& t_tokenstream);
 
-  virtual auto parse() -> n::NodePtr = 0;
+  virtual auto parse() -> NodePtr = 0;
 
   virtual ~Parser() = default;
 };
