@@ -51,7 +51,7 @@ auto EnvStack::get_symbol(const std::string_view t_id) -> SymbolData
   }
 
   if(!found) {
-    type_error("Identifier ", str, " is not defined in environment");
+    type_error("Identifier ", str, " is not defined.");
   }
 
   return data;

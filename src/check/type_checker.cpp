@@ -16,6 +16,7 @@
 namespace check {
 // Using Statements:
 using ast::node::node_traits::typing::NativeType;
+using container::TextPosition;
 using exception::type_error;
 
 NODE_USING_ALL_NAMESPACES()
@@ -23,8 +24,7 @@ NODE_USING_ALL_NAMESPACES()
 // Methods:
 //! Handle the case where a type must be treated as a conditional.
 auto TypeChecker::handle_condition(const SymbolData& t_data,
-                                   const container::TextPosition& t_pos) const
-  -> void
+                                   const TextPosition& t_pos) const -> void
 {
   std::stringstream ss;
 
@@ -116,8 +116,8 @@ auto TypeChecker::visit(Function* t_fn) -> Any
   // properly resolve in the TypeChecker as they are not defined ahead
   const auto params{get_type_list(t_fn->params())};
 
-  SymbolData ptr{define_function(params, type)};
-  m_envs.add_symbol(id, ptr);
+  const SymbolData data{check::make_function(params, type)};
+  m_envs.add_symbol(id, data);
 
   DBG_INFO("Function: ", id, "(", params, ") -> ", type);
 
@@ -200,7 +200,7 @@ auto TypeChecker::visit(Const* t_const) -> Any
   const auto expr_data{decl_expr(t_const)};
 
   // Create the SymbolData for a variable
-  SymbolData data{define_variable(true, expr_data)};
+  const SymbolData data{check::make_variable(true, expr_data)};
   m_envs.add_symbol(id, data);
 
   return {};
@@ -212,7 +212,7 @@ auto TypeChecker::visit(Let* t_let) -> Any
   const auto expr_data{decl_expr(t_let)};
 
   // Create the SymbolData for a variable
-  SymbolData data{define_variable(false, expr_data)};
+  const SymbolData data{check::make_variable(false, expr_data)};
   m_envs.add_symbol(id, data);
 
   return {};
@@ -224,6 +224,9 @@ auto TypeChecker::visit(Variable* t_var) -> Any
   const auto var{m_envs.get_symbol(id)};
 
   DBG_INFO("Variable ", std::quoted(id), " of type ", var);
+
+  // Annotate the AST.
+  t_var->set_type(var.strip());
 
   return var;
 }
@@ -253,6 +256,9 @@ auto TypeChecker::visit(Arithmetic* t_arith) -> Any
 
     type_error(ss.str());
   }
+
+	// Annotate AST.
+  t_arith->set_type(ret.strip());
 
   return ret;
 }

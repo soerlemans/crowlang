@@ -1,15 +1,18 @@
 #ifndef CROW_CHECK_SYMBOL_DATA_HPP
 #define CROW_CHECK_SYMBOL_DATA_HPP
 
+// Includes:
+#include "../ast/node/node_traits/typing/types.hpp"
+
 // Local Includes:
-#include "../ast/node/node_traits/typing/native_types.hpp"
-#include "symbol_types.hpp"
+#include "check.hpp"
 
 
 namespace check {
 // Using Statements:
 using ast::node::node_traits::typing::NativeType;
 using ast::node::node_traits::typing::NativeTypeOpt;
+using ast::node::node_traits::typing::TypeVariant;
 
 // Aliases:
 using Variant = std::variant<StructTypePtr, FnTypePtr, VarTypePtr, NativeType>;
@@ -31,39 +34,9 @@ class SymbolData : public Variant {
   auto resolve_type() const -> SymbolData;
   auto native_type() const -> NativeTypeOpt;
 
+  auto strip() const -> TypeVariant;
+
   virtual ~SymbolData() = default;
-};
-
-// Structs:
-// TODO: use VarTypePtr and FnTypePtr in combination with a map?
-struct StructType {
-  std::string m_identifier;
-
-  auto native_type() const -> NativeTypeOpt
-  {
-    return {};
-  }
-};
-
-struct FnType {
-  TypeList m_params;
-  SymbolData m_return_type;
-
-  auto native_type() const -> NativeTypeOpt
-  {
-    return {};
-  }
-};
-
-// TODO: Ignore m_const value when comparing
-struct VarType {
-  bool m_const;
-  SymbolData m_type;
-
-  auto native_type() const -> NativeTypeOpt
-  {
-    return m_type.native_type();
-  }
 };
 } // namespace check
 

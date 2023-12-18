@@ -11,19 +11,19 @@
 
 
 namespace ast::node::node_traits {
-// Aliases:
-namespace ct = container;
+// Using Statements:
+using container::TextPosition;
 
 // Classes:
 //! Contains the original position of the Node in the Crow source code
 class NodePosition : virtual public NodeInterface {
   protected:
-  container::TextPosition m_pos;
+  TextPosition m_pos;
 
   public:
-  NodePosition(container::TextPosition&& t_pos);
+  NodePosition(TextPosition&& t_pos);
 
-  virtual auto position() -> const container::TextPosition&;
+  virtual auto position() -> const TextPosition&;
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 

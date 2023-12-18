@@ -6,7 +6,7 @@
 #include "../ast/visitor/node_visitor.hpp"
 
 // Local Includes:
-#include "symbol_data.hpp"
+#include "symbol_types.hpp"
 
 
 namespace check {
@@ -24,24 +24,6 @@ using visitable::Any;
  */
 class SymbolHelper : public NodeVisitor {
   protected:
-  template<typename T, typename... Args>
-  inline auto define_type_variant(Args&&... t_args) -> SymbolData
-  {
-    return {std::make_shared<T>(std::forward<Args>(t_args)...)};
-  }
-
-  template<typename... Args>
-  inline auto define_function(Args&&... t_args) -> SymbolData
-  {
-    return {define_type_variant<FnType>(std::forward<Args>(t_args)...)};
-  }
-
-  template<typename... Args>
-  inline auto define_variable(Args&&... t_args) -> SymbolData
-  {
-    return {define_type_variant<VarType>(std::forward<Args>(t_args)...)};
-  }
-
   auto get_symbol_data(NodePtr t_ptr) -> SymbolData;
   auto get_resolved_type(NodePtr t_ptr) -> SymbolData;
   auto get_native_type(NodePtr t_ptr) -> NativeTypeOpt;
