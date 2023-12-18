@@ -179,6 +179,8 @@ auto run() -> void
     pprint(ast);
 
     check_types(ast);
+    pprint(ast);
+
     generate(ast);
   }
 }

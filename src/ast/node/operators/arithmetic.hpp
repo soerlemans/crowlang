@@ -10,8 +10,11 @@
 
 namespace ast::node::operators {
 // Namespace aliases:
-namespace nt = node_traits;
-namespace ct = container;
+using container::TextPosition;
+using node_traits::BinaryOperator;
+using node_traits::NodePosition;
+using node_traits::Op;
+using node_traits::typing::TypeData;
 
 // Enums:
 enum class ArithmeticOp {
@@ -26,11 +29,12 @@ enum class ArithmeticOp {
 };
 
 // Classes:
-class Arithmetic : public nt::NodePosition,
-                   public nt::Op<ArithmeticOp>,
-                   public nt::BinaryOperator {
+class Arithmetic : public NodePosition,
+                   public Op<ArithmeticOp>,
+                   public BinaryOperator,
+                   public TypeData {
   public:
-  Arithmetic(ct::TextPosition t_pos, ArithmeticOp t_op, NodePtr&& t_left,
+  Arithmetic(TextPosition t_pos, ArithmeticOp t_op, NodePtr&& t_left,
              NodePtr&& t_right);
 
   MAKE_VISITABLE(visitor::NodeVisitor);

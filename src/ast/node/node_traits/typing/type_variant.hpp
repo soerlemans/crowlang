@@ -1,12 +1,12 @@
-#ifndef CROW_AST_NODE_NODE_TRAITS_TYPE_DATA_TYPE_VARIANT_HPP
-#define CROW_AST_NODE_NODE_TRAITS_TYPE_DATA_TYPE_VARIANT_HPP
+#ifndef CROW_AST_NODE_NODE_TRAITS_TYPING_TYPE_VARIANT_HPP
+#define CROW_AST_NODE_NODE_TRAITS_TYPING_TYPE_VARIANT_HPP
 
 // STL Includes:
 #include <variant>
 
 // Local Includes:
 #include "native_types.hpp"
-#include "types.hpp"
+#include "typing.hpp"
 
 
 namespace ast::node::node_traits::typing {
@@ -16,7 +16,7 @@ using Variant =
 
 // Classes:
 /*!
- * Contains all data relating to a symbol.
+ * Recursive @ref Variant tree structure that denotes the type tree of a symbol.
  */
 class TypeVariant : public Variant {
   public:
@@ -31,40 +31,11 @@ class TypeVariant : public Variant {
 
   virtual ~TypeVariant() = default;
 };
-
-// Structs:
-// TODO: use VarTypePtr and FnTypePtr in combination with a map?
-struct StructType {
-  std::string m_identifier;
-
-  auto native_type() const -> typing::NativeTypeOpt
-  {
-    return {};
-  }
-};
-
-struct FnType {
-  TypeList m_params;
-  TypeVariant m_return_type;
-
-  auto native_type() const -> typing::NativeTypeOpt
-  {
-    return {};
-  }
-};
-
-struct VarType {
-  TypeVariant m_type;
-
-  auto native_type() const -> typing::NativeTypeOpt
-  {
-    return m_type.native_type();
-  }
-};
+} // namespace ast::node::node_traits::typing
 
 // Functions:
-// auto operator<<(std::ostream& t_os, const typing::TypeVariant& t_data)
-// -> std::ostream&;
-} // namespace ast::node::node_traits::type_data
+auto operator<<(std::ostream& t_os,
+                const ast::node::node_traits::typing::TypeVariant& t_data)
+  -> std::ostream&;
 
-#endif // CROW_AST_NODE_NODE_TRAITS_TYPE_DATA_TYPE_VARIANT_HPP
+#endif // CROW_AST_NODE_NODE_TRAITS_TYPING_TYPE_VARIANT_HPP

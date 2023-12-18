@@ -5,6 +5,9 @@
 #include "../exception/error.hpp"
 #include "../lib/overload.hpp"
 
+// Local Includes:
+#include "symbol_types.hpp"
+
 
 namespace check {
 // Using Statements:
@@ -83,6 +86,28 @@ auto SymbolData::native_type() const -> NativeTypeOpt
 
   return opt;
 }
+
+
+auto SymbolData::strip() const -> TypeVariant
+{
+  TypeVariant variant;
+
+  const auto native{[&](const NativeType t_type) -> TypeVariant {
+    return {t_type};
+  }};
+
+  const auto methods{[&](const std::shared_ptr<auto>& t_data) {
+    if(!t_data) {
+      error("ptr is nullptr!");
+    }
+
+    return t_data->strip();
+  }};
+
+  variant = std::visit(Overload{native, methods}, *this);
+
+  return variant;
+}
 } // namespace check
 
 // Functions:
@@ -90,7 +115,7 @@ auto operator<<(std::ostream& t_os, const check::SymbolData& t_data)
   -> std::ostream&
 {
   std::visit(
-    [&](const auto& t_v) {
+    [&](auto&& t_v) {
       t_os << t_v;
     },
     t_data);

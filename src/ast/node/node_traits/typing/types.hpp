@@ -1,42 +1,50 @@
-#ifndef CROW_AST_NODE_NODE_TRAITS_TYPE_DATA_TYPES_HPP
-#define CROW_AST_NODE_NODE_TRAITS_TYPE_DATA_TYPES_HPP
+#ifndef CROW_AST_NODE_NODE_TRAITS_TYPING_TYPES_HPP
+#define CROW_AST_NODE_NODE_TRAITS_TYPING_TYPES_HPP
 
-/*!
- * @file
- *
- * Contains aliases that are required for representing the type structure.
- */
-
-// STL Includes:
-#include <iostream>
-#include <list>
-#include <memory>
-#include <optional>
+// Local Includes:
+#include "type_variant.hpp"
 
 
 namespace ast::node::node_traits::typing {
-// Forward Declarations:
-class TypeVariant;
+// Structs:
+// TODO: use VarTypePtr and FnTypePtr in combination with a map?
+struct StructType {
+  std::string m_identifier;
 
-struct StructType;
-struct FnType;
-struct VarType;
+  auto native_type() const -> typing::NativeTypeOpt;
+};
 
-// Aliases:
-using StructTypePtr = std::shared_ptr<StructType>;
-using FnTypePtr = std ::shared_ptr<FnType>;
-using VarTypePtr = std::shared_ptr<VarType>;
+struct FnType {
+  TypeList m_params;
+  TypeVariant m_return_type;
 
-using TypeList = std::list<TypeVariant>;
+  auto native_type() const -> typing::NativeTypeOpt;
+};
+
+struct VarType {
+  TypeVariant m_type;
+
+  auto native_type() const -> typing::NativeTypeOpt;
+};
+
+// Functions:
+template<typename... Args>
+inline auto make_struct(Args&&... t_args) -> TypeVariant
+{
+  return std::make_shared<StructType>(std::forward<Args>(t_args)...);
+}
+
+template<typename... Args>
+inline auto make_function(Args&&... t_args) -> TypeVariant
+{
+  return std::make_shared<FnType>(std::forward<Args>(t_args)...);
+}
+
+template<typename... Args>
+inline auto make_variable(Args&&... t_args) -> TypeVariant
+{
+  return std::make_shared<VarType>(std::forward<Args>(t_args)...);
+}
 } // namespace ast::node::node_traits::typing
 
-// auto operator<<(std::ostream& t_os, check::StructTypePtr t_struct)
-//   -> std::ostream&;
-// auto operator<<(std::ostream& t_os, check::FnTypePtr t_fn) -> std::ostream&;
-// auto operator<<(std::ostream& t_os, check::VarTypePtr t_var) ->
-// std::ostream&;
-
-// auto operator<<(std::ostream& t_os, const check::TypeList& t_list)
-//   -> std::ostream&;
-
-#endif // CROW_AST_NODE_NODE_TRAITS_TYPE_DATA_TYPES_HPP
+#endif // CROW_AST_NODE_NODE_TRAITS_TYPING_TYPES_HPP

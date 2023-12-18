@@ -3,9 +3,6 @@
 
 
 namespace ast::node::node_traits {
-// Aliases:
-namespace nt = node_traits;
-
 // Forward Declarations:
 class Body;
 class Condition;
@@ -16,7 +13,6 @@ class InitExpr;
 class NodePosition;
 class Params;
 class TypeAnnotation;
-class TypeData;
 class Then;
 class Alt;
 class UnaryOperator;

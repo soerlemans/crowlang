@@ -104,6 +104,10 @@ class PrintVisitor : public NodeVisitor {
       print("| Type Annotation: ", t_ptr->type());
     });
 
+    when_derived<typing::TypeData>(t_ptr, [&](auto t_ptr) {
+      print("| Type Data: ", t_ptr->get_type());
+    });
+
     when_derived<Body>(t_ptr, [&](auto t_ptr) {
       lambda("Body", t_ptr->body());
     });

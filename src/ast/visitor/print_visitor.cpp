@@ -98,6 +98,7 @@ auto PrintVisitor::visit(Variable* t_var) -> Any
   COUNTG_INIT();
 
   print("Variable: ", t_var->identifier());
+  print_traits(t_var);
 
   return {};
 }

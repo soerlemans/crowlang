@@ -1,36 +1,66 @@
 #ifndef CROW_CHECK_SYMBOL_TYPES_HPP
 #define CROW_CHECK_SYMBOL_TYPES_HPP
 
-// STL Includes:
-#include <iostream>
-#include <list>
-#include <memory>
-#include <optional>
+// Local Includes:
+#include "symbol_data.hpp"
 
 
 namespace check {
-// Forward Declarations:
-class SymbolData;
+// Structs:
+// TODO: use VarTypePtr and FnTypePtr in combination with a map?
+struct StructType {
+  std::string m_identifier;
 
-struct StructType;
-struct FnType;
-struct VarType;
+  auto native_type() const -> NativeTypeOpt
+  {
+    return {};
+  }
 
-// Aliases:
-using StructTypePtr = std::shared_ptr<StructType>;
-using FnTypePtr = std ::shared_ptr<FnType>;
-using VarTypePtr = std::shared_ptr<VarType>;
+  auto strip() const -> TypeVariant;
+};
 
-using TypeList = std::list<SymbolData>;
-} // namespace check
+struct FnType {
+  TypeList m_params;
+  SymbolData m_return_type;
+
+  auto native_type() const -> NativeTypeOpt
+  {
+    return {};
+  }
+
+  auto strip() const -> TypeVariant;
+};
+
+// TODO: Ignore m_const value when comparing
+struct VarType {
+  bool m_const;
+  SymbolData m_type;
+
+  auto native_type() const -> NativeTypeOpt
+  {
+    return m_type.native_type();
+  }
+
+  auto strip() const -> TypeVariant;
+};
 
 // Functions:
-auto operator<<(std::ostream& t_os, check::StructTypePtr t_struct)
-  -> std::ostream&;
-auto operator<<(std::ostream& t_os, check::FnTypePtr t_fn) -> std::ostream&;
-auto operator<<(std::ostream& t_os, check::VarTypePtr t_var) -> std::ostream&;
+template<typename... Args>
+auto make_struct(Args&&... t_args) -> SymbolData
+{
+  return std::make_shared<StructType>(std::forward<Args>(t_args)...);
+}
+template<typename... Args>
+auto make_function(Args&&... t_args) -> SymbolData
+{
+  return {std::make_shared<FnType>(std::forward<Args>(t_args)...)};
+}
 
-auto operator<<(std::ostream& t_os, const check::TypeList& t_list)
-  -> std::ostream&;
+template<typename... Args>
+auto make_variable(Args&&... t_args) -> SymbolData
+{
+  return {std::make_shared<VarType>(std::forward<Args>(t_args)...)};
+}
+} // namespace check
 
 #endif // CROW_CHECK_SYMBOL_TYPES_HPP
