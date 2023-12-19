@@ -1,13 +1,5 @@
 // STL Includes:
-#include <CLI/Error.hpp>
-#include <filesystem>
 #include <fstream>
-
-// Library Includes:
-#include <CLI/App.hpp>
-#include <CLI/CLI.hpp>
-#include <CLI/Validators.hpp>
-#include <rang.hpp>
 
 // Includes:
 #include "ast/node/fdecl.hpp"
@@ -22,12 +14,8 @@
 #include "token/token.hpp"
 
 // Local Includes:
-#include "banner.hpp"
-#include "version.hpp"
+#include "cli_arguments.hpp"
 
-
-// Aliases:
-namespace fs = std::filesystem;
 
 // Enums:
 enum ExitCode {
@@ -37,28 +25,7 @@ enum ExitCode {
   SIGNAL = 200,
 };
 
-// Globals:
-struct Settings {
-  std::vector<fs::path> m_paths;
-} settings;
-
 // Functions:
-auto parse_args(CLI::App& t_app, const int t_argc, char* t_argv[]) -> void
-{
-  t_app.failure_message(CLI::FailureMessage::help);
-
-  // Program files
-  t_app.add_option("{}", settings.m_paths, "Postional arguments")
-    ->check(CLI::ExistingFile);
-
-  // Version flag
-  std::stringstream ss;
-  ss << "Version: " << CROW_VERSION;
-  t_app.set_version_flag("-v,--version", ss.str(), "Show compiler version");
-
-  t_app.parse(t_argc, t_argv);
-}
-
 auto open_file(const fs::path t_path) -> container::TextBuffer
 {
   using namespace container;
@@ -108,7 +75,7 @@ auto pprint([[maybe_unused]] ast::node::NodePtr t_ast) -> void
 #ifdef DEBUG
   DBG_PRINTLN("|> Pretty printing AST:");
   std::stringstream ss;
-  ss << "\nAst:\n";
+  ss << "\nAST:\n";
   PrintVisitor pprint{ss};
   pprint.print(t_ast);
 
@@ -187,8 +154,6 @@ auto run() -> void
 
 auto main(int t_argc, char* t_argv[]) -> int
 {
-  print_banner();
-
   CLI::App app{"Compiler for Crow(lang)"};
 
   DBG_SET_LOGLEVEL(INFO);
