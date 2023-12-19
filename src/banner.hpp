@@ -4,6 +4,7 @@
 // STL Includes:
 #include <array>
 #include <cstddef>
+#include <sstream>
 #include <string_view>
 #include <type_traits>
 
@@ -13,7 +14,7 @@
 // Includes:
 #include "debug/log.hpp"
 
-
+// TODO: Place into the crow namespace:
 // Aliases:
 using Letter = std::array<std::string_view, 10>;
 using Banner = std::array<Letter, 4>;
@@ -63,20 +64,22 @@ Banner g_banner{Letter{"             ",
                        "                \n"}};
 // clang-format on
 
-//! This is a terrible way to print the banner but it works
-auto print_banner() -> void
+// FIXME: Find a more elegant way to print the banner.
+auto make_banner() -> std::string
 {
   using namespace rang;
-  using namespace debug;
+
+  std::stringstream ss;
 
   std::size_t index{0}, line_index{0};
   while(index < g_banner.size() && line_index < g_banner[index].size()) {
     const auto& letter{g_banner[index]};
     const auto& line{letter[line_index]};
 
-		// Color the C with a blue color
+    // Color the C with a blue color
     const auto color{(index == 0) ? fg::blue : fg::reset};
-    print(color, line);
+
+		ss << color << line;
 
     index++;
     if(index >= g_banner.size()) {
@@ -84,6 +87,33 @@ auto print_banner() -> void
       line_index++;
     }
   }
+
+  return ss.str();
 }
+
+/*!
+ * The banner is printed with color the help page.
+ */
+// auto print_banner() -> void
+// {
+//   using namespace rang;
+//   using namespace debug;
+
+//   std::size_t index{0}, line_index{0};
+//   while(index < g_banner.size() && line_index < g_banner[index].size()) {
+//     const auto& letter{g_banner[index]};
+//     const auto& line{letter[line_index]};
+
+// 		// Color the C with a blue color
+//     const auto color{(index == 0) ? fg::blue : fg::reset};
+//     print(color, line);
+
+//     index++;
+//     if(index >= g_banner.size()) {
+//       index = 0;
+//       line_index++;
+//     }
+//   }
+// }
 
 #endif // CROW_BANNER_HPP
