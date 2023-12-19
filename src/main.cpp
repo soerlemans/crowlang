@@ -156,6 +156,12 @@ auto main(int t_argc, char* t_argv[]) -> int
 {
   CLI::App app{"Compiler for Crow(lang)"};
 
+	// TODO: Relocate?
+#ifdef DEBUG
+  // Do not absorb cpptrace errors on debug build.
+  cpptrace::absorb_trace_exceptions(false);
+#endif
+
   DBG_SET_LOGLEVEL(INFO);
   try {
     parse_args(app, t_argc, t_argv);

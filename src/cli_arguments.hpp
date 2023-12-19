@@ -52,7 +52,7 @@ auto parse_args(CLI::App& t_app, const int t_argc, char* t_argv[]) -> void
 
   // Program source files:
   t_app.add_option("{}", settings.m_paths, "Files to compile.")
-    ->check(CLI::ExistingFile);
+    ->check(CLI::ExistingFile)->required();
 
   // Force colors always to be written
   rang::setControlMode(rang::control::Force);
