@@ -31,17 +31,15 @@ auto TypeChecker::handle_condition(const SymbolData& t_data,
   if(const auto opt{t_data.native_type()}; opt) {
     if(!is_condition(opt.value())) {
       ss << "Expected a pointer, integer or a boolean for a conditional "
-            "expression."
-         << "\n\n";
+         << "expression.\n\n";
 
       ss << t_pos;
 
       type_error(ss.str());
     }
   } else {
-    ss << "Non native types can not casted to ";
-    ss << std::quoted("bool") << "."
-       << "\n\n";
+    ss << "Non native types can not casted to " << std::quoted("bool")
+       << ".\n\n";
 
     ss << t_pos;
 
@@ -257,7 +255,7 @@ auto TypeChecker::visit(Arithmetic* t_arith) -> Any
     type_error(ss.str());
   }
 
-	// Annotate AST.
+  // Annotate AST.
   t_arith->set_type(ret.strip());
 
   return ret;
