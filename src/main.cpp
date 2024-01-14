@@ -4,7 +4,8 @@
 // Includes:
 #include "ast/node/fdecl.hpp"
 #include "ast/node/include.hpp"
-#include "ast/visitor/print_visitor.hpp"
+#include "ast/visitor/ast_printer.hpp"
+#include "ast/visitor/ast_serializer.hpp"
 #include "check/type_checker.hpp"
 #include "codegen/llvm_backend/llvm_backend.hpp"
 #include "container/text_buffer.hpp"
@@ -67,19 +68,41 @@ auto lex(const fs::path& t_path) -> token::TokenStream
   return tokenstream;
 }
 
-auto pprint([[maybe_unused]] ast::node::NodePtr t_ast) -> void
+auto print_ast([[maybe_unused]] ast::node::NodePtr t_ast) -> void
 {
-  using namespace ast::visitor;
+  using ast::visitor::AstPrinter;
+
+#ifdef DEBUG
 
   // Pretty print the AST
-#ifdef DEBUG
   DBG_PRINTLN("|> Pretty printing AST:");
   std::stringstream ss;
   ss << "\nAST:\n";
-  PrintVisitor pprint{ss};
-  pprint.print(t_ast);
+
+  AstPrinter printer{ss};
+  printer.print(t_ast);
 
   DBG_INFO(ss.str());
+
+  DBG_PRINTLN("$");
+#endif // DEBUG
+}
+
+/*!
+ * Print the AST as XML.
+ * Printing the AST as XML allows you to inspect large AST's beter using an XML
+ * viewer.
+ */
+auto serialize_ast([[maybe_unused]] ast::node::NodePtr t_ast) -> void
+{
+  using ast::visitor::AstSerializer;
+
+#ifdef DEBUG
+  DBG_PRINTLN("|> Printing the AST as XML:");
+
+  // Serialize the AST.
+  AstSerializer serializer;
+  serializer.serialize(t_ast, std::cout);
 
   DBG_PRINTLN("$");
 #endif // DEBUG
@@ -143,10 +166,12 @@ auto run() -> void
     const auto ts{lex(path)};
     const auto ast{parse(ts)};
 
-    pprint(ast);
+    print_ast(ast);
+    serialize_ast(ast);
 
     check_types(ast);
-    pprint(ast);
+    print_ast(ast);
+
 
     generate(ast);
   }
@@ -156,7 +181,7 @@ auto main(int t_argc, char* t_argv[]) -> int
 {
   CLI::App app{"Compiler for Crow(lang)"};
 
-	// TODO: Relocate?
+  // TODO: Relocate?
 #ifdef DEBUG
   // Do not absorb cpptrace errors on debug build.
   cpptrace::absorb_trace_exceptions(false);

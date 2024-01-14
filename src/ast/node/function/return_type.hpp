@@ -9,11 +9,11 @@
 
 
 namespace ast::node::function {
-// Aliases:
-namespace nt = node_traits;
+// Using Statements:
+using node_traits::TypeAnnotation;
 
 // Classes:
-class ReturnType : public nt::TypeAnnotation {
+class ReturnType : public TypeAnnotation {
   public:
   ReturnType(std::string_view t_type);
 
@@ -21,6 +21,6 @@ class ReturnType : public nt::TypeAnnotation {
 
   ~ReturnType() override = default;
 };
-} // namespace ast::node::functions
+} // namespace ast::node::function
 
 #endif // CROW_AST_NODE_FUNCTION_RETURN_TYPE_HPP

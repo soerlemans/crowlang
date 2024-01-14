@@ -17,6 +17,7 @@
 
 namespace ast::visitor {
 // Using statements:
+using node::NodePtr;
 using visitable::Any;
 
 // Classes:
@@ -27,7 +28,7 @@ using visitable::Any;
  */
 class NodeVisitor {
   protected:
-  virtual auto traverse(node::NodePtr t_ast) -> Any;
+  virtual auto traverse(NodePtr t_ast) -> Any;
 
   public:
   NodeVisitor() = default;

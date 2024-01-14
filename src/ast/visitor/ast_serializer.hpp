@@ -1,38 +1,33 @@
-#ifndef CROW_CHECK_TYPE_CHECKER_HPP
-#define CROW_CHECK_TYPE_CHECKER_HPP
+#ifndef CROW_AST_VISITOR_AST_SERIALIZER_HPP
+#define CROW_AST_VISITOR_AST_SERIALIZER_HPP
 
-// STL Includes:
-#include <string_view>
+// Library Includes:
+#include <cereal/archives/xml.hpp>
+
+// Local Includes:
+#include "node_visitor.hpp"
 
 // Includes:
-#include "../container/text_position.hpp"
-
-// Local includes:
-#include "env_stack.hpp"
-#include "symbol_helper.hpp"
+#include "../node/include.hpp"
 
 
-namespace check {
-// Using statements:
-using namespace ast;
-
-using ast::node::NodePtr;
-using container::TextPosition;
-using visitable::Any;
+namespace ast::visitor {
+// Using Statements;
 
 // Classes:
-class TypeChecker : public SymbolHelper {
-  private:
-  EnvStack m_envs;
-
-  auto handle_condition(const SymbolData& t_data,
-                        const TextPosition& t_pos) const -> void;
-
-  auto promote(const SymbolData& t_lhs, const SymbolData& rhs,
-               const TextPosition& t_pos) const -> void;
+/*!
+ * Serializes an AST.
+ * Useful for when compiling multiple files to keep memory footprint low by
+ * serializing an AST to disk. Also commonly used for inspecting the AST.
+ */
+class AstSerializer : public NodeVisitor {
+  protected:
+  //! TODO: Create a generic method for this methods, as it is used a lot
+  //! For Example in @ref SymbolHelper.
+  // auto get_xml_node(NodePtr t_ptr) -> xml_node;
 
   public:
-  TypeChecker();
+  AstSerializer() = default;
 
   // Control:
   auto visit(node::control::If* t_if) -> Any override;
@@ -48,7 +43,6 @@ class TypeChecker : public SymbolHelper {
   auto visit(node::function::ReturnType* t_rt) -> Any override;
 
   // Lvalue:
-  auto decl_expr(node::node_traits::DeclExpr* t_decl) -> SymbolData;
   auto visit(node::lvalue::Const* t_const) -> Any override;
   auto visit(node::lvalue::Let* t_let) -> Any override;
   auto visit(node::lvalue::Variable* t_var) -> Any override;
@@ -68,7 +62,7 @@ class TypeChecker : public SymbolHelper {
   auto visit(node::operators::And* t_and) -> Any override;
   auto visit(node::operators::Or* t_or) -> Any override;
 
-  // auto visit(node::operators::Ternary* t_ternary) -> Any override;
+  auto visit(node::operators::Ternary* t_ternary) -> Any override;
 
   // Packaging:
   auto visit(node::packaging::Import* t_import) -> Any override;
@@ -88,10 +82,14 @@ class TypeChecker : public SymbolHelper {
   auto visit(node::typing::Impl* t_impl) -> Any override;
   auto visit(node::typing::DotExpr* t_dot_expr) -> Any override;
 
-  auto check(NodePtr t_ast) -> void;
+  // Misc:
+  auto visit(node::List* t_list) -> Any override;
+  auto visit(node::Nil* t_nil) -> Any override;
 
-  ~TypeChecker() override = default;
+  auto serialize(NodePtr t_ast, std::ostream& t_os) -> void;
+
+  virtual ~AstSerializer() = default;
 };
-} // namespace check
+} // namespace ast::visitor
 
-#endif // CROW_CHECK_TYPE_CHECKER_HPP
+#endif // CROW_AST_VISITOR_AST_SERIALIZER_HPP

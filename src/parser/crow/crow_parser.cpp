@@ -366,6 +366,7 @@ auto CrowParser::elif_statement() -> NodePtr
   return branch_statement(TokenType::ELIF);
 }
 
+// TODO: Error out on literals in the body those should be illegal.
 auto CrowParser::statement() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
