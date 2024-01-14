@@ -1,5 +1,5 @@
-#ifndef CROW_AST_VISITOR_PRINT_VISITOR_HPP
-#define CROW_AST_VISITOR_PRINT_VISITOR_HPP
+#ifndef CROW_AST_VISITOR_AST_PRINTER_HPP
+#define CROW_AST_VISITOR_AST_PRINTER_HPP
 
 // STL Includes:
 #include <concepts>
@@ -22,10 +22,11 @@ template<typename Type, typename... Args>
 concept IsAnyOf = (std::same_as<Args, Type> || ...);
 
 // Classes:
-/*! Visitor made for printing the AST Node per node
+/*!
+ * Visitor made for printing the AST Node per node
  * Has a unique overload for every print
  */
-class PrintVisitor : public NodeVisitor {
+class AstPrinter : public NodeVisitor {
   private:
   int m_counter{0};
   std::ostream& m_os;
@@ -130,7 +131,7 @@ class PrintVisitor : public NodeVisitor {
   }
 
   public:
-  PrintVisitor(std::ostream& t_os);
+  AstPrinter(std::ostream& t_os);
 
   // Control:
   auto visit(node::control::If* t_if) -> Any override;
@@ -189,10 +190,11 @@ class PrintVisitor : public NodeVisitor {
   auto visit(node::List* t_list) -> Any override;
   auto visit(node::Nil* t_nil) -> Any override;
 
-  auto print(node::NodePtr t_ast) -> void;
+	// TODO: Add ostream& parameter.
+  auto print(NodePtr t_ast) -> void;
 
-  ~PrintVisitor() override = default;
+  ~AstPrinter() override = default;
 };
 } // namespace ast::visitor
 
-#endif // CROW_AST_VISITOR_PRINT_VISITOR_HPP
+#endif // CROW_AST_VISITOR_AST_PRINTER_HPP

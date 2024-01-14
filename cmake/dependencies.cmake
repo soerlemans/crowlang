@@ -24,6 +24,15 @@ FetchContent_Declare(
 	SYSTEM
 )
 
+# Cereal (C++ serialization library):
+FetchContent_Declare(
+  cereal
+  GIT_REPOSITORY git@github.com:USCiLab/cereal.git
+  GIT_TAG v1.3.2
+  GIT_PROGRESS TRUE
+	SYSTEM
+)
+
 # Cpptrace (Stacktraces for C++)
 FetchContent_Declare(
   cpptrace
@@ -37,10 +46,6 @@ add_compile_definitions(
   CPPTRACE_GET_SYMBOLS_WITH_LIBDWARF
 )
 
-set(CMAKE_CXX_FLAGS_DEBUG
-	"-g3 -gdwarf"
-)
-
 # On windows copy cpptrace.dll to the same directory as the executable for your_target
 if(WIN32)
   add_custom_command(
@@ -51,7 +56,7 @@ if(WIN32)
 endif()
 
 # Make available:
-FetchContent_MakeAvailable(rang tabulate cpptrace)
+FetchContent_MakeAvailable(rang tabulate cereal cpptrace)
 
 # Pthread support:
 set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -108,6 +113,7 @@ target_link_libraries(
 	${PROJECT_NAME}
 	rang
 	tabulate::tabulate
+	cereal
 	cpptrace
 	Threads::Threads
 	CLI11::CLI11

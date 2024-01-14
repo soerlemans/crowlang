@@ -47,6 +47,13 @@ auto TypeChecker::handle_condition(const SymbolData& t_data,
   }
 }
 
+// TODO: Implement
+auto TypeChecker::promote([[maybe_unused]] const SymbolData& t_lhs,
+                          [[maybe_unused]] const SymbolData& rhs,
+                          [[maybe_unused]] const TextPosition& t_pos) const
+  -> void
+{}
+
 TypeChecker::TypeChecker(): m_envs{}
 {}
 
@@ -158,6 +165,7 @@ auto TypeChecker::visit(ReturnType* t_rt) -> Any
 
 // Lvalue:
 // TODO: Account for when init expr is a nullptr
+// TODO: Add TypeData annotation.
 auto TypeChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
 {
   const auto type{t_decl->type()};

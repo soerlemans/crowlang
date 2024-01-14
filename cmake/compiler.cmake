@@ -21,3 +21,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
   -pedantic
 )
 
+# Set the flags for debugging
+set(CMAKE_CXX_FLAGS_DEBUG
+	"-g3 -gdwarf"
+)

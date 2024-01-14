@@ -5,8 +5,7 @@
 
 
 // Using Statements:
-using namespace check;
-
+namespace check {
 // StructType:
 auto StructType::strip() const -> TypeVariant
 {
@@ -32,3 +31,4 @@ auto VarType::strip() const -> TypeVariant
 
   return {typing::make_variable(m_type.strip())};
 }
+} // namespace check
