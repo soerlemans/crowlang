@@ -17,7 +17,7 @@ namespace ast::node::node_traits::typing {
  * This information is then later used during code generation.
  */
 class TypeData : virtual public NodeInterface {
-  private:
+  protected:
   TypeVariant m_data;
 
   public:
@@ -28,7 +28,7 @@ class TypeData : virtual public NodeInterface {
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~TypeData() override = default;
+  virtual ~TypeData() = default;
 };
 } // namespace ast::node::node_traits::typing
 

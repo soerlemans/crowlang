@@ -21,13 +21,14 @@ class NodePosition : virtual public NodeInterface {
   TextPosition m_pos;
 
   public:
+  NodePosition() = default;
   NodePosition(TextPosition&& t_pos);
 
   virtual auto position() -> const TextPosition&;
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~NodePosition() override = default;
+  virtual ~NodePosition() = default;
 };
 } // namespace ast::node::node_traits
 

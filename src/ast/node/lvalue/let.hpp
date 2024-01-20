@@ -9,20 +9,26 @@
 
 
 namespace ast::node::lvalue {
-// Aliases:
-namespace nt = node_traits;
-namespace ct = container;
+// Using Statements:
+using container::TextPosition;
+using node_traits::DeclExpr;
 
 // Classes:
-class Let : public nt::DeclExpr {
+class Let : public DeclExpr {
+  protected:
+  // GIVE_ARCHIVE_ACCESS(Let);
+
   public:
-  Let(ct::TextPosition t_pos, std::string_view t_identifier,
-      std::string_view t_str, NodePtr&& t_init);
+  Let(TextPosition t_pos, std::string_view t_identifier,
+      std::string_view t_type, NodePtr&& t_init);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Let() override = default;
+  virtual ~Let() = default;
 };
 } // namespace ast::node::lvalue
+
+// MAKE_ARCHIVEABLE(ast::node::lvalue::Let, MAKE_NVP(t_this, m_identifier),
+//                  MAKE_NVP(t_this, m_type), MAKE_NVP(t_this, m_init));
 
 #endif // CROW_AST_NODE_LVALUE_LET_HPP

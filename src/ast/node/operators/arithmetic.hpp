@@ -43,4 +43,4 @@ class Arithmetic : public NodePosition,
 };
 } // namespace ast::node::operators
 
-#endif
+#endif // CROW_AST_NODE_OPERATORS_ARITHMETIC_HPP

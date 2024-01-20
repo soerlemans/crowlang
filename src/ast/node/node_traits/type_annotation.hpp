@@ -17,6 +17,7 @@ class TypeAnnotation : virtual public NodeInterface {
   std::string m_type;
 
   public:
+  TypeAnnotation() = default;
   TypeAnnotation(std::string_view t_type);
 
   virtual auto type() const -> std::string_view;

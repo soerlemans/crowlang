@@ -17,6 +17,7 @@ class Identifier : virtual public NodeInterface {
   std::string m_identifier;
 
   public:
+  Identifier() = default;
   Identifier(std::string_view t_identifier);
 
   virtual auto identifier() const -> std::string_view;

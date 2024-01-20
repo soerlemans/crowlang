@@ -1,6 +1,7 @@
 #ifndef CROW_AST_VISITOR_AST_SERIALIZER_HPP
 #define CROW_AST_VISITOR_AST_SERIALIZER_HPP
 
+
 // Library Includes:
 #include <cereal/archives/xml.hpp>
 
@@ -8,11 +9,14 @@
 #include "node_visitor.hpp"
 
 // Includes:
+#include "../../exception/error.hpp"
 #include "../node/include.hpp"
 
 
 namespace ast::visitor {
 // Using Statements;
+using cereal::XMLOutputArchive;
+using ArchivePtr = std::shared_ptr<XMLOutputArchive>;
 
 // Classes:
 /*!
@@ -21,10 +25,27 @@ namespace ast::visitor {
  * serializing an AST to disk. Also commonly used for inspecting the AST.
  */
 class AstSerializer : public NodeVisitor {
+  private:
+  ArchivePtr m_archive;
+
   protected:
-  //! TODO: Create a generic method for this methods, as it is used a lot
-  //! For Example in @ref SymbolHelper.
-  // auto get_xml_node(NodePtr t_ptr) -> xml_node;
+  template<typename... Args>
+  auto make_archive(Args&&... t_args) -> ArchivePtr
+  {
+    return std::make_shared<XMLOutputArchive>(std::forward<Args>(t_args)...);
+  }
+
+  template<typename... Args>
+  auto archive(Args&&... t_args) -> void
+  {
+		using exception::error;
+
+    if(!m_archive) {
+      error("No archive pointer has been set.");
+    }
+
+    (*m_archive)(std::forward<Args>(t_args)...);
+  }
 
   public:
   AstSerializer() = default;
@@ -87,6 +108,7 @@ class AstSerializer : public NodeVisitor {
   auto visit(node::Nil* t_nil) -> Any override;
 
   auto serialize(NodePtr t_ast, std::ostream& t_os) -> void;
+  // auto deserialize(NodePtr t_ast, std::ostream& t_os) -> void;
 
   virtual ~AstSerializer() = default;
 };

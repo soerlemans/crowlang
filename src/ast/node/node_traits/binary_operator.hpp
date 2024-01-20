@@ -8,7 +8,7 @@
 
 namespace ast::node::node_traits {
 class BinaryOperator : public UnaryOperator {
-  private:
+  protected:
   NodePtr m_right;
 
   public:

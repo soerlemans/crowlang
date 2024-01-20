@@ -13,8 +13,8 @@
 
 
 namespace ast::node::node_traits {
-// Aliases:
-namespace ct = container;
+// Using Statements:
+using container::TextPosition;
 
 // Classes:
 class DeclExpr : public NodePosition,
@@ -22,12 +22,13 @@ class DeclExpr : public NodePosition,
                  public TypeAnnotation,
                  public InitExpr {
   public:
-  DeclExpr(ct::TextPosition&& t_pos, std::string_view t_identifier,
-           std::string_view t_str, NodePtr&& t_init);
+  DeclExpr() = default;
+  DeclExpr(TextPosition&& t_pos, std::string_view t_identifier,
+           std::string_view t_type, NodePtr&& t_init);
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~DeclExpr() override = default;
+  virtual ~DeclExpr() = default;
 };
 } // namespace ast::node::node_traits
 

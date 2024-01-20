@@ -200,6 +200,7 @@ auto TypeChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
   return expr;
 }
 
+// TODO: For const and let handle redeclaring variables of the same name.
 auto TypeChecker::visit(Const* t_const) -> Any
 {
   const auto id{t_const->identifier()};

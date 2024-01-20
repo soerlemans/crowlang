@@ -14,6 +14,7 @@ class InitExpr : virtual public NodeInterface {
   NodePtr m_init;
 
   public:
+  InitExpr() = default;
   InitExpr(NodePtr&& t_init);
 
   virtual auto init_expr() -> NodePtr&;

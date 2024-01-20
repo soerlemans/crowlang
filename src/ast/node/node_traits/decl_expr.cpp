@@ -3,8 +3,7 @@
 
 namespace ast::node::node_traits {
 // Methods:
-DeclExpr::DeclExpr(ct::TextPosition&& t_pos,
-                   const std::string_view t_identifier,
+DeclExpr::DeclExpr(TextPosition&& t_pos, const std::string_view t_identifier,
                    const std::string_view t_type, NodePtr&& t_init)
   : NodePosition{std::move(t_pos)},
     Identifier{t_identifier},

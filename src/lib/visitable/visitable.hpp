@@ -12,8 +12,8 @@
     return {t_visitor->visit(this)};                              \
   }
 
-#define VISITABLE_PURE_ACCEPT(t_vis_type) \
-  auto accept(t_vis_type*)->visitable::Any override = 0
+#define VISITABLE_PURE_ACCEPT(t_visitor_type) \
+  auto accept(t_visitor_type*)->visitable::Any override = 0
 
 namespace visitable {
 // We use std::any to allow a visitor to return anything

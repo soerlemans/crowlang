@@ -2,6 +2,12 @@
 
 // Includes:
 #include "../../debug/log.hpp"
+#include <boost/archive/xml_oarchive.hpp>
+
+// namespace {
+
+// 	auto
+// }
 
 
 namespace ast::visitor {
@@ -9,26 +15,6 @@ namespace ast::visitor {
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-// Protected Methods:
-// auto AstSerializer::get_xml_node(NodePtr t_ptr) -> xml_node
-// {
-//   xml_node node;
-
-//   auto any{traverse(t_ptr)};
-//   if(any.has_value()) {
-//     try {
-//       node = std::any_cast<xml_node>(any);
-//     } catch(const std::bad_any_cast& e) {
-//       DBG_CRITICAL(e.what());
-
-//       // TODO: Print elegant error message and terminate
-//       throw e;
-//     }
-//   }
-
-//   return node;
-// }
-
 // Public: Methods:
 // Control:
 auto AstSerializer::visit(If* t_if) -> Any
@@ -86,7 +72,10 @@ auto AstSerializer::visit(Const* t_const) -> Any
 auto AstSerializer::visit(Let* t_let) -> Any
 {
   // FIXME: Temp
-  return traverse(t_let->init_expr());
+	// archive(*t_let);
+
+	traverse(t_let->init_expr());
+  return {};
 }
 
 auto AstSerializer::visit(Variable* t_var) -> Any
@@ -95,15 +84,8 @@ auto AstSerializer::visit(Variable* t_var) -> Any
 // Operators:
 auto AstSerializer::visit(Arithmetic* t_arith) -> Any
 {
-  // xml_node node;
-
-  // node.set_name("Arithmetic");
-
-  // TODO: Cleanup.
-  // node.append_child("Left") = get_xml_node(t_arith->left());
-  // node.append_child("Right") = get_xml_node(t_arith->right());
-
-  // return std::make_any<xml_node>(node);
+  traverse(t_arith->left());
+  traverse(t_arith->right());
 
   return {};
 }
@@ -165,28 +147,29 @@ auto AstSerializer::visit(ModuleDecl* t_md) -> Any
 // Rvalue:
 auto AstSerializer::visit(Float* t_float) -> Any
 {
+  archive(*t_float);
+
   return {};
 }
 
 auto AstSerializer::visit(Integer* t_int) -> Any
 {
-  // xml_node node;
-
-  // node.set_name("Integer");
-  // node.append_attribute("Literal") = t_int->get();
-
-  // return std::make_any<xml_node>(node);
+  archive(*t_int);
 
   return {};
 }
 
 auto AstSerializer::visit(String* t_str) -> Any
 {
+  archive(*t_str);
+
   return {};
 }
 
 auto AstSerializer::visit(Boolean* t_bool) -> Any
 {
+  archive(*t_bool);
+
   return {};
 }
 
@@ -224,12 +207,8 @@ auto AstSerializer::visit(DotExpr* t_dot_expr) -> Any
 // Misc:
 auto AstSerializer::visit(List* t_list) -> Any
 {
-  // xml_node node;
   for(NodePtr& elem : *t_list) {
-    // const auto elem_node{get_xml_node(elem)};
     traverse(elem);
-
-    // node.append_child("Elem:") = elem_node;
   }
 
   return {};
@@ -242,8 +221,11 @@ auto AstSerializer::visit([[maybe_unused]] Nil* t_nil) -> Any
 
 auto AstSerializer::serialize(NodePtr t_ast, std::ostream& t_os) -> void
 {
-  // const auto node{get_xml_node(t_ast)};
+  // Set the archive pointer.
+  m_archive = make_archive(t_os);
 
-  // t_doc.insert_child_after("Abstract Syntax Tree", node);
+  traverse(t_ast);
+
+  m_archive.reset();
 }
 } // namespace ast::visitor

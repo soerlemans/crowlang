@@ -10,7 +10,7 @@
 
 namespace ast::node::node_traits {
 class UnaryOperator : virtual public NodeInterface {
-  private:
+  protected:
   NodePtr m_left;
 
   public:
