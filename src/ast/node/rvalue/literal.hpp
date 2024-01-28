@@ -15,15 +15,8 @@ class Literal : public NodeInterface {
   private:
   T m_value;
 
-  protected:
-  Literal() = default;
-
   public:
-  friend cereal::access;
-
-  template<typename Archive>
-  friend auto serialize(Archive& t_archive, Literal<T>& t_this);
-
+  // Methods:
   Literal(const T t_value): m_value{t_value}
   {}
 
@@ -32,13 +25,22 @@ class Literal : public NodeInterface {
     return m_value;
   }
 
+  MAKE_ARCHIVEABLE(Literal)
+  {
+    t_archive(CEREAL_NVP(m_value));
+  }
+
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~Literal() override = default;
 };
+
 } // namespace ast::node::rvalue
 
-// MAKE_ARCHIVEABLE(ast::node::rvalue::Integer, MAKE_NVP(t_this, m_value));
-MAKE_ARCHIVEABLE(ast::node::rvalue::Integer, t_this.m_value);
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::rvalue, Integer);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::rvalue, Float);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::rvalue, String);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::rvalue, Boolean);
 
 #endif // CROW_AST_NODE_RVALUE_LITERAL_HPP

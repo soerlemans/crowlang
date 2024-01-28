@@ -67,9 +67,9 @@ auto AstSerializer::visit(Const* t_const) -> Any
 auto AstSerializer::visit(Let* t_let) -> Any
 {
   // FIXME: Temp
-	// archive(*t_let);
+	archive(*t_let);
 
-	traverse(t_let->init_expr());
+	// traverse(t_let->init_expr());
   return {};
 }
 

@@ -2,7 +2,7 @@
 #define CROW_AST_NODE_NODE_INTERFACE_HPP
 
 // Library Includes:
-#include <cereal/types/polymorphic.hpp>
+#include <cereal/types/memory.hpp>
 
 // Includes:
 #include "../../lib/visitable/visitable.hpp"
@@ -13,32 +13,32 @@
 
 
 // Macros:
-// TODO: Place these elsewhere (possibly in src/lib somewhere?).
-#define CEREAL_FRIEND_DEF(t_type) \
-  friend cereal::access;          \
-                                  \
-  template<typename Archive>      \
-  friend void serialize(Archive& t_archive, t_type& t_this)
-
-
-//!
+// TODO: Move these cereal related macros somewhere else?
+/*!
+ * Make it so that only cereal has access to the default constructor.
+ * Most node types should not be default constructible.
+ */
 #define GIVE_ARCHIVE_ACCESS(t_type) \
+  protected:                        \
   t_type() = default;               \
                                     \
-  CEREAL_FRIENDS_DEF(t_type)
-
-//!
-#define MAKE_NVP(t_type, t_member) \
-  (cereal::make_nvp(#t_member, t_type.t_member))
+  friend cereal::access
 
 //! Macro for making a type serializable by the cereal library.
-#define MAKE_ARCHIVEABLE(t_type, ...)                \
-  template<typename Archive>                         \
-  void serialize(Archive& t_archive, t_type& t_this) \
-  {                                                  \
-    t_archive(__VA_ARGS__);                          \
-  }                                                  \
-  CEREAL_REGISTER_TYPE(t_type)
+#define MAKE_ARCHIVEABLE(t_type) \
+  GIVE_ARCHIVE_ACCESS(t_type);   \
+                                 \
+  public:                        \
+  template<typename Archive>     \
+  auto serialize(Archive& t_archive)->void
+
+
+//!
+#define REGISTER_ARCHIVEABLE_TYPE(t_namespace, t_type)           \
+  CEREAL_REGISTER_POLYMORPHIC_RELATION(ast::node::NodeInterface, \
+                                       t_namespace::t_type);     \
+  CEREAL_REGISTER_TYPE_WITH_NAME(t_namespace::t_type, #t_type)
+
 
 namespace ast::node {
 /*!
