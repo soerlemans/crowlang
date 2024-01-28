@@ -19,7 +19,7 @@ class MemberDecl : public nt::Identifier, public nt::TypeAnnotation {
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~MemberDecl() override = default;
+  virtual ~MemberDecl() = default;
 };
 } // namespace ast::node::typing
 

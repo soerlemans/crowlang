@@ -39,7 +39,7 @@ class Arithmetic : public NodePosition,
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Arithmetic() override = default;
+  virtual ~Arithmetic() = default;
 };
 } // namespace ast::node::operators
 

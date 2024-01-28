@@ -23,7 +23,7 @@ class Parameter : public nt::NodePosition,
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Parameter() override = default;
+  virtual ~Parameter() = default;
 };
 } // namespace ast::node::lvalue
 

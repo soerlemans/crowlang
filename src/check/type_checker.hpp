@@ -90,7 +90,7 @@ class TypeChecker : public SymbolHelper {
 
   auto check(NodePtr t_ast) -> void;
 
-  ~TypeChecker() override = default;
+  virtual ~TypeChecker() = default;
 };
 } // namespace check
 

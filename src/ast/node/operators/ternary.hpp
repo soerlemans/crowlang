@@ -19,7 +19,7 @@ class Ternary : public nt::Condition, public nt::Then, public nt::Alt {
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Ternary() override = default;
+  virtual ~Ternary() = default;
 };
 } // namespace ast::node::operators
 

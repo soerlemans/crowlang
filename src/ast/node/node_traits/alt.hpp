@@ -20,7 +20,7 @@ class Alt : virtual public NodeInterface {
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~Alt() override = default;
+  virtual ~Alt() = default;
 };
 } // namespace ast::node::node_traits
 

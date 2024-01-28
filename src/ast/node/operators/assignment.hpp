@@ -35,7 +35,7 @@ class Assignment : public nt::NodePosition,
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Assignment() override = default;
+  virtual ~Assignment() = default;
 };
 } // namespace ast::node::operators
 

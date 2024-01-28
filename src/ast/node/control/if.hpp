@@ -25,7 +25,7 @@ class If : public nt::NodePosition,
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~If() override = default;
+  virtual ~If() = default;
 };
 } // namespace ast::node::control
 

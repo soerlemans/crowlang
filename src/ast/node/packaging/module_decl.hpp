@@ -19,7 +19,7 @@ class ModuleDecl : public nt::Identifier {
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~ModuleDecl() override = default;
+  virtual ~ModuleDecl() = default;
 };
 } // namespace ast::node::packaging
 

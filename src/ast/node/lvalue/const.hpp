@@ -24,7 +24,7 @@ class Const : public nt::DeclExpr {
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Const() override = default;
+  virtual ~Const() = default;
 };
 } // namespace ast::node::lvalue
 

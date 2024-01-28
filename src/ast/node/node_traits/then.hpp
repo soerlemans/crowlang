@@ -20,7 +20,7 @@ class Then : virtual public NodeInterface {
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~Then() override = default;
+  virtual ~Then() = default;
 };
 } // namespace ast::node::node_traits
 

@@ -25,7 +25,7 @@ class Op : virtual public NodeInterface {
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~Op() override = default;
+  virtual ~Op() = default;
 };
 } // namespace ast::node::node_traits
 

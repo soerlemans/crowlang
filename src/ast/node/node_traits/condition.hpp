@@ -20,7 +20,7 @@ class Condition : virtual public NodeInterface {
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~Condition() override = default;
+  virtual ~Condition() = default;
 };
 } // namespace ast::node::node_traits
 

@@ -21,7 +21,7 @@ class Params : virtual public NodeInterface {
 	GIVE_ARCHIVE_ACCESS(Params);
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~Params() override = default;
+  virtual ~Params() = default;
 };
 } // namespace ast::node::node_traits
 

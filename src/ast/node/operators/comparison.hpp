@@ -37,7 +37,7 @@ class Comparison : public NodePosition,
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Comparison() override = default;
+  virtual ~Comparison() = default;
 };
 } // namespace ast::node::operators
 

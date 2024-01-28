@@ -14,7 +14,7 @@ class TypeError : public Error {
   public:
   TypeError(std::string_view t_msg);
 
-  ~TypeError() override = default;
+  virtual ~TypeError() = default;
 };
 
 // Functions:

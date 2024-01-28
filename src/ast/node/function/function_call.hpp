@@ -26,7 +26,7 @@ class FunctionCall : public nt::Identifier {
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~FunctionCall() override = default;
+  virtual ~FunctionCall() = default;
 };
 } // namespace ast::node::functions
 

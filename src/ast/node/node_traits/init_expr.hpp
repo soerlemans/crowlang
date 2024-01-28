@@ -21,7 +21,7 @@ class InitExpr : virtual public NodeInterface {
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~InitExpr() override = default;
+  virtual ~InitExpr() = default;
 };
 } // namespace ast::node::node_traits
 

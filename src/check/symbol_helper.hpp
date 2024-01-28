@@ -32,7 +32,7 @@ class SymbolHelper : public NodeVisitor {
   public:
   SymbolHelper() = default;
 
-  ~SymbolHelper() override = default;
+  virtual ~SymbolHelper() = default;
 };
 } // namespace check
 

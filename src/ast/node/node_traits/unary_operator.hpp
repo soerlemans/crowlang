@@ -20,7 +20,7 @@ class UnaryOperator : virtual public NodeInterface {
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~UnaryOperator() override = default;
+  virtual ~UnaryOperator() = default;
 };
 } // namespace ast::node::node_traits
 

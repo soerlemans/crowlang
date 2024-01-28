@@ -24,7 +24,7 @@ class TypeAnnotation : virtual public NodeInterface {
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~TypeAnnotation() override = default;
+  virtual ~TypeAnnotation() = default;
 };
 } // namespace ast::node::node_traits
 

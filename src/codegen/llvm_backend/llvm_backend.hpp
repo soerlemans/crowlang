@@ -102,7 +102,7 @@ class LlvmBackend : public ast::visitor::NodeVisitor {
   auto dump_ir(std::ostream& t_os) -> void;
   auto compile(fs::path t_path) -> void;
 
-  ~LlvmBackend() override = default;
+  virtual ~LlvmBackend() = default;
 };
 } // namespace codegen::llvm_backend
 

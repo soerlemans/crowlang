@@ -25,7 +25,7 @@ class Interface : public nt::Identifier {
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Interface() override = default;
+  virtual ~Interface() = default;
 };
 } // namespace ast::node::typing
 

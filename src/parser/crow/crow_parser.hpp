@@ -106,7 +106,7 @@ class CrowParser : public pratt::PrattParser {
 
   auto parse() -> NodePtr override;
 
-  ~CrowParser() override = default;
+  virtual ~CrowParser() = default;
 };
 
 } // namespace parser::crow

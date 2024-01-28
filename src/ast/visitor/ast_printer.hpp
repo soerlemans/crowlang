@@ -193,7 +193,7 @@ class AstPrinter : public NodeVisitor {
 	// TODO: Add ostream& parameter.
   auto print(NodePtr t_ast) -> void;
 
-  ~AstPrinter() override = default;
+  virtual ~AstPrinter() = default;
 };
 } // namespace ast::visitor
 

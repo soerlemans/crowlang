@@ -27,7 +27,7 @@ class UnaryPrefix : public nt::UnaryOperator {
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~UnaryPrefix() override = default;
+  virtual ~UnaryPrefix() = default;
 };
 } // namespace ast::node::operators
 

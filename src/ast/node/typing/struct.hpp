@@ -20,7 +20,7 @@ class Struct : public nt::Identifier, public nt::Body {
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Struct() override = default;
+  virtual ~Struct() = default;
 };
 } // namespace ast::node::typing
 

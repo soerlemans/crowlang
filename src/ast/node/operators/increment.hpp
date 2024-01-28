@@ -24,7 +24,7 @@ class Increment : public nt::UnaryOperator {
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Increment() override = default;
+  virtual ~Increment() = default;
 };
 } // namespace ast::node::operators
 

@@ -19,7 +19,7 @@ class DotExpr : public nt::Identifier, public nt::Expr {
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~DotExpr() override = default;
+  virtual ~DotExpr() = default;
 };
 
 } // namespace ast::node::lvalue

@@ -25,7 +25,7 @@ class Error : public std::exception {
 
   auto what() const noexcept -> const char* override;
 
-  ~Error() override = default;
+  virtual ~Error() = default;
 };
 
 

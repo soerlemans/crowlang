@@ -19,7 +19,7 @@ class Defer : public nt::Body {
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Defer() override = default;
+  virtual ~Defer() = default;
 };
 } // namespace ast::node::control
 

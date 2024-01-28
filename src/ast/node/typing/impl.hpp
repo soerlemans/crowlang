@@ -19,7 +19,7 @@ class Impl : public nt::Identifier, public nt::Body {
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Impl() override = default;
+  virtual ~Impl() = default;
 };
 } // namespace ast::node::typing
 

@@ -21,7 +21,7 @@ class Body : virtual public NodeInterface {
 	GIVE_ARCHIVE_ACCESS(Body);
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~Body() override = default;
+  virtual ~Body() = default;
 };
 } // namespace ast::node::node_traits
 

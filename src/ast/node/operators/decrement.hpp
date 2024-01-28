@@ -24,7 +24,7 @@ class Decrement : public nt::UnaryOperator {
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Decrement() override = default;
+  virtual ~Decrement() = default;
 };
 } // namespace ast::node::operators
 

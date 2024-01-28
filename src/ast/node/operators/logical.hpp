@@ -20,7 +20,7 @@ class Not : public nt::NodePosition, public nt::UnaryOperator {
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Not() override = default;
+  virtual ~Not() = default;
 };
 
 // And:
@@ -30,7 +30,7 @@ class And : public nt::NodePosition, public nt::BinaryOperator {
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~And() override = default;
+  virtual ~And() = default;
 };
 
 // Or:
@@ -40,7 +40,7 @@ class Or : public nt::NodePosition, public nt::BinaryOperator {
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Or() override = default;
+  virtual ~Or() = default;
 };
 } // namespace ast::node::operators
 

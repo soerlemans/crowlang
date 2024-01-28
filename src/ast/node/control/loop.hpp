@@ -25,7 +25,7 @@ class Loop : public nt::NodePosition,
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Loop() override = default;
+  virtual ~Loop() = default;
 };
 } // namespace ast::node::control
 

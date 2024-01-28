@@ -52,7 +52,7 @@ class PrattParser : public Parser {
   // Expressions:
   virtual auto expr(int t_min_bp = 0) -> NodePtr;
 
-  ~PrattParser() override = default;
+  virtual ~PrattParser() = default;
 };
 } // namespace parser::pratt
 

@@ -21,7 +21,7 @@ class Expr : virtual public NodeInterface {
 	GIVE_ARCHIVE_ACCESS(Expr);
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~Expr() override = default;
+  virtual ~Expr() = default;
 };
 } // namespace ast::node::node_traits
 

@@ -24,7 +24,7 @@ class MethodDecl : public nt::Identifier,
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~MethodDecl() override = default;
+  virtual ~MethodDecl() = default;
 };
 } // namespace ast::node::typing
 

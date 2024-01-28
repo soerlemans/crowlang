@@ -19,7 +19,7 @@ class ReturnType : public TypeAnnotation {
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~ReturnType() override = default;
+  virtual ~ReturnType() = default;
 };
 } // namespace ast::node::function
 

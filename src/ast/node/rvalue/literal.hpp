@@ -32,7 +32,7 @@ class Literal : public NodeInterface {
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Literal() override = default;
+  virtual ~Literal() = default;
 };
 
 } // namespace ast::node::rvalue

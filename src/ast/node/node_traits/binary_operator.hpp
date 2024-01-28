@@ -18,7 +18,7 @@ class BinaryOperator : public UnaryOperator {
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~BinaryOperator() override = default;
+  virtual ~BinaryOperator() = default;
 };
 } // namespace ast::node::node_traits
 

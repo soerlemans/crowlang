@@ -24,7 +24,7 @@ class Identifier : virtual public NodeInterface {
 	GIVE_ARCHIVE_ACCESS(Identifier);
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~Identifier() override = default;
+  virtual ~Identifier() = default;
 };
 } // namespace ast::node::node_traits
 

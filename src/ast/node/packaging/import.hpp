@@ -34,7 +34,7 @@ class Import : public NodeInterface {
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Import() override = default;
+  virtual ~Import() = default;
 };
 } // namespace ast::node::packaging
 
