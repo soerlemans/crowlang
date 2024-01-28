@@ -18,6 +18,7 @@ class Expr : virtual public NodeInterface {
 
   virtual auto expr() -> NodePtr&;
 
+	GIVE_ARCHIVE_ACCESS(Expr);
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   ~Expr() override = default;

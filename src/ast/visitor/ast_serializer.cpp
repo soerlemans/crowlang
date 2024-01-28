@@ -32,8 +32,10 @@ auto AstSerializer::visit(Break* t_break) -> Any
   return {};
 }
 
-auto AstSerializer::visit(Return* t_return) -> Any
+auto AstSerializer::visit(Return* t_ret) -> Any
 {
+  // archive(*t_ret);
+
   return {};
 }
 
@@ -45,6 +47,8 @@ auto AstSerializer::visit(Parameter* t_param) -> Any
 
 auto AstSerializer::visit(Function* t_fn) -> Any
 {
+  archive(*t_fn);
+
   // FIXME: Temp code.
   return traverse(t_fn->body());
 }
@@ -66,15 +70,17 @@ auto AstSerializer::visit(Const* t_const) -> Any
 }
 auto AstSerializer::visit(Let* t_let) -> Any
 {
-  // FIXME: Temp
-	archive(*t_let);
+  archive(*t_let);
 
-	// traverse(t_let->init_expr());
   return {};
 }
 
 auto AstSerializer::visit(Variable* t_var) -> Any
-{}
+{
+  // archive(*t_var);
+
+  return {};
+}
 
 // Operators:
 auto AstSerializer::visit(Arithmetic* t_arith) -> Any

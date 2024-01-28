@@ -18,6 +18,7 @@ class Body : virtual public NodeInterface {
 
   virtual auto body() -> NodeListPtr&;
 
+	GIVE_ARCHIVE_ACCESS(Body);
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   ~Body() override = default;

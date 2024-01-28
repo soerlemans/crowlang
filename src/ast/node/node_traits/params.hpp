@@ -18,6 +18,7 @@ class Params : virtual public NodeInterface {
 
   virtual auto params() -> NodeListPtr&;
 
+	GIVE_ARCHIVE_ACCESS(Params);
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   ~Params() override = default;

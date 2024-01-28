@@ -22,10 +22,21 @@ class List : public NodeInterface, public std::list<NodePtr> {
   // Must be defaulted, in order to create this function
   List(List&& t_list) = default;
 
+  // template<typename Archive>
+  // auto serialize(Archive& t_archive) -> void
+  // {
+	// 	const auto list{dynamic_cast<std::list<NodePtr>*>(this)};
+
+  //   t_archive(*list);
+  // }
+
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~List() override = default;
+  virtual ~List() = default;
 };
 } // namespace ast::node
+
+// Cereal type registration:
+// REGISTER_ARCHIVEABLE_TYPE(ast::node, List);
 
 #endif // CROW_AST_NODE_LIST_HPP

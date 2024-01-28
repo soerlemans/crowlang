@@ -17,11 +17,11 @@ class Identifier : virtual public NodeInterface {
   std::string m_identifier;
 
   public:
-  Identifier() = default;
   Identifier(std::string_view t_identifier);
 
   virtual auto identifier() const -> std::string_view;
 
+	GIVE_ARCHIVE_ACCESS(Identifier);
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   ~Identifier() override = default;

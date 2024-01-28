@@ -55,7 +55,7 @@ class AstSerializer : public NodeVisitor {
   auto visit(node::control::Loop* t_loop) -> Any override;
   auto visit(node::control::Continue* t_continue) -> Any override;
   auto visit(node::control::Break* t_break) -> Any override;
-  auto visit(node::control::Return* t_return) -> Any override;
+  auto visit(node::control::Return* t_ret) -> Any override;
 
   // Function:
   auto visit(node::function::Parameter* t_param) -> Any override;

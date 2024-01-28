@@ -26,10 +26,20 @@ class NodePosition : virtual public NodeInterface {
 
   virtual auto position() -> const TextPosition&;
 
+  template<typename Archive>
+  auto serialize(Archive& t_archive) -> void
+  {
+    t_archive(CEREAL_NVP(m_pos.m_source), CEREAL_NVP(m_pos.m_line),
+              CEREAL_NVP(m_pos.m_lineno), CEREAL_NVP(m_pos.m_columno));
+  }
+
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~NodePosition() = default;
 };
 } // namespace ast::node::node_traits
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits, NodePosition);
 
 #endif // CROW_AST_NODE_NODE_TRAITS_NODE_POSITION_HPP

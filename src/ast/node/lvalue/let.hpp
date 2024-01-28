@@ -15,9 +15,6 @@ using node_traits::DeclExpr;
 
 // Classes:
 class Let : public DeclExpr {
-  protected:
-  // GIVE_ARCHIVE_ACCESS(Let);
-
   public:
   Let(TextPosition t_pos, std::string_view t_identifier,
       std::string_view t_type, NodePtr&& t_init);
@@ -32,8 +29,8 @@ class Let : public DeclExpr {
   virtual ~Let() = default;
 };
 } // namespace ast::node::lvalue
-CEREAL_REGISTER_POLYMORPHIC_RELATION(ast::node::NodeInterface,
-                                     ast::node::lvalue::Let);
-CEREAL_REGISTER_TYPE_WITH_NAME(ast::node::lvalue::Let, "Let");
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::lvalue, Let);
 
 #endif // CROW_AST_NODE_LVALUE_LET_HPP
