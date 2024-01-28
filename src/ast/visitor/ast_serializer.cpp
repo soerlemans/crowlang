@@ -4,11 +4,6 @@
 #include "../../debug/log.hpp"
 #include <boost/archive/xml_oarchive.hpp>
 
-// namespace {
-
-// 	auto
-// }
-
 
 namespace ast::visitor {
 // Using statements:
