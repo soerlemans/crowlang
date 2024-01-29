@@ -14,6 +14,8 @@ class Op : virtual public NodeInterface {
   protected:
   T m_op;
 
+	GIVE_ARCHIVE_ACCESS(Op);
+
   public:
   Op(const T t_op): m_op{t_op}
   {}

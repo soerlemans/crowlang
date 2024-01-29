@@ -13,12 +13,13 @@ class Params : virtual public NodeInterface {
   protected:
   NodeListPtr m_params;
 
+	GIVE_ARCHIVE_ACCESS(Params);
+
   public:
   Params(NodeListPtr&& t_params);
 
   virtual auto params() -> NodeListPtr&;
 
-	GIVE_ARCHIVE_ACCESS(Params);
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~Params() = default;

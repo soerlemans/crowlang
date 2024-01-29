@@ -21,11 +21,13 @@ class DeclExpr : public NodePosition,
                  public Identifier,
                  public TypeAnnotation,
                  public InitExpr {
+  protected:
+  GIVE_ARCHIVE_ACCESS(DeclExpr);
+
   public:
   DeclExpr(TextPosition&& t_pos, std::string_view t_identifier,
            std::string_view t_type, NodePtr&& t_init);
 
-	GIVE_ARCHIVE_ACCESS(DeclExpr);
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~DeclExpr() = default;

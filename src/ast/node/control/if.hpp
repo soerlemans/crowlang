@@ -9,19 +9,23 @@
 
 
 namespace ast::node::control {
-// Aliases:
-namespace nt = node_traits;
-namespace ct = container;
+// Using Statements:
+using container::TextPosition;
+using node_traits::Alt;
+using node_traits::Condition;
+using node_traits::InitExpr;
+using node_traits::NodePosition;
+using node_traits::Then;
 
 // Classes:
-class If : public nt::NodePosition,
-           public nt::InitExpr,
-           public nt::Condition,
-           public nt::Then,
-           public nt::Alt {
+class If : public NodePosition,
+           public InitExpr,
+           public Condition,
+           public Then,
+           public Alt {
   public:
-  If(ct::TextPosition t_pos, NodePtr&& t_init,
-     NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_alt);
+  If(TextPosition t_pos, NodePtr&& t_init, NodePtr&& t_condition,
+     NodePtr&& t_then, NodePtr&& t_alt);
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

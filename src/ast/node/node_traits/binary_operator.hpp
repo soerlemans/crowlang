@@ -11,6 +11,8 @@ class BinaryOperator : public UnaryOperator {
   protected:
   NodePtr m_right;
 
+	GIVE_ARCHIVE_ACCESS(BinaryOperator);
+
   public:
   explicit BinaryOperator(NodePtr&& t_left, NodePtr&& t_right);
 

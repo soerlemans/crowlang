@@ -13,12 +13,13 @@ class Body : virtual public NodeInterface {
   protected:
   NodeListPtr m_body;
 
+	GIVE_ARCHIVE_ACCESS(Body);
+
   public:
   Body(NodeListPtr&& t_body);
 
   virtual auto body() -> NodeListPtr&;
 
-	GIVE_ARCHIVE_ACCESS(Body);
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~Body() = default;

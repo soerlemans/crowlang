@@ -37,10 +37,18 @@ class Arithmetic : public NodePosition,
   Arithmetic(TextPosition t_pos, ArithmeticOp t_op, NodePtr&& t_left,
              NodePtr&& t_right);
 
+  MAKE_ARCHIVEABLE(Arithmetic)
+  {
+    t_archive(CEREAL_NVP(m_op), CEREAL_NVP(m_left), CEREAL_NVP(m_right));
+  }
+
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Arithmetic() = default;
 };
 } // namespace ast::node::operators
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::operators, Arithmetic);
 
 #endif // CROW_AST_NODE_OPERATORS_ARITHMETIC_HPP

@@ -16,12 +16,13 @@ class Identifier : virtual public NodeInterface {
   protected:
   std::string m_identifier;
 
+	GIVE_ARCHIVE_ACCESS(Identifier);
+
   public:
   Identifier(std::string_view t_identifier);
 
   virtual auto identifier() const -> std::string_view;
 
-	GIVE_ARCHIVE_ACCESS(Identifier);
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~Identifier() = default;

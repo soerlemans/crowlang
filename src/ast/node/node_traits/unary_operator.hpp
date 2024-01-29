@@ -13,6 +13,8 @@ class UnaryOperator : virtual public NodeInterface {
   protected:
   NodePtr m_left;
 
+	GIVE_ARCHIVE_ACCESS(UnaryOperator);
+
   public:
   explicit UnaryOperator(NodePtr&& t_left);
 

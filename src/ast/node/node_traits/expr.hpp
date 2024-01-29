@@ -13,12 +13,13 @@ class Expr : virtual public NodeInterface {
   protected:
   NodePtr m_expr;
 
+	GIVE_ARCHIVE_ACCESS(Expr);
+
   public:
   Expr(NodePtr&& t_expr);
 
   virtual auto expr() -> NodePtr&;
 
-	GIVE_ARCHIVE_ACCESS(Expr);
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~Expr() = default;

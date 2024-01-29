@@ -1,3 +1,7 @@
+target_sources(${PROJECT_NAME} PRIVATE
+  list.cpp
+)
+
 # Add subdirectories
 add_subdirectory(control)
 add_subdirectory(function)

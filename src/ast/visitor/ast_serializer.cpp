@@ -85,8 +85,7 @@ auto AstSerializer::visit(Variable* t_var) -> Any
 // Operators:
 auto AstSerializer::visit(Arithmetic* t_arith) -> Any
 {
-  traverse(t_arith->left());
-  traverse(t_arith->right());
+	archive(*t_arith);
 
   return {};
 }
