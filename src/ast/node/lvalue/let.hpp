@@ -21,7 +21,7 @@ class Let : public DeclExpr {
 
   MAKE_ARCHIVEABLE(Let)
   {
-    t_archive(CEREAL_NVP(m_identifier), CEREAL_NVP(m_type), CEREAL_NVP(m_init));
+		archive_traits<Archive, Let, DeclExpr>(t_archive, this);
   }
 
   MAKE_VISITABLE(visitor::NodeVisitor);

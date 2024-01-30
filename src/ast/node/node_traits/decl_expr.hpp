@@ -21,17 +21,23 @@ class DeclExpr : public NodePosition,
                  public Identifier,
                  public TypeAnnotation,
                  public InitExpr {
-  protected:
-  GIVE_ARCHIVE_ACCESS(DeclExpr);
-
   public:
   DeclExpr(TextPosition&& t_pos, std::string_view t_identifier,
            std::string_view t_type, NodePtr&& t_init);
+
+  MAKE_ARCHIVEABLE(DeclExpr)
+  {
+    archive_traits<Archive, DeclExpr, NodePosition, Identifier, TypeAnnotation,
+                   InitExpr>(t_archive, this);
+  }
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~DeclExpr() = default;
 };
 } // namespace ast::node::node_traits
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits, DeclExpr);
 
 #endif // CROW_AST_NODE_NODE_TRAITS_DECL_EXPR_HPP

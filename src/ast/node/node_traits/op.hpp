@@ -14,8 +14,6 @@ class Op : virtual public NodeInterface {
   protected:
   T m_op;
 
-	GIVE_ARCHIVE_ACCESS(Op);
-
   public:
   Op(const T t_op): m_op{t_op}
   {}
@@ -23,6 +21,11 @@ class Op : virtual public NodeInterface {
   virtual auto op() const -> T
   {
     return m_op;
+  }
+
+  MAKE_ARCHIVEABLE(Op)
+  {
+    t_archive(m_op);
   }
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);

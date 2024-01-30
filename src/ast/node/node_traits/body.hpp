@@ -13,17 +13,23 @@ class Body : virtual public NodeInterface {
   protected:
   NodeListPtr m_body;
 
-	GIVE_ARCHIVE_ACCESS(Body);
-
   public:
   Body(NodeListPtr&& t_body);
 
   virtual auto body() -> NodeListPtr&;
+
+  // MAKE_ARCHIVEABLE(Body)
+  // {
+	// 	t_archive(CEREAL_NVP(m_body));
+	// }
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~Body() = default;
 };
 } // namespace ast::node::node_traits
+
+// Cereal register type:
+// REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits, Body);
 
 #endif // CROW_AST_NODE_NODE_TRAITS_BODY_HPP

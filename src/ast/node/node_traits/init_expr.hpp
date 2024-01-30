@@ -19,11 +19,19 @@ class InitExpr : virtual public NodeInterface {
 
   virtual auto init_expr() -> NodePtr&;
 
+  template<typename Archive>
+  auto serialize(Archive& t_archive) -> void
+  {
+    t_archive(m_init);
+  }
+
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~InitExpr() = default;
 };
 } // namespace ast::node::node_traits
 
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits, InitExpr);
 
 #endif // CROW_AST_NODE_NODE_TRAITS_INIT_EXPR_HPP

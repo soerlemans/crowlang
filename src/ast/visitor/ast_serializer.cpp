@@ -47,7 +47,7 @@ auto AstSerializer::visit(Parameter* t_param) -> Any
 
 auto AstSerializer::visit(Function* t_fn) -> Any
 {
-  archive(*t_fn);
+  // archive(*t_fn);
 
   // FIXME: Temp code.
   return traverse(t_fn->body());

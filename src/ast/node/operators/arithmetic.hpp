@@ -39,7 +39,8 @@ class Arithmetic : public NodePosition,
 
   MAKE_ARCHIVEABLE(Arithmetic)
   {
-    t_archive(CEREAL_NVP(m_op), CEREAL_NVP(m_left), CEREAL_NVP(m_right));
+    archive_traits<Archive, Arithmetic, NodePosition, Op<ArithmeticOp>,
+                   BinaryOperator>(t_archive, this);
   }
 
   MAKE_VISITABLE(visitor::NodeVisitor);
@@ -50,5 +51,7 @@ class Arithmetic : public NodePosition,
 
 // Cereal type registration:
 REGISTER_ARCHIVEABLE_TYPE(ast::node::operators, Arithmetic);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits,
+                          Op<ast::node::operators::ArithmeticOp>);
 
 #endif // CROW_AST_NODE_OPERATORS_ARITHMETIC_HPP

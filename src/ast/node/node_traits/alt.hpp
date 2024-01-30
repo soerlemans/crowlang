@@ -18,10 +18,18 @@ class Alt : virtual public NodeInterface {
 
   virtual auto alt() -> NodePtr&;
 
+  MAKE_ARCHIVEABLE(Alt)
+  {
+		t_archive(CEREAL_NVP(m_alt));
+	}
+
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~Alt() = default;
 };
 } // namespace ast::node::node_traits
+
+// Cereal register type:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits, Alt);
 
 #endif // CROW_AST_NODE_NODE_TRAITS_ALT_HPP

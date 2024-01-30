@@ -49,13 +49,13 @@ class NodeInterface : public visitable::Visitable<visitor::NodeVisitor> {
   public:
   NodeInterface() = default;
 
-  virtual auto accept(visitor::NodeVisitor* t_visitor) -> visitable::Any = 0;
+  template<typename Archive, typename Derived, typename... Args>
+  auto archive_traits(Archive& t_archive, Derived* t_derived) -> void
+  {
+    t_archive(cereal::base_class<Args>(t_derived)...);
+  }
 
-  //! Nothing to serialize in the base class.
-  template<class Archive>
-  auto serialize([[maybe_unused]] Archive& t_archive,
-                 [[maybe_unused]] const unsigned int version) -> void
-  {}
+  virtual auto accept(visitor::NodeVisitor* t_visitor) -> visitable::Any = 0;
 
   virtual ~NodeInterface() = default;
 };

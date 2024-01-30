@@ -18,10 +18,18 @@ class Condition : virtual public NodeInterface {
 
   virtual auto condition() -> NodePtr&;
 
+  MAKE_ARCHIVEABLE(Condition)
+  {
+		t_archive(CEREAL_NVP(m_condition));
+	}
+
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~Condition() = default;
 };
 } // namespace ast::node::node_traits
+
+// Cereal register type:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits, Condition);
 
 #endif // CROW_AST_NODE_NODE_TRAITS_CONDITION_HPP
