@@ -75,11 +75,14 @@ auto TypeChecker::visit(If* t_if) -> Any
 
 auto TypeChecker::visit(Loop* t_loop) -> Any
 {
-  const auto cond{get_symbol_data(t_loop->condition())};
+	// A loops condition maybe empty, which is an endless loop.
+  if(t_loop->condition()) {
+    const auto cond{get_symbol_data(t_loop->condition())};
 
-  DBG_INFO("Condition: ", cond);
+    DBG_INFO("Condition: ", cond);
 
-  handle_condition(cond, t_loop->position());
+    handle_condition(cond, t_loop->position());
+  }
 
   traverse(t_loop->init_expr());
   traverse(t_loop->body());
@@ -131,7 +134,7 @@ auto TypeChecker::visit(Function* t_fn) -> Any
   return {};
 }
 
-auto TypeChecker::visit(FunctionCall* t_fn_call) -> Any
+auto TypeChecker::visit(Call* t_fn_call) -> Any
 {
   // TODO: Improve this code to be more generic and clean, error if this is not
   // a function name

@@ -10,7 +10,7 @@
 
 namespace ast::node::node_traits {
 class Alt : virtual public NodeInterface {
-  protected:
+  private:
   NodePtr m_alt;
 
   public:

@@ -10,18 +10,18 @@
 
 namespace ast::node::node_traits {
 class Expr : virtual public NodeInterface {
-  protected:
+  private:
   NodePtr m_expr;
 
   public:
   Expr(NodePtr&& t_expr);
 
-  virtual auto expr() -> NodePtr&;
+  auto expr() -> NodePtr&;
 
   MAKE_ARCHIVEABLE(Expr)
   {
-		t_archive(CEREAL_NVP(m_expr));
-	}
+    t_archive(CEREAL_NVP(m_expr));
+  }
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 

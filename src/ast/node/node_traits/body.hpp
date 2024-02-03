@@ -10,18 +10,18 @@
 
 namespace ast::node::node_traits {
 class Body : virtual public NodeInterface {
-  protected:
+  private:
   NodeListPtr m_body;
 
   public:
   Body(NodeListPtr&& t_body);
 
-  virtual auto body() -> NodeListPtr&;
+  auto body() -> NodeListPtr&;
 
-  // MAKE_ARCHIVEABLE(Body)
-  // {
-	// 	t_archive(CEREAL_NVP(m_body));
-	// }
+  MAKE_ARCHIVEABLE(Body)
+  {
+		t_archive(CEREAL_NVP(m_body));
+	}
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
@@ -30,6 +30,6 @@ class Body : virtual public NodeInterface {
 } // namespace ast::node::node_traits
 
 // Cereal register type:
-// REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits, Body);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits, Body);
 
 #endif // CROW_AST_NODE_NODE_TRAITS_BODY_HPP

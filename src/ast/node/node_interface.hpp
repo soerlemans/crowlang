@@ -2,6 +2,7 @@
 #define CROW_AST_NODE_NODE_INTERFACE_HPP
 
 // Library Includes:
+#include <cereal/types/list.hpp>
 #include <cereal/types/memory.hpp>
 
 // Includes:
@@ -32,6 +33,12 @@
   template<typename Archive>     \
   auto serialize(Archive& t_archive)->void
 
+//! Macro for easily archiving nodes dependent on traits.
+#define MAKE_TRAITS_ARCHIVEABLE(t_type, ...)											 \
+  MAKE_ARCHIVEABLE(t_type)                                         \
+  {                                                                \
+    archive_traits<Archive, t_type, __VA_ARGS__>(t_archive, this); \
+  }
 
 //!
 #define REGISTER_ARCHIVEABLE_TYPE(t_namespace, t_type)           \

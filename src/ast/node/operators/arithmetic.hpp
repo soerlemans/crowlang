@@ -37,12 +37,8 @@ class Arithmetic : public NodePosition,
   Arithmetic(TextPosition t_pos, ArithmeticOp t_op, NodePtr&& t_left,
              NodePtr&& t_right);
 
-  MAKE_ARCHIVEABLE(Arithmetic)
-  {
-    archive_traits<Archive, Arithmetic, NodePosition, Op<ArithmeticOp>,
-                   BinaryOperator>(t_archive, this);
-  }
-
+  MAKE_TRAITS_ARCHIVEABLE(Arithmetic, NodePosition, Op<ArithmeticOp>,
+                          BinaryOperator)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Arithmetic() = default;

@@ -148,7 +148,7 @@ auto LlvmBackend::visit(Function* t_fn) -> Any
   return {t_fn};
 }
 
-AST_VISITOR_STUB(LlvmBackend, FunctionCall)
+AST_VISITOR_STUB(LlvmBackend, Call)
 AST_VISITOR_STUB(LlvmBackend, ReturnType)
 
 // Lvalue:

@@ -17,20 +17,22 @@ using container::TextPosition;
 // Classes:
 //! Contains the original position of the Node in the Crow source code
 class NodePosition : virtual public NodeInterface {
-  protected:
+  private:
   TextPosition m_pos;
 
   public:
   NodePosition() = default;
   NodePosition(TextPosition&& t_pos);
 
-  virtual auto position() -> const TextPosition&;
+  auto position() -> const TextPosition&;
 
   template<typename Archive>
   auto serialize(Archive& t_archive) -> void
   {
-    t_archive(CEREAL_NVP(m_pos.m_source), CEREAL_NVP(m_pos.m_line),
-              CEREAL_NVP(m_pos.m_lineno), CEREAL_NVP(m_pos.m_columno));
+    t_archive(cereal::make_nvp("m_source", m_pos.m_source),
+              cereal::make_nvp("m_line", m_pos.m_line),
+              cereal::make_nvp("m_lineno", m_pos.m_lineno),
+              cereal::make_nvp("columno", m_pos.m_columno));
   }
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);

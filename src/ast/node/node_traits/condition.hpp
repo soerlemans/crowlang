@@ -10,13 +10,13 @@
 
 namespace ast::node::node_traits {
 class Condition : virtual public NodeInterface {
-  protected:
+  private:
   NodePtr m_condition;
 
   public:
   Condition(NodePtr&& t_condition);
 
-  virtual auto condition() -> NodePtr&;
+  auto condition() -> NodePtr&;
 
   MAKE_ARCHIVEABLE(Condition)
   {

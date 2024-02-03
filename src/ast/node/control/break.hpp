@@ -11,10 +11,16 @@
 namespace ast::node::control {
 class Break : public NodeInterface {
   public:
+  // MAKE_ARCHIVEABLE(Break)
+  // {}
+
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Break() = default;
 };
-} // namespace node::control
+} // namespace ast::node::control
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::control, Break);
 
 #endif // CROW_AST_NODE_CONTROL_BREAK_HPP

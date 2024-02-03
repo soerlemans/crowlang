@@ -1,10 +1,8 @@
 #include "loop.hpp"
 
 
-using namespace ast::node::control;
-using namespace ast::node::node_traits;
-
-Loop::Loop(ct::TextPosition t_pos, NodePtr&& t_init, NodePtr&& t_condition,
+namespace ast::node::control {
+Loop::Loop(TextPosition t_pos, NodePtr&& t_init, NodePtr&& t_condition,
            NodePtr&& t_expr, NodeListPtr&& t_body)
   : NodePosition{std::move(t_pos)},
     InitExpr{std::move(t_init)},
@@ -13,3 +11,4 @@ Loop::Loop(ct::TextPosition t_pos, NodePtr&& t_init, NodePtr&& t_condition,
     Body{std::move(t_body)}
 
 {}
+} // namespace ast::node::control

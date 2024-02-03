@@ -13,13 +13,13 @@
 
 namespace ast::node::node_traits {
 class Identifier : virtual public NodeInterface {
-  protected:
+  private:
   std::string m_identifier;
 
   public:
   Identifier(std::string_view t_identifier);
 
-  virtual auto identifier() const -> std::string_view;
+  auto identifier() const -> std::string_view;
 
   MAKE_ARCHIVEABLE(Identifier)
   {

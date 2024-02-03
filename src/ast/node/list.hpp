@@ -37,11 +37,11 @@ class List : public NodeInterface {
 
 	auto empty() -> bool;
 
-  // template<typename Archive>
-  // auto serialize(Archive& t_archive) -> void
-  // {
-  //   t_archive(m_list);
-  // }
+  template<typename Archive>
+  auto serialize(Archive& t_archive) -> void
+  {
+    t_archive(m_list);
+  }
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 
@@ -50,6 +50,6 @@ class List : public NodeInterface {
 } // namespace ast::node
 
 // Cereal type registration:
-// REGISTER_ARCHIVEABLE_TYPE(ast::node, List);
+REGISTER_ARCHIVEABLE_TYPE(ast::node, List);
 
 #endif // CROW_AST_NODE_LIST_HPP

@@ -10,13 +10,13 @@
 
 namespace ast::node::node_traits {
 class Then : virtual public NodeInterface {
-  protected:
+  private:
   NodePtr m_then;
 
   public:
   Then(NodePtr&& t_then);
 
-  virtual auto then() -> NodePtr&;
+  auto then() -> NodePtr&;
 
   MAKE_ARCHIVEABLE(Then)
   {

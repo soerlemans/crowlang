@@ -3,7 +3,6 @@
 
 // Includes:
 #include "../node_traits/include.hpp"
-
 // Local Includes:
 #include "fdecl.hpp"
 
@@ -26,13 +25,7 @@ class Function : public Identifier,
   Function(std::string_view t_identifier, NodeListPtr&& t_params,
            std::string_view t_type, NodeListPtr&& t_body);
 
-  // MAKE_ARCHIVEABLE(Function)
-  // {
-  //   t_archive(CEREAL_NVP(m_identifier),
-  //             // CEREAL_NVP(m_params),
-  //             CEREAL_NVP(m_type));
-  // }
-
+  MAKE_TRAITS_ARCHIVEABLE(Function, Identifier, Params, TypeAnnotation, Body)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Function() = default;
@@ -40,6 +33,6 @@ class Function : public Identifier,
 } // namespace ast::node::function
 
 // Cereal type registration:
-// REGISTER_ARCHIVEABLE_TYPE(ast::node::function, Function);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::function, Function);
 
 #endif // CROW_AST_NODE_FUNCTION_FUNCTION_HPP

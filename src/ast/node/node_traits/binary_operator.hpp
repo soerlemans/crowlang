@@ -8,13 +8,13 @@
 
 namespace ast::node::node_traits {
 class BinaryOperator : public UnaryOperator {
-  protected:
+  private:
   NodePtr m_right;
 
   public:
   explicit BinaryOperator(NodePtr&& t_left, NodePtr&& t_right);
 
-  virtual auto right() -> NodePtr&;
+  auto right() -> NodePtr&;
 
   MAKE_ARCHIVEABLE(BinaryOperator)
   {

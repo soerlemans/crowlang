@@ -26,11 +26,7 @@ class Variable : public NodePosition,
   Variable(TextPosition t_pos, std::string_view t_identifier,
            std::string_view t_type);
 
-  // MAKE_ARCHIVEABLE(Variable)
-  // {
-  //   t_archive(CEREAL_NVP(m_identifier), CEREAL_NVP(m_type));
-  // }
-
+  MAKE_TRAITS_ARCHIVEABLE(Variable, NodePosition, Identifier, TypeAnnotation)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Variable() = default;
@@ -38,6 +34,6 @@ class Variable : public NodePosition,
 } // namespace ast::node::lvalue
 
 // Cereal type registration:
-// REGISTER_ARCHIVEABLE_TYPE(ast::node::lvalue, Variable);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::lvalue, Variable);
 
 #endif // CROW_AST_NODE_LVALUE_VARIABLE_HPP

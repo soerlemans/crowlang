@@ -27,10 +27,14 @@ class If : public NodePosition,
   If(TextPosition t_pos, NodePtr&& t_init, NodePtr&& t_condition,
      NodePtr&& t_then, NodePtr&& t_alt);
 
+  MAKE_TRAITS_ARCHIVEABLE(If, NodePosition, InitExpr, Condition, Then, Alt)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~If() = default;
 };
 } // namespace ast::node::control
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::control, If);
 
 #endif // CROW_AST_NODE_CONTROL_IF_HPP

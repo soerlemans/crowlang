@@ -10,14 +10,14 @@
 
 namespace ast::node::node_traits {
 class InitExpr : virtual public NodeInterface {
-  protected:
+  private:
   NodePtr m_init;
 
   public:
   InitExpr() = default;
   InitExpr(NodePtr&& t_init);
 
-  virtual auto init_expr() -> NodePtr&;
+  auto init_expr() -> NodePtr&;
 
   template<typename Archive>
   auto serialize(Archive& t_archive) -> void
