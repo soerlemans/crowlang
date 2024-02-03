@@ -4,6 +4,7 @@
 
 namespace ast::node::node_traits {
 // Forward Declarations:
+class Args;
 class Body;
 class Condition;
 class DeclExpr;

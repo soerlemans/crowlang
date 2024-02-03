@@ -3,6 +3,7 @@
 
 // Node traits:
 #include "alt.hpp"
+#include "args.hpp"
 #include "binary_operator.hpp"
 #include "body.hpp"
 #include "condition.hpp"

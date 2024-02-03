@@ -11,22 +11,15 @@
 
 namespace ast::node::function {
 // Using Statements:
+using node_traits::Args;
 using node_traits::Identifier;
 
 // Classes:
-class Call : public Identifier {
-  private:
-  std::string m_identifier;
-  NodeListPtr m_args;
-
+class Call : public Identifier, public Args {
   public:
   Call(std::string_view t_identifier, NodeListPtr&& t_args);
 
-  auto args() -> NodeListPtr&;
-
-  // MAKE_ARCHIVEABLE(Call)
-  // {}
-
+  MAKE_TRAITS_ARCHIVEABLE(Call, Identifier, Args)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Call() = default;

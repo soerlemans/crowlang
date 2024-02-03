@@ -9,22 +9,28 @@
 
 
 namespace ast::node::function {
-// Aliases:
-namespace nt = node_traits;
-namespace ct = container;
+// Using Statements:
+using container::TextPosition;
+using node_traits::Identifier;
+using node_traits::NodePosition;
+using node_traits::TypeAnnotation;
 
 // Classes:
-class Parameter : public nt::NodePosition,
-                  public nt::Identifier,
-                  public nt::TypeAnnotation {
+class Parameter : public NodePosition,
+                  public Identifier,
+                  public TypeAnnotation {
   public:
-  Parameter(ct::TextPosition t_pos, std::string_view t_identifier,
+  Parameter(TextPosition t_pos, std::string_view t_identifier,
             std::string_view t_type);
 
+  MAKE_TRAITS_ARCHIVEABLE(Parameter, NodePosition, Identifier, TypeAnnotation)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Parameter() = default;
 };
-} // namespace ast::node::lvalue
+} // namespace ast::node::function
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::function, Parameter);
 
 #endif // CROW_AST_NODE_FUNCTION_PARAMETER_HPP
