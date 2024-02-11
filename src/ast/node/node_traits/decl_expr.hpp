@@ -25,12 +25,8 @@ class DeclExpr : public NodePosition,
   DeclExpr(TextPosition&& t_pos, std::string_view t_identifier,
            std::string_view t_type, NodePtr&& t_init);
 
-  MAKE_ARCHIVEABLE(DeclExpr)
-  {
-    archive_traits<Archive, DeclExpr, NodePosition, Identifier, TypeAnnotation,
-                   InitExpr>(t_archive, this);
-  }
-
+  MAKE_TRAITS_ARCHIVEABLE(DeclExpr, NodePosition, Identifier, TypeAnnotation,
+                          InitExpr)
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~DeclExpr() = default;

@@ -47,8 +47,8 @@ class NodeVisitor {
   virtual auto visit(node::function::ReturnType* t_rt) -> Any;
 
   // Lvalue:
-  virtual auto visit(node::lvalue::Const* t_const) -> Any;
   virtual auto visit(node::lvalue::Let* t_let) -> Any;
+  virtual auto visit(node::lvalue::Var* t_var) -> Any;
   virtual auto visit(node::lvalue::Variable* t_var) -> Any;
 
   // Operators:

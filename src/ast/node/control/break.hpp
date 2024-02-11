@@ -11,9 +11,9 @@
 namespace ast::node::control {
 class Break : public NodeInterface {
   public:
-  // MAKE_ARCHIVEABLE(Break)
-  // {}
+  Break() = default;
 
+  DEFINE_SERIALIZE_METHOD_NIL()
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Break() = default;

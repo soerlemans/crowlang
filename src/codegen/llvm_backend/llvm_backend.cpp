@@ -152,8 +152,8 @@ AST_VISITOR_STUB(LlvmBackend, Call)
 AST_VISITOR_STUB(LlvmBackend, ReturnType)
 
 // Lvalue:
-AST_VISITOR_STUB(LlvmBackend, Const)
 AST_VISITOR_STUB(LlvmBackend, Let)
+AST_VISITOR_STUB(LlvmBackend, Var)
 AST_VISITOR_STUB(LlvmBackend, Variable)
 
 // Operators:

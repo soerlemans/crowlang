@@ -30,8 +30,8 @@ using TTypeMap = boost::bimap<Key, TokenType>;
 // Language reserved keywords
 namespace keywords {
 	// Variables:
-  DEFINE_TERMINAL(g_const, "const", CONST);
-  DEFINE_TERMINAL(g_let,   "let",   LET);
+  DEFINE_TERMINAL(g_let, "let", LET);
+  DEFINE_TERMINAL(g_var, "var", VAR);
 
   // Package:
   DEFINE_TERMINAL(g_module,  "module", MODULE);
@@ -64,7 +64,7 @@ namespace keywords {
 
 	// TODO: Convert keywords to bimap
   // const TTypeMap g_keywords = boost::assign::list_of<TTypeMap<std::string_view>::relation>
-	// 	(g_let.pair()) (g_const.pair())
+	// 	(g_let.pair()) (g_var.pair())
 	// 	(g_module.pair()) (g_import.pair()) (g_priv.pair()) (g_pub.pair())
 	// 	(g_struct.pair()) (g_interface.pair()) (g_impl.pair())
 	//   (g_fn.pair())
@@ -76,7 +76,7 @@ namespace keywords {
   //   ;
 
 	const std::map g_keywords {
-    g_let.pair(), g_const.pair(),
+    g_let.pair(), g_var.pair(),
     g_module.pair(), g_import.pair(), g_priv.pair(), g_pub.pair(),
     g_struct.pair(), g_interface.pair(), g_impl.pair(),
     g_fn.pair(),

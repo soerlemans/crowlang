@@ -203,25 +203,25 @@ auto TypeChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
   return expr;
 }
 
-// TODO: For const and let handle redeclaring variables of the same name.
-auto TypeChecker::visit(Const* t_const) -> Any
+// TODO: FIXME Disallow redeclaration of variables.
+auto TypeChecker::visit(Let* t_let) -> Any
 {
-  const auto id{t_const->identifier()};
-  const auto expr_data{decl_expr(t_const)};
+  const auto id{t_let->identifier()};
+  const auto expr_data{decl_expr(t_let)};
 
-  // Create the SymbolData for a variable
+  // Create the SymbolData for a variable.
   const SymbolData data{check::make_variable(true, expr_data)};
   m_envs.add_symbol(id, data);
 
   return {};
 }
 
-auto TypeChecker::visit(Let* t_let) -> Any
+auto TypeChecker::visit(Var* t_var) -> Any
 {
-  const auto id{t_let->identifier()};
-  const auto expr_data{decl_expr(t_let)};
+  const auto id{t_var->identifier()};
+  const auto expr_data{decl_expr(t_var)};
 
-  // Create the SymbolData for a variable
+  // Create the SymbolData for a variable.
   const SymbolData data{check::make_variable(false, expr_data)};
   m_envs.add_symbol(id, data);
 

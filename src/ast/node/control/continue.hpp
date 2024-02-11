@@ -11,9 +11,9 @@
 namespace ast::node::control {
 class Continue : public NodeInterface {
   public:
-  // MAKE_ARCHIVEABLE(Continue)
-  // {}
+  Continue() = default;
 
+  DEFINE_SERIALIZE_METHOD_NIL()
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Continue() = default;

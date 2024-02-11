@@ -1,14 +1,8 @@
 #include "unary_prefix.hpp"
 
 
-using namespace ast::node::operators;
-using namespace ast::node::node_traits;
-
+namespace ast::node::operators {
 UnaryPrefix::UnaryPrefix(UnaryPrefixOp t_op, NodePtr&& t_left)
-  : UnaryOperator{std::move(t_left)}, m_op{t_op}
+  : Op{t_op}, UnaryOperator{std::move(t_left)}
 {}
-
-auto UnaryPrefix::op() const -> UnaryPrefixOp
-{
-  return m_op;
-}
+} // namespace ast::node::operators

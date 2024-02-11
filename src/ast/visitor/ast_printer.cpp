@@ -19,7 +19,7 @@
  *
  * @param[in] t_type type of Node to accept.
  */
-#define DEF_PRINTER_METHOD(t_type)                            \
+#define DEFINE_PRINTER_METHOD(t_type)                         \
   auto AstPrinter::visit([[maybe_unused]] t_type* t_ptr)->Any \
   {                                                           \
     COUNTG_INIT();                                            \
@@ -66,15 +66,15 @@ AstPrinter::AstPrinter(std::ostream& t_os): m_os{t_os}
 {}
 
 // Control:
-DEF_PRINTER_METHOD(If)
-DEF_PRINTER_METHOD(Loop)
-DEF_PRINTER_METHOD(Continue)
-DEF_PRINTER_METHOD(Break)
-DEF_PRINTER_METHOD(Return)
+DEFINE_PRINTER_METHOD(If)
+DEFINE_PRINTER_METHOD(Loop)
+DEFINE_PRINTER_METHOD(Continue)
+DEFINE_PRINTER_METHOD(Break)
+DEFINE_PRINTER_METHOD(Return)
 
 // Function:
-DEF_PRINTER_METHOD(Parameter)
-DEF_PRINTER_METHOD(Function)
+DEFINE_PRINTER_METHOD(Parameter)
+DEFINE_PRINTER_METHOD(Function)
 
 auto AstPrinter::visit(Call* t_fn_call) -> Any
 {
@@ -87,11 +87,11 @@ auto AstPrinter::visit(Call* t_fn_call) -> Any
   return {};
 }
 
-DEF_PRINTER_METHOD(ReturnType)
+DEFINE_PRINTER_METHOD(ReturnType)
 
 // Lvalue:
-DEF_PRINTER_METHOD(Const)
-DEF_PRINTER_METHOD(Let)
+DEFINE_PRINTER_METHOD(Let)
+DEFINE_PRINTER_METHOD(Var)
 
 auto AstPrinter::visit(Variable* t_var) -> Any
 {
@@ -171,9 +171,9 @@ auto AstPrinter::visit(UnaryPrefix* t_up) -> Any
 }
 
 // Logical:
-DEF_PRINTER_METHOD(Not)
-DEF_PRINTER_METHOD(And)
-DEF_PRINTER_METHOD(Or)
+DEFINE_PRINTER_METHOD(Not)
+DEFINE_PRINTER_METHOD(And)
+DEFINE_PRINTER_METHOD(Or)
 
 auto AstPrinter::visit(Ternary* t_ternary) -> Any
 {
@@ -204,7 +204,7 @@ auto AstPrinter::visit(Import* t_import) -> Any
   return {};
 }
 
-DEF_PRINTER_METHOD(ModuleDecl)
+DEFINE_PRINTER_METHOD(ModuleDecl)
 
 // Rvalue:
 auto AstPrinter::visit(Float* t_float) -> Any
@@ -244,12 +244,12 @@ auto AstPrinter::visit(Boolean* t_bool) -> Any
 }
 
 // Typing:
-DEF_PRINTER_METHOD(MethodDecl)
-DEF_PRINTER_METHOD(Interface)
-DEF_PRINTER_METHOD(MemberDecl)
-DEF_PRINTER_METHOD(Struct)
-DEF_PRINTER_METHOD(Impl)
-DEF_PRINTER_METHOD(DotExpr)
+DEFINE_PRINTER_METHOD(MethodDecl)
+DEFINE_PRINTER_METHOD(Interface)
+DEFINE_PRINTER_METHOD(MemberDecl)
+DEFINE_PRINTER_METHOD(Struct)
+DEFINE_PRINTER_METHOD(Impl)
+DEFINE_PRINTER_METHOD(DotExpr)
 
 // Misc:
 auto AstPrinter::visit(List* t_list) -> Any

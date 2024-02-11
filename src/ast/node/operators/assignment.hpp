@@ -9,9 +9,11 @@
 
 
 namespace ast::node::operators {
-// Namespace aliases:
-namespace nt = node_traits;
-namespace ct = container;
+// Using Statements:
+using container::TextPosition;
+using node_traits::BinaryOperator;
+using node_traits::NodePosition;
+using node_traits::Op;
 
 // Enums:
 enum AssignmentOp {
@@ -26,17 +28,24 @@ enum AssignmentOp {
 };
 
 // Classes:
-class Assignment : public nt::NodePosition,
-                   public nt::Op<AssignmentOp>,
-                   public nt::BinaryOperator {
+class Assignment : public NodePosition,
+                   public Op<AssignmentOp>,
+                   public BinaryOperator {
   public:
-  Assignment(ct::TextPosition t_pos, AssignmentOp t_op, NodePtr&& t_left,
+  Assignment(TextPosition t_pos, AssignmentOp t_op, NodePtr&& t_left,
              NodePtr&& t_right);
 
+  MAKE_TRAITS_ARCHIVEABLE(Assignment, NodePosition, Op<AssignmentOp>,
+                          BinaryOperator)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Assignment() = default;
 };
 } // namespace ast::node::operators
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::operators, Assignment);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits,
+                          Op<ast::node::operators::AssignmentOp>);
 
 #endif // CROW_AST_NODE_OPERATORS_ASSIGNMENT_HPP

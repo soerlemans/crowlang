@@ -9,26 +9,28 @@
 
 
 namespace ast::node::operators {
-// Namespace aliases:
-namespace nt = node_traits;
+// Using Statements:
+using node_traits::Op;
+using node_traits::UnaryOperator;
 
 // Enums:
 enum class UnaryPrefixOp { PLUS, MINUS };
 
 // Classes:
-class UnaryPrefix : public nt::UnaryOperator {
-  private:
-  UnaryPrefixOp m_op;
-
+class UnaryPrefix : public Op<UnaryPrefixOp>, public UnaryOperator {
   public:
   UnaryPrefix(UnaryPrefixOp t_op, NodePtr&& t_left);
 
-  virtual auto op() const -> UnaryPrefixOp;
-
+  MAKE_TRAITS_ARCHIVEABLE(UnaryPrefix, Op<UnaryPrefixOp>, UnaryOperator)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~UnaryPrefix() = default;
 };
 } // namespace ast::node::operators
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::operators, UnaryPrefix);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits,
+                          Op<ast::node::operators::UnaryPrefixOp>);
 
 #endif // CROW_AST_NODE_OPERATORS_UNARY_PREFIX_HPP

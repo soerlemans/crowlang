@@ -63,14 +63,15 @@ auto AstSerializer::visit(ReturnType* t_rt) -> Any
 }
 
 // Lvalue:
-auto AstSerializer::visit(Const* t_const) -> Any
-{
-  return {};
-}
 auto AstSerializer::visit(Let* t_let) -> Any
 {
   archive(*t_let);
 
+  return {};
+}
+
+auto AstSerializer::visit(Var* t_var) -> Any
+{
   return {};
 }
 

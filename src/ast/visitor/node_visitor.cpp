@@ -37,7 +37,7 @@ auto NodeVisitor::traverse(NodePtr t_ast) -> Any
   return any;
 }
 
-// Control:
+// Stubs:
 STUB(If)
 STUB(Loop)
 STUB(Continue)
@@ -47,8 +47,8 @@ STUB(Parameter)
 STUB(Function)
 STUB(Call)
 STUB(ReturnType)
-STUB(Const)
 STUB(Let)
+STUB(Var)
 STUB(Variable)
 STUB(Arithmetic)
 STUB(Assignment)

@@ -9,39 +9,48 @@
 
 
 namespace ast::node::operators {
-// Namespace aliases:
-namespace nt = node_traits;
-namespace ct = container;
+// Using Statements:
+using container::TextPosition;
+using node_traits::BinaryOperator;
+using node_traits::NodePosition;
+using node_traits::UnaryOperator;
 
 // Not:
-class Not : public nt::NodePosition, public nt::UnaryOperator {
+class Not : public NodePosition, public UnaryOperator {
   public:
-  Not(ct::TextPosition t_pos, NodePtr&& t_left);
+  Not(TextPosition t_pos, NodePtr&& t_left);
 
+  MAKE_TRAITS_ARCHIVEABLE(Not, NodePosition, UnaryOperator)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Not() = default;
 };
 
 // And:
-class And : public nt::NodePosition, public nt::BinaryOperator {
+class And : public NodePosition, public BinaryOperator {
   public:
-  And(ct::TextPosition t_pos, NodePtr&& t_left, NodePtr&& t_right);
+  And(TextPosition t_pos, NodePtr&& t_left, NodePtr&& t_right);
 
+  MAKE_TRAITS_ARCHIVEABLE(And, NodePosition, BinaryOperator)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~And() = default;
 };
 
 // Or:
-class Or : public nt::NodePosition, public nt::BinaryOperator {
+class Or : public NodePosition, public BinaryOperator {
   public:
-  Or(ct::TextPosition t_pos, NodePtr&& t_left, NodePtr&& t_right);
+  Or(TextPosition t_pos, NodePtr&& t_left, NodePtr&& t_right);
 
+  MAKE_TRAITS_ARCHIVEABLE(Or, NodePosition, BinaryOperator)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Or() = default;
 };
 } // namespace ast::node::operators
+
+REGISTER_ARCHIVEABLE_TYPE(ast::node::operators, Not);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::operators, And);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::operators, Or);
 
 #endif // CROW_AST_NODE_OPERATORS_LOGICAL_HPP

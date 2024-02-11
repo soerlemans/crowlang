@@ -87,8 +87,9 @@ auto CrowParser::init_expr(const TokenType t_type) -> NodePtr
       get_expr();
     }
 
-    if(t_type == TokenType::CONST) {
-      node = make_node<Const>(pos, id.str(), type, std::move(expr_ptr));
+		// TODO: Have this selection be done more elegantly.
+    if(t_type == TokenType::VAR) {
+      node = make_node<Var>(pos, id.str(), type, std::move(expr_ptr));
     } else if(t_type == TokenType::LET) {
       node = make_node<Let>(pos, id.str(), type, std::move(expr_ptr));
     } else {
@@ -99,13 +100,6 @@ auto CrowParser::init_expr(const TokenType t_type) -> NodePtr
   return node;
 }
 
-auto CrowParser::const_expr() -> NodePtr
-{
-  DBG_TRACE_FN(VERBOSE);
-
-  return init_expr(TokenType::CONST);
-}
-
 auto CrowParser::let_expr() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -113,12 +107,19 @@ auto CrowParser::let_expr() -> NodePtr
   return init_expr(TokenType::LET);
 }
 
+auto CrowParser::var_expr() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+
+  return init_expr(TokenType::VAR);
+}
+
 auto CrowParser::decl_expr() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  if(auto ptr{const_expr()}; ptr) {
+  if(auto ptr{var_expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{let_expr()}; ptr) {
     node = std::move(ptr);

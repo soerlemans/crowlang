@@ -35,10 +35,17 @@ class Comparison : public NodePosition,
   Comparison(TextPosition t_pos, ComparisonOp t_op, NodePtr&& t_left,
              NodePtr&& t_right);
 
+  MAKE_TRAITS_ARCHIVEABLE(Comparison, NodePosition, Op<ComparisonOp>,
+                          BinaryOperator)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Comparison() = default;
 };
 } // namespace ast::node::operators
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::operators, Comparison);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits,
+                          Op<ast::node::operators::ComparisonOp>);
 
 #endif // CROW_AST_NODE_OPERATORS_COMPARISON_HPP

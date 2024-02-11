@@ -10,22 +10,26 @@
 
 namespace ast::node::lvalue {
 // Aliases:
-namespace nt = node_traits;
-namespace ct = container;
+using container::TextPosition;
+using node_traits::DeclExpr;
 
 // Classes:
-class Const : public nt::DeclExpr {
+class Var : public DeclExpr {
   private:
   NodePtr m_init;
 
   public:
-  Const(ct::TextPosition t_pos, std::string_view t_identifier,
+  Var(TextPosition t_pos, std::string_view t_identifier,
         std::string_view t_str, NodePtr&& t_init);
 
+  MAKE_TRAITS_ARCHIVEABLE(Var, DeclExpr)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  virtual ~Const() = default;
+  virtual ~Var() = default;
 };
 } // namespace ast::node::lvalue
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::lvalue, Var);
 
 #endif // CROW_AST_NODE_LVALUE_CONST_HPP
