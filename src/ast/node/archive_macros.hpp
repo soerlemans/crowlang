@@ -1,5 +1,5 @@
-#ifndef ARCHIVE_MACROS_HPP
-#define ARCHIVE_MACROS_HPP
+#ifndef CROW_AST_NODE_ARCHIVE_MACROS_HPP
+#define CROW_AST_NODE_ARCHIVE_MACROS_HPP
 
 /*!
  * @file
@@ -50,4 +50,4 @@
   CEREAL_REGISTER_TYPE_WITH_NAME(t_namespace::t_type, #t_type)
 
 
-#endif // ARCHIVE_MACROS_HPP
+#endif // CROW_AST_NODE_ARCHIVE_MACROS_HPP

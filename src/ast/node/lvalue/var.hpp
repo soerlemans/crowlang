@@ -1,5 +1,5 @@
-#ifndef CROW_AST_NODE_LVALUE_CONST_HPP
-#define CROW_AST_NODE_LVALUE_CONST_HPP
+#ifndef CROW_AST_NODE_LVALUE_VAR_HPP
+#define CROW_AST_NODE_LVALUE_VAR_HPP
 
 // Includes:
 #include "../node_traits/include.hpp"
@@ -32,4 +32,4 @@ class Var : public DeclExpr {
 // Cereal type registration:
 REGISTER_ARCHIVEABLE_TYPE(ast::node::lvalue, Var);
 
-#endif // CROW_AST_NODE_LVALUE_CONST_HPP
+#endif // CROW_AST_NODE_LVALUE_VAR_HPP

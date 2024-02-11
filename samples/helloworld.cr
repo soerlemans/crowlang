@@ -1,5 +1,5 @@
 fn main() -> int {
-  let var = 10 + 10
+  var var2 = 10 + 10
 
-	return var
+	return var2
 }
