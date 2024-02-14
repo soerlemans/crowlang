@@ -5,6 +5,7 @@
 #include <boost/current_function.hpp>
 
 // Includes:
+#include "../container/source_position.hpp"
 #include "../definitions.hpp"
 
 
@@ -13,10 +14,10 @@
 #define DBG_PRINTLN(...) debug::println(__VA_ARGS__)
 
 //! Create a @ref SourcePosition of the line the macro is located on.
-#define DBG_SOURCE_POS()                       \
-  container::SourcePosition                    \
-  {                                            \
-    __FILE__, __LINE__, BOOST_CURRENT_FUNCTION \
+#define DBG_SOURCE_POS()                                         \
+  container::SourcePosition                                      \
+  {                                                              \
+    CROW_PROJECT_RELATIVE_PATH, __LINE__, BOOST_CURRENT_FUNCTION \
   }
 
 #define DBG_LOG(loglevel, ...) \
