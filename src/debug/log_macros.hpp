@@ -4,6 +4,9 @@
 // Library Includes:
 #include <boost/current_function.hpp>
 
+// Includes:
+#include "../definitions.hpp"
+
 
 // Macros:
 #ifdef DEBUG

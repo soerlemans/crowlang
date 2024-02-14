@@ -15,7 +15,7 @@
 
 // Local Includes:
 #include "banner.hpp"
-#include "version.hpp"
+#include "definitions.hpp"
 
 // Aliases:
 namespace fs = std::filesystem;

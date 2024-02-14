@@ -6,7 +6,8 @@ set(FETCHCONTENT_QUIET FALSE)
 
 include(ExternalProject)
 
-# Rang (terminal goodies library):
+# Rang (terminal control codes library):
+message(STATUS "[+] Fetching rang library.")
 FetchContent_Declare(
   rang
   GIT_REPOSITORY https://github.com/agauniyal/rang.git
@@ -16,6 +17,7 @@ FetchContent_Declare(
 )
 
 # Tabulate (Terminal table library):
+message(STATUS "[+] Fetching tabulate library.")
 FetchContent_Declare(
   tabulate
   GIT_REPOSITORY https://github.com/p-ranav/tabulate.git
@@ -25,6 +27,7 @@ FetchContent_Declare(
 )
 
 # Cereal (C++ serialization library):
+message(STATUS "[+] Fetching cereal library.")
 FetchContent_Declare(
   cereal
   GIT_REPOSITORY git@github.com:USCiLab/cereal.git
@@ -34,6 +37,7 @@ FetchContent_Declare(
 )
 
 # Cpptrace (Stacktraces for C++)
+message(STATUS "[+] Fetching cpptrace library.")
 FetchContent_Declare(
   cpptrace
   GIT_REPOSITORY https://github.com/jeremy-rifkin/cpptrace.git
@@ -66,6 +70,7 @@ find_package(
 )
 
 # CLI11 (Terminal flag library):
+message(STATUS "[+] Finding CLI11 library.")
 find_package(
 	CLI11
 	CONFIG
@@ -73,6 +78,7 @@ find_package(
 )
 
 # Boost (C++ utility libraries):
+message(STATUS "[+] Finding Boost library.")
 find_package(
 	Boost
 	1.74
@@ -86,6 +92,7 @@ include_directories(
 )
 
 # LLVM (Compiler toolchain libraries):
+message(STATUS "[+] Finding LLVM.")
 find_package(
 	LLVM
 	16
@@ -93,20 +100,30 @@ find_package(
 	REQUIRED
 )
 
-include_directories(
-	SYSTEM
-	${LLVM_INCLUDE_DIRS}
-)
-
+# Required setup:
+include_directories(SYSTEM ${LLVM_INCLUDE_DIRS})
 separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
 add_definitions(${LLVM_DEFINITIONS_LIST})
 
-llvm_map_components_to_libnames(LLVM_LIBS
+# LLVM components to use:
+llvm_map_components_to_libnames(
+	LLVM_LIBS
 	support
 	core
 	irreader
 	codegen
 )
+
+# Libclang (Clang compiler library interface):
+message(STATUS "[+] Finding Clang.")
+find_package(
+	Clang
+	CONFIG
+	REQUIRED
+)
+
+include_directories(SYSTEM ${CLANG_INCLUDE_DIRS})
+add_definitions(${CLANG_DEFINITIONS_LIST})
 
 # Link libraries:
 target_link_libraries(

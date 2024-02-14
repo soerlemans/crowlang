@@ -27,8 +27,8 @@ include(cmake/compiler.cmake)
 # Configure include-what-you-use.
 #include(cmake/clang-tidy.cmake)
 
-# Generate the version header.
-include(cmake/version.cmake)
+# Generate the definitions header.
+include(cmake/definitions.cmake)
 
 # Add dependencies.
 include(cmake/dependencies.cmake)

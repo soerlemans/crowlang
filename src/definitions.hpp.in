@@ -9,4 +9,11 @@
 
 #define CROW_VERSION "@crow_VERSION@"
 
+// TODO: Move elsewhere?
+//! Absolute path to the root of the crow project.
+#define CROW_PROJECT_ROOT_DIRECTORY "@crow_PROJECT_ROOT_DIRECTORY@"
+
+//! Absolute path to the source directory of the crow project
+#define CROW_PROJECT_SRC_DIRECTORY "@crow_PROJECT_SRC_DIRECTORY@"
+
 #endif // CROW_VERSION_HPP
