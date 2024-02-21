@@ -1,0 +1,12 @@
+# This is the root of the .editorconfig configuration.
+root = true
+
+# Configure crow source
+[*.{cr}]
+charset = utf-8
+indent_style = space
+indent_size = 2
+max_line_length = 120
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
