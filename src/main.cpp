@@ -1,6 +1,9 @@
 // STL Includes:
 #include <fstream>
 
+// Library Includes:
+#include <clang-c/Index.h>
+
 // Includes:
 #include "ast/node/fdecl.hpp"
 #include "ast/node/include.hpp"
@@ -29,7 +32,7 @@ enum ExitCode {
 // Functions:
 auto open_file(const fs::path t_path) -> container::TextBuffer
 {
-  using namespace container;
+  using container::TextBuffer;
 
   if(!fs::exists(t_path)) {
     std::stringstream ss;
@@ -54,8 +57,8 @@ auto open_file(const fs::path t_path) -> container::TextBuffer
 
 auto lex(const fs::path& t_path) -> token::TokenStream
 {
-  using namespace lexer;
   using container::TextBuffer;
+  using lexer::Lexer;
 
   DBG_PRINTLN("|> Lexing:");
 
@@ -110,7 +113,7 @@ auto serialize_ast([[maybe_unused]] ast::node::NodePtr t_ast) -> void
 
 auto parse(const token::TokenStream& t_ts) -> ast::node::NodePtr
 {
-  using namespace parser::crow;
+  using parser::crow::CrowParser;
 
   DBG_PRINTLN("|> Parsing:");
 
@@ -124,7 +127,7 @@ auto parse(const token::TokenStream& t_ts) -> ast::node::NodePtr
 
 auto check_types(ast::node::NodePtr t_ast) -> void
 {
-  using namespace check;
+  using check::TypeChecker;
 
   DBG_PRINTLN("|> Type checking:");
 
@@ -136,7 +139,7 @@ auto check_types(ast::node::NodePtr t_ast) -> void
 
 auto generate(ast::node::NodePtr t_ast) -> void
 {
-  using namespace codegen::llvm_backend;
+  using codegen::llvm_backend::LlvmBackend;
 
   DBG_PRINTLN("|> Code generation:");
 
@@ -158,10 +161,9 @@ auto generate(ast::node::NodePtr t_ast) -> void
   DBG_PRINTLN("$");
 }
 
+//! Crow compilers regular compilation flow.
 auto run() -> void
 {
-  using namespace container;
-
   for(const auto& path : settings.m_paths) {
     const auto ts{lex(path)};
     const auto ast{parse(ts)};
@@ -179,6 +181,7 @@ auto run() -> void
 
 auto main(int t_argc, char* t_argv[]) -> int
 {
+  // Initialize command line argument parser.
   CLI::App app{"Compiler for Crow(lang)"};
 
   // TODO: Relocate?
