@@ -19,8 +19,7 @@ namespace codegen::llvm_backend {
 using namespace ast;
 
 using ast::node::NodePtr;
-
-using visitable::Any;
+using ast::visitor::Any;
 
 // Aliases:
 using ContextPtr = std::shared_ptr<llvm::LLVMContext>;

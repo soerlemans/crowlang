@@ -7,34 +7,43 @@
  * Header dedicated to.
  */
 
+// Library Includes:
+#include <cereal/types/list.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/optional.hpp>
+#include <cereal/types/string.hpp>
+#include <cereal/types/utility.hpp>
+#include <cereal/types/vector.hpp>
+
+
 // Macros:
 // TODO: Move these cereal related macros somewhere else?
 /*!
  * Make it so that only cereal has access to the default constructor.
  * Most node types should not be default constructible.
  */
-#define GIVE_ARCHIVE_ACCESS(t_type) \
-  protected:                        \
-  t_type() = default;               \
-                                    \
+#define AST_ARCHIVE_GIVE_ARCHIVE_ACCESS(t_type) \
+  protected:                                    \
+  t_type() = default;                           \
+                                                \
   friend cereal::access
 
 //!
-#define DEFINE_SERIALIZE_METHOD() \
-  template<typename Archive>      \
+#define AST_ARCHIVE_DEFINE_SERIALIZE_METHOD() \
+  template<typename Archive>                  \
   auto serialize([[maybe_unused]] Archive& t_archive)->void
 
 //!
-#define DEFINE_SERIALIZE_METHOD_NIL() \
-  DEFINE_SERIALIZE_METHOD()           \
+#define AST_ARCHIVE_DEFINE_SERIALIZE_METHOD_NIL() \
+  AST_ARCHIVE_DEFINE_SERIALIZE_METHOD()           \
   {}
 
 //! Macro for making a type serializable by the cereal library.
-#define MAKE_ARCHIVEABLE(t_type) \
-  GIVE_ARCHIVE_ACCESS(t_type);   \
-                                 \
-  public:                        \
-  DEFINE_SERIALIZE_METHOD()
+#define MAKE_ARCHIVEABLE(t_type)           \
+  AST_ARCHIVE_GIVE_ARCHIVE_ACCESS(t_type); \
+                                           \
+  public:                                  \
+  AST_ARCHIVE_DEFINE_SERIALIZE_METHOD()
 
 //! Macro for easily archiving nodes dependent on traits.
 #define MAKE_TRAITS_ARCHIVEABLE(t_type, ...)                       \
@@ -50,4 +59,4 @@
   CEREAL_REGISTER_TYPE_WITH_NAME(t_namespace::t_type, #t_type)
 
 
-#endif // CROW_AST_NODE_ARCHIVE_MACROS_HPP
+#endif // CROW_AST_ARCHIVE_ARCHIVE_MACROS_HPP

@@ -2,8 +2,10 @@
 #define CROW_AST_VISITOR_NODE_VISITOR_HPP
 
 // Includes:
-#include "../../lib/visitable/visitable.hpp"
 #include "../node/fdecl.hpp"
+
+// Local Includes:
+#include "visitable.hpp"
 
 
 // Macros:
@@ -18,7 +20,6 @@
 namespace ast::visitor {
 // Using statements:
 using node::NodePtr;
-using visitable::Any;
 
 // Classes:
 /*!

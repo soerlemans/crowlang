@@ -10,10 +10,10 @@
 
 namespace ast::node::operators {
 // Namespace aliases:
-namespace nt = node_traits;
+using node_traits::UnaryOperator;
 
 // Classes:
-class Decrement : public nt::UnaryOperator {
+class Decrement : public UnaryOperator {
   private:
   bool m_prefix;
 
@@ -22,10 +22,14 @@ class Decrement : public nt::UnaryOperator {
 
   auto prefix() const -> bool;
 
+  MAKE_TRAITS_ARCHIVEABLE(Decrement, UnaryOperator)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Decrement() = default;
 };
 } // namespace ast::node::operators
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::operators, Decrement);
 
 #endif // CROW_AST_NODE_OPERATORS_DECREMENT_HPP

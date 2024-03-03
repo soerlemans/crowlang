@@ -32,10 +32,19 @@ class Import : public NodeInterface {
 
   auto imports() const -> const Imports&;
 
+  template<typename Archive>
+  auto serialize(Archive& t_archive) -> void
+  {
+    t_archive(CEREAL_NVP(m_imports));
+  }
+
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Import() = default;
 };
 } // namespace ast::node::packaging
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::packaging, Import);
 
 #endif // CROW_AST_NODE_PACKAGING_IMPORT_HPP

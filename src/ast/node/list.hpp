@@ -26,8 +26,6 @@ class List : public NodeInterface {
 
   public:
   List() = default;
-
-  // Must be defaulted, in order to create this function
   List(List&& t_list) = default;
 
   auto begin() -> NodeList::iterator;

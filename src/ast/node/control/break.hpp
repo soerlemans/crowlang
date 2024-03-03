@@ -13,7 +13,7 @@ class Break : public NodeInterface {
   public:
   Break() = default;
 
-  DEFINE_SERIALIZE_METHOD_NIL()
+  AST_ARCHIVE_DEFINE_SERIALIZE_METHOD_NIL()
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Break() = default;

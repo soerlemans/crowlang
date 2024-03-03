@@ -5,6 +5,20 @@
 #include <boost/archive/xml_oarchive.hpp>
 
 
+/*!
+ * Defines a @ref AstSerializer method, that will call,
+ * @ref AstSerializer::archive() on its argument.
+ *
+ * @param[in] t_type Type of Node to accept.
+ */
+#define DEFINE_SERIALIZE_METHOD(t_type)                          \
+  auto AstSerializer::visit([[maybe_unused]] t_type* t_ptr)->Any \
+  {                                                              \
+    archive(*t_ptr);                                             \
+                                                                 \
+    return {};                                                   \
+  }
+
 namespace ast::visitor {
 // Using statements:
 NODE_USING_ALL_NAMESPACES()
@@ -12,212 +26,66 @@ NODE_USING_ALL_NAMESPACES()
 // Methods:
 // Public: Methods:
 // Control:
-auto AstSerializer::visit(If* t_if) -> Any
-{
-  return {};
-}
-
-auto AstSerializer::visit(Loop* t_loop) -> Any
-{
-  return {};
-}
-
-auto AstSerializer::visit(Continue* t_continue) -> Any
-{
-  return {};
-}
-
-auto AstSerializer::visit(Break* t_break) -> Any
-{
-  return {};
-}
-
-auto AstSerializer::visit(Return* t_ret) -> Any
-{
-  // archive(*t_ret);
-
-  return {};
-}
+DEFINE_SERIALIZE_METHOD(If);
+DEFINE_SERIALIZE_METHOD(Loop);
+DEFINE_SERIALIZE_METHOD(Continue);
+DEFINE_SERIALIZE_METHOD(Break);
+DEFINE_SERIALIZE_METHOD(Return);
 
 // Function:
-auto AstSerializer::visit(Parameter* t_param) -> Any
-{
-  return {};
-}
-
-auto AstSerializer::visit(Function* t_fn) -> Any
-{
-  archive(*t_fn);
-
-  return {};
-}
-
-auto AstSerializer::visit(Call* t_fn_call) -> Any
-{
-  return {};
-}
-
-auto AstSerializer::visit(ReturnType* t_rt) -> Any
-{
-  return {};
-}
+DEFINE_SERIALIZE_METHOD(Parameter);
+DEFINE_SERIALIZE_METHOD(Function);
+DEFINE_SERIALIZE_METHOD(Call);
+DEFINE_SERIALIZE_METHOD(ReturnType);
 
 // Lvalue:
-auto AstSerializer::visit(Let* t_let) -> Any
-{
-  archive(*t_let);
-
-  return {};
-}
-
-auto AstSerializer::visit(Var* t_var) -> Any
-{
-  return {};
-}
-
-auto AstSerializer::visit(Variable* t_var) -> Any
-{
-  // archive(*t_var);
-
-  return {};
-}
+DEFINE_SERIALIZE_METHOD(Let);
+DEFINE_SERIALIZE_METHOD(Var);
+DEFINE_SERIALIZE_METHOD(Variable);
 
 // Operators:
-auto AstSerializer::visit(Arithmetic* t_arith) -> Any
-{
-	archive(*t_arith);
-
-  return {};
-}
-
-auto AstSerializer::visit(Assignment* t_assign) -> Any
-{}
-
-auto AstSerializer::visit(Comparison* t_comp) -> Any
-{}
-
-auto AstSerializer::visit(Increment* t_inc) -> Any
-{}
-
-auto AstSerializer::visit(Decrement* t_dec) -> Any
-{}
-
-auto AstSerializer::visit(UnaryPrefix* t_up) -> Any
-{}
+DEFINE_SERIALIZE_METHOD(Arithmetic);
+DEFINE_SERIALIZE_METHOD(Assignment);
+DEFINE_SERIALIZE_METHOD(Comparison);
+DEFINE_SERIALIZE_METHOD(Increment);
+DEFINE_SERIALIZE_METHOD(Decrement);
+DEFINE_SERIALIZE_METHOD(UnaryPrefix);
 
 // Logical:
-auto AstSerializer::visit(Not* t_not) -> Any
-{
-  return {};
-}
-auto AstSerializer::visit(And* t_and) -> Any
-{
-  return {};
-}
-auto AstSerializer::visit(Or* t_or) -> Any
-{
-  return {};
-}
-
-auto AstSerializer::visit(Ternary* t_ternary) -> Any
-{
-  return {};
-}
+DEFINE_SERIALIZE_METHOD(Not);
+DEFINE_SERIALIZE_METHOD(And);
+DEFINE_SERIALIZE_METHOD(Or);
+DEFINE_SERIALIZE_METHOD(Ternary);
 
 // Packaging:
-auto AstSerializer::visit(Import* t_import) -> Any
-{
-  // for(const auto& pair : t_import->imports()) {
-  //   std::stringstream ss;
-  //   if(pair.second) {
-  //     ss << " Identifier: " << pair.second.value();
-  //   }
-
-  //   print("| Pkg: ", std::quoted(pair.first), ss.str());
-  // }
-
-  return {};
-}
-
-auto AstSerializer::visit(ModuleDecl* t_md) -> Any
-{
-  return {};
-}
+DEFINE_SERIALIZE_METHOD(Import);
+DEFINE_SERIALIZE_METHOD(ModuleDecl);
 
 // Rvalue:
-auto AstSerializer::visit(Float* t_float) -> Any
-{
-  archive(*t_float);
-
-  return {};
-}
-
-auto AstSerializer::visit(Integer* t_int) -> Any
-{
-  archive(*t_int);
-
-  return {};
-}
-
-auto AstSerializer::visit(String* t_str) -> Any
-{
-  archive(*t_str);
-
-  return {};
-}
-
-auto AstSerializer::visit(Boolean* t_bool) -> Any
-{
-  archive(*t_bool);
-
-  return {};
-}
+DEFINE_SERIALIZE_METHOD(Float);
+DEFINE_SERIALIZE_METHOD(Integer);
+DEFINE_SERIALIZE_METHOD(String);
+DEFINE_SERIALIZE_METHOD(Boolean);
 
 // Typing:
-auto AstSerializer::visit(MethodDecl* t_md) -> Any
-{
-  return {};
-}
-
-auto AstSerializer::visit(Interface* t_inf) -> Any
-{
-  return {};
-}
-
-auto AstSerializer::visit(MemberDecl* t_md) -> Any
-{
-  return {};
-}
-
-auto AstSerializer::visit(Struct* t_struct) -> Any
-{
-  return {};
-}
-
-auto AstSerializer::visit(Impl* t_impl) -> Any
-{
-  return {};
-}
-
-auto AstSerializer::visit(DotExpr* t_dot_expr) -> Any
-{
-  return {};
-}
+DEFINE_SERIALIZE_METHOD(MethodDecl);
+DEFINE_SERIALIZE_METHOD(Interface);
+DEFINE_SERIALIZE_METHOD(MemberDecl);
+DEFINE_SERIALIZE_METHOD(Struct);
+DEFINE_SERIALIZE_METHOD(Impl);
+DEFINE_SERIALIZE_METHOD(DotExpr);
 
 // Misc:
-auto AstSerializer::visit(List* t_list) -> Any
-{
-  for(NodePtr& elem : *t_list) {
-    traverse(elem);
-  }
+DEFINE_SERIALIZE_METHOD(List);
+// {
+//   for(NodePtr& elem : *t_list) {
+//     traverse(elem);
+//   }
 
-  return {};
-}
+//   return {};
+// }
 
-auto AstSerializer::visit([[maybe_unused]] Nil* t_nil) -> Any
-{
-  return {};
-}
+DEFINE_SERIALIZE_METHOD(Nil);
 
 auto AstSerializer::serialize(NodePtr t_ast, std::ostream& t_os) -> void
 {

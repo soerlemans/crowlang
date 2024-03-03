@@ -13,7 +13,7 @@ class Continue : public NodeInterface {
   public:
   Continue() = default;
 
-  DEFINE_SERIALIZE_METHOD_NIL()
+  AST_ARCHIVE_DEFINE_SERIALIZE_METHOD_NIL()
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Continue() = default;

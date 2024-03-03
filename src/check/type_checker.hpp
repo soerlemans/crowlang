@@ -17,8 +17,8 @@ namespace check {
 using namespace ast;
 
 using ast::node::NodePtr;
+using ast::visitor::Any;
 using container::TextPosition;
-using visitable::Any;
 
 // Classes:
 class TypeChecker : public SymbolHelper {

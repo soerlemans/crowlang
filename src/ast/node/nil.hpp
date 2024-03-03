@@ -9,10 +9,14 @@
 namespace ast::node {
 class Nil : public NodeInterface {
   public:
+  AST_ARCHIVE_DEFINE_SERIALIZE_METHOD_NIL()
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Nil() = default;
 };
 } // namespace ast::node
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node, Nil);
 
 #endif // CROW_AST_NODE_NIL_HPP

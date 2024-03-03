@@ -17,7 +17,7 @@
 /*!
  * Defines a @ref AstPrinter method, that will print all traits.
  *
- * @param[in] t_type type of Node to accept.
+ * @param[in] t_type Type of Node to accept.
  */
 #define DEFINE_PRINTER_METHOD(t_type)                         \
   auto AstPrinter::visit([[maybe_unused]] t_type* t_ptr)->Any \

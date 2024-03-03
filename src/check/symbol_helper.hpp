@@ -14,9 +14,8 @@ namespace check {
 using ast::node::NodeListPtr;
 using ast::node::NodePtr;
 using ast::node::node_traits::typing::NativeTypeOpt;
+using ast::visitor::Any;
 using ast::visitor::NodeVisitor;
-
-using visitable::Any;
 
 // Classes:
 /*!
