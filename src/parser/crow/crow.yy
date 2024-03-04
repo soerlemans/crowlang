@@ -2,7 +2,7 @@
 %token IDENTIFIER NUMBER STRING
 
 // Variables:
-%token Let Const
+%token Let Var
 
 // Package:
 %token Module Import Private Public
@@ -128,17 +128,17 @@ expr_opt         : // empty
 				         | expr
                  ;
 
-// TODO: Refactor Const and Let to be more elegant
-const_expr       : Const IDENTIFIER '=' newline_opt expr
-                 | Const IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
-                 ;
-
+// TODO: Refactor Var and Let to be more elegant
 let_expr         : Let IDENTIFIER ':' IDENTIFIER
                  | Let IDENTIFIER '=' newline_opt expr
                  | Let IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
                  ;
 
-decl_expr        : const_expr
+var_expr         : Var IDENTIFIER '=' newline_opt expr
+                 | Var IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
+                 ;
+
+decl_expr        : var_expr
                  | let_expr
                  ;
 

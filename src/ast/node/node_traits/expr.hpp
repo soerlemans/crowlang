@@ -10,18 +10,26 @@
 
 namespace ast::node::node_traits {
 class Expr : virtual public NodeInterface {
-  protected:
+  private:
   NodePtr m_expr;
 
   public:
   Expr(NodePtr&& t_expr);
 
-  virtual auto expr() -> NodePtr&;
+  auto expr() -> NodePtr&;
+
+  MAKE_ARCHIVEABLE(Expr)
+  {
+    t_archive(CEREAL_NVP(m_expr));
+  }
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~Expr() override = default;
+  virtual ~Expr() = default;
 };
 } // namespace ast::node::node_traits
+
+// Cereal register type:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits, Expr);
 
 #endif // CROW_AST_NODE_NODE_TRAITS_EXPR_HPP

@@ -13,41 +13,46 @@
 #include "../debug/log.hpp"
 
 
+namespace check {
 // Using Statements:
-using namespace ast::node::node_traits::typing;
-using namespace exception;
-using namespace check;
+using ast::node::node_traits::typing::NativeType;
+using container::TextPosition;
+using exception::type_error;
 
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-//! Handle the case where a type must be treated as a conditional
+//! Handle the case where a type must be treated as a conditional.
 auto TypeChecker::handle_condition(const SymbolData& t_data,
-                                   const container::TextPosition& t_pos) const
-  -> void
+                                   const TextPosition& t_pos) const -> void
 {
   std::stringstream ss;
 
   if(const auto opt{t_data.native_type()}; opt) {
     if(!is_condition(opt.value())) {
       ss << "Expected a pointer, integer or a boolean for a conditional "
-            "expression."
-         << "\n\n";
+         << "expression.\n\n";
 
       ss << t_pos;
 
       type_error(ss.str());
     }
   } else {
-    ss << "Non native types can not casted to ";
-    ss << std::quoted("bool") << "."
-       << "\n\n";
+    ss << "Non native types can not casted to " << std::quoted("bool")
+       << ".\n\n";
 
     ss << t_pos;
 
     type_error(ss.str());
   }
 }
+
+// TODO: Implement
+auto TypeChecker::promote([[maybe_unused]] const SymbolData& t_lhs,
+                          [[maybe_unused]] const SymbolData& rhs,
+                          [[maybe_unused]] const TextPosition& t_pos) const
+  -> void
+{}
 
 TypeChecker::TypeChecker(): m_envs{}
 {}
@@ -70,11 +75,14 @@ auto TypeChecker::visit(If* t_if) -> Any
 
 auto TypeChecker::visit(Loop* t_loop) -> Any
 {
-  const auto cond{get_symbol_data(t_loop->condition())};
+	// A loops condition maybe empty, which is an endless loop.
+  if(t_loop->condition()) {
+    const auto cond{get_symbol_data(t_loop->condition())};
 
-  DBG_INFO("Condition: ", cond);
+    DBG_INFO("Condition: ", cond);
 
-  handle_condition(cond, t_loop->position());
+    handle_condition(cond, t_loop->position());
+  }
 
   traverse(t_loop->init_expr());
   traverse(t_loop->body());
@@ -116,8 +124,8 @@ auto TypeChecker::visit(Function* t_fn) -> Any
   // properly resolve in the TypeChecker as they are not defined ahead
   const auto params{get_type_list(t_fn->params())};
 
-  SymbolData ptr{define_function(params, type)};
-  m_envs.add_symbol(id, ptr);
+  const SymbolData data{check::make_function(params, type)};
+  m_envs.add_symbol(id, data);
 
   DBG_INFO("Function: ", id, "(", params, ") -> ", type);
 
@@ -126,7 +134,7 @@ auto TypeChecker::visit(Function* t_fn) -> Any
   return {};
 }
 
-auto TypeChecker::visit(FunctionCall* t_fn_call) -> Any
+auto TypeChecker::visit(Call* t_fn_call) -> Any
 {
   // TODO: Improve this code to be more generic and clean, error if this is not
   // a function name
@@ -160,6 +168,7 @@ auto TypeChecker::visit(ReturnType* t_rt) -> Any
 
 // Lvalue:
 // TODO: Account for when init expr is a nullptr
+// TODO: Add TypeData annotation.
 auto TypeChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
 {
   const auto type{t_decl->type()};
@@ -194,25 +203,26 @@ auto TypeChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
   return expr;
 }
 
-auto TypeChecker::visit(Const* t_const) -> Any
-{
-  const auto id{t_const->identifier()};
-  const auto expr_data{decl_expr(t_const)};
-
-  // Create the SymbolData for a variable
-  SymbolData data{define_variable(true, expr_data)};
-  m_envs.add_symbol(id, data);
-
-  return {};
-}
-
+// TODO: FIXME Disallow redeclaration of variables.
 auto TypeChecker::visit(Let* t_let) -> Any
 {
   const auto id{t_let->identifier()};
   const auto expr_data{decl_expr(t_let)};
 
-  // Create the SymbolData for a variable
-  SymbolData data{define_variable(false, expr_data)};
+  // Create the SymbolData for a variable.
+  const SymbolData data{check::make_variable(true, expr_data)};
+  m_envs.add_symbol(id, data);
+
+  return {};
+}
+
+auto TypeChecker::visit(Var* t_var) -> Any
+{
+  const auto id{t_var->identifier()};
+  const auto expr_data{decl_expr(t_var)};
+
+  // Create the SymbolData for a variable.
+  const SymbolData data{check::make_variable(false, expr_data)};
   m_envs.add_symbol(id, data);
 
   return {};
@@ -224,6 +234,9 @@ auto TypeChecker::visit(Variable* t_var) -> Any
   const auto var{m_envs.get_symbol(id)};
 
   DBG_INFO("Variable ", std::quoted(id), " of type ", var);
+
+  // Annotate the AST.
+  t_var->set_type(var.strip());
 
   return var;
 }
@@ -253,6 +266,9 @@ auto TypeChecker::visit(Arithmetic* t_arith) -> Any
 
     type_error(ss.str());
   }
+
+  // Annotate AST.
+  t_arith->set_type(ret.strip());
 
   return ret;
 }
@@ -447,3 +463,4 @@ auto TypeChecker::check(NodePtr t_ast) -> void
 
   traverse(t_ast);
 }
+} // namespace check

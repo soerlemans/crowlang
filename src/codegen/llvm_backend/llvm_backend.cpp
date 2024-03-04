@@ -27,6 +27,8 @@ namespace codegen::llvm_backend {
 // Using Statements:
 using namespace ast::visitor;
 
+using llvm::Value;
+
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
@@ -146,12 +148,12 @@ auto LlvmBackend::visit(Function* t_fn) -> Any
   return {t_fn};
 }
 
-AST_VISITOR_STUB(LlvmBackend, FunctionCall)
+AST_VISITOR_STUB(LlvmBackend, Call)
 AST_VISITOR_STUB(LlvmBackend, ReturnType)
 
 // Lvalue:
-AST_VISITOR_STUB(LlvmBackend, Const)
 AST_VISITOR_STUB(LlvmBackend, Let)
+AST_VISITOR_STUB(LlvmBackend, Var)
 AST_VISITOR_STUB(LlvmBackend, Variable)
 
 // Operators:
@@ -165,23 +167,23 @@ auto LlvmBackend::visit(Arithmetic* t_arith) -> Any
 
   switch(t_arith->op()) {
     case ArithmeticOp::MULTIPLY:
-      expr = m_builder->CreateMul(lhs, rhs, "multmp");
+      expr = m_builder->CreateMul(lhs, rhs, "mul_tmp");
       break;
 
     case ArithmeticOp::DIVIDE:
-      expr = m_builder->CreateSDiv(lhs, rhs, "divtmp");
+      expr = m_builder->CreateSDiv(lhs, rhs, "div_tmp");
       break;
 
     case ArithmeticOp::MODULO:
-      // expr = m_builder->CreateDiv(lhs, rhs, "modtmp");
+      // expr = m_builder->CreateDiv(lhs, rhs, "mod_tmp");
       break;
 
     case ArithmeticOp::ADD:
-      expr = m_builder->CreateAdd(lhs, rhs, "addtmp");
+      expr = m_builder->CreateAdd(lhs, rhs, "add_tmp");
       break;
 
     case ArithmeticOp::SUBTRACT:
-      expr = m_builder->CreateSub(lhs, rhs, "subtmp");
+      expr = m_builder->CreateSub(lhs, rhs, "sub_tmp");
       break;
 
     default:
@@ -193,7 +195,30 @@ auto LlvmBackend::visit(Arithmetic* t_arith) -> Any
 }
 
 AST_VISITOR_STUB(LlvmBackend, Assignment)
-AST_VISITOR_STUB(LlvmBackend, Comparison)
+
+auto LlvmBackend::visit(Comparison* t_comp) -> Any
+{
+  Value* expr{nullptr};
+  auto* lhs{get_value(t_comp->left())};
+  auto* rhs{get_value(t_comp->right())};
+
+  switch(t_comp->op()) {
+    case ComparisonOp::EQUAL:
+      expr = m_builder->CreateICmpEQ(lhs, rhs, "eq_tmp");
+      break;
+
+    case ComparisonOp::NOT_EQUAL:
+      expr = m_builder->CreateICmpNE(lhs, rhs, "ne_tmp");
+      break;
+
+    default:
+      throw; // TODO: Throw something
+      break;
+  }
+
+  return std::make_any<Value*>(expr);
+}
+
 AST_VISITOR_STUB(LlvmBackend, Increment)
 AST_VISITOR_STUB(LlvmBackend, Decrement)
 AST_VISITOR_STUB(LlvmBackend, UnaryPrefix)
@@ -201,7 +226,12 @@ AST_VISITOR_STUB(LlvmBackend, UnaryPrefix)
 // Logical:
 AST_VISITOR_STUB(LlvmBackend, Not)
 AST_VISITOR_STUB(LlvmBackend, And)
-AST_VISITOR_STUB(LlvmBackend, Or)
+
+auto LlvmBackend::visit([[maybe_unused]] Or* t_or) -> Any
+{
+  return {};
+}
+
 AST_VISITOR_STUB(LlvmBackend, Ternary)
 
 // Packaging:

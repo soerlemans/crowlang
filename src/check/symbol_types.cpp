@@ -3,71 +3,32 @@
 // Includes:
 #include "../debug/log.hpp"
 
-// Local Includes:
-#include "symbol_data.hpp"
 
-
-using namespace check;
-
-// Functions:
-auto operator<<(std::ostream& t_os, StructTypePtr t_struct) -> std::ostream&
+// Using Statements:
+namespace check {
+// StructType:
+auto StructType::strip() const -> TypeVariant
 {
-  if(t_struct) {
-    t_os << "Identifier: " << t_struct->m_identifier;
-  } else {
-    DBG_ERROR("(StructTypePtr) nullptr!");
+  namespace typing = ast::node::node_traits::typing;
 
-    t_os << "nullptr";
-  }
-
-  return t_os;
+  return {typing::make_struct(m_identifier)};
 }
 
-auto operator<<(std::ostream& t_os, FnTypePtr t_fn) -> std::ostream&
+// FnType:
+auto FnType::strip() const -> TypeVariant
 {
-  if(t_fn) {
-    t_os << "Params: ";
-    for(const auto& param : t_fn->m_params) {
-      t_os << param << ",";
-    }
-    t_os << "\n";
+  namespace typing = ast::node::node_traits::typing;
 
-    t_os << "Return type: " << t_fn->m_return_type << "\n";
-  } else {
-    DBG_ERROR("(FnTypePtr) nullptr!");
+  typing::TypeList params;
 
-    t_os << "nullptr";
-  }
-
-  return t_os;
+  return {typing::make_function(params, m_return_type.strip())};
 }
 
-auto operator<<(std::ostream& t_os, VarTypePtr t_var) -> std::ostream&
+// VarType:
+auto VarType::strip() const -> TypeVariant
 {
-  if(t_var) {
-    if(t_var->m_const) {
-      t_os << "Const ";
-    }
+  namespace typing = ast::node::node_traits::typing;
 
-    t_os << t_var->m_type;
-  } else {
-    DBG_ERROR("(VarTypePtr) nullptr!");
-
-    t_os << "nullptr";
-  }
-
-  return t_os;
+  return {typing::make_variable(m_type.strip())};
 }
-
-auto operator<<(std::ostream& t_os, const TypeList& t_list) -> std::ostream&
-{
-  for(auto iter{t_list.cbegin()}; iter != t_list.cend(); iter++) {
-    if(iter != t_list.cbegin()) {
-      t_os << ", ";
-    }
-
-    t_os << *iter;
-  }
-
-  return t_os;
-}
+} // namespace check

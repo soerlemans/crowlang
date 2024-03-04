@@ -10,11 +10,11 @@
 
 
 namespace ast::node::typing {
-// Aliases:
-namespace nt = node_traits;
+// Using Statements:
+using node_traits::Identifier;
 
 // Classes:
-class Interface : public nt::Identifier {
+class Interface : public Identifier {
   private:
   NodeListPtr m_methods;
 
@@ -23,10 +23,14 @@ class Interface : public nt::Identifier {
 
   virtual auto methods() -> NodeListPtr&;
 
+  MAKE_TRAITS_ARCHIVEABLE(Interface, Identifier)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Interface() override = default;
+  virtual ~Interface() = default;
 };
 } // namespace ast::node::typing
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::typing, Interface);
 
 #endif // CROW_AST_NODE_TYPING_INTERFACE_HPP

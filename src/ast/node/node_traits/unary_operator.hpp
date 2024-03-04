@@ -10,7 +10,7 @@
 
 namespace ast::node::node_traits {
 class UnaryOperator : virtual public NodeInterface {
-  private:
+  protected:
   NodePtr m_left;
 
   public:
@@ -18,10 +18,18 @@ class UnaryOperator : virtual public NodeInterface {
 
   virtual auto left() -> NodePtr&;
 
+  MAKE_ARCHIVEABLE(UnaryOperator)
+  {
+    t_archive(m_left);
+  }
+
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~UnaryOperator() override = default;
+  virtual ~UnaryOperator() = default;
 };
 } // namespace ast::node::node_traits
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits, UnaryOperator);
 
 #endif // CROW_AST_NODE_NODE_TRAITS_UNARY_OPERATOR_HPP

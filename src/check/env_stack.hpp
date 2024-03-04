@@ -5,7 +5,7 @@
 #include "../exception/type_error.hpp"
 
 // Local Includes:
-#include "symbol_data.hpp"
+#include "symbol_types.hpp"
 
 
 namespace check {

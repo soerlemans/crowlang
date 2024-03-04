@@ -15,7 +15,10 @@
 namespace check {
 // Using statements:
 using namespace ast;
-using visitable::Any;
+
+using ast::node::NodePtr;
+using ast::visitor::Any;
+using container::TextPosition;
 
 // Classes:
 class TypeChecker : public SymbolHelper {
@@ -23,7 +26,10 @@ class TypeChecker : public SymbolHelper {
   EnvStack m_envs;
 
   auto handle_condition(const SymbolData& t_data,
-                        const container::TextPosition& t_pos) const -> void;
+                        const TextPosition& t_pos) const -> void;
+
+  auto promote(const SymbolData& t_lhs, const SymbolData& rhs,
+               const TextPosition& t_pos) const -> void;
 
   public:
   TypeChecker();
@@ -38,13 +44,13 @@ class TypeChecker : public SymbolHelper {
   // Function:
   auto visit(node::function::Parameter* t_param) -> Any override;
   auto visit(node::function::Function* t_fn) -> Any override;
-  auto visit(node::function::FunctionCall* t_fn_call) -> Any override;
+  auto visit(node::function::Call* t_fn_call) -> Any override;
   auto visit(node::function::ReturnType* t_rt) -> Any override;
 
   // Lvalue:
   auto decl_expr(node::node_traits::DeclExpr* t_decl) -> SymbolData;
-  auto visit(node::lvalue::Const* t_const) -> Any override;
   auto visit(node::lvalue::Let* t_let) -> Any override;
+  auto visit(node::lvalue::Var* t_var) -> Any override;
   auto visit(node::lvalue::Variable* t_var) -> Any override;
 
   // Operators:
@@ -82,9 +88,9 @@ class TypeChecker : public SymbolHelper {
   auto visit(node::typing::Impl* t_impl) -> Any override;
   auto visit(node::typing::DotExpr* t_dot_expr) -> Any override;
 
-  auto check(node::NodePtr t_ast) -> void;
+  auto check(NodePtr t_ast) -> void;
 
-  ~TypeChecker() override = default;
+  virtual ~TypeChecker() = default;
 };
 } // namespace check
 

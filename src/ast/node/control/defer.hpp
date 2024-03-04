@@ -10,17 +10,21 @@
 
 namespace ast::node::control {
 // Aliases:
-namespace nt = node_traits;
+using node_traits::Body;
 
 // Classes:
-class Defer : public nt::Body {
+class Defer : public Body {
   public:
   Defer(NodeListPtr&& t_body);
 
+  MAKE_TRAITS_ARCHIVEABLE(Defer, Body)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Defer() override = default;
+  virtual ~Defer() = default;
 };
 } // namespace ast::node::control
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::control, Defer);
 
 #endif // CROW_AST_NODE_CONTROL_DEFER_HPP

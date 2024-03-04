@@ -10,22 +10,30 @@
 
 namespace ast::node::lvalue {
 // Aliases:
-namespace nt = node_traits;
-namespace ct = container;
+using container::TextPosition;
+using node_traits::Identifier;
+using node_traits::NodePosition;
+using node_traits::TypeAnnotation;
+using node_traits::typing::TypeData;
 
 // Classes:
-class Variable : public nt::NodePosition,
-                 public nt::Identifier,
-                 public nt::TypeAnnotation {
+class Variable : public NodePosition,
+                 public Identifier,
+                 public TypeAnnotation,
+                 public TypeData {
   public:
-  Variable(ct::TextPosition t_pos, std::string_view t_identifier);
-  Variable(ct::TextPosition t_pos, std::string_view t_identifier,
+  Variable(TextPosition t_pos, std::string_view t_identifier);
+  Variable(TextPosition t_pos, std::string_view t_identifier,
            std::string_view t_type);
 
+  MAKE_TRAITS_ARCHIVEABLE(Variable, NodePosition, Identifier, TypeAnnotation)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Variable() override = default;
+  virtual ~Variable() = default;
 };
 } // namespace ast::node::lvalue
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::lvalue, Variable);
 
 #endif // CROW_AST_NODE_LVALUE_VARIABLE_HPP

@@ -11,21 +11,26 @@
 namespace ast::node::node_traits {
 template<typename T>
 class Op : virtual public NodeInterface {
-  protected:
+  private:
   T m_op;
 
   public:
   Op(const T t_op): m_op{t_op}
   {}
 
-  virtual auto op() const -> T
+  auto op() const -> T
   {
     return m_op;
   }
 
+  MAKE_ARCHIVEABLE(Op)
+  {
+    t_archive(m_op);
+  }
+
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~Op() override = default;
+  virtual ~Op() = default;
 };
 } // namespace ast::node::node_traits
 

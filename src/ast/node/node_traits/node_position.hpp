@@ -11,24 +11,37 @@
 
 
 namespace ast::node::node_traits {
-// Aliases:
-namespace ct = container;
+// Using Statements:
+using container::TextPosition;
 
 // Classes:
 //! Contains the original position of the Node in the Crow source code
 class NodePosition : virtual public NodeInterface {
-  protected:
-  container::TextPosition m_pos;
+  private:
+  TextPosition m_pos;
 
   public:
-  NodePosition(container::TextPosition&& t_pos);
+  NodePosition() = default;
+  NodePosition(TextPosition&& t_pos);
 
-  virtual auto position() -> const container::TextPosition&;
+  auto position() -> const TextPosition&;
+
+  template<typename Archive>
+  auto serialize(Archive& t_archive) -> void
+  {
+    t_archive(cereal::make_nvp("m_source", m_pos.m_source),
+              cereal::make_nvp("m_line", m_pos.m_line),
+              cereal::make_nvp("m_lineno", m_pos.m_lineno),
+              cereal::make_nvp("columno", m_pos.m_columno));
+  }
 
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~NodePosition() override = default;
+  virtual ~NodePosition() = default;
 };
 } // namespace ast::node::node_traits
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits, NodePosition);
 
 #endif // CROW_AST_NODE_NODE_TRAITS_NODE_POSITION_HPP

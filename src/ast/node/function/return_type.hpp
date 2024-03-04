@@ -9,18 +9,22 @@
 
 
 namespace ast::node::function {
-// Aliases:
-namespace nt = node_traits;
+// Using Statements:
+using node_traits::TypeAnnotation;
 
 // Classes:
-class ReturnType : public nt::TypeAnnotation {
+class ReturnType : public TypeAnnotation {
   public:
   ReturnType(std::string_view t_type);
 
+  MAKE_TRAITS_ARCHIVEABLE(ReturnType, TypeAnnotation)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~ReturnType() override = default;
+  virtual ~ReturnType() = default;
 };
-} // namespace ast::node::functions
+} // namespace ast::node::function
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::function, ReturnType);
 
 #endif // CROW_AST_NODE_FUNCTION_RETURN_TYPE_HPP

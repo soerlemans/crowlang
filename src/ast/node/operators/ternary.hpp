@@ -9,18 +9,24 @@
 
 
 namespace ast::node::operators {
-// Aliases:
-namespace nt = node_traits;
+// Using Statements:
+using node_traits::Alt;
+using node_traits::Condition;
+using node_traits::Then;
 
 // Classes:
-class Ternary : public nt::Condition, public nt::Then, public nt::Alt {
+class Ternary : public Condition, public Then, public Alt {
   public:
   explicit Ternary(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_alt);
 
+  MAKE_TRAITS_ARCHIVEABLE(Ternary, Condition, Then, Alt)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Ternary() override = default;
+  virtual ~Ternary() = default;
 };
 } // namespace ast::node::operators
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::operators, Ternary);
 
 #endif // CROW_AST_NODE_OPERATORS_TERNARY_HPP

@@ -1,5 +1,6 @@
 # Add source files
 target_sources(${PROJECT_NAME} PRIVATE
+	args.cpp
 	body.cpp
 	condition.cpp
 	decl_expr.cpp

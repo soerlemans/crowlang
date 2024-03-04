@@ -9,19 +9,23 @@
 
 
 namespace ast::node::typing {
-// Aliases:
-namespace nt = node_traits;
+// Using Statements:
+using node_traits::Expr;
+using node_traits::Identifier;
 
 // Classes:
-class DotExpr : public nt::Identifier, public nt::Expr {
+class DotExpr : public Identifier, public Expr {
   public:
   DotExpr(std::string_view t_identifier, NodePtr&& t_init);
 
+  MAKE_TRAITS_ARCHIVEABLE(DotExpr, Identifier, Expr)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~DotExpr() override = default;
+  virtual ~DotExpr() = default;
 };
+} // namespace ast::node::typing
 
-} // namespace ast::node::lvalue
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::typing, DotExpr);
 
 #endif // CROW_AST_NODE_TYPING_DOT_EXPR_HPP

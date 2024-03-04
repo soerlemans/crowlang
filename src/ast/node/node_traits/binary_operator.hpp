@@ -14,12 +14,16 @@ class BinaryOperator : public UnaryOperator {
   public:
   explicit BinaryOperator(NodePtr&& t_left, NodePtr&& t_right);
 
-  virtual auto right() -> NodePtr&;
+  auto right() -> NodePtr&;
 
+  MAKE_TRAITS_ARCHIVEABLE(BinaryOperator, UnaryOperator)
   VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  ~BinaryOperator() override = default;
+  virtual ~BinaryOperator() = default;
 };
 } // namespace ast::node::node_traits
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits, BinaryOperator);
 
 #endif // CROW_AST_NODE_NODE_TRAITS_BINARY_OPERATOR_HPP

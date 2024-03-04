@@ -1,6 +1,10 @@
-fn main() -> int {
-  let var = 10
-	var = 4.0
+import(
+				"io"
+				"http"
+)
 
-	return var
+fn main() -> int {
+  var var2 = 10 + 10
+
+	return var2
 }

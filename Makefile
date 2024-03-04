@@ -47,7 +47,7 @@ header_guard:
 
 # Documentation rules:
 docs:
-	doxygen docs/Doxyfile
+	doxygen .doxygen
 
 # Compile documentation as LaTex
 docs-pdf: docs

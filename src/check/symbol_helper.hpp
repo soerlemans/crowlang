@@ -6,49 +6,32 @@
 #include "../ast/visitor/node_visitor.hpp"
 
 // Local Includes:
-#include "symbol_data.hpp"
+#include "symbol_types.hpp"
 
 
 namespace check {
 // Using statements:
-using namespace ast;
-
+using ast::node::NodeListPtr;
+using ast::node::NodePtr;
 using ast::node::node_traits::typing::NativeTypeOpt;
-using visitable::Any;
+using ast::visitor::Any;
+using ast::visitor::NodeVisitor;
 
 // Classes:
 /*!
  * Helper class for dealing with @ref SymbolData in a @ref NodeVisitor context.
  */
-class SymbolHelper : public visitor::NodeVisitor {
+class SymbolHelper : public NodeVisitor {
   protected:
-  template<typename T, typename... Args>
-  inline auto define_type_variant(Args&&... t_args) -> SymbolData
-  {
-    return {std::make_shared<T>(std::forward<Args>(t_args)...)};
-  }
-
-  template<typename... Args>
-  inline auto define_function(Args&&... t_args) -> SymbolData
-  {
-    return {define_type_variant<FnType>(std::forward<Args>(t_args)...)};
-  }
-
-  template<typename... Args>
-  inline auto define_variable(Args&&... t_args) -> SymbolData
-  {
-    return {define_type_variant<VarType>(std::forward<Args>(t_args)...)};
-  }
-
-  auto get_symbol_data(ast::node::NodePtr t_ptr) -> SymbolData;
-  auto get_resolved_type(ast::node::NodePtr t_ptr) -> SymbolData;
-  auto get_native_type(ast::node::NodePtr t_ptr) -> NativeTypeOpt;
-  auto get_type_list(ast::node::NodeListPtr t_list) -> TypeList;
+  auto get_symbol_data(NodePtr t_ptr) -> SymbolData;
+  auto get_resolved_type(NodePtr t_ptr) -> SymbolData;
+  auto get_native_type(NodePtr t_ptr) -> NativeTypeOpt;
+  auto get_type_list(NodeListPtr t_list) -> TypeList;
 
   public:
   SymbolHelper() = default;
 
-  ~SymbolHelper() override = default;
+  virtual ~SymbolHelper() = default;
 };
 } // namespace check
 

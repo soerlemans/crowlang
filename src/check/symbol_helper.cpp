@@ -8,11 +8,7 @@
 #include "../debug/log.hpp"
 
 
-// Using Statements:
-using namespace check;
-
-NODE_USING_ALL_NAMESPACES()
-
+namespace check {
 // Methods:
 auto SymbolHelper::get_symbol_data(NodePtr t_ptr) -> SymbolData
 {
@@ -53,3 +49,4 @@ auto SymbolHelper::get_type_list(NodeListPtr t_list) -> TypeList
 
   return list;
 }
+} // namespace check

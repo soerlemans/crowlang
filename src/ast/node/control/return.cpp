@@ -1,8 +1,7 @@
 #include "return.hpp"
 
 
-using namespace ast::node::control;
-using namespace ast::node::node_traits;
-
+namespace ast::node::control {
 Return::Return(NodePtr&& t_expr): Expr{std::move(t_expr)}
 {}
+} // namespace ast::node::control

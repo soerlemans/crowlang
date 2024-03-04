@@ -10,8 +10,11 @@
 
 namespace ast::node::operators {
 // Namespace aliases:
-namespace nt = node_traits;
-namespace ct = container;
+using container::TextPosition;
+using node_traits::BinaryOperator;
+using node_traits::NodePosition;
+using node_traits::Op;
+using node_traits::typing::TypeData;
 
 // Enums:
 enum class ArithmeticOp {
@@ -26,17 +29,25 @@ enum class ArithmeticOp {
 };
 
 // Classes:
-class Arithmetic : public nt::NodePosition,
-                   public nt::Op<ArithmeticOp>,
-                   public nt::BinaryOperator {
+class Arithmetic : public NodePosition,
+                   public Op<ArithmeticOp>,
+                   public BinaryOperator,
+                   public TypeData {
   public:
-  Arithmetic(ct::TextPosition t_pos, ArithmeticOp t_op, NodePtr&& t_left,
+  Arithmetic(TextPosition t_pos, ArithmeticOp t_op, NodePtr&& t_left,
              NodePtr&& t_right);
 
+  MAKE_TRAITS_ARCHIVEABLE(Arithmetic, NodePosition, Op<ArithmeticOp>,
+                          BinaryOperator)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Arithmetic() override = default;
+  virtual ~Arithmetic() = default;
 };
 } // namespace ast::node::operators
 
-#endif
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::operators, Arithmetic);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits,
+                          Op<ast::node::operators::ArithmeticOp>);
+
+#endif // CROW_AST_NODE_OPERATORS_ARITHMETIC_HPP

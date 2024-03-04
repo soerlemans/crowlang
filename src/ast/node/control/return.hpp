@@ -9,18 +9,22 @@
 
 
 namespace ast::node::control {
-// Aliases:
-namespace nt = node_traits;
+// Using Statements:
+using node_traits::Expr;
 
 // Classes:
-class Return : public nt::Expr {
+class Return : public Expr {
   public:
   Return(NodePtr&& t_expr);
 
+  MAKE_TRAITS_ARCHIVEABLE(Return, Expr)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Return() override = default;
+  virtual ~Return() = default;
 };
 } // namespace ast::node::control
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::control, Return);
 
 #endif // CROW_AST_NODE_CONTROL_RETURN_HPP

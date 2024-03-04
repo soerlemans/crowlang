@@ -10,20 +10,13 @@
 // Library Includes:
 #include <cpptrace/cpptrace.hpp>
 
-// Macros:
-#ifdef DEBUG
-#define ERROR_PARENT cpptrace::exception
-#else
-#define ERROR_PARENT std::exception
-#endif
-
 namespace exception {
 // Classes:
 /*!
  * Base exception/error class.
  * Includes a stacktrace when compiling with the @ref DEBUG macro defined.
  */
-class Error : public ERROR_PARENT {
+class Error : public std::exception {
   protected:
   std::string m_error;
 
@@ -32,7 +25,7 @@ class Error : public ERROR_PARENT {
 
   auto what() const noexcept -> const char* override;
 
-  ~Error() override = default;
+  virtual ~Error() = default;
 };
 
 

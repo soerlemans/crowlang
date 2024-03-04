@@ -9,24 +9,32 @@
 
 
 namespace ast::node::control {
-// Aliases:
-namespace nt = node_traits;
-namespace ct = container;
+// Using Statements:
+using container::TextPosition;
+using node_traits::Body;
+using node_traits::Condition;
+using node_traits::Expr;
+using node_traits::InitExpr;
+using node_traits::NodePosition;
 
 // Classes:
-class Loop : public nt::NodePosition,
-             public nt::InitExpr,
-             public nt::Condition,
-             public nt::Expr,
-             public nt::Body {
+class Loop : public NodePosition,
+             public InitExpr,
+             public Condition,
+             public Expr,
+             public Body {
   public:
-  Loop(ct::TextPosition t_pos, NodePtr&& t_init,
-       NodePtr&& t_condition, NodePtr&& t_expr, NodeListPtr&& t_body);
+  Loop(TextPosition t_pos, NodePtr&& t_init, NodePtr&& t_condition,
+       NodePtr&& t_expr, NodeListPtr&& t_body);
 
+  MAKE_TRAITS_ARCHIVEABLE(Loop, NodePosition, InitExpr, Condition, Expr, Body)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Loop() override = default;
+  virtual ~Loop() = default;
 };
 } // namespace ast::node::control
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::control, Loop);
 
 #endif // CROW_AST_NODE_CONTROL_LOOP_HPP

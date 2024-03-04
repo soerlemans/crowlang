@@ -9,11 +9,11 @@
 
 
 namespace ast::node::operators {
-// Namespace aliases:
-namespace nt = node_traits;
+// Using statements:
+using node_traits::UnaryOperator;
 
 // Classes:
-class Increment : public nt::UnaryOperator {
+class Increment : public UnaryOperator {
   private:
   bool m_prefix;
 
@@ -22,10 +22,14 @@ class Increment : public nt::UnaryOperator {
 
   auto prefix() const -> bool;
 
+  MAKE_TRAITS_ARCHIVEABLE(Increment, UnaryOperator)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Increment() override = default;
+  virtual ~Increment() = default;
 };
 } // namespace ast::node::operators
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::operators, Increment);
 
 #endif

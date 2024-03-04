@@ -9,9 +9,10 @@
 // Includes:
 #include "../debug/log.hpp"
 
+
+namespace check {
 // Using Statements:
-using namespace exception;
-using namespace check;
+using exception::type_error;
 
 // Methods:
 EnvStack::EnvStack(): m_envs{}
@@ -50,7 +51,7 @@ auto EnvStack::get_symbol(const std::string_view t_id) -> SymbolData
   }
 
   if(!found) {
-    type_error("Identifier ", str, " is not defined in environment");
+    type_error("Identifier ", str, " is not defined.");
   }
 
   return data;
@@ -66,6 +67,7 @@ auto EnvStack::clear() -> void
 {
   m_envs.clear();
 
-	// Always make sure the Global scope exists
+  // Always make sure the Global scope exists
   m_envs.emplace_back();
 }
+} // namespace check

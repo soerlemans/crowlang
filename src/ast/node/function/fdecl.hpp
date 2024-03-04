@@ -9,7 +9,7 @@ namespace ast::node::function {
 // Forward Declarations:
 class Parameter;
 class Function;
-class FunctionCall;
+class Call;
 class ReturnType;
 } // namespace ast::node::functions
 

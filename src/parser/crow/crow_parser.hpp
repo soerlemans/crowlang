@@ -32,8 +32,8 @@ class CrowParser : public pratt::PrattParser {
   virtual auto expr_opt() -> NodePtr;
 
   virtual auto init_expr(TokenType t_type) -> NodePtr;
-  virtual auto const_expr() -> NodePtr;
   virtual auto let_expr() -> NodePtr;
+  virtual auto var_expr() -> NodePtr;
   virtual auto decl_expr() -> NodePtr;
   virtual auto eval_expr() -> EvalPair;
 
@@ -106,7 +106,7 @@ class CrowParser : public pratt::PrattParser {
 
   auto parse() -> NodePtr override;
 
-  ~CrowParser() override = default;
+  virtual ~CrowParser() = default;
 };
 
 } // namespace parser::crow

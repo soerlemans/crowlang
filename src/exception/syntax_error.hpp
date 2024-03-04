@@ -25,7 +25,7 @@ class SyntaxError : public Error {
   public:
   SyntaxError(std::string_view t_msg, const container::TextPosition& t_pos);
 
-  ~SyntaxError() override = default;
+  virtual ~SyntaxError() = default;
 };
 } // namespace exception
 

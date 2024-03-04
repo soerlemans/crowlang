@@ -1,18 +1,13 @@
 // STL Includes:
-#include <CLI/Error.hpp>
-#include <filesystem>
 #include <fstream>
 
 // Library Includes:
-#include <CLI/App.hpp>
-#include <CLI/CLI.hpp>
-#include <CLI/Validators.hpp>
-#include <rang.hpp>
+#include <clang-c/Index.h>
 
 // Includes:
 #include "ast/node/fdecl.hpp"
 #include "ast/node/include.hpp"
-#include "ast/visitor/print_visitor.hpp"
+#include "ast/visitor/ast_printer.hpp"
 #include "check/type_checker.hpp"
 #include "codegen/llvm_backend/llvm_backend.hpp"
 #include "container/text_buffer.hpp"
@@ -22,12 +17,8 @@
 #include "token/token.hpp"
 
 // Local Includes:
-#include "banner.hpp"
-#include "version.hpp"
+#include "cli_arguments.hpp"
 
-
-// Aliases:
-namespace fs = std::filesystem;
 
 // Enums:
 enum ExitCode {
@@ -37,31 +28,10 @@ enum ExitCode {
   SIGNAL = 200,
 };
 
-// Globals:
-struct Settings {
-  std::vector<fs::path> m_paths;
-} settings;
-
 // Functions:
-auto parse_args(CLI::App& t_app, const int t_argc, char* t_argv[]) -> void
-{
-  t_app.failure_message(CLI::FailureMessage::help);
-
-  // Program files
-  t_app.add_option("{}", settings.m_paths, "Postional arguments")
-    ->check(CLI::ExistingFile);
-
-  // Version flag
-  std::stringstream ss;
-  ss << "Version: " << CROW_VERSION;
-  t_app.set_version_flag("-v,--version", ss.str(), "Show compiler version");
-
-  t_app.parse(t_argc, t_argv);
-}
-
 auto open_file(const fs::path t_path) -> container::TextBuffer
 {
-  using namespace container;
+  using container::TextBuffer;
 
   if(!fs::exists(t_path)) {
     std::stringstream ss;
@@ -86,8 +56,8 @@ auto open_file(const fs::path t_path) -> container::TextBuffer
 
 auto lex(const fs::path& t_path) -> token::TokenStream
 {
-  using namespace lexer;
   using container::TextBuffer;
+  using lexer::Lexer;
 
   DBG_PRINTLN("|> Lexing:");
 
@@ -100,17 +70,19 @@ auto lex(const fs::path& t_path) -> token::TokenStream
   return tokenstream;
 }
 
-auto pprint([[maybe_unused]] ast::node::NodePtr t_ast) -> void
+auto print_ast([[maybe_unused]] ast::node::NodePtr t_ast) -> void
 {
-  using namespace ast::visitor;
+  using ast::visitor::AstPrinter;
+
+#ifdef DEBUG
 
   // Pretty print the AST
-#ifdef DEBUG
   DBG_PRINTLN("|> Pretty printing AST:");
   std::stringstream ss;
-  ss << "\nAst:\n";
-  PrintVisitor pprint{ss};
-  pprint.print(t_ast);
+  ss << "\nAST:\n";
+
+  AstPrinter printer{ss};
+  printer.print(t_ast);
 
   DBG_INFO(ss.str());
 
@@ -120,7 +92,7 @@ auto pprint([[maybe_unused]] ast::node::NodePtr t_ast) -> void
 
 auto parse(const token::TokenStream& t_ts) -> ast::node::NodePtr
 {
-  using namespace parser::crow;
+  using parser::crow::CrowParser;
 
   DBG_PRINTLN("|> Parsing:");
 
@@ -134,7 +106,7 @@ auto parse(const token::TokenStream& t_ts) -> ast::node::NodePtr
 
 auto check_types(ast::node::NodePtr t_ast) -> void
 {
-  using namespace check;
+  using check::TypeChecker;
 
   DBG_PRINTLN("|> Type checking:");
 
@@ -144,9 +116,9 @@ auto check_types(ast::node::NodePtr t_ast) -> void
   DBG_PRINTLN("$");
 }
 
-auto generate(ast::node::NodePtr t_ast) -> void
+auto backend(ast::node::NodePtr t_ast) -> void
 {
-  using namespace codegen::llvm_backend;
+  using codegen::llvm_backend::LlvmBackend;
 
   DBG_PRINTLN("|> Code generation:");
 
@@ -161,33 +133,37 @@ auto generate(ast::node::NodePtr t_ast) -> void
   backend.dump_ir(ss);
 
   DBG_INFO(ss.str());
-
-  DBG_PRINTLN("$");
 #endif // DEBUG
 
   DBG_PRINTLN("$");
 }
 
+//! Crow compilers regular compilation flow.
 auto run() -> void
 {
-  using namespace container;
-
   for(const auto& path : settings.m_paths) {
     const auto ts{lex(path)};
     const auto ast{parse(ts)};
 
-    pprint(ast);
+    print_ast(ast);
 
     check_types(ast);
-    generate(ast);
+    print_ast(ast);
+
+    backend(ast);
   }
 }
 
 auto main(int t_argc, char* t_argv[]) -> int
 {
-  print_banner();
-
+  // Initialize command line argument parser.
   CLI::App app{"Compiler for Crow(lang)"};
+
+  // TODO: Relocate?
+#ifdef DEBUG
+  // Do not absorb cpptrace errors on debug build.
+  cpptrace::absorb_trace_exceptions(false);
+#endif
 
   DBG_SET_LOGLEVEL(INFO);
   try {
@@ -210,7 +186,7 @@ auto main(int t_argc, char* t_argv[]) -> int
     std::cerr << fg::reset << " - \n" << style::reset;
 
     // Print error message:
-    std::cerr << e.what() << std::flush;
+    std::cerr << e.what() << std::endl;
 
     return ExitCode::EXCEPTION;
   }

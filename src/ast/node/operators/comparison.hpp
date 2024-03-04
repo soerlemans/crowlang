@@ -9,9 +9,11 @@
 
 
 namespace ast::node::operators {
-// Aliases:
-namespace nt = node_traits;
-namespace ct = container;
+// Using Statements:
+using container::TextPosition;
+using node_traits::BinaryOperator;
+using node_traits::NodePosition;
+using node_traits::Op;
 
 // Enums:
 enum class ComparisonOp {
@@ -26,17 +28,24 @@ enum class ComparisonOp {
 };
 
 // Classes:
-class Comparison : public nt::NodePosition,
-                   nt::Op<ComparisonOp>,
-                   public nt::BinaryOperator {
+class Comparison : public NodePosition,
+                   public Op<ComparisonOp>,
+                   public BinaryOperator {
   public:
-  Comparison(ct::TextPosition t_pos, ComparisonOp t_op, NodePtr&& t_left,
+  Comparison(TextPosition t_pos, ComparisonOp t_op, NodePtr&& t_left,
              NodePtr&& t_right);
 
+  MAKE_TRAITS_ARCHIVEABLE(Comparison, NodePosition, Op<ComparisonOp>,
+                          BinaryOperator)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~Comparison() override = default;
+  virtual ~Comparison() = default;
 };
 } // namespace ast::node::operators
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::operators, Comparison);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits,
+                          Op<ast::node::operators::ComparisonOp>);
 
 #endif // CROW_AST_NODE_OPERATORS_COMPARISON_HPP

@@ -3,6 +3,7 @@
 
 // Node traits:
 #include "alt.hpp"
+#include "args.hpp"
 #include "binary_operator.hpp"
 #include "body.hpp"
 #include "condition.hpp"
@@ -17,6 +18,6 @@
 #include "type_annotation.hpp"
 #include "unary_operator.hpp"
 
-#include "typing/type_data.hpp"
+#include "typing/include.hpp"
 
 #endif // CROW_AST_NODE_NODE_TRAITS_INCLUDE_HPP

@@ -9,18 +9,23 @@
 
 
 namespace ast::node::typing {
-// Aliases:
-namespace nt = node_traits;
+// Using Statements:
+using node_traits::Identifier;
+using node_traits::TypeAnnotation;
 
 // Classes:
-class MemberDecl : public nt::Identifier, public nt::TypeAnnotation {
+class MemberDecl : public Identifier, public TypeAnnotation {
   public:
   MemberDecl(std::string_view t_identifier, std::string_view t_type);
 
+  MAKE_TRAITS_ARCHIVEABLE(MemberDecl, Identifier, TypeAnnotation)
   MAKE_VISITABLE(visitor::NodeVisitor);
 
-  ~MemberDecl() override = default;
+  virtual ~MemberDecl() = default;
 };
 } // namespace ast::node::typing
+
+// Cereal type registration:
+REGISTER_ARCHIVEABLE_TYPE(ast::node::typing, MemberDecl);
 
 #endif // CROW_AST_NODE_TYPING_MEMBER_DECL_HPP

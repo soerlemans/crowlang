@@ -19,8 +19,7 @@ namespace codegen::llvm_backend {
 using namespace ast;
 
 using ast::node::NodePtr;
-
-using visitable::Any;
+using ast::visitor::Any;
 
 // Aliases:
 using ContextPtr = std::shared_ptr<llvm::LLVMContext>;
@@ -53,12 +52,12 @@ class LlvmBackend : public ast::visitor::NodeVisitor {
   // Function:
   auto visit(node::function::Parameter* t_param) -> Any override;
   auto visit(node::function::Function* t_fn) -> Any override;
-  auto visit(node::function::FunctionCall* t_fn_call) -> Any override;
+  auto visit(node::function::Call* t_fn_call) -> Any override;
   auto visit(node::function::ReturnType* t_rt) -> Any override;
 
   // Lvalue:
-  auto visit(node::lvalue::Const* t_const) -> Any override;
   auto visit(node::lvalue::Let* t_let) -> Any override;
+  auto visit(node::lvalue::Var* t_var) -> Any override;
   auto visit(node::lvalue::Variable* t_var) -> Any override;
 
   // Operators:
@@ -102,7 +101,7 @@ class LlvmBackend : public ast::visitor::NodeVisitor {
   auto dump_ir(std::ostream& t_os) -> void;
   auto compile(fs::path t_path) -> void;
 
-  ~LlvmBackend() override = default;
+  virtual ~LlvmBackend() = default;
 };
 } // namespace codegen::llvm_backend
 

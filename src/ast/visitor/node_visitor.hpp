@@ -2,8 +2,10 @@
 #define CROW_AST_VISITOR_NODE_VISITOR_HPP
 
 // Includes:
-#include "../../lib/visitable/visitable.hpp"
 #include "../node/fdecl.hpp"
+
+// Local Includes:
+#include "visitable.hpp"
 
 
 // Macros:
@@ -17,7 +19,7 @@
 
 namespace ast::visitor {
 // Using statements:
-using visitable::Any;
+using node::NodePtr;
 
 // Classes:
 /*!
@@ -27,7 +29,7 @@ using visitable::Any;
  */
 class NodeVisitor {
   protected:
-  virtual auto traverse(node::NodePtr t_ast) -> Any;
+  virtual auto traverse(NodePtr t_ast) -> Any;
 
   public:
   NodeVisitor() = default;
@@ -42,12 +44,12 @@ class NodeVisitor {
   // Function:
   virtual auto visit(node::function::Parameter* t_param) -> Any;
   virtual auto visit(node::function::Function* t_fn) -> Any;
-  virtual auto visit(node::function::FunctionCall* t_fn_call) -> Any;
+  virtual auto visit(node::function::Call* t_fn_call) -> Any;
   virtual auto visit(node::function::ReturnType* t_rt) -> Any;
 
   // Lvalue:
-  virtual auto visit(node::lvalue::Const* t_const) -> Any;
   virtual auto visit(node::lvalue::Let* t_let) -> Any;
+  virtual auto visit(node::lvalue::Var* t_var) -> Any;
   virtual auto visit(node::lvalue::Variable* t_var) -> Any;
 
   // Operators:

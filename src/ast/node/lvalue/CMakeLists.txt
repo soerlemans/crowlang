@@ -1,6 +1,6 @@
 # Add source files
 target_sources(${PROJECT_NAME} PRIVATE
-	const.cpp
+	var.cpp
 	let.cpp
 	variable.cpp
 )
