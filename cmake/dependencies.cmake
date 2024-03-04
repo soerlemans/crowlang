@@ -1,6 +1,6 @@
 # Install and include dependencies required for the project.
 
-# Find libraries
+# Include fetch content and configure global options
 include(FetchContent)
 set(FETCHCONTENT_QUIET FALSE)
 
@@ -15,4 +15,4 @@ include(cmake/dependencies/threads.cmake)
 include(cmake/dependencies/cli11.cmake)
 include(cmake/dependencies/llvm.cmake)
 include(cmake/dependencies/clang.cmake)
-
+include(cmake/dependencies/catch2.cmake)

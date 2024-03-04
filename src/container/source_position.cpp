@@ -16,7 +16,7 @@ auto operator<<(std::ostream& t_os, const SourcePosition& t_fp) -> std::ostream&
   using namespace rang;
 
   t_os << t_fp.m_source << ":" << style::bold << t_fp.m_line_nr << style::reset;
-  t_os << " -> " << t_fp.m_function << "()";
+  t_os << " -> " << t_fp.m_function;
 
   return t_os;
 }

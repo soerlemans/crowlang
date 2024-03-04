@@ -1,6 +1,8 @@
 #ifndef CROW_AST_VISITOR_AST_SERIALIZER_HPP
 #define CROW_AST_VISITOR_AST_SERIALIZER_HPP
 
+// STL Includes:
+#include <variant>
 
 // Library Includes:
 #include <cereal/archives/xml.hpp>
@@ -10,13 +12,19 @@
 
 // Includes:
 #include "../../exception/error.hpp"
+#include "../../lib/overload.hpp"
+#include "../../lib/types.hpp"
 #include "../node/include.hpp"
 
 
 namespace ast::visitor {
 // Using Statements;
+using cereal::XMLInputArchive;
 using cereal::XMLOutputArchive;
-using ArchivePtr = std::shared_ptr<XMLOutputArchive>;
+
+// Aliases:
+// TODO: Add JSON, Binary and Portable binry to this variant.
+using Archive = std::variant<std::monostate, XMLOutputArchive, XMLInputArchive>;
 
 // Classes:
 /*!
@@ -26,29 +34,27 @@ using ArchivePtr = std::shared_ptr<XMLOutputArchive>;
  */
 class AstSerializer : public NodeVisitor {
   private:
-  ArchivePtr m_archive;
+  Archive m_archive;
 
   protected:
   template<typename... Args>
-  auto make_archive(Args&&... t_args) -> ArchivePtr
-  {
-    return std::make_shared<XMLOutputArchive>(std::forward<Args>(t_args)...);
-  }
-
-  template<typename... Args>
   auto archive(Args&&... t_args) -> void
   {
-		using exception::error;
+    using exception::error;
 
-    if(!m_archive) {
-      error("No archive pointer has been set.");
-    }
+    const auto fn_archive{[&](auto&& t_archive) {
+      t_archive(std::forward<Args>(t_args)...);
+    }};
 
-    (*m_archive)(std::forward<Args>(t_args)...);
+    const auto fn_monostate{[]([[maybe_unused]] std::monostate t_state) {
+      error("Attempted to archive std::monostate.");
+    }};
+
+    std::visit(Overload{fn_archive, fn_monostate}, m_archive);
   }
 
   public:
-  AstSerializer() = default;
+  AstSerializer();
 
   // Control:
   auto visit(node::control::If* t_if) -> Any override;
@@ -107,8 +113,11 @@ class AstSerializer : public NodeVisitor {
   auto visit(node::List* t_list) -> Any override;
   auto visit(node::Nil* t_nil) -> Any override;
 
-  auto serialize(NodePtr t_ast, std::ostream& t_os) -> void;
-  // auto deserialize(NodePtr t_ast, std::ostream& t_os) -> void;
+  // TODO: Add an enumeration to this method for selecting the serializer.
+  auto serialize(NodePtr& t_ast, std::ostream& t_os) -> void;
+
+  // FIXME: Deserialization does not work? (leaves the NodePtr empty)
+  auto deserialize(NodePtr& t_ast, std::istream& t_is) -> void;
 
   virtual ~AstSerializer() = default;
 };

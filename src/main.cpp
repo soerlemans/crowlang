@@ -8,7 +8,6 @@
 #include "ast/node/fdecl.hpp"
 #include "ast/node/include.hpp"
 #include "ast/visitor/ast_printer.hpp"
-#include "ast/visitor/ast_serializer.hpp"
 #include "check/type_checker.hpp"
 #include "codegen/llvm_backend/llvm_backend.hpp"
 #include "container/text_buffer.hpp"
@@ -91,26 +90,6 @@ auto print_ast([[maybe_unused]] ast::node::NodePtr t_ast) -> void
 #endif // DEBUG
 }
 
-/*!
- * Print the AST as XML.
- * Printing the AST as XML allows you to inspect large AST's beter using an XML
- * viewer.
- */
-auto serialize_ast([[maybe_unused]] ast::node::NodePtr t_ast) -> void
-{
-  using ast::visitor::AstSerializer;
-
-#ifdef DEBUG
-  DBG_PRINTLN("|> Printing the AST as XML:");
-
-  // Serialize the AST.
-  AstSerializer serializer;
-  serializer.serialize(t_ast, std::cout);
-
-  DBG_PRINTLN("$");
-#endif // DEBUG
-}
-
 auto parse(const token::TokenStream& t_ts) -> ast::node::NodePtr
 {
   using parser::crow::CrowParser;
@@ -137,7 +116,7 @@ auto check_types(ast::node::NodePtr t_ast) -> void
   DBG_PRINTLN("$");
 }
 
-auto generate(ast::node::NodePtr t_ast) -> void
+auto backend(ast::node::NodePtr t_ast) -> void
 {
   using codegen::llvm_backend::LlvmBackend;
 
@@ -154,8 +133,6 @@ auto generate(ast::node::NodePtr t_ast) -> void
   backend.dump_ir(ss);
 
   DBG_INFO(ss.str());
-
-  DBG_PRINTLN("$");
 #endif // DEBUG
 
   DBG_PRINTLN("$");
@@ -169,13 +146,11 @@ auto run() -> void
     const auto ast{parse(ts)};
 
     print_ast(ast);
-    serialize_ast(ast);
 
     check_types(ast);
     print_ast(ast);
 
-
-    generate(ast);
+    backend(ast);
   }
 }
 

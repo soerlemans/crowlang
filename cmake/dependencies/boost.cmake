@@ -1,5 +1,6 @@
 # Boost (C++ utility libraries):
 message(STATUS "[+] Finding Boost library.")
+
 find_package(
 	Boost
 	1.74

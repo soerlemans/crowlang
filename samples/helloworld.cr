@@ -1,3 +1,8 @@
+import(
+				"io"
+				"http"
+)
+
 fn main() -> int {
   var var2 = 10 + 10
 

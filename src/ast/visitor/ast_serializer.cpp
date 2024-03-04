@@ -2,7 +2,6 @@
 
 // Includes:
 #include "../../debug/log.hpp"
-#include <boost/archive/xml_oarchive.hpp>
 
 
 /*!
@@ -24,6 +23,9 @@ namespace ast::visitor {
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
+AstSerializer::AstSerializer(): m_archive{std::monostate{}}
+{}
+
 // Public: Methods:
 // Control:
 DEFINE_SERIALIZE_METHOD(If);
@@ -77,23 +79,23 @@ DEFINE_SERIALIZE_METHOD(DotExpr);
 
 // Misc:
 DEFINE_SERIALIZE_METHOD(List);
-// {
-//   for(NodePtr& elem : *t_list) {
-//     traverse(elem);
-//   }
-
-//   return {};
-// }
-
 DEFINE_SERIALIZE_METHOD(Nil);
 
-auto AstSerializer::serialize(NodePtr t_ast, std::ostream& t_os) -> void
+auto AstSerializer::serialize(NodePtr& t_ast, std::ostream& t_os) -> void
 {
-  // Set the archive pointer.
-  m_archive = make_archive(t_os);
+  m_archive.emplace<XMLOutputArchive>(t_os);
 
   traverse(t_ast);
 
-  m_archive.reset();
+  m_archive = std::monostate{};
+}
+
+auto AstSerializer::deserialize(NodePtr& t_ast, std::istream& t_is) -> void
+{
+  m_archive.emplace<XMLInputArchive>(t_is);
+
+  traverse(t_ast);
+
+  m_archive = std::monostate{};
 }
 } // namespace ast::visitor

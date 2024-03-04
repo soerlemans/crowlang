@@ -1,5 +1,6 @@
 # Cereal (C++ serialization library):
 message(STATUS "[+] Fetching cereal library.")
+
 FetchContent_Declare(
   cereal
   GIT_REPOSITORY git@github.com:USCiLab/cereal.git
