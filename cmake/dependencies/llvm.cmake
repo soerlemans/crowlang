@@ -1,5 +1,6 @@
 # LLVM (Compiler toolchain libraries):
 message(STATUS "[+] Finding LLVM.")
+
 find_package(
 	LLVM
 	16
@@ -27,6 +28,6 @@ llvm_map_components_to_libnames(
 message(STATUS "llvm: ${LLVM_LIBS}")
 
 target_link_libraries(
-	${PROJECT_NAME}
+	${TARGET_CROW_LIB}
 	${LLVM_LIBS}
 )

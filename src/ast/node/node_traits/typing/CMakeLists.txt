@@ -1,5 +1,5 @@
 # Add source files
-target_sources(${PROJECT_NAME} PRIVATE
+target_sources(${TARGET_CROW_LIB} PRIVATE
 	typing.cpp
 	native_types.cpp
 	type_variant.cpp

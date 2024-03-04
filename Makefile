@@ -1,6 +1,7 @@
 # Variables:
 DEBUG := -DCMAKE_BUILD_TYPE=Debug
-RELWITHDEBINFO := -DCMAKE_BUILD_TYPE=RelWithDebInfo
+RELDEBUG := -DCMAKE_BUILD_TYPE=RelWithDebInfo
+TESTS := -DBUILD_CROW_TESTS=TRUE
 
 CLANG_TIDY_ARGS := -header-filter=src/.* -extra-arg=-std=c++2b
 
@@ -8,19 +9,27 @@ CLANG_TIDY_ARGS := -header-filter=src/.* -extra-arg=-std=c++2b
 
 # Rules:
 .PHONY: all \
-	build debug \
+	build debug reldebug tests\
 	install \
   clean clean-objects \
 	format lint \
 	docs docs-pdf
 
-all: build debug
-build: # Release build
+all: build debug reldebug tests
+build: # Release build.
 	cmake -S . -B $@/
 	cmake --build $@/
 
-debug: # Build used for debugging and analyzing
+debug: # Build used for debugging and analyzing.
 	cmake -S . -B $@/ $(DEBUG)
+	cmake --build $@/
+
+reldebug: # Build combination of release with debug info.
+	cmake -S . -B $@/ $(RELDEBUG)
+	cmake --build $@/
+
+tests: # Build used for creating tests.
+	cmake -S . -B $@/ $(TESTS)
 	cmake --build $@/
 
 # After build rules:
@@ -30,10 +39,14 @@ install: build
 clean:
 	rm -rf build/*
 	rm -rf debug/*
+	rm -rf reldebug/*
+	rm -rf tests/*
 
 clean-objects:
 	rm -rf build/CMakeFiles/*
 	rm -rf debug/CMakeFiles/*
+	rm -rf reldebug/CMakeFiles/*
+	rm -rf tests/CMakeFiles/*
 
 # Misc. rules:
 format:
@@ -47,7 +60,7 @@ header_guard:
 
 # Documentation rules:
 docs:
-	doxygen .doxygen
+	doxygen .doxyfile
 
 # Compile documentation as LaTex
 docs-pdf: docs

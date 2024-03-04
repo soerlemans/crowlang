@@ -1,5 +1,6 @@
 # Tabulate (Terminal table library):
 message(STATUS "[+] Fetching tabulate library.")
+
 FetchContent_Declare(
   tabulate
   GIT_REPOSITORY https://github.com/p-ranav/tabulate.git
@@ -11,6 +12,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(tabulate)
 
 target_link_libraries(
-	${PROJECT_NAME}
+	${TARGET_CROW_LIB}
 	tabulate::tabulate
 )

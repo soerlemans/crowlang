@@ -32,4 +32,4 @@ class Increment : public UnaryOperator {
 // Cereal type registration:
 REGISTER_ARCHIVEABLE_TYPE(ast::node::operators, Increment);
 
-#endif
+#endif // CROW_AST_NODE_OPERATORS_INCREMENT_HPP

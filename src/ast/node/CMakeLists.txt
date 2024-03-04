@@ -1,4 +1,4 @@
-target_sources(${PROJECT_NAME} PRIVATE
+target_sources(${TARGET_CROW_LIB} PRIVATE
   list.cpp
 )
 

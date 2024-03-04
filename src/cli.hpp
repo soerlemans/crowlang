@@ -1,5 +1,5 @@
-#ifndef CROW_CLI_ARGUMENTS_HPP
-#define CROW_CLI_ARGUMENTS_HPP
+#ifndef CROW_CLI_HPP
+#define CROW_CLI_HPP
 
 // STL Includes:
 #include <filesystem>
@@ -71,4 +71,4 @@ auto parse_args(CLI::App& t_app, const int t_argc, char* t_argv[]) -> void
 }
 
 
-#endif // CROW_CLI_ARGUMENTS_HPP
+#endif // CROW_CLI_HPP

@@ -1,5 +1,6 @@
 # Libclang (Clang compiler library interface):
 message(STATUS "[+] Finding Clang.")
+
 find_package(
 	Clang
 	CONFIG
@@ -46,6 +47,6 @@ add_definitions(${CLANG_DEFINITIONS_LIST})
 
 # Link libraries:
 target_link_libraries(
-	${PROJECT_NAME}
+	${TARGET_CROW_LIB}
 	${CLANG_LIBS}
 )

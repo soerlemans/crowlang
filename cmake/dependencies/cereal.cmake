@@ -12,6 +12,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(cereal)
 
 target_link_libraries(
-	${PROJECT_NAME}
+	${TARGET_CROW_LIB}
 	cereal
 )

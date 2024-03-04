@@ -1,7 +1,9 @@
 # Add source files:
-target_sources(${PROJECT_NAME} PRIVATE
+if(TARGET TARGET_CROW_BIN)
+target_sources(${TARGET_CROW_BIN} PRIVATE
 	main.cpp
 )
+endif(TARGET TARGET_CROW_BIN)
 
 # Utilities:
 add_subdirectory(debug)

@@ -1,5 +1,6 @@
 # Rang (terminal control codes library):
 message(STATUS "[+] Fetching rang library.")
+
 FetchContent_Declare(
   rang
   GIT_REPOSITORY https://github.com/agauniyal/rang.git
@@ -11,6 +12,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(rang)
 
 target_link_libraries(
-	${PROJECT_NAME}
+	${TARGET_CROW_LIB}
 	rang
 )

@@ -1,5 +1,6 @@
 # CLI11 (Terminal flag library):
 message(STATUS "[+] Finding CLI11 library.")
+
 find_package(
 	CLI11
 	CONFIG
@@ -7,6 +8,6 @@ find_package(
 )
 
 target_link_libraries(
-	${PROJECT_NAME}
+	${TARGET_CROW_LIB}
 	CLI11::CLI11
 )

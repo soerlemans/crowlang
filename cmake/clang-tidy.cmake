@@ -15,7 +15,7 @@ set(
 )
 
 set_target_properties(
-	${PROJECT_NAME}
+	${TARGET_CROW_LIB}
 	PROPERTIES
 	CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}"
 )
