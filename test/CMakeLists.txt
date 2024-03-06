@@ -1,5 +1,2 @@
-# Add source files:
-target_sources(${TARGET_CROW} PRIVATE
-	test.cpp
-)
-
+# Add directorie:
+add_subdirectory(visitor)

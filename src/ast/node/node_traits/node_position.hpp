@@ -4,7 +4,7 @@
 
 // Includes:
 #include "../../../container/text_position.hpp"
-#include "../node_interface.hpp"
+#include "../include.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"

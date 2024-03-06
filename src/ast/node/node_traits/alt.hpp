@@ -2,7 +2,7 @@
 #define CROW_AST_NODE_NODE_TRAITS_ALT_HPP
 
 // Includes:
-#include "../node_interface.hpp"
+#include "../include.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"

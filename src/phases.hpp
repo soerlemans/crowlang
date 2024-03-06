@@ -3,7 +3,6 @@
 
 // Includes:
 #include "ast/node/fdecl.hpp"
-#include "ast/node/include.hpp"
 #include "ast/visitor/ast_printer.hpp"
 #include "check/type_checker.hpp"
 #include "codegen/llvm_backend/llvm_backend.hpp"
@@ -50,8 +49,8 @@ auto lex(const fs::path& t_path) -> token::TokenStream
 
   DBG_PRINTLN("|> Lexing:");
 
-  auto ts_ptr{std::make_shared<TextBuffer>(open_file(t_path))};
-  Lexer lexer{ts_ptr};
+  auto stream_ptr{std::make_shared<TextBuffer>(open_file(t_path))};
+  Lexer lexer{stream_ptr};
   const auto tokenstream{lexer.tokenize()};
 
   DBG_PRINTLN("$");

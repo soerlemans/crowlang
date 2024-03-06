@@ -8,9 +8,14 @@
  */
 
 // Library Includes:
+#include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/archives/portable_binary.hpp>
+#include <cereal/archives/xml.hpp>
 #include <cereal/types/list.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/optional.hpp>
+#include <cereal/types/polymorphic.hpp>
 #include <cereal/types/string.hpp>
 #include <cereal/types/utility.hpp>
 #include <cereal/types/vector.hpp>
@@ -54,9 +59,8 @@
 
 //!
 #define REGISTER_ARCHIVEABLE_TYPE(t_namespace, t_type)           \
+  CEREAL_REGISTER_TYPE_WITH_NAME(t_namespace::t_type, #t_type)   \
   CEREAL_REGISTER_POLYMORPHIC_RELATION(ast::node::NodeInterface, \
-                                       t_namespace::t_type);     \
-  CEREAL_REGISTER_TYPE_WITH_NAME(t_namespace::t_type, #t_type)
-
+                                       t_namespace::t_type);
 
 #endif // CROW_AST_ARCHIVE_ARCHIVE_HPP

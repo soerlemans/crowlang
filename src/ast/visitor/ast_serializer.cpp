@@ -84,8 +84,9 @@ DEFINE_SERIALIZE_METHOD(Nil);
 auto AstSerializer::serialize(NodePtr& t_ast, std::ostream& t_os) -> void
 {
   m_archive.emplace<XMLOutputArchive>(t_os);
+  // m_archive.emplace<JSONOutputArchive>(t_os);
 
-  traverse(t_ast);
+  archive(cereal::make_nvp("AbstractSyntaxTree", t_ast));
 
   m_archive = std::monostate{};
 }
@@ -93,9 +94,10 @@ auto AstSerializer::serialize(NodePtr& t_ast, std::ostream& t_os) -> void
 auto AstSerializer::deserialize(NodePtr& t_ast, std::istream& t_is) -> void
 {
   m_archive.emplace<XMLInputArchive>(t_is);
+  // m_archive.emplace<JSONInputArchive>(t_is);
 
-	// We do not traverse as this fails on nullptr.
-  archive(t_ast);
+  // We do not traverse as this fails on nullptr.
+  archive(cereal::make_nvp("AbstractSyntaxTree", t_ast));
 
   m_archive = std::monostate{};
 }

@@ -1,9 +1,8 @@
 #ifndef CROW_AST_NODE_NODE_TRAITS_ARGS_HPP
 #define CROW_AST_NODE_NODE_TRAITS_ARGS_HPP
 
-
 // Includes:
-#include "../node_interface.hpp"
+#include "../include.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"

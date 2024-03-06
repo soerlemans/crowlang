@@ -4,9 +4,6 @@
 // STL Includes:
 #include <variant>
 
-// Library Includes:
-#include <cereal/archives/xml.hpp>
-
 // Local Includes:
 #include "node_visitor.hpp"
 
@@ -14,17 +11,21 @@
 #include "../../exception/error.hpp"
 #include "../../lib/overload.hpp"
 #include "../../lib/types.hpp"
-#include "../node/include.hpp"
+#include "../node/include_nodes.hpp"
 
 
 namespace ast::visitor {
 // Using Statements;
+using cereal::JSONInputArchive;
+using cereal::JSONOutputArchive;
 using cereal::XMLInputArchive;
 using cereal::XMLOutputArchive;
 
 // Aliases:
 // TODO: Add JSON, Binary and Portable binry to this variant.
-using Archive = std::variant<std::monostate, XMLOutputArchive, XMLInputArchive>;
+using Archive =
+  std::variant<std::monostate, JSONInputArchive, JSONOutputArchive,
+               XMLInputArchive, XMLOutputArchive>;
 
 // Classes:
 /*!
