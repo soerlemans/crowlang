@@ -94,7 +94,8 @@ auto AstSerializer::deserialize(NodePtr& t_ast, std::istream& t_is) -> void
 {
   m_archive.emplace<XMLInputArchive>(t_is);
 
-  traverse(t_ast);
+	// We do not traverse as this fails on nullptr.
+  archive(t_ast);
 
   m_archive = std::monostate{};
 }

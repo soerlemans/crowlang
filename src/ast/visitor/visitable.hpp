@@ -1,5 +1,5 @@
-#ifndef CROW_LIB_VISITABLE_VISITABLE_HPP
-#define CROW_LIB_VISITABLE_VISITABLE_HPP
+#ifndef CROW_AST_VISITOR_VISITABLE_HPP
+#define CROW_AST_VISITOR_VISITABLE_HPP
 
 // STL Includes:
 #include <any>
@@ -30,4 +30,4 @@ class Visitable {
 };
 } // namespace ast::visitor
 
-#endif // CROW_LIB_VISITABLE_VISITABLE_HPP
+#endif // CROW_AST_VISITOR_VISITABLE_HPP

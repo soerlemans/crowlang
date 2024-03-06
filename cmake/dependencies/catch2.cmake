@@ -1,7 +1,7 @@
 # Catch2 (C++ Unit testing framework):
 message(STATUS "[+] Fetching Catch2 framework.")
 
-if(DEFINED TESTS)
+if(DEFINED BUILD_CROW_TESTS)
 FetchContent_Declare(
   Catch2
   GIT_REPOSITORY https://github.com/catchorg/Catch2.git
@@ -11,8 +11,8 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Catch2)
 
 target_link_libraries(
-	${PROJECT_NAME}
+	${TARGET_CROW_TESTS}
 	Catch2::Catch2WithMain
-	cereal
 )
-endif(DEFINED TESTS)
+
+endif(DEFINED BUILD_CROW_TESTS)

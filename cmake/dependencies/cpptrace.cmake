@@ -1,5 +1,6 @@
 # Cpptrace (Stacktraces for C++)
 message(STATUS "[+] Fetching cpptrace library.")
+
 FetchContent_Declare(
   cpptrace
   GIT_REPOSITORY https://github.com/jeremy-rifkin/cpptrace.git
@@ -15,15 +16,15 @@ add_compile_definitions(
 # On windows copy cpptrace.dll to the same directory as the executable for your_target
 if(WIN32)
   add_custom_command(
-    TARGET ${PROJECT_NAME} POST_BUILD
+    TARGET ${TARGET_CROW_LIB} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    $<TARGET_FILE:cpptrace> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    $<TARGET_FILE:cpptrace> $<TARGET_FILE_DIR:${TARGET_CROW_LIB}>
   )
 endif()
 
 FetchContent_MakeAvailable(cpptrace)
 
 target_link_libraries(
-	${PROJECT_NAME}
+	${TARGET_CROW_LIB}
 	cpptrace
 )
