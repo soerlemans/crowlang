@@ -6,7 +6,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 // Crow Includes:
-#include "ast/visitor/ast_serializer.hpp"
+#include "ast/visitor/ast_archive.hpp"
 #include "phases.hpp"
 
 
@@ -33,24 +33,16 @@ TEST_CASE("Archive", "[visitor]")
   NodePtr ast_new{};
 
   // Create a stream too save too:
-  std::stringstream ss;
-  AstSerializer serializer{};
+  std::fstream fs("data.xml");
+  AstArchive archive{};
 
   SECTION("Serialize")
   {
-    std::ofstream os("data.xml");
-    cereal::XMLOutputArchive archive(os);
-
-    archive(ast);
+    archive.out(ast, fs);
   }
-
-  std::cout << "SS:\n" << ss.str();
 
   SECTION("Deserialize")
   {
-    std::ifstream is("data.xml");
-    cereal::XMLInputArchive archive(is);
-
-    archive(ast_new);
+    archive.in(ast_new, fs);
   }
 }
