@@ -27,7 +27,7 @@ class If : public NodePosition,
   If(TextPosition t_pos, NodePtr&& t_init, NodePtr&& t_condition,
      NodePtr&& t_then, NodePtr&& t_alt);
 
-  MAKE_TRAITS_ARCHIVEABLE(If, NodePosition, InitExpr, Condition, Then, Alt)
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(If, NodePosition, InitExpr, Condition, Then, Alt)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~If() = default;

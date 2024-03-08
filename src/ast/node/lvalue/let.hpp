@@ -19,7 +19,7 @@ class Let : public DeclExpr {
   Let(TextPosition t_pos, std::string_view t_identifier,
       std::string_view t_type, NodePtr&& t_init);
 
-  MAKE_TRAITS_ARCHIVEABLE(Let, DeclExpr)
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Let, DeclExpr)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Let() = default;

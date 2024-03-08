@@ -38,7 +38,7 @@
 .gdb_history
 
 # Generated version header:
-src/version.hpp
+src/definitions.hpp
 
 # Build directories
 build/*

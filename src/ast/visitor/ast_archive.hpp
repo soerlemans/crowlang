@@ -1,5 +1,5 @@
-#ifndef CROW_AST_VISITOR_AST_SERIALIZER_HPP
-#define CROW_AST_VISITOR_AST_SERIALIZER_HPP
+#ifndef CROW_AST_VISITOR_AST_ARCHIVE_HPP
+#define CROW_AST_VISITOR_AST_ARCHIVE_HPP
 
 // STL Includes:
 #include <variant>
@@ -138,4 +138,4 @@ class AstArchive : public NodeVisitor {
 };
 } // namespace ast::visitor
 
-#endif // CROW_AST_VISITOR_AST_SERIALIZER_HPP
+#endif // CROW_AST_VISITOR_AST_ARCHIVE_HPP

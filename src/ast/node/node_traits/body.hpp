@@ -18,7 +18,7 @@ class Body : virtual public NodeInterface {
 
   auto body() -> NodeListPtr&;
 
-  MAKE_ARCHIVEABLE(Body)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(Body)
   {
 		t_archive(CEREAL_NVP(m_body));
 	}

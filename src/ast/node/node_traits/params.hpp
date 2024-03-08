@@ -18,7 +18,7 @@ class Params : virtual public NodeInterface {
 
   auto params() -> NodeListPtr&;
 
-  MAKE_ARCHIVEABLE(Params)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(Params)
   {
 		t_archive(CEREAL_NVP(m_params));
 	}

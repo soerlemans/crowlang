@@ -18,7 +18,7 @@ class Condition : virtual public NodeInterface {
 
   auto condition() -> NodePtr&;
 
-  MAKE_ARCHIVEABLE(Condition)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(Condition)
   {
 		t_archive(CEREAL_NVP(m_condition));
 	}

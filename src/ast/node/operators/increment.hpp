@@ -22,7 +22,7 @@ class Increment : public UnaryOperator {
 
   auto prefix() const -> bool;
 
-  MAKE_TRAITS_ARCHIVEABLE(Increment, UnaryOperator)
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Increment, UnaryOperator)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Increment() = default;

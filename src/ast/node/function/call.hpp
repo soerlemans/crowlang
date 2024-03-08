@@ -19,7 +19,7 @@ class Call : public Identifier, public Args {
   public:
   Call(std::string_view t_identifier, NodeListPtr&& t_args);
 
-  MAKE_TRAITS_ARCHIVEABLE(Call, Identifier, Args)
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Call, Identifier, Args)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Call() = default;

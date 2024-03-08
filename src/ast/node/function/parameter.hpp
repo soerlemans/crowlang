@@ -23,7 +23,7 @@ class Parameter : public NodePosition,
   Parameter(TextPosition t_pos, std::string_view t_identifier,
             std::string_view t_type);
 
-  MAKE_TRAITS_ARCHIVEABLE(Parameter, NodePosition, Identifier, TypeAnnotation)
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Parameter, NodePosition, Identifier, TypeAnnotation)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Parameter() = default;

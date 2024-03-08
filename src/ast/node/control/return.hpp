@@ -17,7 +17,7 @@ class Return : public Expr {
   public:
   Return(NodePtr&& t_expr);
 
-  MAKE_TRAITS_ARCHIVEABLE(Return, Expr)
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Return, Expr)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Return() = default;

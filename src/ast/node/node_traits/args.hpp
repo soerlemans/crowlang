@@ -18,7 +18,7 @@ class Args : virtual public NodeInterface {
 
   auto args() -> NodeListPtr&;
 
-  MAKE_ARCHIVEABLE(Args)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(Args)
   {
 		t_archive(CEREAL_NVP(m_args));
 	}

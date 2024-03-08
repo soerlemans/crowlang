@@ -45,15 +45,15 @@
   {}
 
 //! Macro for making a type serializable by the cereal library.
-#define MAKE_ARCHIVEABLE(t_type)           \
+#define AST_ARCHIVE_MAKE_ARCHIVEABLE(t_type)           \
   AST_ARCHIVE_GIVE_ARCHIVE_ACCESS(t_type); \
                                            \
   public:                                  \
   AST_ARCHIVE_DEFINE_SERIALIZE_METHOD()
 
 //! Macro for easily archiving nodes dependent on traits.
-#define MAKE_TRAITS_ARCHIVEABLE(t_type, ...)                       \
-  MAKE_ARCHIVEABLE(t_type)                                         \
+#define AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(t_type, ...)                       \
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(t_type)                                         \
   {                                                                \
     archive_traits<Archive, t_type, __VA_ARGS__>(t_archive, this); \
   }

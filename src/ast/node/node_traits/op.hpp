@@ -23,7 +23,7 @@ class Op : virtual public NodeInterface {
     return m_op;
   }
 
-  MAKE_ARCHIVEABLE(Op)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(Op)
   {
     t_archive(m_op);
   }

@@ -18,7 +18,7 @@ class UnaryOperator : virtual public NodeInterface {
 
   virtual auto left() -> NodePtr&;
 
-  MAKE_ARCHIVEABLE(UnaryOperator)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(UnaryOperator)
   {
     t_archive(m_left);
   }

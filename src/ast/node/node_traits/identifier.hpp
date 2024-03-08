@@ -21,7 +21,7 @@ class Identifier : virtual public NodeInterface {
 
   auto identifier() const -> std::string_view;
 
-  MAKE_ARCHIVEABLE(Identifier)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(Identifier)
   {
 		t_archive(CEREAL_NVP(m_identifier));
 	}

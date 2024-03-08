@@ -18,7 +18,7 @@ class Alt : virtual public NodeInterface {
 
   virtual auto alt() -> NodePtr&;
 
-  MAKE_ARCHIVEABLE(Alt)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(Alt)
   {
 		t_archive(CEREAL_NVP(m_alt));
 	}

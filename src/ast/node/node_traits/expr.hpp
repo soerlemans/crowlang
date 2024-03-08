@@ -18,7 +18,7 @@ class Expr : virtual public NodeInterface {
 
   auto expr() -> NodePtr&;
 
-  MAKE_ARCHIVEABLE(Expr)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(Expr)
   {
     t_archive(CEREAL_NVP(m_expr));
   }

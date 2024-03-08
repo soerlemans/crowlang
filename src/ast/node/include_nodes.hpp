@@ -1,5 +1,5 @@
-#ifndef INCLUDE_NODES_HPP
-#define INCLUDE_NODES_HPP
+#ifndef CROW_AST_NODE_INCLUDE_NODES_HPP
+#define CROW_AST_NODE_INCLUDE_NODES_HPP
 
 // Includes:
 #include "include.hpp"
@@ -13,4 +13,4 @@
 #include "rvalue/include.hpp"
 #include "typing/include.hpp"
 
-#endif // INCLUDE_NODES_HPP
+#endif // CROW_AST_NODE_INCLUDE_NODES_HPP

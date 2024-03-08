@@ -17,7 +17,7 @@ class Defer : public Body {
   public:
   Defer(NodeListPtr&& t_body);
 
-  MAKE_TRAITS_ARCHIVEABLE(Defer, Body)
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Defer, Body)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Defer() = default;

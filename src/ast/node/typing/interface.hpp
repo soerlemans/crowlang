@@ -23,7 +23,7 @@ class Interface : public Identifier {
 
   virtual auto methods() -> NodeListPtr&;
 
-  MAKE_TRAITS_ARCHIVEABLE(Interface, Identifier)
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Interface, Identifier)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Interface() = default;

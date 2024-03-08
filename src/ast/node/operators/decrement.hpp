@@ -22,7 +22,7 @@ class Decrement : public UnaryOperator {
 
   auto prefix() const -> bool;
 
-  MAKE_TRAITS_ARCHIVEABLE(Decrement, UnaryOperator)
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Decrement, UnaryOperator)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Decrement() = default;

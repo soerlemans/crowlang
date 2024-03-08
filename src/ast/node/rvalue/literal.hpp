@@ -25,7 +25,7 @@ class Literal : public NodeInterface {
     return m_value;
   }
 
-  MAKE_ARCHIVEABLE(Literal)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(Literal)
   {
     t_archive(CEREAL_NVP(m_value));
   }

@@ -18,7 +18,7 @@ class Then : virtual public NodeInterface {
 
   auto then() -> NodePtr&;
 
-  MAKE_ARCHIVEABLE(Then)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(Then)
   {
     t_archive(CEREAL_NVP(m_then));
   }

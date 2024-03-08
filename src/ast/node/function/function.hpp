@@ -25,7 +25,7 @@ class Function : public Identifier,
   Function(std::string_view t_identifier, NodeListPtr&& t_params,
            std::string_view t_type, NodeListPtr&& t_body);
 
-  MAKE_TRAITS_ARCHIVEABLE(Function, Identifier, Params, TypeAnnotation, Body)
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Function, Identifier, Params, TypeAnnotation, Body)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Function() = default;
