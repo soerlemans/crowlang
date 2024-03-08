@@ -37,7 +37,7 @@ class Assignment : public NodePosition,
 
   MAKE_TRAITS_ARCHIVEABLE(Assignment, NodePosition, Op<AssignmentOp>,
                           BinaryOperator)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Assignment() = default;
 };

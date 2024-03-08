@@ -28,7 +28,7 @@ class Loop : public NodePosition,
        NodePtr&& t_expr, NodeListPtr&& t_body);
 
   MAKE_TRAITS_ARCHIVEABLE(Loop, NodePosition, InitExpr, Condition, Expr, Body)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Loop() = default;
 };

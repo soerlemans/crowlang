@@ -26,7 +26,7 @@ class Identifier : virtual public NodeInterface {
 		t_archive(CEREAL_NVP(m_identifier));
 	}
 
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~Identifier() = default;
 };

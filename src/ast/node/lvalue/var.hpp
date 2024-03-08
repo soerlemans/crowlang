@@ -23,7 +23,7 @@ class Var : public DeclExpr {
         std::string_view t_str, NodePtr&& t_init);
 
   MAKE_TRAITS_ARCHIVEABLE(Var, DeclExpr)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Var() = default;
 };

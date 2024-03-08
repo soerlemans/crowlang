@@ -23,7 +23,7 @@ class Params : virtual public NodeInterface {
 		t_archive(CEREAL_NVP(m_params));
 	}
 
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~Params() = default;
 };

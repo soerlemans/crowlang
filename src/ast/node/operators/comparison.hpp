@@ -37,7 +37,7 @@ class Comparison : public NodePosition,
 
   MAKE_TRAITS_ARCHIVEABLE(Comparison, NodePosition, Op<ComparisonOp>,
                           BinaryOperator)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Comparison() = default;
 };

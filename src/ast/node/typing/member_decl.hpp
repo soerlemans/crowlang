@@ -19,7 +19,7 @@ class MemberDecl : public Identifier, public TypeAnnotation {
   MemberDecl(std::string_view t_identifier, std::string_view t_type);
 
   MAKE_TRAITS_ARCHIVEABLE(MemberDecl, Identifier, TypeAnnotation)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~MemberDecl() = default;
 };

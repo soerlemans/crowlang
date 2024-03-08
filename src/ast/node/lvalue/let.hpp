@@ -20,7 +20,7 @@ class Let : public DeclExpr {
       std::string_view t_type, NodePtr&& t_init);
 
   MAKE_TRAITS_ARCHIVEABLE(Let, DeclExpr)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Let() = default;
 };

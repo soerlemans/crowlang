@@ -41,7 +41,7 @@ class List : public NodeInterface {
     t_archive(m_list);
   }
 
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~List() = default;
 };

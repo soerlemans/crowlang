@@ -23,7 +23,7 @@ class Alt : virtual public NodeInterface {
 		t_archive(CEREAL_NVP(m_alt));
 	}
 
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~Alt() = default;
 };

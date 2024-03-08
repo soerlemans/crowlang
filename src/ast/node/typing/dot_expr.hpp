@@ -19,7 +19,7 @@ class DotExpr : public Identifier, public Expr {
   DotExpr(std::string_view t_identifier, NodePtr&& t_init);
 
   MAKE_TRAITS_ARCHIVEABLE(DotExpr, Identifier, Expr)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~DotExpr() = default;
 };

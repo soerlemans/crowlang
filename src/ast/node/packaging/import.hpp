@@ -38,7 +38,7 @@ class Import : public NodeInterface {
     t_archive(CEREAL_NVP(m_imports));
   }
 
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Import() = default;
 };

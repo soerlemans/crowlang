@@ -23,7 +23,7 @@ class UnaryOperator : virtual public NodeInterface {
     t_archive(m_left);
   }
 
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~UnaryOperator() = default;
 };

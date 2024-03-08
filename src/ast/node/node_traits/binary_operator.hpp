@@ -17,7 +17,7 @@ class BinaryOperator : public UnaryOperator {
   auto right() -> NodePtr&;
 
   MAKE_TRAITS_ARCHIVEABLE(BinaryOperator, UnaryOperator)
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~BinaryOperator() = default;
 };

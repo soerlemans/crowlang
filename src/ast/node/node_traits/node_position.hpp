@@ -35,7 +35,7 @@ class NodePosition : virtual public NodeInterface {
               cereal::make_nvp("columno", m_pos.m_columno));
   }
 
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~NodePosition() = default;
 };

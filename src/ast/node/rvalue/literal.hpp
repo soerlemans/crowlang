@@ -30,7 +30,7 @@ class Literal : public NodeInterface {
     t_archive(CEREAL_NVP(m_value));
   }
 
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Literal() = default;
 };

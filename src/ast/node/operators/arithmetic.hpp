@@ -39,7 +39,7 @@ class Arithmetic : public NodePosition,
 
   MAKE_TRAITS_ARCHIVEABLE(Arithmetic, NodePosition, Op<ArithmeticOp>,
                           BinaryOperator)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Arithmetic() = default;
 };

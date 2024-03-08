@@ -22,7 +22,7 @@ class UnaryPrefix : public Op<UnaryPrefixOp>, public UnaryOperator {
   UnaryPrefix(UnaryPrefixOp t_op, NodePtr&& t_left);
 
   MAKE_TRAITS_ARCHIVEABLE(UnaryPrefix, Op<UnaryPrefixOp>, UnaryOperator)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~UnaryPrefix() = default;
 };

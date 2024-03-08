@@ -23,7 +23,7 @@ class MethodDecl : public Identifier, public Params, public TypeAnnotation {
              std::string_view t_type);
 
   MAKE_TRAITS_ARCHIVEABLE(MethodDecl, Identifier, TypeAnnotation)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~MethodDecl() = default;
 };

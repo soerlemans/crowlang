@@ -25,7 +25,7 @@ class InitExpr : virtual public NodeInterface {
     t_archive(m_init);
   }
 
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~InitExpr() = default;
 };

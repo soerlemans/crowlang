@@ -20,7 +20,7 @@ class Struct : public Identifier, public Body {
   Struct(std::string_view t_identifier, NodeListPtr&& t_body);
 
   MAKE_TRAITS_ARCHIVEABLE(Struct, Identifier, Body)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Struct() = default;
 };

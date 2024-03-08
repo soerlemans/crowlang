@@ -20,7 +20,7 @@ class Ternary : public Condition, public Then, public Alt {
   explicit Ternary(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_alt);
 
   MAKE_TRAITS_ARCHIVEABLE(Ternary, Condition, Then, Alt)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Ternary() = default;
 };

@@ -18,7 +18,7 @@ class ModuleDecl : public Identifier {
   ModuleDecl(std::string_view t_identifier);
 
   MAKE_TRAITS_ARCHIVEABLE(ModuleDecl, Identifier)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~ModuleDecl() = default;
 };

@@ -21,7 +21,7 @@ class Not : public NodePosition, public UnaryOperator {
   Not(TextPosition t_pos, NodePtr&& t_left);
 
   MAKE_TRAITS_ARCHIVEABLE(Not, NodePosition, UnaryOperator)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Not() = default;
 };
@@ -32,7 +32,7 @@ class And : public NodePosition, public BinaryOperator {
   And(TextPosition t_pos, NodePtr&& t_left, NodePtr&& t_right);
 
   MAKE_TRAITS_ARCHIVEABLE(And, NodePosition, BinaryOperator)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~And() = default;
 };
@@ -43,7 +43,7 @@ class Or : public NodePosition, public BinaryOperator {
   Or(TextPosition t_pos, NodePtr&& t_left, NodePtr&& t_right);
 
   MAKE_TRAITS_ARCHIVEABLE(Or, NodePosition, BinaryOperator)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Or() = default;
 };

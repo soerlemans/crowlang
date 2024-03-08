@@ -26,7 +26,7 @@ class TypeData : virtual public NodeInterface {
   virtual auto set_type(TypeVariant t_data) -> void;
   virtual auto get_type() const -> const TypeVariant&;
 
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~TypeData() = default;
 };

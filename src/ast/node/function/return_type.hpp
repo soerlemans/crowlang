@@ -18,7 +18,7 @@ class ReturnType : public TypeAnnotation {
   ReturnType(std::string_view t_type);
 
   MAKE_TRAITS_ARCHIVEABLE(ReturnType, TypeAnnotation)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~ReturnType() = default;
 };

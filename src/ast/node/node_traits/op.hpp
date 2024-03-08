@@ -28,7 +28,7 @@ class Op : virtual public NodeInterface {
     t_archive(m_op);
   }
 
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~Op() = default;
 };
