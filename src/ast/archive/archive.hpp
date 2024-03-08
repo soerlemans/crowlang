@@ -8,10 +8,6 @@
  */
 
 // Library Includes:
-#include <cereal/archives/binary.hpp>
-#include <cereal/archives/json.hpp>
-#include <cereal/archives/portable_binary.hpp>
-#include <cereal/archives/xml.hpp>
 #include <cereal/types/list.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/optional.hpp>
@@ -19,6 +15,11 @@
 #include <cereal/types/string.hpp>
 #include <cereal/types/utility.hpp>
 #include <cereal/types/vector.hpp>
+
+#include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/archives/portable_binary.hpp>
+#include <cereal/archives/xml.hpp>
 
 
 // Macros:

@@ -11,7 +11,7 @@
 
 
 // Test Cases:
-TEST_CASE("Deserialization", "[visitor]")
+TEST_CASE("Archive", "[visitor]")
 {
   using ast::node::NodePtr;
   using ast::visitor::AstPrinter;
@@ -34,32 +34,23 @@ TEST_CASE("Deserialization", "[visitor]")
 
   // Create a stream too save too:
   std::stringstream ss;
-  AstPrinter printer{std::cout};
   AstSerializer serializer{};
 
-  std::cout << "Ast:"
-            << "\n";
-  printer.print(ast);
-
-  SECTION("Serialization")
+  SECTION("Serialize")
   {
-    serializer.serialize(ast, ss);
+    std::ofstream os("data.xml");
+    cereal::XMLOutputArchive archive(os);
 
-    std::cout << "\n"
-              << "Ast Serialized:"
-              << "\n";
-    std::cout << ss.str();
+    archive(ast);
   }
 
-  SECTION("Deserialization")
+  std::cout << "SS:\n" << ss.str();
+
+  SECTION("Deserialize")
   {
-    serializer.deserialize(ast_new, ss);
-    // serializer.deserialize(ast_new, fs);
+    std::ifstream is("data.xml");
+    cereal::XMLInputArchive archive(is);
 
-    std::cout << "Ast Deserialized:"
-              << "\n";
-    printer.print(ast_new);
+    archive(ast_new);
   }
-
-  REQUIRE(true);
 }
