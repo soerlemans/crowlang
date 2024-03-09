@@ -45,5 +45,5 @@ target_link_libraries(${TARGET_CROW} ${TARGET_CROW_LIB})
 if(DEFINED BUILD_CROW_TESTS)
 include(cmake/dependencies/catch2.cmake)
 
-add_subdirectory(test)
+add_subdirectory(tests)
 endif(DEFINED BUILD_CROW_TESTS)

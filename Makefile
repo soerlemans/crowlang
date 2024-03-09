@@ -9,26 +9,26 @@ CLANG_TIDY_ARGS := -header-filter=src/.* -extra-arg=-std=c++2b
 
 # Rules:
 .PHONY: all \
-	build debug reldebug tests\
+	build debug-build reldebug-build test-build \
 	install \
   clean clean-objects \
 	format lint \
 	docs docs-pdf
 
-all: build debug reldebug tests
+all: build debug-build reldebug-build test-build
 build: # Release build.
 	cmake -S . -B $@/
 	cmake --build $@/
 
-debug: # Build used for debugging and analyzing.
+debug-build: # Build used for debugging and analyzing.
 	cmake -S . -B $@/ $(DEBUG)
 	cmake --build $@/
 
-reldebug: # Build combination of release with debug info.
+reldebug-build: # Build combination of release with debug info.
 	cmake -S . -B $@/ $(RELDEBUG)
 	cmake --build $@/
 
-tests: # Build used for creating tests.
+test-build: # Build used for creating tests.
 	cmake -S . -B $@/ $(TESTS)
 	cmake --build $@/
 
@@ -38,15 +38,15 @@ install: build
 
 clean:
 	rm -rf build/*
-	rm -rf debug/*
-	rm -rf reldebug/*
-	rm -rf tests/*
+	rm -rf debug-build/*
+	rm -rf reldebug-build/*
+	rm -rf test-build/*
 
 clean-objects:
 	rm -rf build/CMakeFiles/*
-	rm -rf debug/CMakeFiles/*
-	rm -rf reldebug/CMakeFiles/*
-	rm -rf tests/CMakeFiles/*
+	rm -rf debug-build/CMakeFiles/*
+	rm -rf reldebug-build/CMakeFiles/*
+	rm -rf tests-build/CMakeFiles/*
 
 # Misc. rules:
 format:

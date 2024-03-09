@@ -42,9 +42,9 @@ src/definitions.hpp
 
 # Build directories
 build/*
-debug/*
-reldebug/*
-tests/*
+debug-build/*
+reldebug-build/*
+test-build/*
 
 # Docs
 docs/*
