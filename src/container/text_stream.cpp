@@ -1,6 +1,5 @@
 #include "text_stream.hpp"
 
-
 namespace container {
 // Methods:
 TextStream::TextStream(): m_lineno{0}, m_columnno{0}

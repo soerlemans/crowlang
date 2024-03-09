@@ -1,6 +1,5 @@
 #include "interface.hpp"
 
-
 namespace ast::node::typing {
 Interface::Interface(const std::string_view t_identifier,
                      NodeListPtr&& t_methods)

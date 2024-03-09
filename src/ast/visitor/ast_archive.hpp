@@ -13,7 +13,6 @@
 #include "../../lib/types.hpp"
 #include "../node/include_nodes.hpp"
 
-
 namespace ast::visitor {
 // Using Statements;
 using cereal::BinaryInputArchive;

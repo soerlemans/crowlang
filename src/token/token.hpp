@@ -13,7 +13,6 @@
 // Local Includes:
 #include "token_type.hpp"
 
-
 namespace token {
 // Using Statements:
 using container::Stream;

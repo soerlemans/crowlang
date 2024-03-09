@@ -8,7 +8,6 @@
 // Local Includes:
 #include "symbol_types.hpp"
 
-
 namespace check {
 // Using Statements:
 using exception::error;
@@ -86,7 +85,6 @@ auto SymbolData::native_type() const -> NativeTypeOpt
 
   return opt;
 }
-
 
 auto SymbolData::strip() const -> TypeVariant
 {

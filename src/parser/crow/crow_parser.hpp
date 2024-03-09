@@ -7,7 +7,6 @@
 // Includes:
 #include "../pratt/pratt_parser.hpp"
 
-
 namespace parser::crow {
 // Using Statements:
 using ast::node::packaging::Import;

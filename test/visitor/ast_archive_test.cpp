@@ -15,7 +15,7 @@ TEST_CASE("Archive", "[visitor]")
 {
   using ast::node::NodePtr;
   using ast::visitor::AstPrinter;
-  using ast::visitor::AstSerializer;
+  using ast::visitor::AstArchive;
   using container::TextBuffer;
   using lexer::Lexer;
 

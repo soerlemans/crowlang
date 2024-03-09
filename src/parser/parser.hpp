@@ -21,8 +21,8 @@
 
 namespace parser {
 // Using Statements:
-using ast::node::NodePtr;
 using ast::node::NodeListPtr;
+using ast::node::NodePtr;
 
 using container::TextPosition;
 
@@ -55,7 +55,6 @@ class Parser {
     return std::make_shared<T>(std::forward<Args>(t_args)...);
   }
 
-
   // Helper methods for parsing:
   auto syntax_error(std::string_view t_msg) const -> void;
   auto eos_error(std::string_view t_msg) const -> void;
@@ -81,7 +80,6 @@ class Parser {
 
     return is_next;
   }
-
 
   auto after_newlines(TokenType t_type) -> bool;
 

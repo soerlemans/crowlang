@@ -5,7 +5,6 @@
 #include <string>
 #include <string_view>
 
-
 namespace container {
 /*!
  * Structure contains data of a position Crow's source code.

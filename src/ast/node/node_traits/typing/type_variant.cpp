@@ -8,7 +8,6 @@
 // Local Includes:
 #include "types.hpp"
 
-
 namespace ast::node::node_traits::typing {
 // Using Statements:
 using exception::error;

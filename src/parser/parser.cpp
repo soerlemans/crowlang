@@ -5,7 +5,6 @@
 #include "../exception/syntax_error.hpp"
 #include "../token/tokentype2str.hpp"
 
-
 namespace parser {
 // Using statements:
 using ast::node::List;

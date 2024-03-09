@@ -1,7 +1,6 @@
 #ifndef CROW_LIB_OVERLOAD_HPP
 #define CROW_LIB_OVERLOAD_HPP
 
-
 // Overload pattern:
 /*!
  *	Helper struct for overloading callables when using @ref std::visit.

@@ -10,7 +10,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::node_traits::typing {
 /*!
  * Class for annotating the AST with type information.

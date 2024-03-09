@@ -8,7 +8,6 @@
 // Includes:
 #include "../token_type.hpp"
 
-
 namespace token::reserved {
 // Concepts:
 template<typename T>

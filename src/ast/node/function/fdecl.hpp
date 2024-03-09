@@ -4,13 +4,12 @@
 // STL Includes:
 #include <memory>
 
-
 namespace ast::node::function {
 // Forward Declarations:
 class Parameter;
 class Function;
 class Call;
 class ReturnType;
-} // namespace ast::node::functions
+} // namespace ast::node::function
 
 #endif // CROW_AST_NODE_FUNCTION_FDECL_HPP

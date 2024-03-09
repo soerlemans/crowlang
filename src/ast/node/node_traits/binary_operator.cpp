@@ -1,6 +1,5 @@
 #include "binary_operator.hpp"
 
-
 namespace ast::node::node_traits {
 // Methods:
 BinaryOperator::BinaryOperator(NodePtr&& t_left, NodePtr&& t_right)

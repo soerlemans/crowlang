@@ -3,7 +3,6 @@
 // Includes:
 #include "../../../../debug/log.hpp"
 
-
 // Using Statements:
 namespace ast::node::node_traits::typing {
 // StructType:

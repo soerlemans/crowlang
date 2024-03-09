@@ -7,7 +7,6 @@
 #include <memory>
 #include <optional>
 
-
 namespace check {
 // Forward Declarations:
 class SymbolData;

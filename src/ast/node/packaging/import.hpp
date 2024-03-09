@@ -12,7 +12,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::packaging {
 // Aliases:
 using StrOpt = std::optional<std::string>;

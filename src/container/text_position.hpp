@@ -5,7 +5,6 @@
 #include <string>
 #include <string_view>
 
-
 namespace container {
 struct TextPosition {
   // Members:

@@ -8,7 +8,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::typing {
 // Using Statements:
 using node_traits::Identifier;

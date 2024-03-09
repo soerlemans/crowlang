@@ -8,7 +8,6 @@
 #include "../../ast/node/include_nodes.hpp"
 #include "../../debug/log.hpp"
 
-
 namespace parser::pratt {
 // Using Statements:
 NODE_USING_ALL_NAMESPACES()
@@ -76,7 +75,6 @@ auto PrattParser::literal() -> NodePtr
 
   return node;
 }
-
 
 auto PrattParser::grouping() -> NodePtr
 {

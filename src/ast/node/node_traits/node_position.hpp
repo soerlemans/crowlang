@@ -9,7 +9,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::node_traits {
 // Using Statements:
 using container::TextPosition;

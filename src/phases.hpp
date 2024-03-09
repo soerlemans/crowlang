@@ -15,7 +15,6 @@
 // Local Includes:
 #include "cli.hpp"
 
-
 // Functions:
 auto open_file(const fs::path t_path) -> container::TextBuffer
 {

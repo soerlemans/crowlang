@@ -48,7 +48,6 @@ auto reverse_lookup(const TokenType t_type, const T& t_map) -> StrOpt
 }
 } // namespace
 
-
 namespace token {
 // Functions:
 auto tokentype2str(const token::TokenType t_type) -> std::string

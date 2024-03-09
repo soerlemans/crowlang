@@ -1,6 +1,5 @@
 #include "type_annotation.hpp"
 
-
 namespace ast::node::node_traits {
 // Methods:
 TypeAnnotation::TypeAnnotation(const std::string_view t_type): m_type{t_type}

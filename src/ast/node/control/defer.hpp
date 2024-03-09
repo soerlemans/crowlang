@@ -7,7 +7,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::control {
 // Aliases:
 using node_traits::Body;

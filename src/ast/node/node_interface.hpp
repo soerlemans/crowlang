@@ -8,7 +8,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node {
 // Using Statements:
 using visitor::Any;

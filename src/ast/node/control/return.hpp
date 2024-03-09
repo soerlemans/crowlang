@@ -7,7 +7,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::control {
 // Using Statements:
 using node_traits::Expr;

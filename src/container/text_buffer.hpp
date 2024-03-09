@@ -9,7 +9,6 @@
 // Local Includes:
 #include "text_stream.hpp"
 
-
 namespace container {
 class TextBuffer : public TextStream {
   private:

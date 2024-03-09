@@ -6,13 +6,12 @@
 #include <iterator>
 #include <optional>
 
-
 namespace container {
 // Classes:
 /*! Streams are containers that keep track of their current element.
  */
 template<typename T>
-requires std::bidirectional_iterator<typename T::iterator>
+  requires std::bidirectional_iterator<typename T::iterator>
 class Stream : public T {
   private:
   using Iterator = typename T::iterator;

@@ -15,7 +15,6 @@
 // Includes:
 #include "../node/include_nodes.hpp"
 
-
 namespace ast::visitor {
 // Concept:
 template<typename Type, typename... Args>
@@ -190,7 +189,7 @@ class AstPrinter : public NodeVisitor {
   auto visit(node::List* t_list) -> Any override;
   auto visit(node::Nil* t_nil) -> Any override;
 
-	// TODO: Add ostream& parameter.
+  // TODO: Add ostream& parameter.
   auto print(NodePtr t_ast) -> void;
 
   virtual ~AstPrinter() = default;

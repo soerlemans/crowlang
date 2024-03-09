@@ -8,7 +8,6 @@
 // Includes:
 #include "../../../token/token_type.hpp"
 
-
 namespace parser::pratt::binding {
 // Macros:
 //! Convenience macro so we can omit the TokenType prefix

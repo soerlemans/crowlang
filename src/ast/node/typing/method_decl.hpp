@@ -9,7 +9,6 @@
 #include "fdecl.hpp"
 #include <string_view>
 
-
 namespace ast::node::typing {
 // Using Statements:
 using node_traits::Identifier;

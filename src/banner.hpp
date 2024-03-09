@@ -62,6 +62,7 @@ Banner g_banner{Letter{"             ",
                        "  ▒▒████▒████   \n",
                        "   ▒▒▒▒ ▒▒▒▒    \n",
                        "                \n"}};
+
 // clang-format on
 
 // FIXME: Find a more elegant way to print the banner.
@@ -79,7 +80,7 @@ auto make_banner() -> std::string
     // Color the C with a blue color
     const auto color{(index == 0) ? fg::blue : fg::reset};
 
-		ss << color << line;
+    ss << color << line;
 
     index++;
     if(index >= g_banner.size()) {

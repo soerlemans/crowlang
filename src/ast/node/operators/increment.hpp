@@ -7,7 +7,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::operators {
 // Using statements:
 using node_traits::UnaryOperator;

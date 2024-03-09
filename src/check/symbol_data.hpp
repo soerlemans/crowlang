@@ -7,7 +7,6 @@
 // Local Includes:
 #include "check.hpp"
 
-
 namespace check {
 // Using Statements:
 using ast::node::node_traits::typing::NativeType;

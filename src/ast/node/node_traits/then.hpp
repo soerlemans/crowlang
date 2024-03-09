@@ -7,7 +7,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::node_traits {
 class Then : virtual public NodeInterface {
   private:

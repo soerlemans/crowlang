@@ -7,7 +7,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::operators {
 // Namespace aliases:
 using container::TextPosition;
@@ -37,8 +36,8 @@ class Arithmetic : public NodePosition,
   Arithmetic(TextPosition t_pos, ArithmeticOp t_op, NodePtr&& t_left,
              NodePtr&& t_right);
 
-  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Arithmetic, NodePosition, Op<ArithmeticOp>,
-                          BinaryOperator)
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Arithmetic, NodePosition,
+                                      Op<ArithmeticOp>, BinaryOperator)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Arithmetic() = default;

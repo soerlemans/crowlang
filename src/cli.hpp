@@ -31,7 +31,7 @@ class BannerFormatter : public CLI::Formatter {
   BannerFormatter(): Formatter()
   {}
 
-	//! Add banner to beginning of the description.
+  //! Add banner to beginning of the description.
   auto make_description(const CLI::App* t_app) const -> std::string override
   {
     std::stringstream ss;
@@ -52,7 +52,8 @@ auto parse_args(CLI::App& t_app, const int t_argc, char* t_argv[]) -> void
 
   // Program source files:
   t_app.add_option("{}", settings.m_paths, "Files to compile.")
-    ->check(CLI::ExistingFile)->required();
+    ->check(CLI::ExistingFile)
+    ->required();
 
   // Force colors always to be written
   rang::setControlMode(rang::control::Force);

@@ -17,14 +17,19 @@
 // Local Includes:
 #include "log_macros.hpp"
 
-
 namespace debug {
 // Enums:
 /*!
  * Enumeration of the different logging levels.
  * The lower log levels have the most severity.
  */
-enum class LogLevel : u16 { CRITICAL = 0, ERROR, WARNING, INFO, VERBOSE };
+enum class LogLevel : u16 {
+  CRITICAL = 0,
+  ERROR,
+  WARNING,
+  INFO,
+  VERBOSE
+};
 
 // We use std::clog for logging
 template<typename... Args>
@@ -44,7 +49,6 @@ auto println(Args&&... t_args) -> void
   // Fold expression
   print(std::forward<Args>(t_args)..., '\n');
 }
-
 
 // Logging faciltiies
 #ifdef DEBUG

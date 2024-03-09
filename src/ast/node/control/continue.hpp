@@ -7,7 +7,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::control {
 class Continue : public NodeInterface {
   public:
@@ -18,7 +17,7 @@ class Continue : public NodeInterface {
 
   virtual ~Continue() = default;
 };
-} // namespace node::control
+} // namespace ast::node::control
 
 // Cereal type registration:
 REGISTER_ARCHIVEABLE_TYPE(ast::node::control, Continue);

@@ -5,7 +5,6 @@
 #include "fdecl.hpp"
 #include "unary_operator.hpp"
 
-
 namespace ast::node::node_traits {
 class BinaryOperator : public UnaryOperator {
   private:

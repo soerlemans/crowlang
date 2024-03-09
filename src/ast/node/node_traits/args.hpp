@@ -7,7 +7,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::node_traits {
 class Args : virtual public NodeInterface {
   private:
@@ -20,8 +19,8 @@ class Args : virtual public NodeInterface {
 
   AST_ARCHIVE_MAKE_ARCHIVEABLE(Args)
   {
-		t_archive(CEREAL_NVP(m_args));
-	}
+    t_archive(CEREAL_NVP(m_args));
+  }
 
   AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 

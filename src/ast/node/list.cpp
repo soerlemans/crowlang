@@ -1,6 +1,5 @@
 #include "list.hpp"
 
-
 namespace ast::node {
 auto List::begin() -> NodeList::iterator
 {

@@ -11,7 +11,6 @@
 #include "node_position.hpp"
 #include "type_annotation.hpp"
 
-
 namespace ast::node::node_traits {
 // Using Statements:
 using container::TextPosition;
@@ -25,8 +24,8 @@ class DeclExpr : public NodePosition,
   DeclExpr(TextPosition&& t_pos, std::string_view t_identifier,
            std::string_view t_type, NodePtr&& t_init);
 
-  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(DeclExpr, NodePosition, Identifier, TypeAnnotation,
-                          InitExpr)
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(DeclExpr, NodePosition, Identifier,
+                                      TypeAnnotation, InitExpr)
   AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~DeclExpr() = default;

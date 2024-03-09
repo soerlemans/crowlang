@@ -8,7 +8,6 @@
 // Local Includes:
 #include "token_type.hpp"
 
-
 namespace token {
 auto tokentype2str(TokenType t_type) -> std::string;
 } // namespace token

@@ -12,7 +12,6 @@
 #include "../ast/node/include_nodes.hpp"
 #include "../debug/log.hpp"
 
-
 namespace check {
 // Using Statements:
 using ast::node::node_traits::typing::NativeType;
@@ -75,7 +74,7 @@ auto TypeChecker::visit(If* t_if) -> Any
 
 auto TypeChecker::visit(Loop* t_loop) -> Any
 {
-	// A loops condition maybe empty, which is an endless loop.
+  // A loops condition maybe empty, which is an endless loop.
   if(t_loop->condition()) {
     const auto cond{get_symbol_data(t_loop->condition())};
 

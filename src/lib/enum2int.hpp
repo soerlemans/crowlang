@@ -4,7 +4,6 @@
 // STL Includes:
 #include <type_traits>
 
-
 // Functions
 template<typename T>
 constexpr auto enum2int(const T t_value) -> std::underlying_type_t<T>

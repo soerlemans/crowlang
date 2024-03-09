@@ -3,7 +3,6 @@
 // Includes:
 #include "../debug/log.hpp"
 
-
 // Using Statements:
 namespace check {
 // StructType:

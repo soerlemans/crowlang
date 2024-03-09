@@ -11,7 +11,6 @@
 #include "env_stack.hpp"
 #include "symbol_helper.hpp"
 
-
 namespace check {
 // Using statements:
 using namespace ast;

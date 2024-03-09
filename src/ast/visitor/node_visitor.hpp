@@ -14,8 +14,9 @@
   auto t_class::visit([[maybe_unused]] t_type* t_ptr)->Any \
   {                                                        \
     return {};                                             \
-  }                                                        \
-  /* NOLINTBEGIN */
+  }
+
+/* NOLINTBEGIN */
 
 namespace ast::visitor {
 // Using statements:

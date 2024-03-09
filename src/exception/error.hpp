@@ -28,7 +28,6 @@ class Error : public std::exception {
   virtual ~Error() = default;
 };
 
-
 // Functions:
 template<typename T = Error, typename... Args>
   requires std::is_base_of<Error, T>::value

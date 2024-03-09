@@ -22,7 +22,6 @@
 #include "../../debug/log.hpp"
 #include "../../lib/types.hpp"
 
-
 namespace codegen::llvm_backend {
 // Using Statements:
 using namespace ast::visitor;

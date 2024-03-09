@@ -1,6 +1,5 @@
 #include "text_buffer.hpp"
 
-
 namespace container {
 // Methods:
 TextBuffer::TextBuffer(): m_lineno{0}, m_columnno{0}

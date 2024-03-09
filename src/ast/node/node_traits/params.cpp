@@ -1,6 +1,5 @@
 #include "params.hpp"
 
-
 namespace ast::node::node_traits {
 // Methods:
 Params::Params(NodeListPtr&& t_params): m_params{std::move(t_params)}

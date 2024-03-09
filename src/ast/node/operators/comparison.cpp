@@ -1,6 +1,5 @@
 #include "comparison.hpp"
 
-
 namespace ast::node::operators {
 Comparison::Comparison(TextPosition t_pos, ComparisonOp t_op, NodePtr&& t_left,
                        NodePtr&& t_right)

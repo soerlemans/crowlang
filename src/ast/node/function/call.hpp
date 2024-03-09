@@ -8,7 +8,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::function {
 // Using Statements:
 using node_traits::Args;

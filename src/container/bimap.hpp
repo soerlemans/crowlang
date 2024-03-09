@@ -7,7 +7,6 @@
 // Library Includes:
 #include <boost/bimap.hpp>
 
-
 // TODO: Implementation is a work in progress.
 namespace container {
 template<typename Key, typename Value>

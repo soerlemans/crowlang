@@ -10,7 +10,6 @@
 // Local Includes:
 #include "error.hpp"
 
-
 namespace exception {
 /*!
  * Is thrown when source code of a crow program contains a syntax error.

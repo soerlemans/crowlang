@@ -1,6 +1,5 @@
 #include "token.hpp"
 
-
 namespace token {
 Token::Token(const TokenType t_type, TextPosition t_tp)
   : m_type{t_type}, m_tp{std::move(t_tp)}
@@ -9,7 +8,6 @@ Token::Token(const TokenType t_type, TextPosition t_tp)
 Token::Token(const TokenType t_type, TokenValue t_value, TextPosition t_tp)
   : m_type{t_type}, m_value{std::move(t_value)}, m_tp{std::move(t_tp)}
 {}
-
 
 auto Token::type() const -> TokenType
 {

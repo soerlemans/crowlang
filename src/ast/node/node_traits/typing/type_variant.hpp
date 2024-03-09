@@ -8,7 +8,6 @@
 #include "native_types.hpp"
 #include "typing.hpp"
 
-
 namespace ast::node::node_traits::typing {
 // Aliases:
 using Variant =

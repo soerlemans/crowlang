@@ -7,7 +7,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::operators {
 // Using Statements:
 using container::TextPosition;

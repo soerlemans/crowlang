@@ -7,7 +7,6 @@
 #include "../ast/node/include_nodes.hpp"
 #include "../debug/log.hpp"
 
-
 namespace check {
 // Methods:
 auto SymbolHelper::get_symbol_data(NodePtr t_ptr) -> SymbolData

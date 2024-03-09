@@ -5,7 +5,6 @@
 #include "fdecl.hpp"
 #include "node_interface.hpp"
 
-
 namespace ast::node {
 class Nil : public NodeInterface {
   public:

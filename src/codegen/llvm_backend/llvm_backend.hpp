@@ -13,7 +13,6 @@
 // Includes:
 #include "../../ast/visitor/node_visitor.hpp"
 
-
 namespace codegen::llvm_backend {
 // Using statements:
 using namespace ast;

@@ -7,7 +7,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::node_traits {
 class Condition : virtual public NodeInterface {
   private:
@@ -20,8 +19,8 @@ class Condition : virtual public NodeInterface {
 
   AST_ARCHIVE_MAKE_ARCHIVEABLE(Condition)
   {
-		t_archive(CEREAL_NVP(m_condition));
-	}
+    t_archive(CEREAL_NVP(m_condition));
+  }
 
   AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 

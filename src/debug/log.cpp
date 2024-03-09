@@ -3,7 +3,6 @@
 // Includes:
 #include "../lib/enum2int.hpp"
 
-
 namespace debug {
 namespace {
 // Private variables:
@@ -15,7 +14,8 @@ LogLevel g_loglevel{LogLevel::WARNING};
 // This function checks if the LogLevel is lower than the current g_loglevel
 // t_loglevel is used in macros use [[maybe_unused]] to silence warnings
 // TOOD: This could be constexpr
-[[nodiscard]] auto is_lower_loglevel(const LogLevel t_loglevel) -> bool
+[[nodiscard]]
+auto is_lower_loglevel(const LogLevel t_loglevel) -> bool
 {
   return enum2int(g_loglevel) >= enum2int(t_loglevel);
 }

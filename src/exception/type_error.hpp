@@ -4,7 +4,6 @@
 // Local Includes:
 #include "error.hpp"
 
-
 namespace exception {
 // Classes:
 class TypeError : public Error {

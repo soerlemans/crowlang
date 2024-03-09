@@ -18,6 +18,6 @@ class Assignment;
 
 // Trinary operator:
 class Ternary;
-} // namespace node::operators
+} // namespace ast::node::operators
 
 #endif // CROW_AST_NODE_OPERATORS_FDECL_HPP

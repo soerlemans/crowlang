@@ -4,7 +4,6 @@
 #include <iomanip>
 #include <string>
 
-
 namespace exception {
 // Methods:
 auto SyntaxError::format(const std::string_view t_msg) -> std::string

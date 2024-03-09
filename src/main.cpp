@@ -4,7 +4,6 @@
 // Local Includes:
 #include "phases.hpp"
 
-
 // Enums:
 enum ExitCode {
   OK = 0,

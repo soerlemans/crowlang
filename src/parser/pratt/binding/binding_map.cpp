@@ -6,7 +6,9 @@ using namespace parser::pratt::binding;
 auto BindingMap::insert_binding(const token::TokenType t_type, const int t_lbp,
                                 const int t_rbp) -> void
 {
-  this->insert({t_type, BindingPower{t_lbp, t_rbp}});
+  this->insert({
+    t_type, BindingPower{t_lbp, t_rbp}
+  });
 }
 
 auto BindingMap::rbp(token::TokenType t_type) const -> int

@@ -6,10 +6,10 @@
 
 
 // Macros:
-#define AST_VISITOR_MAKE_VISITABLE(t_visitor_type)                            \
-  auto accept(t_visitor_type* t_visitor)->ast::visitor::Any override	\
-  {                                                               \
-    return {t_visitor->visit(this)};                              \
+#define AST_VISITOR_MAKE_VISITABLE(t_visitor_type)                   \
+  auto accept(t_visitor_type* t_visitor)->ast::visitor::Any override \
+  {                                                                  \
+    return {t_visitor->visit(this)};                                 \
   }
 
 #define AST_VISITOR_VISITABLE_PURE_ACCEPT(t_visitor_type) \
