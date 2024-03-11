@@ -5,6 +5,12 @@ target_sources(${TARGET_CROW_BIN} PRIVATE
 )
 endif(TARGET ${TARGET_CROW_BIN})
 
+target_sources(${TARGET_CROW} PRIVATE
+	cli.cpp
+	banner.cpp
+	phases.cpp
+)
+
 # Utilities:
 add_subdirectory(debug)
 add_subdirectory(container)

@@ -22,75 +22,51 @@ using Banner = std::array<Letter, 4>;
 
 // Globals:
 // clang-format off
-Banner g_banner{Letter{"             ",
-                       "   █████████ ",
-                       "  ███▒▒▒▒▒███",
-                       " ███     ▒▒▒ ",
-                       "▒███         ",
-                       "▒███         ",
-                       "▒▒███     ███",
-                       " ▒▒█████████ ",
-                       "  ▒▒▒▒▒▒▒▒▒  ",
-                       "             "},
-                Letter{"          ",
-                       "          ",
-                       "          ",
-                       " ████████ ",
-                       "▒▒███▒▒███",
-                       " ▒███ ▒▒▒ ",
-                       " ▒███     ",
-                       " █████    ",
-                       "▒▒▒▒▒     ",
-                       "          "},
-                Letter{"         ",
-                       "         ",
-                       "         ",
-                       "  ██████ ",
-                       " ███▒▒███",
-                       "▒███ ▒███",
-                       "▒███ ▒███",
-                       "▒▒██████ ",
-                       " ▒▒▒▒▒▒  ",
-                       "         "},
-                Letter{"                \n",
-                       "                \n",
-                       "                \n",
-                       " █████ ███ █████\n",
-                       "▒▒███ ▒███▒▒███ \n",
-                       " ▒███ ▒███ ▒███ \n",
-                       " ▒▒███████████  \n",
-                       "  ▒▒████▒████   \n",
-                       "   ▒▒▒▒ ▒▒▒▒    \n",
-                       "                \n"}};
+constexpr Banner g_banner{Letter{"             ",
+                                 "   █████████ ",
+                                 "  ███▒▒▒▒▒███",
+                                 " ███     ▒▒▒ ",
+                                 "▒███         ",
+                                 "▒███         ",
+                                 "▒▒███     ███",
+                                 " ▒▒█████████ ",
+                                 "  ▒▒▒▒▒▒▒▒▒  ",
+                                 "             "},
+                          Letter{"          ",
+                                 "          ",
+                                 "          ",
+                                 " ████████ ",
+                                 "▒▒███▒▒███",
+                                 " ▒███ ▒▒▒ ",
+                                 " ▒███     ",
+                                 " █████    ",
+                                 "▒▒▒▒▒     ",
+                                 "          "},
+                          Letter{"         ",
+                                 "         ",
+                                 "         ",
+                                 "  ██████ ",
+                                 " ███▒▒███",
+                                 "▒███ ▒███",
+                                 "▒███ ▒███",
+                                 "▒▒██████ ",
+                                 " ▒▒▒▒▒▒  ",
+                                 "         "},
+                          Letter{"                \n",
+                                 "                \n",
+                                 "                \n",
+                                 " █████ ███ █████\n",
+                                 "▒▒███ ▒███▒▒███ \n",
+                                 " ▒███ ▒███ ▒███ \n",
+                                 " ▒▒███████████  \n",
+                                 "  ▒▒████▒████   \n",
+                                 "   ▒▒▒▒ ▒▒▒▒    \n",
+                                 "                \n"}};
 
 // clang-format on
 
 // FIXME: Find a more elegant way to print the banner.
-auto make_banner() -> std::string
-{
-  using namespace rang;
-
-  std::stringstream ss;
-
-  std::size_t index{0}, line_index{0};
-  while(index < g_banner.size() && line_index < g_banner[index].size()) {
-    const auto& letter{g_banner[index]};
-    const auto& line{letter[line_index]};
-
-    // Color the C with a blue color
-    const auto color{(index == 0) ? fg::blue : fg::reset};
-
-    ss << color << line;
-
-    index++;
-    if(index >= g_banner.size()) {
-      index = 0;
-      line_index++;
-    }
-  }
-
-  return ss.str();
-}
+auto make_banner() -> std::string;
 
 /*!
  * The banner is printed with color the help page.

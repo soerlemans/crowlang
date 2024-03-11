@@ -11,20 +11,18 @@
 
 
 // Test Cases:
-TEST_CASE("Archive", "[visitor]")
+TEST_CASE("AstArchive", "[visitor]")
 {
   using ast::node::NodePtr;
-  using ast::visitor::AstPrinter;
+  using ast::visitor::ArchiveType;
   using ast::visitor::AstArchive;
+  using ast::visitor::AstPrinter;
   using container::TextBuffer;
   using lexer::Lexer;
 
   // Create a simple crow program:
   auto stream_ptr{std::make_shared<TextBuffer>()};
-
-  stream_ptr->add_line("fn main() -> int {");
-  stream_ptr->add_line("  return 0");
-  stream_ptr->add_line("}");
+  stream_ptr->add_line("fn main() -> int { return 0; }");
 
   // Create an AST:
   Lexer lexer{stream_ptr};
@@ -34,7 +32,7 @@ TEST_CASE("Archive", "[visitor]")
 
   // Create a stream too save too:
   std::fstream fs("data.xml");
-  AstArchive archive{};
+  AstArchive archive{ArchiveType::XML};
 
   SECTION("Serialize")
   {
@@ -45,4 +43,6 @@ TEST_CASE("Archive", "[visitor]")
   {
     archive.in(ast_new, fs);
   }
+
+  // TODO: Find a way to compare these.
 }
