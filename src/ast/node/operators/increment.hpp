@@ -7,7 +7,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::operators {
 // Using statements:
 using node_traits::UnaryOperator;
@@ -22,8 +21,8 @@ class Increment : public UnaryOperator {
 
   auto prefix() const -> bool;
 
-  MAKE_TRAITS_ARCHIVEABLE(Increment, UnaryOperator)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Increment, UnaryOperator)
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Increment() = default;
 };

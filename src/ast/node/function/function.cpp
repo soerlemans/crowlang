@@ -1,6 +1,5 @@
 #include "function.hpp"
 
-
 namespace ast::node::function {
 // Methods:
 Function::Function(const std::string_view t_identifier, NodeListPtr&& t_params,

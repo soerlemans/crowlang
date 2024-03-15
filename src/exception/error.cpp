@@ -4,7 +4,6 @@
 #include <cassert>
 #include <sstream>
 
-
 namespace exception {
 // Methods:
 Error::Error(const std::string t_msg): std::exception{}, m_error{}
@@ -16,10 +15,10 @@ Error::Error(const std::string t_msg): std::exception{}, m_error{}
 #ifdef DEBUG
   ss << '\n';
 
-	// TODO: Disable colors when --no-color is passed.
-	// Print the stacktrace with colors.
+  // TODO: Disable colors when --no-color is passed.
+  // Print the stacktrace with colors.
   auto stacktrace{cpptrace::stacktrace::current()};
-	stacktrace.print(ss, true);
+  stacktrace.print(ss, true);
 #endif
 
   m_error = ss.str();

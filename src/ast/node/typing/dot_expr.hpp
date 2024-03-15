@@ -7,7 +7,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::typing {
 // Using Statements:
 using node_traits::Expr;
@@ -18,8 +17,8 @@ class DotExpr : public Identifier, public Expr {
   public:
   DotExpr(std::string_view t_identifier, NodePtr&& t_init);
 
-  MAKE_TRAITS_ARCHIVEABLE(DotExpr, Identifier, Expr)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(DotExpr, Identifier, Expr)
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~DotExpr() = default;
 };

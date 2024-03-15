@@ -7,18 +7,17 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::control {
 class Continue : public NodeInterface {
   public:
   Continue() = default;
 
   AST_ARCHIVE_DEFINE_SERIALIZE_METHOD_NIL()
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Continue() = default;
 };
-} // namespace node::control
+} // namespace ast::node::control
 
 // Cereal type registration:
 REGISTER_ARCHIVEABLE_TYPE(ast::node::control, Continue);

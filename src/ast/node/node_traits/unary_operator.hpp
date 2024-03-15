@@ -2,11 +2,10 @@
 #define CROW_AST_NODE_NODE_TRAITS_UNARY_OPERATOR_HPP
 
 // Includes:
-#include "../node_interface.hpp"
+#include "../include.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"
-
 
 namespace ast::node::node_traits {
 class UnaryOperator : virtual public NodeInterface {
@@ -18,12 +17,12 @@ class UnaryOperator : virtual public NodeInterface {
 
   virtual auto left() -> NodePtr&;
 
-  MAKE_ARCHIVEABLE(UnaryOperator)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(UnaryOperator)
   {
     t_archive(m_left);
   }
 
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~UnaryOperator() = default;
 };

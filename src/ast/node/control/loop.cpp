@@ -1,6 +1,5 @@
 #include "loop.hpp"
 
-
 namespace ast::node::control {
 Loop::Loop(TextPosition t_pos, NodePtr&& t_init, NodePtr&& t_condition,
            NodePtr&& t_expr, NodeListPtr&& t_body)

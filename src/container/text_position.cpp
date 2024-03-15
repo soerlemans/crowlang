@@ -3,7 +3,6 @@
 // STL Includes:
 #include <sstream>
 
-
 namespace container {
 // Methods:
 TextPosition::TextPosition(): m_lineno{0}, m_columno{0}

@@ -4,7 +4,6 @@
 // Local Includes:
 #include "symbol_data.hpp"
 
-
 namespace check {
 // Structs:
 // TODO: use VarTypePtr and FnTypePtr in combination with a map?
@@ -50,6 +49,7 @@ auto make_struct(Args&&... t_args) -> SymbolData
 {
   return std::make_shared<StructType>(std::forward<Args>(t_args)...);
 }
+
 template<typename... Args>
 auto make_function(Args&&... t_args) -> SymbolData
 {

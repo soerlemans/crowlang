@@ -2,5 +2,5 @@
 target_sources(${TARGET_CROW_LIB} PRIVATE
 	node_visitor.cpp
 	ast_printer.cpp
-	ast_serializer.cpp
+	ast_archive.cpp
 )

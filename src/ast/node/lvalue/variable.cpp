@@ -1,6 +1,5 @@
 #include "variable.hpp"
 
-
 namespace ast::node::lvalue {
 // Methods:
 Variable::Variable(TextPosition t_pos, const std::string_view t_identifier)

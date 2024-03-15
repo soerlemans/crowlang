@@ -1,6 +1,5 @@
 #include "assignment.hpp"
 
-
 namespace ast::node::operators {
 Assignment::Assignment(TextPosition t_pos, const AssignmentOp t_op,
                        NodePtr&& t_left, NodePtr&& t_right)

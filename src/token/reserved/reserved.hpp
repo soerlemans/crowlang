@@ -212,6 +212,7 @@ namespace symbols {
 	}
 } // namespace symbols
 } // namespace reserved
+
 // clang-format on
 
 #endif // CROW_TOKEN_RESERVED_RESERVED_HPP

@@ -7,7 +7,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::function {
 // Using Statements:
 using node_traits::TypeAnnotation;
@@ -17,8 +16,8 @@ class ReturnType : public TypeAnnotation {
   public:
   ReturnType(std::string_view t_type);
 
-  MAKE_TRAITS_ARCHIVEABLE(ReturnType, TypeAnnotation)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(ReturnType, TypeAnnotation)
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~ReturnType() = default;
 };

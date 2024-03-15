@@ -2,11 +2,10 @@
 #define CROW_AST_NODE_NODE_TRAITS_ALT_HPP
 
 // Includes:
-#include "../node_interface.hpp"
+#include "../include.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"
-
 
 namespace ast::node::node_traits {
 class Alt : virtual public NodeInterface {
@@ -18,12 +17,12 @@ class Alt : virtual public NodeInterface {
 
   virtual auto alt() -> NodePtr&;
 
-  MAKE_ARCHIVEABLE(Alt)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(Alt)
   {
-		t_archive(CEREAL_NVP(m_alt));
-	}
+    t_archive(CEREAL_NVP(m_alt));
+  }
 
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~Alt() = default;
 };

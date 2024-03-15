@@ -1,7 +1,6 @@
 #ifndef CROW_AST_NODE_RVALUE_FDECL_HPP
 #define CROW_AST_NODE_RVALUE_FDECL_HPP
 
-
 namespace ast::node::rvalue {
 // Forward Declarations:
 template<typename T>

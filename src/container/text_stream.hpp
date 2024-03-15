@@ -10,7 +10,6 @@
 #include "stream.hpp"
 #include "text_position.hpp"
 
-
 namespace container {
 // Forward Declarations:
 class TextStream;

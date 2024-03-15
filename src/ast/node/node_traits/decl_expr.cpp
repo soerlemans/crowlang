@@ -1,6 +1,5 @@
 #include "decl_expr.hpp"
 
-
 namespace ast::node::node_traits {
 // Methods:
 DeclExpr::DeclExpr(TextPosition&& t_pos, const std::string_view t_identifier,

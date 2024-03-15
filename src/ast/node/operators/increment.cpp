@@ -1,6 +1,5 @@
 #include "increment.hpp"
 
-
 namespace ast::node::operators {
 Increment::Increment(NodePtr&& t_left, bool t_prefix)
   : UnaryOperator{std::move(t_left)}, m_prefix{t_prefix}

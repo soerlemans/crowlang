@@ -2,11 +2,10 @@
 #define CROW_AST_NODE_NODE_TRAITS_THEN_HPP
 
 // Includes:
-#include "../node_interface.hpp"
+#include "../include.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"
-
 
 namespace ast::node::node_traits {
 class Then : virtual public NodeInterface {
@@ -18,12 +17,12 @@ class Then : virtual public NodeInterface {
 
   auto then() -> NodePtr&;
 
-  MAKE_ARCHIVEABLE(Then)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(Then)
   {
-		t_archive(CEREAL_NVP(m_then));
-	}
+    t_archive(CEREAL_NVP(m_then));
+  }
 
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~Then() = default;
 };

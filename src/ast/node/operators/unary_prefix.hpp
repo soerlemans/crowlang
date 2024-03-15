@@ -7,22 +7,25 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::operators {
 // Using Statements:
 using node_traits::Op;
 using node_traits::UnaryOperator;
 
 // Enums:
-enum class UnaryPrefixOp { PLUS, MINUS };
+enum class UnaryPrefixOp {
+  PLUS,
+  MINUS
+};
 
 // Classes:
 class UnaryPrefix : public Op<UnaryPrefixOp>, public UnaryOperator {
   public:
   UnaryPrefix(UnaryPrefixOp t_op, NodePtr&& t_left);
 
-  MAKE_TRAITS_ARCHIVEABLE(UnaryPrefix, Op<UnaryPrefixOp>, UnaryOperator)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(UnaryPrefix, Op<UnaryPrefixOp>,
+                                      UnaryOperator)
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~UnaryPrefix() = default;
 };

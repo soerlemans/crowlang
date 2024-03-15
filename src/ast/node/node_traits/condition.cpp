@@ -1,6 +1,5 @@
 #include "condition.hpp"
 
-
 namespace ast::node::node_traits {
 // Methods:
 Condition::Condition(NodePtr&& t_condition): m_condition{std::move(t_condition)}

@@ -1,6 +1,5 @@
 #include "arithmetic.hpp"
 
-
 namespace ast::node::operators {
 // Methods:
 Arithmetic::Arithmetic(TextPosition t_pos, const ArithmeticOp t_op,

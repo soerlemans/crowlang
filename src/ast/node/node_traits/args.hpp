@@ -1,13 +1,11 @@
 #ifndef CROW_AST_NODE_NODE_TRAITS_ARGS_HPP
 #define CROW_AST_NODE_NODE_TRAITS_ARGS_HPP
 
-
 // Includes:
-#include "../node_interface.hpp"
+#include "../include.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"
-
 
 namespace ast::node::node_traits {
 class Args : virtual public NodeInterface {
@@ -19,12 +17,12 @@ class Args : virtual public NodeInterface {
 
   auto args() -> NodeListPtr&;
 
-  MAKE_ARCHIVEABLE(Args)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(Args)
   {
-		t_archive(CEREAL_NVP(m_args));
-	}
+    t_archive(CEREAL_NVP(m_args));
+  }
 
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~Args() = default;
 };

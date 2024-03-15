@@ -5,8 +5,10 @@
 #include <string>
 #include <string_view>
 
-
 namespace container {
+/*!
+ * Position of a piece of source code in a crow file (.cr).
+ */
 struct TextPosition {
   // Members:
   std::string m_source;

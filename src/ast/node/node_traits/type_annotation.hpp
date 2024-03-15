@@ -5,11 +5,10 @@
 #include <string_view>
 
 // Includes:
-#include "../node_interface.hpp"
+#include "../include.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"
-
 
 namespace ast::node::node_traits {
 class TypeAnnotation : virtual public NodeInterface {
@@ -25,10 +24,10 @@ class TypeAnnotation : virtual public NodeInterface {
   template<typename Archive>
   auto serialize(Archive& t_archive) -> void
   {
-		t_archive(m_type);
+    t_archive(m_type);
   }
 
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~TypeAnnotation() = default;
 };

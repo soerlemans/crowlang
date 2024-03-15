@@ -1,7 +1,6 @@
 #include "method_decl.hpp"
 #include <string_view>
 
-
 namespace ast::node::typing {
 MethodDecl::MethodDecl(const std::string_view t_identifier,
                        NodeListPtr&& t_params, const std::string_view t_type)

@@ -3,7 +3,6 @@
 // Library includes:
 #include <rang.hpp>
 
-
 namespace container {
 SourcePosition::SourcePosition(const std::string_view t_source,
                                const std::size_t t_line_nr,

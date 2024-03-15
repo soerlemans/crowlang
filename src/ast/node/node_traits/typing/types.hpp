@@ -4,7 +4,6 @@
 // Local Includes:
 #include "type_variant.hpp"
 
-
 namespace ast::node::node_traits::typing {
 // Structs:
 // TODO: use VarTypePtr and FnTypePtr in combination with a map?

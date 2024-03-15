@@ -2,7 +2,7 @@
 #define CROW_AST_NODE_NODE_TRAITS_DECL_EXPR_HPP
 
 // Includes:
-#include "../node_interface.hpp"
+#include "../include.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"
@@ -10,7 +10,6 @@
 #include "init_expr.hpp"
 #include "node_position.hpp"
 #include "type_annotation.hpp"
-
 
 namespace ast::node::node_traits {
 // Using Statements:
@@ -25,9 +24,9 @@ class DeclExpr : public NodePosition,
   DeclExpr(TextPosition&& t_pos, std::string_view t_identifier,
            std::string_view t_type, NodePtr&& t_init);
 
-  MAKE_TRAITS_ARCHIVEABLE(DeclExpr, NodePosition, Identifier, TypeAnnotation,
-                          InitExpr)
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(DeclExpr, NodePosition, Identifier,
+                                      TypeAnnotation, InitExpr)
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~DeclExpr() = default;
 };

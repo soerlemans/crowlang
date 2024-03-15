@@ -7,7 +7,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::operators {
 // Using Statements:
 using node_traits::Alt;
@@ -19,8 +18,8 @@ class Ternary : public Condition, public Then, public Alt {
   public:
   explicit Ternary(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_alt);
 
-  MAKE_TRAITS_ARCHIVEABLE(Ternary, Condition, Then, Alt)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Ternary, Condition, Then, Alt)
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Ternary() = default;
 };

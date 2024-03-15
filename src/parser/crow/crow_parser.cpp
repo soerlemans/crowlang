@@ -5,9 +5,8 @@
 #include <string>
 
 // Includes:
-#include "../../ast/node/include.hpp"
+#include "../../ast/node/include_nodes.hpp"
 #include "../../debug/trace.hpp"
-
 
 namespace parser::crow {
 // Using statements:
@@ -87,7 +86,7 @@ auto CrowParser::init_expr(const TokenType t_type) -> NodePtr
       get_expr();
     }
 
-		// TODO: Have this selection be done more elegantly.
+    // TODO: Have this selection be done more elegantly.
     if(t_type == TokenType::VAR) {
       node = make_node<Var>(pos, id.str(), type, std::move(expr_ptr));
     } else if(t_type == TokenType::LET) {

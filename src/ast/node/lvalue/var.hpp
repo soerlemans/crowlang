@@ -7,7 +7,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::lvalue {
 // Aliases:
 using container::TextPosition;
@@ -19,11 +18,11 @@ class Var : public DeclExpr {
   NodePtr m_init;
 
   public:
-  Var(TextPosition t_pos, std::string_view t_identifier,
-        std::string_view t_str, NodePtr&& t_init);
+  Var(TextPosition t_pos, std::string_view t_identifier, std::string_view t_str,
+      NodePtr&& t_init);
 
-  MAKE_TRAITS_ARCHIVEABLE(Var, DeclExpr)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Var, DeclExpr)
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Var() = default;
 };

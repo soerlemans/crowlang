@@ -4,11 +4,10 @@
 
 // Includes:
 #include "../../../container/text_position.hpp"
-#include "../node_interface.hpp"
+#include "../include.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"
-
 
 namespace ast::node::node_traits {
 // Using Statements:
@@ -35,7 +34,7 @@ class NodePosition : virtual public NodeInterface {
               cereal::make_nvp("columno", m_pos.m_columno));
   }
 
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~NodePosition() = default;
 };

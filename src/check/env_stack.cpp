@@ -9,7 +9,6 @@
 // Includes:
 #include "../debug/log.hpp"
 
-
 namespace check {
 // Using Statements:
 using exception::type_error;

@@ -1,6 +1,5 @@
 #include "if.hpp"
 
-
 namespace ast::node::control {
 If::If(TextPosition t_pos, NodePtr&& t_init, NodePtr&& t_condition,
        NodePtr&& t_then, NodePtr&& t_alt)

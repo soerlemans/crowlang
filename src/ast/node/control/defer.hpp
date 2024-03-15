@@ -7,7 +7,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::control {
 // Aliases:
 using node_traits::Body;
@@ -17,8 +16,8 @@ class Defer : public Body {
   public:
   Defer(NodeListPtr&& t_body);
 
-  MAKE_TRAITS_ARCHIVEABLE(Defer, Body)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Defer, Body)
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Defer() = default;
 };

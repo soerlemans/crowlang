@@ -1,7 +1,6 @@
 #ifndef CROW_AST_NODE_NODE_TRAITS_FDECL_HPP
 #define CROW_AST_NODE_NODE_TRAITS_FDECL_HPP
 
-
 namespace ast::node::node_traits {
 // Forward Declarations:
 class Args;

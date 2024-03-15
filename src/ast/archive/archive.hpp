@@ -8,9 +8,14 @@
  */
 
 // Library Includes:
+#include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/archives/portable_binary.hpp>
+#include <cereal/archives/xml.hpp>
 #include <cereal/types/list.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/optional.hpp>
+#include <cereal/types/polymorphic.hpp>
 #include <cereal/types/string.hpp>
 #include <cereal/types/utility.hpp>
 #include <cereal/types/vector.hpp>
@@ -39,24 +44,23 @@
   {}
 
 //! Macro for making a type serializable by the cereal library.
-#define MAKE_ARCHIVEABLE(t_type)           \
-  AST_ARCHIVE_GIVE_ARCHIVE_ACCESS(t_type); \
-                                           \
-  public:                                  \
+#define AST_ARCHIVE_MAKE_ARCHIVEABLE(t_type) \
+  AST_ARCHIVE_GIVE_ARCHIVE_ACCESS(t_type);   \
+                                             \
+  public:                                    \
   AST_ARCHIVE_DEFINE_SERIALIZE_METHOD()
 
 //! Macro for easily archiving nodes dependent on traits.
-#define MAKE_TRAITS_ARCHIVEABLE(t_type, ...)                       \
-  MAKE_ARCHIVEABLE(t_type)                                         \
+#define AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(t_type, ...)           \
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(t_type)                             \
   {                                                                \
     archive_traits<Archive, t_type, __VA_ARGS__>(t_archive, this); \
   }
 
 //!
 #define REGISTER_ARCHIVEABLE_TYPE(t_namespace, t_type)           \
+  CEREAL_REGISTER_TYPE_WITH_NAME(t_namespace::t_type, #t_type)   \
   CEREAL_REGISTER_POLYMORPHIC_RELATION(ast::node::NodeInterface, \
-                                       t_namespace::t_type);     \
-  CEREAL_REGISTER_TYPE_WITH_NAME(t_namespace::t_type, #t_type)
-
+                                       t_namespace::t_type);
 
 #endif // CROW_AST_ARCHIVE_ARCHIVE_HPP

@@ -7,7 +7,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::typing {
 // Using Statements:
 using node_traits::Body;
@@ -18,8 +17,8 @@ class Impl : public Identifier, public Body {
   public:
   Impl(std::string_view t_identifier, NodeListPtr&& t_body);
 
-  MAKE_TRAITS_ARCHIVEABLE(Impl, Identifier, Body)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Impl, Identifier, Body)
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Impl() = default;
 };

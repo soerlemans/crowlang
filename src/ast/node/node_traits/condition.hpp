@@ -2,11 +2,10 @@
 #define CROW_AST_NODE_NODE_TRAITS_CONDITION_HPP
 
 // Includes:
-#include "../node_interface.hpp"
+#include "../include.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"
-
 
 namespace ast::node::node_traits {
 class Condition : virtual public NodeInterface {
@@ -18,12 +17,12 @@ class Condition : virtual public NodeInterface {
 
   auto condition() -> NodePtr&;
 
-  MAKE_ARCHIVEABLE(Condition)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(Condition)
   {
-		t_archive(CEREAL_NVP(m_condition));
-	}
+    t_archive(CEREAL_NVP(m_condition));
+  }
 
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~Condition() = default;
 };

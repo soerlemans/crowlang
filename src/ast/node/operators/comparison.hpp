@@ -7,7 +7,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::operators {
 // Using Statements:
 using container::TextPosition;
@@ -35,9 +34,9 @@ class Comparison : public NodePosition,
   Comparison(TextPosition t_pos, ComparisonOp t_op, NodePtr&& t_left,
              NodePtr&& t_right);
 
-  MAKE_TRAITS_ARCHIVEABLE(Comparison, NodePosition, Op<ComparisonOp>,
-                          BinaryOperator)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Comparison, NodePosition,
+                                      Op<ComparisonOp>, BinaryOperator)
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Comparison() = default;
 };

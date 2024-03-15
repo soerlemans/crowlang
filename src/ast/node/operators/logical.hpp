@@ -7,7 +7,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::operators {
 // Using Statements:
 using container::TextPosition;
@@ -20,8 +19,8 @@ class Not : public NodePosition, public UnaryOperator {
   public:
   Not(TextPosition t_pos, NodePtr&& t_left);
 
-  MAKE_TRAITS_ARCHIVEABLE(Not, NodePosition, UnaryOperator)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Not, NodePosition, UnaryOperator)
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Not() = default;
 };
@@ -31,8 +30,8 @@ class And : public NodePosition, public BinaryOperator {
   public:
   And(TextPosition t_pos, NodePtr&& t_left, NodePtr&& t_right);
 
-  MAKE_TRAITS_ARCHIVEABLE(And, NodePosition, BinaryOperator)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(And, NodePosition, BinaryOperator)
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~And() = default;
 };
@@ -42,8 +41,8 @@ class Or : public NodePosition, public BinaryOperator {
   public:
   Or(TextPosition t_pos, NodePtr&& t_left, NodePtr&& t_right);
 
-  MAKE_TRAITS_ARCHIVEABLE(Or, NodePosition, BinaryOperator)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Or, NodePosition, BinaryOperator)
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Or() = default;
 };

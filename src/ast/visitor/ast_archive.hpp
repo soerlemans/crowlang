@@ -1,11 +1,8 @@
-#ifndef CROW_AST_VISITOR_AST_SERIALIZER_HPP
-#define CROW_AST_VISITOR_AST_SERIALIZER_HPP
+#ifndef CROW_AST_VISITOR_AST_ARCHIVE_HPP
+#define CROW_AST_VISITOR_AST_ARCHIVE_HPP
 
 // STL Includes:
 #include <variant>
-
-// Library Includes:
-#include <cereal/archives/xml.hpp>
 
 // Local Includes:
 #include "node_visitor.hpp"
@@ -14,17 +11,33 @@
 #include "../../exception/error.hpp"
 #include "../../lib/overload.hpp"
 #include "../../lib/types.hpp"
-#include "../node/include.hpp"
-
+#include "../node/include_nodes.hpp"
 
 namespace ast::visitor {
 // Using Statements;
+using cereal::BinaryInputArchive;
+using cereal::BinaryOutputArchive;
+using cereal::JSONInputArchive;
+using cereal::JSONOutputArchive;
+using cereal::PortableBinaryInputArchive;
+using cereal::PortableBinaryOutputArchive;
 using cereal::XMLInputArchive;
 using cereal::XMLOutputArchive;
 
 // Aliases:
-// TODO: Add JSON, Binary and Portable binry to this variant.
-using Archive = std::variant<std::monostate, XMLOutputArchive, XMLInputArchive>;
+using Archive =
+  std::variant<std::monostate, JSONOutputArchive, JSONInputArchive,
+               XMLOutputArchive, XMLInputArchive, BinaryOutputArchive,
+               BinaryInputArchive, PortableBinaryOutputArchive,
+               PortableBinaryInputArchive>;
+
+// Enums:
+enum class ArchiveType {
+  JSON,
+  XML,
+  BINARY,
+  PORTABLE_BINARY
+};
 
 // Classes:
 /*!
@@ -32,11 +45,15 @@ using Archive = std::variant<std::monostate, XMLOutputArchive, XMLInputArchive>;
  * Useful for when compiling multiple files to keep memory footprint low by
  * serializing an AST to disk. Also commonly used for inspecting the AST.
  */
-class AstSerializer : public NodeVisitor {
+class AstArchive : public NodeVisitor {
   private:
+  ArchiveType m_type;
   Archive m_archive;
 
   protected:
+  auto set_archive_out(ArchiveType t_type, std::ostream& t_os) -> void;
+  auto set_archive_in(ArchiveType t_type, std::istream& t_is) -> void;
+
   template<typename... Args>
   auto archive(Args&&... t_args) -> void
   {
@@ -54,7 +71,7 @@ class AstSerializer : public NodeVisitor {
   }
 
   public:
-  AstSerializer();
+  AstArchive(ArchiveType t_type);
 
   // Control:
   auto visit(node::control::If* t_if) -> Any override;
@@ -113,14 +130,11 @@ class AstSerializer : public NodeVisitor {
   auto visit(node::List* t_list) -> Any override;
   auto visit(node::Nil* t_nil) -> Any override;
 
-  // TODO: Add an enumeration to this method for selecting the serializer.
-  auto serialize(NodePtr& t_ast, std::ostream& t_os) -> void;
+  auto out(NodePtr& t_ast, std::ostream& t_os) -> void;
+  auto in(NodePtr& t_ast, std::istream& t_is) -> void;
 
-  // FIXME: Deserialization does not work? (leaves the NodePtr empty)
-  auto deserialize(NodePtr& t_ast, std::istream& t_is) -> void;
-
-  virtual ~AstSerializer() = default;
+  virtual ~AstArchive() = default;
 };
 } // namespace ast::visitor
 
-#endif // CROW_AST_VISITOR_AST_SERIALIZER_HPP
+#endif // CROW_AST_VISITOR_AST_ARCHIVE_HPP

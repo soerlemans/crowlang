@@ -5,12 +5,11 @@
 #include "fdecl.hpp"
 #include "node_interface.hpp"
 
-
 namespace ast::node {
 class Nil : public NodeInterface {
   public:
   AST_ARCHIVE_DEFINE_SERIALIZE_METHOD_NIL()
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Nil() = default;
 };

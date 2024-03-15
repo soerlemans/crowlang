@@ -7,7 +7,6 @@
 // Local Includes:
 #include "symbol_types.hpp"
 
-
 namespace check {
 // Aliases:
 using Symbol = std::pair<std::string, SymbolData>;

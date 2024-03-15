@@ -4,7 +4,6 @@
 // Local Includes:
 #include "binding_map.hpp"
 
-
 namespace parser::pratt::binding {
 // Parenthesis always have the highest precedence, so there is no need to assign
 // them a binding power!

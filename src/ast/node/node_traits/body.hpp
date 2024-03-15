@@ -2,11 +2,10 @@
 #define CROW_AST_NODE_NODE_TRAITS_BODY_HPP
 
 // Includes:
-#include "../node_interface.hpp"
+#include "../include.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"
-
 
 namespace ast::node::node_traits {
 class Body : virtual public NodeInterface {
@@ -18,12 +17,12 @@ class Body : virtual public NodeInterface {
 
   auto body() -> NodeListPtr&;
 
-  MAKE_ARCHIVEABLE(Body)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(Body)
   {
-		t_archive(CEREAL_NVP(m_body));
-	}
+    t_archive(CEREAL_NVP(m_body));
+  }
 
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~Body() = default;
 };

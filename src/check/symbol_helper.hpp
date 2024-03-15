@@ -8,7 +8,6 @@
 // Local Includes:
 #include "symbol_types.hpp"
 
-
 namespace check {
 // Using statements:
 using ast::node::NodeListPtr;

@@ -5,7 +5,6 @@
 #include <iomanip>
 #include <sstream>
 
-
 namespace debug {
 #ifdef DEBUG
 // Methods:

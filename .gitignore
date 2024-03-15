@@ -38,13 +38,13 @@
 .gdb_history
 
 # Generated version header:
-src/version.hpp
+src/definitions.hpp
 
 # Build directories
 build/*
-debug/*
-reldebug/*
-tests/*
+debug-build/*
+reldebug-build/*
+test-build/*
 
 # Docs
 docs/*

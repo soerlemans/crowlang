@@ -11,7 +11,6 @@
 #include "../token/reserved/reserved.hpp"
 #include "../token/token.hpp"
 
-
 namespace lexer {
 // Using declarations:
 using container::TextStreamPtr;

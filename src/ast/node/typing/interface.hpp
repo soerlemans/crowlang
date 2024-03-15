@@ -8,7 +8,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::typing {
 // Using Statements:
 using node_traits::Identifier;
@@ -23,8 +22,8 @@ class Interface : public Identifier {
 
   virtual auto methods() -> NodeListPtr&;
 
-  MAKE_TRAITS_ARCHIVEABLE(Interface, Identifier)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Interface, Identifier)
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Interface() = default;
 };

@@ -5,11 +5,10 @@
 #include <string_view>
 
 // Includes:
-#include "../node_interface.hpp"
+#include "../include.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"
-
 
 namespace ast::node::node_traits {
 class Identifier : virtual public NodeInterface {
@@ -21,12 +20,12 @@ class Identifier : virtual public NodeInterface {
 
   auto identifier() const -> std::string_view;
 
-  MAKE_ARCHIVEABLE(Identifier)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(Identifier)
   {
-		t_archive(CEREAL_NVP(m_identifier));
-	}
+    t_archive(CEREAL_NVP(m_identifier));
+  }
 
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~Identifier() = default;
 };

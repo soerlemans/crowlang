@@ -16,7 +16,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::node_traits::typing {
 // Aliases:
 using StructTypePtr = std::shared_ptr<StructType>;

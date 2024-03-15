@@ -2,11 +2,10 @@
 #define CROW_AST_NODE_NODE_TRAITS_PARAMS_HPP
 
 // Includes:
-#include "../node_interface.hpp"
+#include "../include.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"
-
 
 namespace ast::node::node_traits {
 class Params : virtual public NodeInterface {
@@ -18,12 +17,12 @@ class Params : virtual public NodeInterface {
 
   auto params() -> NodeListPtr&;
 
-  MAKE_ARCHIVEABLE(Params)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(Params)
   {
-		t_archive(CEREAL_NVP(m_params));
-	}
+    t_archive(CEREAL_NVP(m_params));
+  }
 
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~Params() = default;
 };

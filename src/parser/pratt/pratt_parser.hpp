@@ -10,7 +10,6 @@
 #include "../parser.hpp"
 #include "binding/maps.hpp"
 
-
 namespace parser::pratt {
 //! This type is used to get the right hand side of a binary expressions
 using RhsFn = std::function<NodePtr(TokenType)>;

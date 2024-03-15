@@ -9,7 +9,6 @@
 #include "fdecl.hpp"
 #include "node_interface.hpp"
 
-
 namespace ast::node {
 /*!
  * This is a list in the sense of a list of expressions or similar
@@ -33,7 +32,7 @@ class List : public NodeInterface {
 
   auto push_back(NodePtr&& t_ptr) -> void;
 
-	auto empty() -> bool;
+  auto empty() -> bool;
 
   template<typename Archive>
   auto serialize(Archive& t_archive) -> void
@@ -41,7 +40,7 @@ class List : public NodeInterface {
     t_archive(m_list);
   }
 
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~List() = default;
 };

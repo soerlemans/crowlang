@@ -7,7 +7,6 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-
 namespace ast::node::control {
 // Using Statements:
 using node_traits::Expr;
@@ -17,8 +16,8 @@ class Return : public Expr {
   public:
   Return(NodePtr&& t_expr);
 
-  MAKE_TRAITS_ARCHIVEABLE(Return, Expr)
-  MAKE_VISITABLE(visitor::NodeVisitor);
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Return, Expr)
+  AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Return() = default;
 };

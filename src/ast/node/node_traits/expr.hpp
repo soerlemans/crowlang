@@ -2,11 +2,10 @@
 #define CROW_AST_NODE_NODE_TRAITS_EXPR_HPP
 
 // Includes:
-#include "../node_interface.hpp"
+#include "../include.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"
-
 
 namespace ast::node::node_traits {
 class Expr : virtual public NodeInterface {
@@ -18,12 +17,12 @@ class Expr : virtual public NodeInterface {
 
   auto expr() -> NodePtr&;
 
-  MAKE_ARCHIVEABLE(Expr)
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(Expr)
   {
     t_archive(CEREAL_NVP(m_expr));
   }
 
-  VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
+  AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
   virtual ~Expr() = default;
 };
