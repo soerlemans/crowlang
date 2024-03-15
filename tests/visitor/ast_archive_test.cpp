@@ -44,5 +44,5 @@ TEST_CASE("AstArchive", "[visitor]")
     archive.in(ast_new, fs);
   }
 
-  // TODO: Find a way to compare these.
+	REQUIRE(false);
 }
