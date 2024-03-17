@@ -12,27 +12,30 @@ enum ExitCode {
   SIGNAL = 200,
 };
 
+// TODO: Relocate?
+auto disable_absorb_exceptions() -> void
+{
+#ifdef DEBUG
+  // Do not absorb cpptrace errors on debug build.
+  cpptrace::absorb_trace_exceptions(false);
+#endif
+}
+
 // Main:
 auto main(int t_argc, char* t_argv[]) -> int
 {
   // Initialize command line argument parser.
   CLI::App app{"Compiler for Crow(lang)"};
 
-  // TODO: Relocate?
-#ifdef DEBUG
-  // Do not absorb cpptrace errors on debug build.
-  cpptrace::absorb_trace_exceptions(false);
-#endif
-
-  DBG_SET_LOGLEVEL(INFO);
   try {
-    parse_args(app, t_argc, t_argv);
+    disable_absorb_exceptions();
+    cli_args(app, t_argc, t_argv);
+
+    // Set loglevel.
+    debug::set_loglevel(settings.m_level);
   } catch(const CLI::ParseError& e) {
     return -app.exit(e);
   }
-
-  // Set LogLevel to verbose for now
-  DBG_SET_LOGLEVEL(VERBOSE);
 
   try {
     run();

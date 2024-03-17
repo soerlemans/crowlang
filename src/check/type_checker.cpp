@@ -46,12 +46,20 @@ auto TypeChecker::handle_condition(const SymbolData& t_data,
   }
 }
 
-// TODO: Implement
-auto TypeChecker::promote([[maybe_unused]] const SymbolData& t_lhs,
-                          [[maybe_unused]] const SymbolData& rhs,
-                          [[maybe_unused]] const TextPosition& t_pos) const
-  -> void
-{}
+auto TypeChecker::promote(const SymbolData& t_lhs,
+                          const SymbolData& t_rhs) const -> NativeTypeOpt
+{
+  NativeTypeOpt opt;
+
+  const auto lhs{t_lhs.native_type()};
+  const auto rhs{t_rhs.native_type()};
+
+  if(lhs && rhs) {
+    opt = m_promoter.promote(lhs.value(), rhs.value());
+  }
+
+  return opt;
+}
 
 TypeChecker::TypeChecker(): m_envs{}
 {}
@@ -170,6 +178,7 @@ auto TypeChecker::visit(ReturnType* t_rt) -> Any
 // TODO: Add TypeData annotation.
 auto TypeChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
 {
+  const auto position{t_decl->position()};
   const auto type{t_decl->type()};
   const auto expr{get_symbol_data(t_decl->init_expr())};
 
@@ -182,7 +191,9 @@ auto TypeChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
     // TODO: Resolve non native types
     const SymbolData data{str2nativetype(type)};
 
-    if(data != expr) {
+    const auto opt{promote(data, expr)};
+    if(!opt) {
+      // } else if(data != expr) {
       std::stringstream ss;
       const auto var{std::quoted(t_decl->identifier())};
 
@@ -243,7 +254,7 @@ auto TypeChecker::visit(Variable* t_var) -> Any
 // Operators:
 auto TypeChecker::visit(Arithmetic* t_arith) -> Any
 {
-  const auto ret{get_symbol_data(t_arith->left())};
+  auto ret{get_symbol_data(t_arith->left())};
 
   const auto lhs{ret.resolve_type()};
   const auto rhs{get_resolved_type(t_arith->right())};
@@ -252,7 +263,10 @@ auto TypeChecker::visit(Arithmetic* t_arith) -> Any
   DBG_INFO("Typeof rhs: ", rhs);
 
   // TODO: Implement type promotion later
-  if(lhs != rhs) {
+  const auto opt{promote(lhs, rhs)};
+  if(opt) {
+    ret = opt.value();
+  } else if(lhs != rhs) {
     std::stringstream ss;
 
     DBG_ERROR("Typeof: ", lhs, " != ", rhs);
