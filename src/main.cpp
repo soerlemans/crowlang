@@ -10,6 +10,7 @@ enum ExitCode {
   IMPROPER_USAGE,
   EXCEPTION = 100,
   SIGNAL = 200,
+  CLI11_EXCEPTION = 700,
 };
 
 // TODO: Relocate?
@@ -34,7 +35,9 @@ auto main(int t_argc, char* t_argv[]) -> int
     // Set loglevel.
     debug::set_loglevel(settings.m_level);
   } catch(const CLI::ParseError& e) {
-    return -app.exit(e);
+    const auto exit_code{CLI11_EXCEPTION + app.exit(e)};
+
+    return exit_code;
   }
 
   try {

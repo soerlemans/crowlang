@@ -1,5 +1,5 @@
-#ifndef PROMOTE_HPP
-#define PROMOTE_HPP
+#ifndef CROW_CHECK_TYPE_PROMOTER_HPP
+#define CROW_CHECK_TYPE_PROMOTER_HPP
 
 // STL Includes:
 #include <array>
@@ -29,15 +29,23 @@ class TypePromoter {
   TypeLadder m_int;
   TypeLadder m_uint;
 
+  protected:
+  auto get_priority(const TypeLadder& t_ladder, NativeType t_type) const
+    -> TypeLadder::mapped_type;
+
   public:
   TypePromoter();
 
   //! Handles type promotion for unary cases.
   auto promote_bool(NativeType t_lhs) const -> NativeTypeOpt;
 
-  auto promote_float(NativeType t_lhs, NativeType t_rhs) const -> NativeTypeOpt;
-  auto promote_int(NativeType t_lhs, NativeType t_rhs) const -> NativeTypeOpt;
-  auto promote_uint(NativeType t_lhs, NativeType t_rhs) const -> NativeTypeOpt;
+  // Type promotion for binary cases:
+  auto promote_float(NativeType t_lhs, NativeType t_rhs,
+                     bool enforce_lhs = false) const -> NativeTypeOpt;
+  auto promote_int(NativeType t_lhs, NativeType t_rhs,
+                   bool enforce_lhs = false) const -> NativeTypeOpt;
+  auto promote_uint(NativeType t_lhs, NativeType t_rhs,
+                    bool enforce_lhs = false) const -> NativeTypeOpt;
 
   /*!
    * Handles type promotion between two different types.
@@ -45,8 +53,8 @@ class TypePromoter {
    * @param[in] t_lhs Left hand side to check for promotion.
    * @param[in] t_rhs Right hand side to check for promotion.
    * @param[in] cast When true promotes rhs to the type of lhs.
-	 *
-	 * @return Optional containing a @ref NativeType if promoted.
+   *
+   * @return Optional containing a @ref NativeType if promoted.
    */
   auto promote(NativeType t_lhs, NativeType t_rhs,
                bool enforce_lhs = false) const -> NativeTypeOpt;
@@ -55,4 +63,4 @@ class TypePromoter {
 };
 } // namespace check
 
-#endif // PROMOTE_HPP
+#endif // CROW_CHECK_TYPE_PROMOTER_HPP

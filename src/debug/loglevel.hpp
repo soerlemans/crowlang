@@ -1,5 +1,5 @@
-#ifndef LOGLEVEL_HPP
-#define LOGLEVEL_HPP
+#ifndef CROW_DEBUG_LOGLEVEL_HPP
+#define CROW_DEBUG_LOGLEVEL_HPP
 
 // STL Includes:
 #include <stdexcept>
@@ -77,4 +77,4 @@ auto set_loglevel(LogLevel t_loglevel) -> void;
 auto operator<<(std::ostream& t_os, debug::LogLevel t_loglevel)
   -> std::ostream&;
 
-#endif // LOGLEVEL_HPP
+#endif // CROW_DEBUG_LOGLEVEL_HPP

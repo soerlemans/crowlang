@@ -1,10 +1,37 @@
 #include "type_promoter.hpp"
 
+// STL Includes:
+#include <sstream>
+
 // Includes:
 #include "../debug/log.hpp"
+#include "../exception/error.hpp"
 
 namespace check {
 // Methods:
+auto TypePromoter::get_priority(const TypeLadder& t_ladder,
+                                const NativeType t_type) const
+  -> TypeLadder::mapped_type
+{
+  using exception::error;
+
+  TypeLadder::mapped_type priority{0};
+
+  const auto iter{t_ladder.find(t_type)};
+  if(iter != t_ladder.end()) {
+    priority = iter->second;
+  } else {
+    std::stringstream ss;
+
+    ss << "NativeType does not exist in floating point TypeLadder.\n";
+    ss << "Did not find " << t_type << '\n';
+
+    error(ss.str());
+  }
+
+  return priority;
+}
+
 TypePromoter::TypePromoter(): m_float{2}, m_int{10}, m_uint{10}
 {
   // Float:
@@ -35,38 +62,55 @@ auto TypePromoter::promote_bool(const NativeType t_lhs) const -> NativeTypeOpt
   return opt;
 }
 
-auto TypePromoter::promote_float(const NativeType t_lhs,
-                                 const NativeType t_rhs) const -> NativeTypeOpt
+auto TypePromoter::promote_float(const NativeType t_lhs, const NativeType t_rhs,
+                                 const bool enforce_lhs) const -> NativeTypeOpt
 {
   NativeTypeOpt opt;
 
-  return opt;
-}
+	// TODO: Handle Int and UInt to float promotion.
+  const auto lhs_priority{get_priority(m_float, t_lhs)};
+  const auto rhs_priority{get_priority(m_float, t_rhs)};
 
-auto TypePromoter::promote_int(const NativeType t_lhs,
-                               const NativeType t_rhs) const -> NativeTypeOpt
-{
-  NativeTypeOpt opt;
-
-  const auto lhs{m_int.find(t_lhs)};
-  const auto rhs{m_int.find(t_rhs)};
-
-  // TODO: Use error handling?
-  if(lhs != m_int.end() && rhs != m_int.end()) {
-    if(lhs->second > rhs->second) {
-      opt = lhs->first;
-    } else {
-      opt = rhs->first;
-    }
+  if(lhs_priority > rhs_priority) {
+    opt = t_lhs;
+  } else if(!enforce_lhs) {
+    opt = t_rhs;
   }
 
   return opt;
 }
 
-auto TypePromoter::promote_uint(const NativeType t_lhs,
-                                const NativeType t_rhs) const -> NativeTypeOpt
+auto TypePromoter::promote_int(const NativeType t_lhs, const NativeType t_rhs,
+                               const bool enforce_lhs) const -> NativeTypeOpt
 {
   NativeTypeOpt opt;
+
+  const auto lhs_priority{get_priority(m_int, t_lhs)};
+  const auto rhs_priority{get_priority(m_int, t_rhs)};
+
+  if(lhs_priority > rhs_priority) {
+    opt = t_lhs;
+  } else if(!enforce_lhs) {
+    opt = t_rhs;
+  }
+
+  return opt;
+}
+
+auto TypePromoter::promote_uint(const NativeType t_lhs, const NativeType t_rhs,
+                                const bool enforce_lhs) const -> NativeTypeOpt
+{
+  NativeTypeOpt opt;
+
+	// TODO: Handle Int to UInt type promotion.
+  const auto lhs_priority{get_priority(m_uint, t_lhs)};
+  const auto rhs_priority{get_priority(m_uint, t_rhs)};
+
+  if(lhs_priority > rhs_priority) {
+    opt = t_lhs;
+  } else if(!enforce_lhs) {
+    opt = t_rhs;
+  }
 
   return opt;
 }
@@ -88,9 +132,9 @@ auto TypePromoter::promote(const NativeType t_lhs, const NativeType t_rhs,
   // } else
 
   if(in_ladder(m_int)) {
-    opt = promote_int(t_lhs, t_rhs);
+    opt = promote_int(t_lhs, t_rhs, enforce_lhs);
   } else if(in_ladder(m_uint)) {
-    opt = promote_uint(t_lhs, t_rhs);
+    opt = promote_uint(t_lhs, t_rhs, enforce_lhs);
   }
 
   return opt;

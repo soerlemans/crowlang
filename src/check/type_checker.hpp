@@ -38,8 +38,8 @@ class TypeChecker : public SymbolHelper {
   auto handle_condition(const SymbolData& t_data,
                         const TextPosition& t_pos) const -> void;
 
-  auto promote(const SymbolData& t_lhs, const SymbolData& rhs) const
-    -> NativeTypeOpt;
+  auto promote(const SymbolData& t_lhs, const SymbolData& rhs,
+               bool enforce_lhs = false) const -> NativeTypeOpt;
 
   public:
   TypeChecker();
