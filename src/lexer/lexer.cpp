@@ -35,7 +35,7 @@ Lexer::Lexer(TextStreamPtr t_text): m_text{t_text}
 {}
 
 // Public methods:
-auto Lexer::is_keyword(std::string_view t_identifier) -> TokenTypeOpt
+auto Lexer::is_keyword(const std::string_view t_identifier) -> TokenTypeOpt
 {
   using namespace token::reserved::keywords;
 
@@ -127,7 +127,7 @@ auto Lexer::handle_hex() -> Token
 // t_str and t_dot have default arguments
 // t_str contains is for if you already have part of a string to continue on
 // t_dot indicates if there is already a dot in the string
-auto Lexer::handle_float(std::string_view t_str) -> Token
+auto Lexer::handle_float(const std::string_view t_str) -> Token
 {
   using namespace token::reserved::symbols;
 

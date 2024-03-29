@@ -13,6 +13,9 @@
 #include <CLI/Validators.hpp>
 #include <rang.hpp>
 
+// Includes:
+#include "debug/loglevel.hpp"
+
 // Local Includes:
 #include "banner.hpp"
 #include "definitions.hpp"
@@ -23,6 +26,10 @@ namespace fs = std::filesystem;
 // Globals:
 struct Settings {
   std::vector<fs::path> m_paths;
+  debug::LogLevel m_level;
+
+  Settings(): m_paths{}, m_level{debug::LogLevel::VERBOSE}
+  {}
 };
 
 // External globals:
@@ -47,6 +54,7 @@ class BannerFormatter : public CLI::Formatter {
 };
 
 // Functions:
-auto parse_args(CLI::App& t_app, const int t_argc, char* t_argv[]) -> void;
+//! Set the CLI arguments to include.
+auto cli_args(CLI::App& t_app, const int t_argc, char* t_argv[]) -> void;
 
 #endif // CROW_CLI_HPP

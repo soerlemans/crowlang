@@ -47,4 +47,4 @@ reldebug-build/*
 test-build/*
 
 # Docs
-docs/*
+doxygen/*

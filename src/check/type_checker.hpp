@@ -10,12 +10,22 @@
 // Local includes:
 #include "env_stack.hpp"
 #include "symbol_helper.hpp"
+#include "type_promoter.hpp"
+
+/*!
+ * @file
+ *
+ * Contains class responsible for type checking the ast.
+ * This class will also annotate the AST and perform type promotion.
+ */
 
 namespace check {
 // Using statements:
 using namespace ast;
 
 using ast::node::NodePtr;
+using ast::node::node_traits::typing::NativeType;
+using ast::node::node_traits::typing::NativeTypeOpt;
 using ast::visitor::Any;
 using container::TextPosition;
 
@@ -23,12 +33,13 @@ using container::TextPosition;
 class TypeChecker : public SymbolHelper {
   private:
   EnvStack m_envs;
+  TypePromoter m_promoter;
 
   auto handle_condition(const SymbolData& t_data,
                         const TextPosition& t_pos) const -> void;
 
   auto promote(const SymbolData& t_lhs, const SymbolData& rhs,
-               const TextPosition& t_pos) const -> void;
+               bool enforce_lhs = false) const -> NativeTypeOpt;
 
   public:
   TypeChecker();

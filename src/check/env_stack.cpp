@@ -42,10 +42,11 @@ auto EnvStack::get_symbol(const std::string_view t_id) -> SymbolData
     const auto iter{env.find(std::string{t_id})};
 
     if(iter != env.end()) {
-      DBG_INFO("Found Symbol ", str, " in Env!");
-
       found = true;
       data = iter->second;
+
+      DBG_INFO("Found Symbol ", str, " of type ", data, " in Env!");
+			break;
     }
   }
 

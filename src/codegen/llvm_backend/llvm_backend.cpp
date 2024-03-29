@@ -7,7 +7,6 @@
 
 // Library Includes:
 #include <llvm/IR/LegacyPassManager.h>
-// #include <llvm/IR/PassManager.h>
 #include <llvm/IR/Verifier.h>
 #include <llvm/MC/TargetRegistry.h>
 #include <llvm/Support/CodeGen.h>
@@ -318,7 +317,7 @@ auto LlvmBackend::compile(const fs::path t_path) -> void
 
   // Obtain filehandle to destination file
   const auto filename{t_path.c_str()};
-  std::error_code err_code;
+  std::error_code err_code{};
   raw_fd_ostream dest{filename, err_code, sys::fs::OF_None};
 
   if(err_code) {

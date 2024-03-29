@@ -11,6 +11,7 @@
 // Includes:
 #include "../ast/node/include_nodes.hpp"
 #include "../debug/log.hpp"
+#include "symbol_data.hpp"
 
 namespace check {
 // Using Statements:
@@ -46,12 +47,20 @@ auto TypeChecker::handle_condition(const SymbolData& t_data,
   }
 }
 
-// TODO: Implement
-auto TypeChecker::promote([[maybe_unused]] const SymbolData& t_lhs,
-                          [[maybe_unused]] const SymbolData& rhs,
-                          [[maybe_unused]] const TextPosition& t_pos) const
-  -> void
-{}
+auto TypeChecker::promote(const SymbolData& t_lhs, const SymbolData& t_rhs,
+                          const bool enforce_lhs) const -> NativeTypeOpt
+{
+  NativeTypeOpt opt;
+
+  const auto lhs{t_lhs.native_type()};
+  const auto rhs{t_rhs.native_type()};
+
+  if(lhs && rhs) {
+    opt = m_promoter.promote(lhs.value(), rhs.value(), enforce_lhs);
+  }
+
+  return opt;
+}
 
 TypeChecker::TypeChecker(): m_envs{}
 {}
@@ -89,7 +98,6 @@ auto TypeChecker::visit(Loop* t_loop) -> Any
 
   return {};
 }
-
 
 AST_VISITOR_STUB(TypeChecker, Continue)
 AST_VISITOR_STUB(TypeChecker, Break)
@@ -170,8 +178,10 @@ auto TypeChecker::visit(ReturnType* t_rt) -> Any
 // TODO: Add TypeData annotation.
 auto TypeChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
 {
+  auto expr{get_symbol_data(t_decl->init_expr())};
+
+  const auto position{t_decl->position()};
   const auto type{t_decl->type()};
-  const auto expr{get_symbol_data(t_decl->init_expr())};
 
   const auto id{t_decl->identifier()};
 
@@ -179,21 +189,24 @@ auto TypeChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
   if(!type.empty()) {
     ss << ": " << type;
 
-    // TODO: Resolve non native types
+    // TODO: Resolve non native types.
     const SymbolData data{str2nativetype(type)};
 
-    if(data != expr) {
-      std::stringstream ss;
+    const auto opt{promote(data, expr, true)};
+    if(opt) {
+      expr = opt.value();
+    } else if(data != expr) {
+      std::stringstream err_ss;
       const auto var{std::quoted(t_decl->identifier())};
 
-      ss << "Init of " << var << " contains a type mismatch.\n\n";
+      err_ss << "Init of " << var << " contains a type mismatch.\n\n";
 
-      ss << "typeof " << var << " = " << data << "\n";
-      ss << "typeof expr = " << expr << "\n\n";
+      err_ss << "typeof " << var << " = " << data << "\n";
+      err_ss << "typeof expr = " << expr << "\n\n";
 
-      ss << t_decl->position();
+      err_ss << t_decl->position();
 
-      type_error(ss.str());
+      type_error(err_ss.str());
     }
   }
 
@@ -243,7 +256,7 @@ auto TypeChecker::visit(Variable* t_var) -> Any
 // Operators:
 auto TypeChecker::visit(Arithmetic* t_arith) -> Any
 {
-  const auto ret{get_symbol_data(t_arith->left())};
+  auto ret{get_symbol_data(t_arith->left())};
 
   const auto lhs{ret.resolve_type()};
   const auto rhs{get_resolved_type(t_arith->right())};
@@ -252,7 +265,10 @@ auto TypeChecker::visit(Arithmetic* t_arith) -> Any
   DBG_INFO("Typeof rhs: ", rhs);
 
   // TODO: Implement type promotion later
-  if(lhs != rhs) {
+  const auto opt{promote(lhs, rhs)};
+  if(opt) {
+    ret = opt.value();
+  } else if(lhs != rhs) {
     std::stringstream ss;
 
     DBG_ERROR("Typeof: ", lhs, " != ", rhs);
@@ -269,16 +285,22 @@ auto TypeChecker::visit(Arithmetic* t_arith) -> Any
   // Annotate AST.
   t_arith->set_type(ret.strip());
 
+  DBG_INFO("Result: ", ret);
+
   return ret;
 }
 
-// TODO: Deal with const variables
 auto TypeChecker::visit(Assignment* t_assign) -> Any
 {
   using namespace exception;
 
   const auto var{get_symbol_data(t_assign->left())};
-  const auto expr{get_symbol_data(t_assign->right()).resolve_type()};
+  const auto var_resolved{var.resolve_type()};
+
+  const auto expr{get_resolved_type(t_assign->right())};
+
+  DBG_INFO("Typeof var: ", var_resolved);
+  DBG_INFO("Typeof expr: ", expr);
 
   std::stringstream ss;
 
@@ -294,7 +316,9 @@ auto TypeChecker::visit(Assignment* t_assign) -> Any
     type_error(ss.str());
   }
 
-  if(var.resolve_type() != expr) {
+  // If the expression being assigned is castable too the typ ebeing assigned
+  const auto opt{promote(var, expr, true)};
+  if(!opt && var_resolved != expr) {
     ss << "Types do not match on assignment.\n\n";
 
     ss << "<lhs> = <expr>\n";
@@ -306,19 +330,21 @@ auto TypeChecker::visit(Assignment* t_assign) -> Any
     type_error(ss.str());
   }
 
+  // TODO: Annotate types.
+
   return var;
 }
 
 auto TypeChecker::visit(Comparison* t_comp) -> Any
 {
-  const auto lhs{get_native_type(t_comp->left())};
-  const auto rhs{get_native_type(t_comp->right())};
+  const auto lhs{get_symbol_data(t_comp->left())};
+  const auto rhs{get_symbol_data(t_comp->right())};
 
   DBG_INFO("Typeof lhs: ", lhs);
   DBG_INFO("Typeof rhs: ", rhs);
 
-  // TODO: Implement type promotion later
-  if(lhs != rhs) {
+  const auto opt{promote(lhs, rhs)};
+  if(!opt && lhs != rhs) {
     std::stringstream ss;
 
     ss << "Comparison operation contains a type mismatch.\n";
@@ -329,6 +355,8 @@ auto TypeChecker::visit(Comparison* t_comp) -> Any
 
     type_error(ss.str());
   }
+
+  // TODO: Annotate types.
 
   return SymbolData{NativeType::BOOL};
 }
