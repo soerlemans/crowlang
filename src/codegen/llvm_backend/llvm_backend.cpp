@@ -61,7 +61,6 @@ auto LlvmBackend::visit(If* t_if) -> Any
 
   llvm::Function* fn{m_builder->GetInsertBlock()->getParent()};
 
-
   // Generate branch selection logic
   auto* condv{get_value(t_if->condition())};
   auto* constant{ConstantInt::get(*m_context, APInt(8, 0, true))};
@@ -104,7 +103,27 @@ auto LlvmBackend::visit(If* t_if) -> Any
   return {};
 }
 
-AST_VISITOR_STUB(LlvmBackend, Loop)
+auto LlvmBackend::visit(Loop* t_loop) -> Any
+{
+  llvm::Function* fn{m_builder->GetInsertBlock()->getParent()};
+
+  // get_value(t_loop->condition())
+
+  // Define blocks
+  auto* loop{BasicBlock::Create(*m_context, "loop")};
+  //auto* loop{BasicBlock::Create(*m_context, "")};
+
+  const auto block{[&](auto* t_block, auto t_lambda) {
+    fn->insert(fn->end(), t_block);
+    m_builder->SetInsertPoint(t_block);
+
+    t_lambda();
+
+    m_builder->CreateBr(merge);
+    t_block = m_builder->GetInsertBlock();
+  }};
+}
+
 AST_VISITOR_STUB(LlvmBackend, Continue)
 AST_VISITOR_STUB(LlvmBackend, Break)
 

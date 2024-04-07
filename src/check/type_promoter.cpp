@@ -59,6 +59,14 @@ auto TypePromoter::promote_bool(const NativeType t_lhs) const -> NativeTypeOpt
 {
   NativeTypeOpt opt;
 
+  const auto integer{m_int.contains(t_lhs)};
+  const auto unsigned_integer{m_uint.contains(t_lhs)};
+
+  // Only integers may be promoted to boolean's.
+  if(integer || unsigned_integer) {
+    opt = NativeType::BOOL;
+  }
+
   return opt;
 }
 
@@ -67,7 +75,7 @@ auto TypePromoter::promote_float(const NativeType t_lhs, const NativeType t_rhs,
 {
   NativeTypeOpt opt;
 
-	// TODO: Handle Int and UInt to float promotion.
+  // TODO: Handle Int and UInt to float promotion.
   const auto lhs_priority{get_priority(m_float, t_lhs)};
   const auto rhs_priority{get_priority(m_float, t_rhs)};
 
@@ -102,7 +110,7 @@ auto TypePromoter::promote_uint(const NativeType t_lhs, const NativeType t_rhs,
 {
   NativeTypeOpt opt;
 
-	// TODO: Handle Int to UInt type promotion.
+  // TODO: Handle Int to UInt type promotion.
   const auto lhs_priority{get_priority(m_uint, t_lhs)};
   const auto rhs_priority{get_priority(m_uint, t_rhs)};
 
