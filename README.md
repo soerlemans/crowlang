@@ -33,5 +33,5 @@ CLI11, Boost, LLVM and libclang are dynamically linked (CMake searches for it on
 You can install the dependencies with the following aptitude command:
 
 ```shell
-apt install -y libcli11-dev libcurl4 libboost-all-dev llvm-16-dev libclang-16-dev
+apt install -y libcli11-dev libcurl4 libboost-all-dev libzstd-dev llvm-16-dev libclang-16-dev
 ```
