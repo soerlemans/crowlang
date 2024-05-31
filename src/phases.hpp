@@ -6,6 +6,7 @@
 #include "ast/visitor/ast_printer.hpp"
 #include "check/type_checker.hpp"
 #include "codegen/llvm_backend/llvm_backend.hpp"
+#include "codegen/cpp_backend/cpp_backend.hpp"
 #include "container/text_buffer.hpp"
 #include "debug/log.hpp"
 #include "lexer/lexer.hpp"
@@ -23,8 +24,10 @@ auto open_file(const fs::path t_path) -> container::TextBuffer;
 auto lex(const fs::path& t_path) -> token::TokenStream;
 auto lex(const container::TextStreamPtr& t_stream) -> token::TokenStream;
 
-//! Parse.
+//! Parse  the tokenized stream.
 auto parse(const token::TokenStream& t_ts) -> ast::node::NodePtr;
+
+//! Print the AST, only available if @ref DEBUG is defined.
 auto print_ast([[maybe_unused]] ast::node::NodePtr t_ast) -> void;
 
 //! Type check the AST.

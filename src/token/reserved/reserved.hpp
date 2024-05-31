@@ -59,10 +59,10 @@ namespace keywords {
   DEFINE_TERMINAL(g_return,   "return",   RETURN);
 
 	// Literals:
-  DEFINE_TERMINAL(g_true,  "true",  TRUE);
-  DEFINE_TERMINAL(g_false, "false", FALSE);
+  DEFINE_TERMINAL(g_true,  "True",  TRUE);
+  DEFINE_TERMINAL(g_false, "False", FALSE);
 
-	// TODO: Convert keywords to bimap
+	// TODO: Convert keywords to boost::bimap.
   // const TTypeMap g_keywords = boost::assign::list_of<TTypeMap<std::string_view>::relation>
 	// 	(g_let.pair()) (g_var.pair())
 	// 	(g_module.pair()) (g_import.pair()) (g_priv.pair()) (g_pub.pair())

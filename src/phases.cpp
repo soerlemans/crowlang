@@ -100,24 +100,15 @@ auto check_types(ast::node::NodePtr t_ast) -> void
 
 auto backend(ast::node::NodePtr t_ast) -> void
 {
-  using codegen::llvm_backend::LlvmBackend;
+  using codegen::cpp_backend::CppBackend;
 
-  DBG_PRINTLN("<code_gen>");
+  DBG_PRINTLN("<codegen>");
 
-  LlvmBackend backend;
+  CppBackend backend;
   backend.codegen(t_ast);
   // backend.compile("main.out");
 
-#ifdef DEBUG
-  std::stringstream ss;
-  ss << "\nLLVM IR:\n";
-
-  backend.dump_ir(ss);
-
-  DBG_INFO(ss.str());
-#endif // DEBUG
-
-  DBG_PRINTLN("</code_gen>");
+  DBG_PRINTLN("</codegen>");
 }
 
 auto run() -> void
