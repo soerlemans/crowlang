@@ -1,6 +1,11 @@
 #ifndef CROW_CHECK_ENV_STACK_HPP
 #define CROW_CHECK_ENV_STACK_HPP
 
+// STL Includes:
+#include <map>
+#include <string>
+#include <string_view>
+
 // Includes:
 #include "../exception/type_error.hpp"
 
