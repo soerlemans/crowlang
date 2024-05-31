@@ -116,10 +116,10 @@ AST_VISITOR_STUB(CppBackend, DotExpr)
 // Util:
 auto CppBackend::codegen(NodePtr t_ast) -> void
 {
-	using bs_fs = boost::filesystem;
+	namespace bs_fs = boost::filesystem;
 
 	bs_fs::path temp = bs_fs::unique_path();
-	bs_fs::path temp_dir = bs_fs::unique_directory();
+	bs_fs::path temp_dir = bs_fs::temp_directory_path();
 
 	DBG_PRINTLN(temp.native());
 	DBG_PRINTLN(temp_dir.native());
