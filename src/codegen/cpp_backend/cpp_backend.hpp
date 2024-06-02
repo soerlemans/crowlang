@@ -3,7 +3,7 @@
 
 // STL Includes:
 #include <filesystem>
-#include <format>
+// #include <format>
 #include <fstream>
 #include <memory>
 
@@ -22,7 +22,7 @@ namespace fs = std::filesystem;
 
 // Classes:
 /**
- * Tree walk codegenerator generating safe C++ code.
+ * @brief Tree walk codegenerator generating safe C++ code.
  * The generated C++ is stored in a cross platform location.
  * This generated C++ code could later be compiled with libclang.
  * Or any compiler of choice.
@@ -33,14 +33,14 @@ class CppBackend : public ast::visitor::NodeVisitor {
 
   protected:
   template<typename... Args>
-  inline auto write(const std::string_view t_fmt, Args&&... t_args) -> void
+  auto write(const std::string_view t_fmt, Args&&... t_args) -> void
   {
-    const auto fmt_args{std::make_format_args(std::forward<Args>(t_args)...)};
+    // const auto
+    // fmt_args{std::make_format_args(std::forward<Args>(t_args)...)};
 
-    m_ofs << std::vformat(t_fmt, fmt_args);
+    // m_ofs << std::vformat(t_fmt, fmt_args);
     m_ofs << '\n';
   }
-
 
   public:
   CppBackend() = default;

@@ -48,3 +48,6 @@ test-build/*
 
 # Docs
 doxygen/*
+
+# Ignore Python environment:
+.venv/
