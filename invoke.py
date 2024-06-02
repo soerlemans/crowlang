@@ -9,8 +9,8 @@ import multiprocessing
 def cmake(c, t_dir, t_parallel):
     max_jobs = 1
     if t_parallel:
-        # Only use half the cores.
-        max_jobs = multiprocessing.cpu_count() // 2
+        # Only use a third of the cores by default.
+        max_jobs = multiprocessing.cpu_count() // 3
         pass
 
     c.run(f'cmake -S . -B {t_dir}/')

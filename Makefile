@@ -22,7 +22,7 @@ build: # Release build.
 
 debug-build: # Build used for debugging and analyzing.
 	cmake -S . -B $@/ $(DEBUG)
-	cmake --build $@/ --parallel 10
+	cmake --build $@/ --parallel 5
 
 reldebug-build: # Build combination of release with debug info.
 	cmake -S . -B $@/ $(RELDEBUG)
