@@ -32,6 +32,7 @@ class CppBackend : public ast::visitor::NodeVisitor {
   std::ofstream m_ofs;
 
   protected:
+  /*
   template<typename... Args>
   auto write(const std::string_view t_fmt, Args&&... t_args) -> void
   {
@@ -41,6 +42,7 @@ class CppBackend : public ast::visitor::NodeVisitor {
     // m_ofs << std::vformat(t_fmt, fmt_args);
     m_ofs << '\n';
   }
+  */
 
   public:
   CppBackend() = default;

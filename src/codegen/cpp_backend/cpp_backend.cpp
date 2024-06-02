@@ -37,7 +37,7 @@ auto CppBackend::visit([[maybe_unused]] Parameter* t_param) -> Any
 
 auto CppBackend::visit(Function* t_fn) -> Any
 {
-  write("auto {}", "Test");
+  // write("auto {}", "Test");
 }
 
 AST_VISITOR_STUB(CppBackend, Call)

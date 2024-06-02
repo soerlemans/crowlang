@@ -18,10 +18,12 @@ def clean(c, docs=False, bytecode=False, extra=''):
         patterns.append(extra)
     for pattern in patterns:
         c.run("rm -rf {}".format(pattern))
+    pass
 
 @task
 def build(c, docs=False):
     c.run("python setup.py build")
     if docs:
         c.run("sphinx-build docs docs/_build")
+    pass
 
