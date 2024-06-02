@@ -1,5 +1,5 @@
-#ifndef TEMPORARY_DIRECTORY_HPP
-#define TEMPORARY_DIRECTORY_HPP
+#ifndef CROW_LIB_TEMPORARY_DIRECTORY_HPP
+#define CROW_LIB_TEMPORARY_DIRECTORY_HPP
 
 // STL Includes:
 #include <boost/filesystem/operations.hpp>
@@ -34,4 +34,4 @@ auto temporary_directory() -> fs::path
 }
 } // namespace lib
 
-#endif // TEMPORARY_DIRECTORY_HPP
+#endif // CROW_LIB_TEMPORARY_DIRECTORY_HPP

@@ -3,6 +3,8 @@
 
 // STL Includes:
 #include <filesystem>
+#include <format>
+#include <fstream>
 #include <memory>
 
 // Includes:
@@ -27,10 +29,21 @@ namespace fs = std::filesystem;
  */
 class CppBackend : public ast::visitor::NodeVisitor {
   private:
+  std::ofstream m_ofs;
+
   protected:
+  template<typename... Args>
+  inline auto write(const std::string_view t_fmt, Args&&... t_args) -> void
+  {
+    const auto fmt_args{std::make_format_args(std::forward<Args>(t_args)...)};
+
+    m_ofs << std::vformat(t_fmt, fmt_args);
+    m_ofs << '\n';
+  }
+
 
   public:
-  CppBackend();
+  CppBackend() = default;
 
   // Control:
   auto visit(node::control::If* t_if) -> Any override;
@@ -91,6 +104,6 @@ class CppBackend : public ast::visitor::NodeVisitor {
 
   virtual ~CppBackend() = default;
 };
-} // namespace codegen::llvm_backend
+} // namespace codegen::cpp_backend
 
 #endif // CROW_CODEGEN_CPP_BACKEND_CPP_BACKEND_HPP

@@ -18,9 +18,6 @@ using namespace ast::visitor;
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-CppBackend::CppBackend()
-{}
-
 // Control:
 auto CppBackend::visit(If* t_if) -> Any
 {}
@@ -39,7 +36,9 @@ auto CppBackend::visit([[maybe_unused]] Parameter* t_param) -> Any
 {}
 
 auto CppBackend::visit(Function* t_fn) -> Any
-{}
+{
+  write("auto {}" "Test");
+}
 
 AST_VISITOR_STUB(CppBackend, Call)
 AST_VISITOR_STUB(CppBackend, ReturnType)
@@ -110,6 +109,12 @@ auto CppBackend::codegen(NodePtr t_ast) -> void
 {
   const auto tmp_dir{lib::temporary_directory()};
   DBG_INFO("tmp_dir: ", std::quoted(tmp_dir.native()));
+
+  m_ofs.open(tmp_dir);
+
+  traverse(t_ast);
+
+  m_ofs.close();
 }
 
 auto CppBackend::compile(const fs::path t_path) -> void
