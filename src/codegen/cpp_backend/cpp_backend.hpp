@@ -3,7 +3,7 @@
 
 // STL Includes:
 #include <filesystem>
-// #include <format>
+#include <format>
 #include <fstream>
 #include <memory>
 
@@ -36,11 +36,10 @@ class CppBackend : public ast::visitor::NodeVisitor {
   template<typename... Args>
   auto write(const std::string_view t_fmt, Args&&... t_args) -> void
   {
-    // const auto
-    // fmt_args{std::make_format_args(std::forward<Args>(t_args)...)};
+    const auto fmt_args{std::make_format_args(std::forward<Args>(t_args)...)};
 
-    // m_ofs << std::vformat(t_fmt, fmt_args);
-    // m_ofs << '\n';
+    m_ofs << std::vformat(t_fmt, fmt_args);
+    m_ofs << '\n';
   }
 
   public:

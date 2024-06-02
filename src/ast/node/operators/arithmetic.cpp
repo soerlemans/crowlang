@@ -8,4 +8,11 @@ Arithmetic::Arithmetic(TextPosition t_pos, const ArithmeticOp t_op,
     Op{t_op},
     BinaryOperator{std::move(t_left), std::move(t_right)}
 {}
+
+// Functions:
+auto arithmetic_op2str() -> std::string_view
+{
+  return "TODO: Implement";
+}
+
 } // namespace ast::node::operators

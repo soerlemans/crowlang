@@ -21,6 +21,8 @@ NODE_USING_ALL_NAMESPACES()
 // Control:
 auto CppBackend::visit(If* t_if) -> Any
 {
+  // const auto condition{traverse(t_if->init_expr())};
+
   return {};
 }
 
@@ -34,6 +36,11 @@ AST_VISITOR_STUB(CppBackend, Break)
 
 auto CppBackend::visit(Return* t_ret) -> Any
 {
+  // const auto result
+  //  traverse(t_ret->expr());
+
+  // write("return {};", );
+
   return {};
 }
 
@@ -45,7 +52,15 @@ auto CppBackend::visit([[maybe_unused]] Parameter* t_param) -> Any
 
 auto CppBackend::visit(Function* t_fn) -> Any
 {
-  write("auto {}", "Test");
+  const auto identifier{t_fn->identifier()};
+
+  write("auto {}() -> void", identifier);
+  write("{}", "{");
+
+  // Generate code for the body.
+  traverse(t_fn->body());
+
+  write("{}", "}");
 
   return {};
 }
@@ -55,12 +70,49 @@ AST_VISITOR_STUB(CppBackend, ReturnType)
 
 // Lvalue:
 AST_VISITOR_STUB(CppBackend, Let)
-AST_VISITOR_STUB(CppBackend, Var)
-AST_VISITOR_STUB(CppBackend, Variable)
+
+auto CppBackend::visit(Var* t_var) -> Any
+{
+  const auto identifier{t_var->identifier()};
+
+  write("auto {}{{", identifier);
+  traverse(t_var->init_expr());
+  write("}};");
+
+  return {};
+}
+
+auto CppBackend::visit(Variable* t_var) -> Any
+{
+  return {};
+}
 
 // Operators:
 auto CppBackend::visit(Arithmetic* t_arith) -> Any
 {
+  using ast::node::operators::ArithmeticOp;
+
+  switch(t_arith->op()) {
+    case ArithmeticOp::POWER:
+      write("{}", "+");
+      break;
+    case ArithmeticOp::MULTIPLY:
+      break;
+    case ArithmeticOp::DIVIDE:
+      break;
+    case ArithmeticOp::MODULO:
+      break;
+
+    case ArithmeticOp::ADD:
+      break;
+    case ArithmeticOp::SUBTRACT:
+      break;
+
+    default:
+      // TODO: Throw.
+      break;
+  }
+
   return {};
 }
 
@@ -131,7 +183,9 @@ auto CppBackend::codegen(NodePtr t_ast) -> void
   const auto tmp_dir{lib::temporary_directory()};
   DBG_INFO("tmp_dir: ", std::quoted(tmp_dir.native()));
 
-  m_ofs.open(tmp_dir);
+  const auto tmp_src{tmp_dir / "main.cpp"};
+
+  m_ofs.open(tmp_src);
 
   traverse(t_ast);
 

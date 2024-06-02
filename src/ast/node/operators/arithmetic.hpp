@@ -42,6 +42,9 @@ class Arithmetic : public NodePosition,
 
   virtual ~Arithmetic() = default;
 };
+
+// Functions:
+auto arithmetic_op2str() -> std::string_view;
 } // namespace ast::node::operators
 
 // Cereal type registration:
