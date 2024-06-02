@@ -14,6 +14,7 @@ namespace codegen::cpp_backend {
 // Using statements:
 using namespace ast;
 
+// Using Declarations:
 using ast::node::NodePtr;
 using ast::visitor::Any;
 
@@ -21,7 +22,7 @@ using ast::visitor::Any;
 namespace fs = std::filesystem;
 
 // Classes:
-/**
+/*!
  * @brief Tree walk codegenerator generating safe C++ code.
  * The generated C++ is stored in a cross platform location.
  * This generated C++ code could later be compiled with libclang.
@@ -32,7 +33,6 @@ class CppBackend : public ast::visitor::NodeVisitor {
   std::ofstream m_ofs;
 
   protected:
-  /*
   template<typename... Args>
   auto write(const std::string_view t_fmt, Args&&... t_args) -> void
   {
@@ -40,9 +40,8 @@ class CppBackend : public ast::visitor::NodeVisitor {
     // fmt_args{std::make_format_args(std::forward<Args>(t_args)...)};
 
     // m_ofs << std::vformat(t_fmt, fmt_args);
-    m_ofs << '\n';
+    // m_ofs << '\n';
   }
-  */
 
   public:
   CppBackend() = default;

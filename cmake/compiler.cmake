@@ -16,8 +16,8 @@ set_target_properties(
 	${TARGET_CROW_LIB}
 	PROPERTIES
 	CXX_STANDARD 23
-	CXX_COMPILER "g++"
-	C_COMPILER "gcc"
+	CXX_COMPILER "clang"
+	C_COMPILER "clang"
 )
 
 # Define DEBUG macro if build type is Debug

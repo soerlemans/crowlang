@@ -20,7 +20,7 @@ In order to compile the project you will need to following dependencies:
 - [libclang](https://clang.llvm.org/doxygen/group__CINDEX.html) (libclang for compiling C++ sources (part of the LLVM project.))
 
 ### Buildsystem
-In order to compile the project you will need gcc, make and cmake.
+In order to compile the project you will need clang, invoke and cmake.
 You can install the dependencies with the following aptitude command:
 
 ```shell

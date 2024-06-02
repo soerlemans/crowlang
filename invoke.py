@@ -2,28 +2,29 @@
 
 
 from invoke import task
+import multiprocessing
 
 
-def compile
+
+def cmake(c, t_dir, t_parallel):
+    max_jobs = 1
+    if t_parallel:
+        # Only use half the cores.
+        max_jobs = multiprocessing.cpu_count() // 2
+        pass
+
+    c.run(f'cmake -S . -B {t_dir}/')
+    c.run(f'cmake --build {t_dir}/ --parallel {max_jobs}')
+    pass
 
 
 @task
-def clean(c, docs=False, bytecode=False, extra=''):
-    patterns = ['build']
-    if docs:
-        patterns.append('docs/_build')
-    if bytecode:
-        patterns.append('**/*.pyc')
-    if extra:
-        patterns.append(extra)
-    for pattern in patterns:
-        c.run("rm -rf {}".format(pattern))
+def clean(c):
+    #c.run(f'rm -rf {}')
     pass
 
 @task
-def build(c, docs=False):
-    c.run("python setup.py build")
-    if docs:
-        c.run("sphinx-build docs docs/_build")
+def build(c, parallel=False, mode=''):
+    cmake()
     pass
 

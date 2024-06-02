@@ -20,24 +20,34 @@ NODE_USING_ALL_NAMESPACES()
 // Methods:
 // Control:
 auto CppBackend::visit(If* t_if) -> Any
-{}
+{
+  return {};
+}
 
 auto CppBackend::visit(Loop* t_loop) -> Any
-{}
+{
+  return {};
+}
 
 AST_VISITOR_STUB(CppBackend, Continue)
 AST_VISITOR_STUB(CppBackend, Break)
 
 auto CppBackend::visit(Return* t_ret) -> Any
-{}
+{
+  return {};
+}
 
 // Functions:
 auto CppBackend::visit([[maybe_unused]] Parameter* t_param) -> Any
-{}
+{
+  return {};
+}
 
 auto CppBackend::visit(Function* t_fn) -> Any
 {
-  // write("auto {}", "Test");
+  write("auto {}", "Test");
+
+  return {};
 }
 
 AST_VISITOR_STUB(CppBackend, Call)
@@ -50,12 +60,16 @@ AST_VISITOR_STUB(CppBackend, Variable)
 
 // Operators:
 auto CppBackend::visit(Arithmetic* t_arith) -> Any
-{}
+{
+  return {};
+}
 
 AST_VISITOR_STUB(CppBackend, Assignment)
 
 auto CppBackend::visit(Comparison* t_comp) -> Any
-{}
+{
+  return {};
+}
 
 AST_VISITOR_STUB(CppBackend, Increment)
 AST_VISITOR_STUB(CppBackend, Decrement)
@@ -78,10 +92,15 @@ AST_VISITOR_STUB(CppBackend, ModuleDecl)
 
 // RValue:
 auto CppBackend::visit(Float* t_float) -> Any
-{}
+{
+
+  return {};
+}
 
 auto CppBackend::visit(Integer* t_int) -> Any
-{}
+{
+  return {};
+}
 
 // TODO: Implement
 auto CppBackend::visit([[maybe_unused]] String* t_str) -> Any
@@ -90,7 +109,9 @@ auto CppBackend::visit([[maybe_unused]] String* t_str) -> Any
 }
 
 auto CppBackend::visit(Boolean* t_bool) -> Any
-{}
+{
+  return {};
+}
 
 // Typing:
 AST_VISITOR_STUB(CppBackend, MethodDecl)
@@ -101,7 +122,7 @@ AST_VISITOR_STUB(CppBackend, Impl)
 AST_VISITOR_STUB(CppBackend, DotExpr)
 
 // Util:
-/**
+/*!
  * Transpile the AST to valid C++ code.
  * The C++ source is stored in a temporary directory.
  */

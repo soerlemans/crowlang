@@ -37,7 +37,7 @@ auto println(Args&&... t_args) -> void
 
 // Logging faciltiies
 #ifdef DEBUG
-/**
+/*!
  * @brief Used to log the compiler.
  *
  * @param[in] t_pos  Position in source code where the log call is made from.

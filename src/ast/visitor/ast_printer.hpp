@@ -22,7 +22,7 @@ concept IsAnyOf = (std::same_as<Args, Type> || ...);
 
 // Classes:
 /*!
- * Visitor made for printing the AST Node per node
+ * @brief Visitor made for printing the AST Node per node
  * Has a unique overload for every print
  */
 class AstPrinter : public NodeVisitor {
