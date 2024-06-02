@@ -18,19 +18,19 @@ CLANG_TIDY_ARGS := -header-filter=src/.* -extra-arg=-std=c++2b
 all: build debug-build reldebug-build test-build
 build: # Release build.
 	cmake -S . -B $@/
-	cmake --build $@/ --parallel $(nproc)
+	cmake --build $@/ --parallel 10
 
 debug-build: # Build used for debugging and analyzing.
 	cmake -S . -B $@/ $(DEBUG)
-	cmake --build $@/ --parallel $(nproc)
+	cmake --build $@/ --parallel 10
 
 reldebug-build: # Build combination of release with debug info.
 	cmake -S . -B $@/ $(RELDEBUG)
-	cmake --build $@/ --parallel $(nproc)
+	cmake --build $@/ --parallel 10
 
 test-build: # Build used for creating tests.
 	cmake -S . -B $@/ $(TESTS)
-	cmake --build $@/ --parallel $(nproc)
+	cmake --build $@/ --parallel 10
 
 # After build rules:
 install: build
