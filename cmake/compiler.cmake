@@ -2,8 +2,6 @@
 
 # Functions:
 function(COMPILE_FLAGS T_TARGET)
-
-
 	target_compile_options(${T_TARGET} PRIVATE
 		-Wall
 		-Wextra

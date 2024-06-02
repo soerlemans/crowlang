@@ -4,13 +4,16 @@ message(STATUS "[+] Finding Boost library.")
 find_package(
 	Boost
 	1.74
-	COMPONENTS system filesystem program_options
+	COMPONENTS system program_options filesystem iostreams thread
 	REQUIRED
 )
 
 include_directories(
 	SYSTEM
-	${Boost_INCLUDE_DIR}
-  ${Boost_FILESYSTEM_LIBRARY}
-  ${Boost_SYSTEM_LIBRARY}
+	${Boost_INCLUDE_DIRS}
+)
+
+target_link_libraries(
+	${TARGET_CROW_LIB}
+  ${Boost_LIBRARIES}
 )

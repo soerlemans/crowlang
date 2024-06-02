@@ -25,28 +25,23 @@ CppBackend::CppBackend()
 
 // Control:
 auto CppBackend::visit(If* t_if) -> Any
-{
-}
+{}
 
 auto CppBackend::visit(Loop* t_loop) -> Any
-{
-}
+{}
 
 AST_VISITOR_STUB(CppBackend, Continue)
 AST_VISITOR_STUB(CppBackend, Break)
 
 auto CppBackend::visit(Return* t_ret) -> Any
-{
-}
+{}
 
 // Functions:
 auto CppBackend::visit([[maybe_unused]] Parameter* t_param) -> Any
-{
-}
+{}
 
 auto CppBackend::visit(Function* t_fn) -> Any
-{
-}
+{}
 
 AST_VISITOR_STUB(CppBackend, Call)
 AST_VISITOR_STUB(CppBackend, ReturnType)
@@ -58,14 +53,12 @@ AST_VISITOR_STUB(CppBackend, Variable)
 
 // Operators:
 auto CppBackend::visit(Arithmetic* t_arith) -> Any
-{
-}
+{}
 
 AST_VISITOR_STUB(CppBackend, Assignment)
 
 auto CppBackend::visit(Comparison* t_comp) -> Any
-{
-}
+{}
 
 AST_VISITOR_STUB(CppBackend, Increment)
 AST_VISITOR_STUB(CppBackend, Decrement)
@@ -88,12 +81,10 @@ AST_VISITOR_STUB(CppBackend, ModuleDecl)
 
 // RValue:
 auto CppBackend::visit(Float* t_float) -> Any
-{
-}
+{}
 
 auto CppBackend::visit(Integer* t_int) -> Any
-{
-}
+{}
 
 // TODO: Implement
 auto CppBackend::visit([[maybe_unused]] String* t_str) -> Any
@@ -102,8 +93,7 @@ auto CppBackend::visit([[maybe_unused]] String* t_str) -> Any
 }
 
 auto CppBackend::visit(Boolean* t_bool) -> Any
-{
-}
+{}
 
 // Typing:
 AST_VISITOR_STUB(CppBackend, MethodDecl)
@@ -116,16 +106,15 @@ AST_VISITOR_STUB(CppBackend, DotExpr)
 // Util:
 auto CppBackend::codegen(NodePtr t_ast) -> void
 {
-	namespace bs_fs = boost::filesystem;
+  using namespace boost::filesystem;
 
-	bs_fs::path temp = bs_fs::unique_path();
-	bs_fs::path temp_dir = bs_fs::temp_directory_path();
+  path temp = unique_path();
+  path temp_dir = temp_directory_path();
 
-	DBG_PRINTLN(temp.native());
-	DBG_PRINTLN(temp_dir.native());
+  DBG_PRINTLN(temp.native());
+  DBG_PRINTLN(temp_dir.native());
 }
 
 auto CppBackend::compile(const fs::path t_path) -> void
-{
-}
-} // namespace codegen::llvm_backend
+{}
+} // namespace codegen::cpp_backend
