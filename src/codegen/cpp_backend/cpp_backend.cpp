@@ -36,10 +36,9 @@ AST_VISITOR_STUB(CppBackend, Break)
 
 auto CppBackend::visit(Return* t_ret) -> Any
 {
-  // const auto result
-  //  traverse(t_ret->expr());
-
-  // write("return {};", );
+  write("{}", "return");
+  traverse(t_ret->expr());
+  write("{}", ";");
 
   return {};
 }
@@ -54,7 +53,10 @@ auto CppBackend::visit(Function* t_fn) -> Any
 {
   const auto identifier{t_fn->identifier()};
 
-  write("auto {}() -> void", identifier);
+  // TODO: Some day resolve the TypeVariant, for now every method returns int.
+  const auto ret_type{"int"};
+
+  write("auto {}() -> {}", identifier, ret_type);
   write("{}", "{");
 
   // Generate code for the body.
@@ -84,6 +86,10 @@ auto CppBackend::visit(Var* t_var) -> Any
 
 auto CppBackend::visit(Variable* t_var) -> Any
 {
+  const auto identifier{t_var->identifier()};
+
+  write("{}", identifier);
+
   return {};
 }
 
@@ -92,22 +98,25 @@ auto CppBackend::visit(Arithmetic* t_arith) -> Any
 {
   using ast::node::operators::ArithmeticOp;
 
-  // TODO: Cleanup!
+  // TODO: Cleanup/Move else where!
   switch(t_arith->op()) {
     case ArithmeticOp::POWER:
-      traverse(t_arith->left());
-      write("{}", "+");
-      traverse(t_arith->right());
       break;
+
     case ArithmeticOp::MULTIPLY:
       break;
+
     case ArithmeticOp::DIVIDE:
       break;
     case ArithmeticOp::MODULO:
       break;
 
     case ArithmeticOp::ADD:
+      traverse(t_arith->left());
+      write("{}", "+");
+      traverse(t_arith->right());
       break;
+
     case ArithmeticOp::SUBTRACT:
       break;
 
