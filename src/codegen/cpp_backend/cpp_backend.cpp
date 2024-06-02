@@ -5,12 +5,10 @@
 #include <optional>
 #include <vector>
 
-// Library Includes:
-#include <boost/filesystem.hpp>
-
 // Includes:
 #include "../../ast/node/include_nodes.hpp"
 #include "../../debug/log.hpp"
+#include "../../lib/temporary_directory.hpp"
 #include "../../lib/types.hpp"
 
 namespace codegen::cpp_backend {
@@ -104,15 +102,14 @@ AST_VISITOR_STUB(CppBackend, Impl)
 AST_VISITOR_STUB(CppBackend, DotExpr)
 
 // Util:
+/**
+ * Transpile the AST to valid C++ code.
+ * The C++ source is stored in a temporary directory.
+ */
 auto CppBackend::codegen(NodePtr t_ast) -> void
 {
-  using namespace boost::filesystem;
-
-  path temp = unique_path();
-  path temp_dir = temp_directory_path();
-
-  DBG_PRINTLN(temp.native());
-  DBG_PRINTLN(temp_dir.native());
+  const auto tmp_dir{lib::temporary_directory()};
+  DBG_INFO("tmp_dir: ", std::quoted(tmp_dir.native()));
 }
 
 auto CppBackend::compile(const fs::path t_path) -> void

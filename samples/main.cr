@@ -1,5 +1,5 @@
 fn main() -> int {
-	if true {
+	if True {
 		return 1;
   } else {
 		return 0;

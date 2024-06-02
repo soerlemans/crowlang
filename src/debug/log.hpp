@@ -13,15 +13,17 @@
 #include "loglevel.hpp"
 
 namespace debug {
+// Using declarations:
+using container::SourcePosition;
 
-// We use std::clog for logging
+// Functions:
 template<typename... Args>
 auto print(Args&&... t_args) -> void
 {
-  // Fold expression
+  // We use std::clog for logging.
   (std::clog << ... << t_args);
 
-  // Reset any rang modifiers
+  // Reset any rang modifiers.
   std::clog << rang::style::reset;
   std::clog << rang::fg::reset << rang::bg::reset;
 }
@@ -35,11 +37,15 @@ auto println(Args&&... t_args) -> void
 
 // Logging faciltiies
 #ifdef DEBUG
-// Do not use this function with non primitive types it will not know how to
-// Handle them and give an obscure tuple error
-// TODO: Maybe inline log? We will be using it a lot for debugging
+/**
+ * @brief Used to log the compiler.
+ *
+ * @param[in] t_pos  Position in source code where the log call is made from.
+ * @param[in] t_pos  The @ref LogLevel to log to.
+ * @param[in] t_args Arguments to log.
+ */
 template<typename... Args>
-inline auto log(const container::SourcePosition t_pos, LogLevel t_loglevel,
+inline auto log(const SourcePosition t_pos, LogLevel t_loglevel,
                 Args&&... t_args) -> void
 {
   using namespace rang;

@@ -15,9 +15,11 @@ namespace debug {
  * Checks if the @ref LogLevel is lower than the current g_loglevel.
  */
 // TODO: This could be constexpr.
-[[nodiscard]]
+[[nodiscard("Returned boolean result must be used.")]]
 auto is_lower_loglevel(const LogLevel t_loglevel) -> bool
 {
+  using lib::enum2int;
+
   return enum2int(g_loglevel) >= enum2int(t_loglevel);
 }
 
