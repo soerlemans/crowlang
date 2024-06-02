@@ -9,12 +9,26 @@ find_package(
 
 message(STATUS "Found CLang ${CLANG_PACKAGE_VERSION}")
 message(STATUS "Using ClangConfig.cmake in: ${CLANG_DIR}")
-message(STATUS "dirs: ${CLANG_INCLUDE_DIRS}")
 
 include_directories(SYSTEM ${CLANG_INCLUDE_DIRS})
 add_definitions(${CLANG_DEFINITIONS_LIST})
 
-# set(CLANG_LIBS
+set(CLANG_LIBS
+    clangFrontend
+    clangBasic
+    clangCodeGen
+    clangDriver
+    clangLex
+    clangParse
+    clangSema
+    clangAST
+    clangAnalysis
+    clangRewriteFrontend
+    clangRewrite
+    clangEdit
+    clangASTMatchers
+    clangTooling
+
 #   clangTooling
 #   clangFrontendTool
 #   clangFrontend
@@ -43,7 +57,7 @@ add_definitions(${CLANG_DEFINITIONS_LIST})
 #   #clangARCMigrate
 #   clangRewriteFrontend
 #   clangRewrite
-# )
+)
 
 # Link libraries:
 target_link_libraries(

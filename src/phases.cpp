@@ -105,8 +105,7 @@ auto backend(ast::node::NodePtr t_ast) -> void
   DBG_PRINTLN("<codegen>");
 
   CppBackend backend;
-  backend.codegen(t_ast);
-  // backend.compile("main.out");
+  backend.compile(t_ast);
 
   DBG_PRINTLN("</codegen>");
 }

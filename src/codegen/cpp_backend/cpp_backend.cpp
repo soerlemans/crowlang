@@ -5,6 +5,26 @@
 #include <optional>
 #include <vector>
 
+// Library Includes:
+#include <clang/Basic/Diagnostic.h>
+#include <clang/Basic/DiagnosticOptions.h>
+#include <clang/Basic/FileManager.h>
+#include <clang/Basic/SourceManager.h>
+#include <clang/Basic/TargetInfo.h>
+#include <clang/Basic/TargetOptions.h>
+#include <clang/CodeGen/CodeGenAction.h>
+#include <clang/Frontend/CompilerInstance.h>
+#include <clang/Frontend/CompilerInvocation.h>
+#include <clang/Frontend/TextDiagnosticPrinter.h>
+#include <clang/Lex/PreprocessorOptions.h>
+#include <llvm/ADT/IntrusiveRefCntPtr.h>
+#include <llvm/Support/CommandLine.h>
+#include <llvm/Support/FileSystem.h>
+#include <llvm/Support/Host.h>
+#include <llvm/Support/InitLLVM.h>
+#include <llvm/Support/TargetSelect.h>
+#include <llvm/Support/raw_ostream.h>
+
 // Includes:
 #include "../../ast/node/include_nodes.hpp"
 #include "../../debug/log.hpp"
@@ -195,20 +215,74 @@ AST_VISITOR_STUB(CppBackend, DotExpr)
  * Transpile the AST to valid C++ code.
  * The C++ source is stored in a temporary directory.
  */
-auto CppBackend::codegen(NodePtr t_ast) -> void
+auto CppBackend::codegen(NodePtr t_ast) -> fs::path
 {
   const auto tmp_dir{lib::temporary_directory()};
-  DBG_INFO("tmp_dir: ", std::quoted(tmp_dir.native()));
-
   const auto tmp_src{tmp_dir / "main.cpp"};
+
+  DBG_INFO("tmp_dir: ", std::quoted(tmp_dir.native()));
+  DBG_INFO("tmp_src: ", std::quoted(tmp_src.native()));
 
   m_ofs.open(tmp_src);
 
   traverse(t_ast);
 
   m_ofs.close();
+
+  return tmp_src;
 }
 
-auto CppBackend::compile(const fs::path t_path) -> void
-{}
+auto CppBackend::compile(NodePtr t_ast) -> void
+{
+  using namespace clang;
+
+  // Generate C++ source file and return path.
+  const auto path{codegen(t_ast)};
+
+  // Do compiling magic, terrible code must refactor later.
+  std::vector<const char*> args = {path.native().c_str()};
+  auto args_ref{args.data()};
+  int argc{args.size()};
+
+  // llvm::InitLLVM llvm_init(argc, &(array.data()));
+  llvm::InitLLVM llvm_init(argc, args_ref);
+
+  // Initialize targets for code generation.
+  llvm::InitializeAllTargets();
+  llvm::InitializeAllTargetMCs();
+  llvm::InitializeAllAsmPrinters();
+  llvm::InitializeAllAsmParsers();
+
+  CompilerInstance compiler;
+  DiagnosticOptions diagnosticOptions;
+  compiler.createDiagnostics();
+
+  CompilerInvocation& invocation = compiler.getInvocation();
+  CompilerInvocation::CreateFromArgs(invocation, args,
+                                     compiler.getDiagnostics());
+
+  std::shared_ptr<TargetOptions> targetOptions =
+    std::make_shared<TargetOptions>();
+  targetOptions->Triple = llvm::sys::getDefaultTargetTriple();
+  TargetInfo* targetInfo =
+    TargetInfo::CreateTargetInfo(compiler.getDiagnostics(), targetOptions);
+  compiler.setTarget(targetInfo);
+
+  compiler.createFileManager();
+  compiler.createSourceManager(compiler.getFileManager());
+
+  compiler.createPreprocessor(clang::TU_Complete);
+  compiler.getPreprocessorOpts().UsePredefines = true;
+
+  compiler.createASTContext();
+
+  CodeGenAction* action = new EmitObjAction();
+  if(!compiler.ExecuteAction(*action)) {
+    DBG_CRITICAL("Compilation failed!");
+
+    // TODO: Throw.
+  } else {
+    DBG_CRITICAL("Compilation succeeded!");
+  }
+}
 } // namespace codegen::cpp_backend

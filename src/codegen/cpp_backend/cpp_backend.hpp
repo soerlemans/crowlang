@@ -99,8 +99,8 @@ class CppBackend : public ast::visitor::NodeVisitor {
   auto visit(ast::node::typing::DotExpr* t_dot_expr) -> Any override;
 
   // Util:
-  auto codegen(NodePtr t_ast) -> void;
-  auto compile(fs::path t_path) -> void;
+  auto codegen(NodePtr t_ast) -> fs::path;
+  auto compile(NodePtr t_ast) -> void;
 
   virtual ~CppBackend() = default;
 };
