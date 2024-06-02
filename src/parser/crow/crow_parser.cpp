@@ -54,7 +54,7 @@ auto CrowParser::expr_opt() -> NodePtr
   return expr();
 }
 
-// FIXME: This is "temporary fix"
+// FIXME: This is "temporary fix".
 auto CrowParser::init_expr(const TokenType t_type) -> NodePtr
 {
   using namespace token;

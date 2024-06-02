@@ -18,13 +18,23 @@ In order to compile the project you will need to following dependencies:
 - [Boost]() (Utility libraries for C++)
 - [LLVM](https://llvm.org) (LLVM for code generation and optimization)
 - [libclang](https://clang.llvm.org/doxygen/group__CINDEX.html) (libclang for compiling C++ sources (part of the LLVM project.))
+- [cereal]() (TODO)
+- [libassert]() (TODO)
 
 ### Buildsystem
-In order to compile the project you will need clang, invoke and cmake.
-You can install the dependencies with the following aptitude command:
+In order to compile the project you will need `invoke`, `clang` and `cmake`.
+You can install most of the dependencies with the following aptitude command:
 
 ```shell
-apt install -y build-essential clang cmake extra-cmake-modules
+apt install -y clang cmake extra-cmake-modules
+```
+
+To install `invoke` to work do the following:
+
+```shell
+python3 -m venv .venv
+source .venv/bin/activate
+pip install invoke
 ```
 
 ### Dynamic libraries

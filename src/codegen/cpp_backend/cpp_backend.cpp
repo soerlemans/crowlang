@@ -92,9 +92,12 @@ auto CppBackend::visit(Arithmetic* t_arith) -> Any
 {
   using ast::node::operators::ArithmeticOp;
 
+  // TODO: Cleanup!
   switch(t_arith->op()) {
     case ArithmeticOp::POWER:
+      traverse(t_arith->left());
       write("{}", "+");
+      traverse(t_arith->right());
       break;
     case ArithmeticOp::MULTIPLY:
       break;
@@ -151,6 +154,11 @@ auto CppBackend::visit(Float* t_float) -> Any
 
 auto CppBackend::visit(Integer* t_int) -> Any
 {
+  const auto value{t_int->get()};
+
+  write("{}", value);
+
+
   return {};
 }
 
