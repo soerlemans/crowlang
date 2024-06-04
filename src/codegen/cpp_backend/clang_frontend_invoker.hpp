@@ -3,7 +3,6 @@
 
 // STL Includes:
 #include <filesystem>
-#include <memory>
 
 // Library Includes:
 // #include <clang/Basic/TargetOptions.h>
@@ -26,8 +25,7 @@ class ClangFrontendInvoker {
   public:
   ClangFrontendInvoker() = default;
 
-  auto object(const path& t_in, const path& t_out) -> void;
-  auto link(const path& t_in, const path& t_out) -> void;
+  auto compile(const path& t_dir, const path& t_basename) -> void;
 
   virtual ~ClangFrontendInvoker() = default;
 };

@@ -2,6 +2,7 @@
 
 // STL Includes:
 #include <iostream>
+#include <memory>
 #include <optional>
 #include <vector>
 
@@ -51,14 +52,27 @@ auto ClangFrontendInvoker::init_llvm() -> void
 {}
 
 // Public Methods:
-auto ClangFrontendInvoker::object(const path& t_in, const path& t_out) -> void
+// TODO: Refactor.
+auto ClangFrontendInvoker::compile(const path& t_dir, const path& t_basename)
+  -> void
 {
   using namespace llvm;
   using namespace clang;
 
+  const auto tmp_base{t_dir / t_basename};
+
+  path tmp_src{tmp_base};
+  tmp_src.concat(".cpp");
+
+  path tmp_obj{tmp_base};
+  tmp_obj.concat(".o");
+
+  path binary{t_basename};
+  binary.concat(".out");
+
   // Do compiling magic, terrible code must refactor later.
-  std::vector<const char*> args = {t_in.native().c_str(), "-o",
-                                   t_out.native().c_str()};
+  std::vector<const char*> args = {tmp_src.native().c_str(), "-o",
+                                   tmp_obj.native().c_str()};
 
   auto args_ref{args.data()};
   int argc{(int)args.size()};
@@ -99,30 +113,22 @@ auto ClangFrontendInvoker::object(const path& t_in, const path& t_out) -> void
     DBG_CRITICAL("Compilation failed!");
 
     // TODO: Throw.
+		return;
   } else {
     DBG_CRITICAL("Compilation succeeded!");
   }
-}
-
-auto ClangFrontendInvoker::link(const path& t_in, const path& t_out) -> void
-{
-  using namespace llvm;
-  using namespace clang;
 
   // Linking:
-  /*
-   LLVMContext context{};
+	// TODO: Refactor everything, replace with a clang frontend error message.
+  LLVMContext context{};
   SMDiagnostic err{};
-  auto module_{parseIRFile(t_in.native(), err, context)};
+  auto module_{parseIRFile(tmp_obj.native(), err, context)};
   if(!module_) {
-    // DBG_CRITICAL("Error parsing object file: ", err.getMessage())
+    DBG_CRITICAL("Error parsing object file: ", err.getMessage().data());
     return;
   }
 
   std::string error{};
-  const auto targetOptions{std::make_shared<clang::TargetOptions>()};
-  targetOptions->Triple = llvm::sys::getDefaultTargetTriple();
-
   auto target{TargetRegistry::lookupTarget(targetOptions->Triple, error)};
   if(!target) {
     DBG_CRITICAL("Error looking up target: ", error);
@@ -140,9 +146,9 @@ auto ClangFrontendInvoker::link(const path& t_in, const path& t_out) -> void
   llvm::legacy::PassManager pass{};
   auto fileType{CGFT_ObjectFile};
   std::error_code ec{};
-  raw_fd_ostream dest(t_out.native(), ec, sys::fs::OF_None);
+  raw_fd_ostream dest(binary.native(), ec, sys::fs::OF_None);
   if(ec) {
-    // DBG_CRITICAL("Could not open output file: ", ec.message());
+    DBG_CRITICAL("Could not open output file: ", ec.message());
     return;
   }
 
@@ -154,7 +160,6 @@ auto ClangFrontendInvoker::link(const path& t_in, const path& t_out) -> void
   pass.run(*module_);
   dest.flush();
 
-  DBG_INFO("Linking succeeded, executable written to ", t_out);
-  */
+  DBG_INFO("Linking succeeded, executable written to ", binary);
 }
 } // namespace codegen::cpp_backend

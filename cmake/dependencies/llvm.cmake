@@ -29,5 +29,6 @@ message(STATUS "llvm: ${LLVM_LIBS}")
 
 target_link_libraries(
 	${TARGET_CROW_LIB}
-	${LLVM_LIBS}
+#	${LLVM_LIBS}
+	${LLVM}
 )
