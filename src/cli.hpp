@@ -20,12 +20,9 @@
 #include "banner.hpp"
 #include "definitions.hpp"
 
-// Aliases:
-namespace fs = std::filesystem;
-
 // Globals:
 struct Settings {
-  std::vector<fs::path> m_paths;
+  std::vector<std::filesystem::path> m_paths;
   debug::LogLevel m_level;
 
   Settings(): m_paths{}, m_level{debug::LogLevel::VERBOSE}

@@ -1,5 +1,5 @@
-#ifndef CROW_LIB_TEMPORARY_DIRECTORY_HPP
-#define CROW_LIB_TEMPORARY_DIRECTORY_HPP
+#ifndef CROW_LIB_FILESYSTEM_HPP
+#define CROW_LIB_FILESYSTEM_HPP
 
 // STL Includes:
 #include <filesystem>
@@ -9,8 +9,8 @@
 #include <boost/filesystem/operations.hpp>
 
 namespace lib {
-// Namespace aliases:
-namespace fs = std::filesystem;
+// Using Declarations:
+using std::filesystem::path;
 
 // Functions:
 /**
@@ -19,7 +19,7 @@ namespace fs = std::filesystem;
  * @return Path to temporary directory.
  */
 [[nodiscard("Returned temporary directory path must be used.")]]
-auto temporary_directory() -> fs::path
+auto temporary_directory() -> path
 {
   namespace b_fs = boost::filesystem;
 
@@ -31,8 +31,8 @@ auto temporary_directory() -> fs::path
   const auto tmp_dir{tmp_dir_path / rand_path};
   b_fs::create_directories(tmp_dir);
 
-  return fs::path{tmp_dir.native()};
+  return path{tmp_dir.native()};
 }
 } // namespace lib
 
-#endif // CROW_LIB_TEMPORARY_DIRECTORY_HPP
+#endif // CROW_LIB_FILESYSTEM_HPP

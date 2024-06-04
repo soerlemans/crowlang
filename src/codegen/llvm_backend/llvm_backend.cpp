@@ -334,7 +334,7 @@ auto LlvmBackend::dump_ir(std::ostream& t_os) -> void
   t_os << str;
 }
 
-auto LlvmBackend::compile(const fs::path t_path) -> void
+auto LlvmBackend::compile(const path t_path) -> void
 {
   using namespace llvm;
   using namespace llvm::sys::fs;

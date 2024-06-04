@@ -5,8 +5,8 @@
 #include "ast/node/fdecl.hpp"
 #include "ast/visitor/ast_printer.hpp"
 #include "check/type_checker.hpp"
-#include "codegen/llvm_backend/llvm_backend.hpp"
 #include "codegen/cpp_backend/cpp_backend.hpp"
+#include "codegen/llvm_backend/llvm_backend.hpp"
 #include "container/text_buffer.hpp"
 #include "debug/log.hpp"
 #include "lexer/lexer.hpp"
@@ -18,10 +18,10 @@
 
 // Functions:
 //! Open a file and store its contents in a @ref TextBuffer.
-auto open_file(const fs::path t_path) -> container::TextBuffer;
+auto open_file(const std::filesystem::path t_path) -> container::TextBuffer;
 
 //! Tokenize the text buffer.
-auto lex(const fs::path& t_path) -> token::TokenStream;
+auto lex(const std::filesystem::path& t_path) -> token::TokenStream;
 auto lex(const container::TextStreamPtr& t_stream) -> token::TokenStream;
 
 //! Parse  the tokenized stream.

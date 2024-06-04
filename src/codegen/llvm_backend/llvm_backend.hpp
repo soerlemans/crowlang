@@ -17,8 +17,10 @@ namespace codegen::llvm_backend {
 // Using statements:
 using namespace ast;
 
+// Using Declarations:
 using ast::node::NodePtr;
 using ast::visitor::Any;
+using std::filesystem::path;
 
 // Aliases:
 using ContextPtr = std::shared_ptr<llvm::LLVMContext>;
@@ -98,7 +100,7 @@ class LlvmBackend : public ast::visitor::NodeVisitor {
   auto configure_target() -> void;
   auto codegen(NodePtr t_ast) -> void;
   auto dump_ir(std::ostream& t_os) -> void;
-  auto compile(fs::path t_path) -> void;
+  auto compile(path t_path) -> void;
 
   virtual ~LlvmBackend() = default;
 };

@@ -1,11 +1,15 @@
 #include "phases.hpp"
 
+// Using Declarations:
+using std::filesystem::path;
+
 // Functions:
-auto open_file(const fs::path t_path) -> container::TextBuffer
+auto open_file(const path t_path) -> container::TextBuffer
 {
   using container::TextBuffer;
+  using std::filesystem::exists;
 
-  if(!fs::exists(t_path)) {
+  if(!exists(t_path)) {
     std::stringstream ss;
     ss << "File does not exist! ";
     ss << std::quoted(t_path.string());
@@ -26,7 +30,7 @@ auto open_file(const fs::path t_path) -> container::TextBuffer
   return tb;
 }
 
-auto lex(const fs::path& t_path) -> token::TokenStream
+auto lex(const path& t_path) -> token::TokenStream
 {
   using container::TextBuffer;
   using lexer::Lexer;
