@@ -6,7 +6,7 @@
 #include <optional>
 #include <vector>
 
-// Library Includes:
+// Library Includes:#include <llvm/Support/Host.h>
 #include <clang/Basic/Diagnostic.h>
 #include <clang/Basic/DiagnosticOptions.h>
 #include <clang/Basic/FileManager.h>
@@ -17,6 +17,7 @@
 #include <clang/Frontend/CompilerInstance.h>
 #include <clang/Frontend/CompilerInvocation.h>
 #include <clang/Frontend/TextDiagnosticPrinter.h>
+#include <clang/Frontend/Utils.h>
 #include <clang/Lex/PreprocessorOptions.h>
 #include <llvm/ADT/IntrusiveRefCntPtr.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
@@ -98,7 +99,7 @@ auto ClangFrontendInvoker::compile(const path& t_dir, const path& t_basename)
                                      compiler.getDiagnostics());
 
   const auto targetOptions{std::make_shared<clang::TargetOptions>()};
-  targetOptions->Triple = llvm::sys::getDefaultTargetTriple();
+  targetOptions->Triple = sys::getDefaultTargetTriple();
 
   TargetInfo* targetInfo{
     TargetInfo::CreateTargetInfo(compiler.getDiagnostics(), targetOptions)};
@@ -122,14 +123,12 @@ auto ClangFrontendInvoker::compile(const path& t_dir, const path& t_basename)
     DBG_CRITICAL("Compilation succeeded!");
   }
 
-  // Linking:
   // TODO: Refactor everything, replace with a clang frontend error message.
   LLVMContext context{};
-  SMDiagnostic err{};
-  // auto module_{parseIRFile(tmp_obj.native(), err, context)};
-  auto module_ = std::make_unique<llvm::Module>("my_module", context);
+  SMDiagnostic diag_error{};
+  auto module_{action->takeModule()};
   if(!module_) {
-    DBG_CRITICAL("Error parsing object file: ", err.getMessage().data());
+    DBG_CRITICAL("Error parsing object file: ", diag_error.getMessage().data());
     return;
   }
 
@@ -140,31 +139,30 @@ auto ClangFrontendInvoker::compile(const path& t_dir, const path& t_basename)
     return;
   }
 
-  TargetMachine* targetMachine{
-    target->createTargetMachine(targetOptions->Triple, "generic", "",
-                                llvm::TargetOptions{}, llvm::Reloc::PIC_)};
-  if(!targetMachine) {
+	// Create the target machine.
+  TargetMachine* target_machine{target->createTargetMachine(
+    targetOptions->Triple, "generic", "", llvm::TargetOptions{}, Reloc::PIC_)};
+  if(!target_machine) {
     DBG_CRITICAL("Error creating target machine.");
     return;
   }
 
-  llvm::legacy::PassManager pass{};
+  // Write to object file.
+  legacy::PassManager pass{};
   auto file_type{CGFT_ObjectFile};
   std::error_code ec{};
-  raw_fd_ostream dest(binary.native(), ec, sys::fs::OF_None);
+  raw_fd_ostream dest(tmp_obj.native(), ec, sys::fs::OF_None);
   if(ec) {
-    DBG_CRITICAL("Could not open output file: ", ec.message());
+    DBG_CRITICAL("Could not open output file: ", ec.message().data());
     return;
   }
 
-  if(targetMachine->addPassesToEmitFile(pass, dest, nullptr, file_type)) {
+  if(target_machine->addPassesToEmitFile(pass, dest, nullptr, file_type)) {
     DBG_CRITICAL("The target machine cannot emit a file of this type.");
     return;
   }
 
   pass.run(*module_);
   dest.flush();
-
-  DBG_INFO("Linking succeeded, executable written to ", binary);
 }
 } // namespace codegen::cpp_backend

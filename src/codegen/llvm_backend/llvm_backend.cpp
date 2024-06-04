@@ -363,7 +363,7 @@ auto LlvmBackend::compile(const path t_path) -> void
   auto target{TargetRegistry::lookupTarget(target_str, err)};
   if(!target) {
     errs() << err << '\n';
-    // return 1;
+
     return; // TODO: Fix
   }
 
