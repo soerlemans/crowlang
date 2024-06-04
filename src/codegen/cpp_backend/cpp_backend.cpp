@@ -220,8 +220,11 @@ auto CppBackend::compile(NodePtr t_ast) -> void
 
   // Generate C++ source file.
   codegen(t_ast, tmp_src);
-  // object(tmp_src, tmp_obj);
-  //  link(tmp_obj, bin);
+
+  // Invoke clang frontend to generate a binary.
+  ClangFrontendInvoker inv{};
+  inv.object(tmp_src, tmp_obj);
+  // inv.link(tmp_obj, bin);
 
   DBG_CRITICAL("Binary was generated!: ", bin);
 }

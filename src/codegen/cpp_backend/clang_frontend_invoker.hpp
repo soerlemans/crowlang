@@ -5,6 +5,9 @@
 #include <filesystem>
 #include <memory>
 
+// Library Includes:
+// #include <clang/Basic/TargetOptions.h>
+
 // Includes:
 #include "../../lib/filesystem.hpp"
 
@@ -15,6 +18,11 @@ using std::filesystem::path;
 // Classes:
 class ClangFrontendInvoker {
   private:
+  // std::shared_ptr<clang::> m_target_options;
+
+  protected:
+  auto init_llvm() -> void;
+
   public:
   ClangFrontendInvoker() = default;
 

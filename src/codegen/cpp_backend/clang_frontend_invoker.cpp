@@ -46,7 +46,11 @@
 #include "../../lib/types.hpp"
 
 namespace codegen::cpp_backend {
+// Protected Methods:
+auto ClangFrontendInvoker::init_llvm() -> void
+{}
 
+// Public Methods:
 auto ClangFrontendInvoker::object(const path& t_in, const path& t_out) -> void
 {
   using namespace llvm;
@@ -55,6 +59,7 @@ auto ClangFrontendInvoker::object(const path& t_in, const path& t_out) -> void
   // Do compiling magic, terrible code must refactor later.
   std::vector<const char*> args = {t_in.native().c_str(), "-o",
                                    t_out.native().c_str()};
+
   auto args_ref{args.data()};
   int argc{(int)args.size()};
 
@@ -105,17 +110,16 @@ auto ClangFrontendInvoker::link(const path& t_in, const path& t_out) -> void
   using namespace clang;
 
   // Linking:
-  LLVMContext context{};
+  /*
+   LLVMContext context{};
   SMDiagnostic err{};
   auto module_{parseIRFile(t_in.native(), err, context)};
-
   if(!module_) {
     // DBG_CRITICAL("Error parsing object file: ", err.getMessage())
     return;
   }
 
   std::string error{};
-
   const auto targetOptions{std::make_shared<clang::TargetOptions>()};
   targetOptions->Triple = llvm::sys::getDefaultTargetTriple();
 
@@ -151,5 +155,6 @@ auto ClangFrontendInvoker::link(const path& t_in, const path& t_out) -> void
   dest.flush();
 
   DBG_INFO("Linking succeeded, executable written to ", t_out);
+  */
 }
 } // namespace codegen::cpp_backend

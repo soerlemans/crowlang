@@ -14,6 +14,7 @@ target_sources(${TARGET_CROW} PRIVATE
 # Utilities:
 add_subdirectory(debug)
 add_subdirectory(container)
+add_subdirectory(lib)
 
 # Error handling:
 add_subdirectory(exception)
