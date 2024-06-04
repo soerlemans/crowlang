@@ -48,8 +48,16 @@
 
 namespace codegen::cpp_backend {
 // Protected Methods:
-auto ClangFrontendInvoker::init_llvm() -> void
-{}
+auto ClangFrontendInvoker::init_llvm_targets() -> void
+{
+  using namespace llvm;
+
+  // Initialize all LLVM targets for compilation.
+  InitializeAllTargets();
+  InitializeAllTargetMCs();
+  InitializeAllAsmPrinters();
+  InitializeAllAsmParsers();
+}
 
 // Public Methods:
 // TODO: Refactor.
@@ -72,18 +80,14 @@ auto ClangFrontendInvoker::compile(const path& t_dir, const path& t_basename)
 
   // Do compiling magic, terrible code must refactor later.
   std::vector<const char*> args = {tmp_src.native().c_str(), "-o",
-                                   tmp_obj.native().c_str()};
+                                   binary.native().c_str()};
 
   auto args_ref{args.data()};
   int argc{(int)args.size()};
 
   InitLLVM llvm_init(argc, args_ref);
 
-  // Initialize targets for compilation.
-  InitializeAllTargets();
-  InitializeAllTargetMCs();
-  InitializeAllAsmPrinters();
-  InitializeAllAsmParsers();
+  init_llvm_targets();
 
   CompilerInstance compiler{};
   DiagnosticOptions diagnosticOptions{};
@@ -113,16 +117,17 @@ auto ClangFrontendInvoker::compile(const path& t_dir, const path& t_basename)
     DBG_CRITICAL("Compilation failed!");
 
     // TODO: Throw.
-		return;
+    return;
   } else {
     DBG_CRITICAL("Compilation succeeded!");
   }
 
   // Linking:
-	// TODO: Refactor everything, replace with a clang frontend error message.
+  // TODO: Refactor everything, replace with a clang frontend error message.
   LLVMContext context{};
   SMDiagnostic err{};
-  auto module_{parseIRFile(tmp_obj.native(), err, context)};
+  // auto module_{parseIRFile(tmp_obj.native(), err, context)};
+  auto module_ = std::make_unique<llvm::Module>("my_module", context);
   if(!module_) {
     DBG_CRITICAL("Error parsing object file: ", err.getMessage().data());
     return;
@@ -144,7 +149,7 @@ auto ClangFrontendInvoker::compile(const path& t_dir, const path& t_basename)
   }
 
   llvm::legacy::PassManager pass{};
-  auto fileType{CGFT_ObjectFile};
+  auto file_type{CGFT_ObjectFile};
   std::error_code ec{};
   raw_fd_ostream dest(binary.native(), ec, sys::fs::OF_None);
   if(ec) {
@@ -152,7 +157,7 @@ auto ClangFrontendInvoker::compile(const path& t_dir, const path& t_basename)
     return;
   }
 
-  if(targetMachine->addPassesToEmitFile(pass, dest, nullptr, fileType)) {
+  if(targetMachine->addPassesToEmitFile(pass, dest, nullptr, file_type)) {
     DBG_CRITICAL("The target machine cannot emit a file of this type.");
     return;
   }

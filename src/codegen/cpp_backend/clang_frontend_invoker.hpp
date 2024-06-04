@@ -20,7 +20,7 @@ class ClangFrontendInvoker {
   // std::shared_ptr<clang::> m_target_options;
 
   protected:
-  auto init_llvm() -> void;
+  auto init_llvm_targets() -> void;
 
   public:
   ClangFrontendInvoker() = default;

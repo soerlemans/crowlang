@@ -369,12 +369,12 @@ auto LlvmBackend::compile(const path t_path) -> void
 
   // Set target machine:
   const auto cpu{"generic"};
-  const auto Features{""};
+  const auto features{""};
 
   TargetOptions opt;
   std::optional<Reloc::Model> reloc_model;
   auto target_machine{
-    target->createTargetMachine(target_str, cpu, Features, opt, reloc_model)};
+    target->createTargetMachine(target_str, cpu, features, opt, reloc_model)};
 
   // Write object file:
   legacy::PassManager pass;
@@ -382,7 +382,6 @@ auto LlvmBackend::compile(const path t_path) -> void
 
   if(target_machine->addPassesToEmitFile(pass, dest, nullptr, fype)) {
     errs() << "target_machine can't emit a file of this type";
-    // return 1;
     return; // TODO: Fix
   }
 
