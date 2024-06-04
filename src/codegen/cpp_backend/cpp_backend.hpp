@@ -2,24 +2,21 @@
 #define CROW_CODEGEN_CPP_BACKEND_CPP_BACKEND_HPP
 
 // STL Includes:
-#include <filesystem>
 #include <format>
 #include <fstream>
-#include <memory>
 
 // Includes:
 #include "../../ast/visitor/node_visitor.hpp"
+#include "../../lib/filesystem.hpp"
 
 namespace codegen::cpp_backend {
-// Using statements:
+// Using Statements:
 using namespace ast;
 
 // Using Declarations:
 using ast::node::NodePtr;
 using ast::visitor::Any;
-
-// Namespace aliases:
-namespace fs = std::filesystem;
+using std::filesystem::path;
 
 // Classes:
 /*!
@@ -99,7 +96,7 @@ class CppBackend : public ast::visitor::NodeVisitor {
   auto visit(ast::node::typing::DotExpr* t_dot_expr) -> Any override;
 
   // Util:
-  auto codegen(NodePtr t_ast) -> fs::path;
+  auto codegen(NodePtr t_ast, const path& t_out) -> void;
   auto compile(NodePtr t_ast) -> void;
 
   virtual ~CppBackend() = default;

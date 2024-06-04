@@ -1,35 +1,12 @@
 #include "cpp_backend.hpp"
 
-// STL Includes:
-#include <iostream>
-#include <optional>
-#include <vector>
-
-// Library Includes:
-#include <clang/Basic/Diagnostic.h>
-#include <clang/Basic/DiagnosticOptions.h>
-#include <clang/Basic/FileManager.h>
-#include <clang/Basic/SourceManager.h>
-#include <clang/Basic/TargetInfo.h>
-#include <clang/Basic/TargetOptions.h>
-#include <clang/CodeGen/CodeGenAction.h>
-#include <clang/Frontend/CompilerInstance.h>
-#include <clang/Frontend/CompilerInvocation.h>
-#include <clang/Frontend/TextDiagnosticPrinter.h>
-#include <clang/Lex/PreprocessorOptions.h>
-#include <llvm/ADT/IntrusiveRefCntPtr.h>
-#include <llvm/Support/CommandLine.h>
-#include <llvm/Support/FileSystem.h>
-#include <llvm/Support/Host.h>
-#include <llvm/Support/InitLLVM.h>
-#include <llvm/Support/TargetSelect.h>
-#include <llvm/Support/raw_ostream.h>
-
 // Includes:
 #include "../../ast/node/include_nodes.hpp"
 #include "../../debug/log.hpp"
-#include "../../lib/temporary_directory.hpp"
 #include "../../lib/types.hpp"
+
+// Local Includes:
+#include "clang_frontend_invoker.hpp"
 
 namespace codegen::cpp_backend {
 // Using Statements:
@@ -39,14 +16,14 @@ NODE_USING_ALL_NAMESPACES()
 
 // Methods:
 // Control:
-auto CppBackend::visit(If* t_if) -> Any
+auto CppBackend::visit([[maybe_unused]] If* t_if) -> Any
 {
   // const auto condition{traverse(t_if->init_expr())};
 
   return {};
 }
 
-auto CppBackend::visit(Loop* t_loop) -> Any
+auto CppBackend::visit([[maybe_unused]] Loop* t_loop) -> Any
 {
   return {};
 }
@@ -150,7 +127,7 @@ auto CppBackend::visit(Arithmetic* t_arith) -> Any
 
 AST_VISITOR_STUB(CppBackend, Assignment)
 
-auto CppBackend::visit(Comparison* t_comp) -> Any
+auto CppBackend::visit([[maybe_unused]] Comparison* t_comp) -> Any
 {
   return {};
 }
@@ -175,7 +152,8 @@ AST_VISITOR_STUB(CppBackend, Import)
 AST_VISITOR_STUB(CppBackend, ModuleDecl)
 
 // RValue:
-auto CppBackend::visit(Float* t_float) -> Any
+// TODO: Implement
+auto CppBackend::visit([[maybe_unused]] Float* t_float) -> Any
 {
 
   return {};
@@ -187,7 +165,6 @@ auto CppBackend::visit(Integer* t_int) -> Any
 
   write("{}", value);
 
-
   return {};
 }
 
@@ -197,7 +174,8 @@ auto CppBackend::visit([[maybe_unused]] String* t_str) -> Any
   return {};
 }
 
-auto CppBackend::visit(Boolean* t_bool) -> Any
+// TODO: Implement
+auto CppBackend::visit([[maybe_unused]] Boolean* t_bool) -> Any
 {
   return {};
 }
@@ -215,74 +193,36 @@ AST_VISITOR_STUB(CppBackend, DotExpr)
  * Transpile the AST to valid C++ code.
  * The C++ source is stored in a temporary directory.
  */
-auto CppBackend::codegen(NodePtr t_ast) -> fs::path
+auto CppBackend::codegen(NodePtr t_ast, const path& t_out) -> void
 {
-  const auto tmp_dir{lib::temporary_directory()};
-  const auto tmp_src{tmp_dir / "main.cpp"};
+  m_ofs.open(t_out);
 
-  DBG_INFO("tmp_dir: ", std::quoted(tmp_dir.native()));
-  DBG_INFO("tmp_src: ", std::quoted(tmp_src.native()));
-
-  m_ofs.open(tmp_src);
-
+  // Generate C++ code.
   traverse(t_ast);
 
   m_ofs.close();
-
-  return tmp_src;
 }
 
 auto CppBackend::compile(NodePtr t_ast) -> void
 {
-  using namespace clang;
+  const auto tmp_dir{lib::temporary_directory()};
 
-  // Generate C++ source file and return path.
-  const auto path{codegen(t_ast)};
+  const auto tmp_src{tmp_dir / "main.cpp"};
+  const auto tmp_obj{tmp_dir / "main.o"};
 
-  // Do compiling magic, terrible code must refactor later.
-  std::vector<const char*> args = {path.native().c_str()};
-  auto args_ref{args.data()};
-  int argc{args.size()};
+  const path bin{"main.out"};
 
-  // llvm::InitLLVM llvm_init(argc, &(array.data()));
-  llvm::InitLLVM llvm_init(argc, args_ref);
+  // Log stuff
+  DBG_INFO("tmp_dir: ", tmp_dir);
+  DBG_INFO("tmp_src: ", tmp_src);
+  DBG_INFO("tmp_obj: ", tmp_obj);
+  DBG_INFO("bin", bin);
 
-  // Initialize targets for code generation.
-  llvm::InitializeAllTargets();
-  llvm::InitializeAllTargetMCs();
-  llvm::InitializeAllAsmPrinters();
-  llvm::InitializeAllAsmParsers();
+  // Generate C++ source file.
+  codegen(t_ast, tmp_src);
+  // object(tmp_src, tmp_obj);
+  //  link(tmp_obj, bin);
 
-  CompilerInstance compiler;
-  DiagnosticOptions diagnosticOptions;
-  compiler.createDiagnostics();
-
-  CompilerInvocation& invocation = compiler.getInvocation();
-  CompilerInvocation::CreateFromArgs(invocation, args,
-                                     compiler.getDiagnostics());
-
-  std::shared_ptr<TargetOptions> targetOptions =
-    std::make_shared<TargetOptions>();
-  targetOptions->Triple = llvm::sys::getDefaultTargetTriple();
-  TargetInfo* targetInfo =
-    TargetInfo::CreateTargetInfo(compiler.getDiagnostics(), targetOptions);
-  compiler.setTarget(targetInfo);
-
-  compiler.createFileManager();
-  compiler.createSourceManager(compiler.getFileManager());
-
-  compiler.createPreprocessor(clang::TU_Complete);
-  compiler.getPreprocessorOpts().UsePredefines = true;
-
-  compiler.createASTContext();
-
-  CodeGenAction* action = new EmitObjAction();
-  if(!compiler.ExecuteAction(*action)) {
-    DBG_CRITICAL("Compilation failed!");
-
-    // TODO: Throw.
-  } else {
-    DBG_CRITICAL("Compilation succeeded!");
-  }
+  DBG_CRITICAL("Binary was generated!: ", bin);
 }
 } // namespace codegen::cpp_backend

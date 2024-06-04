@@ -6,9 +6,9 @@
 #include <vector>
 
 // Library Includes:
+#include <llvm/IR/BasicBlock.h>
 #include <llvm/IR/LegacyPassManager.h>
 #include <llvm/IR/Verifier.h>
-#include <llvm/IR/BasicBlock.h>
 #include <llvm/MC/TargetRegistry.h>
 #include <llvm/Support/CodeGen.h>
 #include <llvm/Support/FileSystem.h>
@@ -114,9 +114,9 @@ auto LlvmBackend::visit(Loop* t_loop) -> Any
 
   // Define blocks
   auto* loop{BasicBlock::Create(*m_context, "loop")};
-  //auto* loop{BasicBlock::Create(*m_context, "")};
+  // auto* loop{BasicBlock::Create(*m_context, "")};
 
-	/*
+  /*
   const auto block{[&](auto* t_block, auto t_lambda) {
     fn->insert(fn->end(), t_block);
     m_builder->SetInsertPoint(t_block);
@@ -126,7 +126,9 @@ auto LlvmBackend::visit(Loop* t_loop) -> Any
     m_builder->CreateBr(merge);
     t_block = m_builder->GetInsertBlock();
   }};
-	*/
+  */
+
+  return {};
 }
 
 AST_VISITOR_STUB(LlvmBackend, Continue)

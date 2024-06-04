@@ -2,16 +2,17 @@
 #define CROW_LIB_TEMPORARY_DIRECTORY_HPP
 
 // STL Includes:
-#include <boost/filesystem/operations.hpp>
 #include <filesystem>
 
 // Library Includes:
 #include <boost/filesystem.hpp>
+#include <boost/filesystem/operations.hpp>
 
 namespace lib {
 // Namespace aliases:
 namespace fs = std::filesystem;
 
+// Functions:
 /**
  * @brief Creates a temporary directory and returns its path.
  *
@@ -26,7 +27,7 @@ auto temporary_directory() -> fs::path
   const auto tmp_dir_path{b_fs::temp_directory_path()};
   const auto rand_path{b_fs::unique_path()};
 
-	// Create temporary directory.
+  // Create temporary directory.
   const auto tmp_dir{tmp_dir_path / rand_path};
   b_fs::create_directories(tmp_dir);
 
