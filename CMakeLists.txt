@@ -37,6 +37,12 @@ include(cmake/definitions.cmake)
 # Add dependencies.
 include(cmake/dependencies.cmake)
 
+# Define src/ as include directory.
+target_include_directories(
+	${TARGET_CROW_LIB}
+	PUBLIC src/
+)
+
 # Compile sources.
 add_subdirectory(src)
 target_link_libraries(${TARGET_CROW} ${TARGET_CROW_LIB})
