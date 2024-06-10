@@ -28,6 +28,13 @@ class BuildMode(StrEnum):
 
 
 # Functions:
+#def run(t_context, t_cmd: str, **kwargs: Any) -> Optional[invoke.Result]:
+def run(t_context, t_cmd: str, **kwargs):
+    '''
+    Helper method for colored output as a default.
+    '''
+    return t_context.run(t_cmd, pty=True)
+
 def cmake_parallel_arg(t_parallel: bool) -> str:
     '''
     Get the cmake arguments for building with multiple threads.
@@ -47,28 +54,32 @@ def cmake_build_args(t_mode: str) -> str:
     args = ''
     match t_mode:
         case BuildMode.BUILD:
-            ''
+            pass
 
         case BuildMode.DEBUG:
             args += '-DCMAKE_BUILD_TYPE=Debug'
+            pass
 
         case BuildMode.RELEASEDEBUG:
             args += '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
+            pass
 
         case BuildMode.TEST:
             args += '-DBUILD_CROW_TESTS=TRUE'
+            pass
 
         case _:
             raise Exception(f'Unknown build configuration {t_mode}')
-    pass
+    return args
 
-def cmake(c, t_mode: str, t_parallel: bool):
+
+def cmake(t_ctx, t_mode: str, t_parallel: bool):
     ''' TODO: Document. '''
     parallel_arg = cmake_parallel_arg(t_parallel)
     build_args = cmake_build_args(t_mode)
 
-    c.run(f'cmake -S . -B {t_mode}/ {build_args}')
-    c.run(f'cmake --build {t_mode}/ {parallel_arg}')
+    run(t_ctx, f'cmake -S . -B {t_mode}/ {build_args}')
+    run(t_ctx, f'cmake --build {t_mode}/ {parallel_arg}')
     pass
 
 
@@ -83,7 +94,7 @@ def install(ctx):
     print('TODO: Implement.')
     pass
 
-@task
+@task(help={'mode': '', 'parallel': 'Flag indicating concurrent builds.'})
 def build(ctx, mode='', parallel=True):
     '''
     Build the compiler.
@@ -136,4 +147,3 @@ def docs(ctx, pdf=False):
         ctx.run('cd doxygen/latex && make')
         pass
     pass
-
