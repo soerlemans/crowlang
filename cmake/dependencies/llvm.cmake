@@ -3,7 +3,7 @@ message(STATUS "[+] Finding LLVM.")
 
 find_package(
 	LLVM
-	16
+	17.0.6
 	CONFIG
 	REQUIRED
 )
@@ -13,22 +13,24 @@ message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
 # Required setup:
 include_directories(SYSTEM ${LLVM_INCLUDE_DIRS})
+link_directories(${LLVM_LIBRARY_DIR})
+
+# Add macros:
 separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
 add_definitions(${LLVM_DEFINITIONS_LIST})
 
-# LLVM components to use:
-llvm_map_components_to_libnames(
-	LLVM_LIBS
-	support
-	core
-	irreader
-	codegen
-)
-
-message(STATUS "llvm: ${LLVM_LIBS}")
-
+# Link libraries:
 target_link_libraries(
 	${TARGET_CROW_LIB}
-#	${LLVM_LIBS}
-	${LLVM}
+	LLVM-17
 )
+
+# target_link_libraries(
+# 	${TARGET_CROW_LIB}
+#   lldCommon
+#   lldCOFF
+#   lldELF
+#   lldMachO
+#   lldMinGW
+#   lldWasm
+# )
