@@ -1,9 +1,11 @@
 #include "clang_frontend_invoker.hpp"
 
 // STL Includes:
+#include <cstdlib>
 #include <iostream>
 #include <memory>
 #include <optional>
+#include <sstream>
 #include <vector>
 
 // Library Includes:
@@ -74,6 +76,12 @@ auto ClangFrontendInvoker::compile(const path &t_dir, const path &t_basename)
   path binary{t_basename};
   binary.concat(".out");
 
+  // FIXME: This is a temporary workaround till the programmatic approach works.
+  std::stringstream cmd_ss;
+  cmd_ss << "g++ " << tmp_src << " -o " << binary;
+  std::system(cmd_ss.str().c_str());
+
+  /*
   // Do compiling magic, terrible code must refactor later.
   std::vector<const char *> args = {tmp_src.native().c_str(), "-o",
                                     binary.native().c_str()};
@@ -125,10 +133,9 @@ auto ClangFrontendInvoker::compile(const path &t_dir, const path &t_basename)
     return;
   }
 
-  std::string tmpObjFile = tmp_obj.native();
   legacy::PassManager pass;
   std::error_code EC;
-  raw_fd_ostream dest(tmpObjFile, EC, sys::fs::OF_None);
+  raw_fd_ostream dest(tmp_obj.native(), EC, sys::fs::OF_None);
   if(EC) {
     errs() << "Could not open output file: " << EC.message() << "\n";
     return;
@@ -157,19 +164,16 @@ auto ClangFrontendInvoker::compile(const path &t_dir, const path &t_basename)
   pass.run(*module_);
   dest.flush();
 
-  // Step 3: Link the object file using LLD
-  std::vector<const char *> lldArgs = {"ld.lld", tmpObjFile.c_str(), "-o",
-                                       binary.native().c_str()};
-
+  // std::vector<const char *> lldArgs = {"ld.lld", tmp_obj.native().c_str(),
+  // "-o",
+  //                                      binary.native().c_str()};
   // lld::Result result{lld::lldMain(lldArgs, outs() errs(), LLD_ALL_DRIVERS)};
-
-  lld::lldMain(lldArgs, outs(), errs(), LLD_ALL_DRIVERS);
-
   // if(result.retCode) {
   //   errs() << "Linking failed!\n";
   //   return;
   // }
 
   outs() << "Compilation and linking succeeded!\n";
+  */
 }
 } // namespace codegen::cpp_backend

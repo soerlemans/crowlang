@@ -16,15 +16,14 @@ import multiprocessing
 
 
 # Globals:
-# Different build configurations:
 class BuildMode(StrEnum):
+    '''
+    Enumeration containing the different build configurations.
+    '''
     BUILD = 'build'
     DEBUG = 'debug-build'
     RELEASEDEBUG = 'reldebug-build'
     TEST = 'test-build'
-
-# List of differnt
-# BUILD_MODES = [BUILD, DEBUG, RELEASEDEBUG, TEST]
 
 
 # Functions:

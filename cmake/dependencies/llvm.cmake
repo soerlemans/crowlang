@@ -25,12 +25,12 @@ target_link_libraries(
 	LLVM-17
 )
 
-# target_link_libraries(
-# 	${TARGET_CROW_LIB}
-#   lldCommon
-#   lldCOFF
-#   lldELF
-#   lldMachO
-#   lldMinGW
-#   lldWasm
-# )
+#target_link_libraries(
+#	${TARGET_CROW_LIB}
+#  lldCommon
+#  lldCOFF
+#  lldELF
+#  lldMachO
+#  lldMinGW
+#  lldWasm
+#)
