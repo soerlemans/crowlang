@@ -1,9 +1,5 @@
 fn main() -> int {
-	if true {
-		return 1;
-  } else {
-		return 0;
-	}
+    var sum = 10 + 10;
 
-  loop {}
+    return sum;
 }

@@ -6,9 +6,10 @@ set(FETCHCONTENT_QUIET FALSE)
 
 # Includes:
 # TODO: Figure out a way to include these relatively.
-include(cmake/dependencies/boost.cmake)
 include(cmake/dependencies/rang.cmake)
 include(cmake/dependencies/tabulate.cmake)
+include(cmake/dependencies/boost.cmake)
+include(cmake/dependencies/libassert.cmake)
 include(cmake/dependencies/cereal.cmake)
 include(cmake/dependencies/cpptrace.cmake)
 include(cmake/dependencies/threads.cmake)

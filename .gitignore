@@ -48,3 +48,7 @@ test-build/*
 
 # Docs
 doxygen/*
+
+# Ignore Python environment:
+__pycache__/
+.venv/

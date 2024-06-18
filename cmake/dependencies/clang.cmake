@@ -3,47 +3,34 @@ message(STATUS "[+] Finding Clang.")
 
 find_package(
 	Clang
+	17.0.6
 	CONFIG
 	REQUIRED
 )
 
 message(STATUS "Found CLang ${CLANG_PACKAGE_VERSION}")
 message(STATUS "Using ClangConfig.cmake in: ${CLANG_DIR}")
-message(STATUS "dirs: ${CLANG_INCLUDE_DIRS}")
 
+# Required setup:
 include_directories(SYSTEM ${CLANG_INCLUDE_DIRS})
 add_definitions(${CLANG_DEFINITIONS_LIST})
 
-# set(CLANG_LIBS
-#   clangTooling
-#   clangFrontendTool
-#   clangFrontend
-#   clangDriver
-#   clangSerialization
-#   clangCodeGen
-#   clangParse
-#   clangSema
-#   clangStaticAnalyzerFrontend
-#   clangStaticAnalyzerCore
-#   clangAnalysis
-#   clangEdit
-#   clangAST
-#   clangLex
-#   clangBasic
-#   clangASTMatchers
-#   clangDynamicASTMatchers
-#   clangToolingASTDiff
-#   clangToolingCore
-#   # clangToolingInclusions
-#   # clangToolingInclusionsStdlib
-#   clangToolingRefactoring
-#   clangToolingSyntax
-#   clangSupport
-#   #clangStaticAnalyzerCheckers
-#   #clangARCMigrate
-#   clangRewriteFrontend
-#   clangRewrite
-# )
+set(CLANG_LIBS
+    clangFrontend
+    clangBasic
+    clangCodeGen
+    clangDriver
+    clangLex
+    clangParse
+    clangSema
+    clangAST
+    clangAnalysis
+    clangRewriteFrontend
+    clangRewrite
+    clangEdit
+    clangASTMatchers
+    clangTooling
+)
 
 # Link libraries:
 target_link_libraries(

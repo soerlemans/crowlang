@@ -2,8 +2,6 @@
 
 # Functions:
 function(COMPILE_FLAGS T_TARGET)
-
-
 	target_compile_options(${T_TARGET} PRIVATE
 		-Wall
 		-Wextra
@@ -18,8 +16,8 @@ set_target_properties(
 	${TARGET_CROW_LIB}
 	PROPERTIES
 	CXX_STANDARD 23
-	CXX_COMPILER "g++"
-	C_COMPILER "gcc"
+	CXX_COMPILER "clang"
+	C_COMPILER "clang"
 )
 
 # Define DEBUG macro if build type is Debug

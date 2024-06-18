@@ -1,0 +1,57 @@
+#ifndef CROW_VERSION_HPP
+#define CROW_VERSION_HPP
+
+// STL Includes:
+#include <string_view>
+
+
+// Macros:
+//! Cmake substitutes the version numbers specified in the root CMakeLists.txt.
+#define CROW_PROJECT_VERSION_MAJOR @crow_VERSION_MAJOR @
+#define CROW_PROJECT_VERSION_MINOR @crow_VERSION_MINOR @
+#define CROW_PROJECT_VERSION_PATCH @crow_VERSION_PATCH @
+
+#define CROW_PROJECT_VERSION "0.4.0"
+
+//! Absolute path to the root of the crow project.
+#define CROW_PROJECT_ROOT_DIRECTORY "/home/hackerman/crow"
+
+//! Absolute path to the source directory of the crow project.
+#define CROW_PROJECT_SRC_DIRECTORY "/home/hackerman/crow/src"
+
+//! Absolute path to the test directory of the crow project.
+#define CROW_PROJECT_TEST_DIRECTORY "/home/hackerman/crow/test"
+
+/*!
+ * Convert @ref __FILE__ into a relative path.
+ * If this is not possible return the absolute path.
+ */
+#define CROW_PROJECT_RELATIVE_PATH                                           \
+  ([]() consteval {                                                          \
+    constexpr std::string_view file{__FILE__};                               \
+    constexpr std::string_view crow_src_dir{CROW_PROJECT_SRC_DIRECTORY "/"}; \
+                                                                             \
+    if constexpr(file.starts_with(crow_src_dir)) {                           \
+      constexpr std::string_view relative_path{                              \
+        file.substr(crow_src_dir.size())};                                   \
+                                                                             \
+      return relative_path;                                                  \
+    }                                                                        \
+                                                                             \
+    return file;                                                             \
+  }())
+
+/*!
+ * Makes a path absolute from the crow project root.
+ *
+ * @param[in] t_in .
+ */
+#define CROW_PROJECT_ROOT_ABSOLUTE_PATH(t_path)                               \
+  ([]() consteval {                                                           \
+    constexpr std::string_view path{t_path};                                  \
+    constexpr std::string_view crow_src_dir{CROW_PROJECT_ROOT_DIRECTORY "/"}; \
+                                                                              \
+    return crow_src_dir + path;                                               \
+  }())
+
+#endif // CROW_PROJECT_VERSION_HPP
