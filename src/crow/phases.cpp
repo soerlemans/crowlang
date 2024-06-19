@@ -102,6 +102,16 @@ auto check_types(ast::node::NodePtr t_ast) -> void
   DBG_PRINTLN("</type_checking>");
 }
 
+/*!
+ * Transforms the Crow AST into a C++ AST which we can generate code from.
+ */
+auto transform(ast::node::NodePtr t_crow_ast) -> ast::node::NodePtr
+{
+  // TODO: Transform the crow
+
+  return nullptr;
+}
+
 auto backend(ast::node::NodePtr t_ast) -> void
 {
   using codegen::cpp_backend::CppBackend;

@@ -30,6 +30,8 @@ class CppBackend : public ast::visitor::NodeVisitor {
   std::ofstream m_ofs;
 
   protected:
+  auto resolve() -> void;
+
   template<typename... Args>
   auto write(const std::string_view t_fmt, Args&&... t_args) -> void
   {
