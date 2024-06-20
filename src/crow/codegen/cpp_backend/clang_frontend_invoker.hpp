@@ -25,7 +25,7 @@ class ClangFrontendInvoker {
   public:
   ClangFrontendInvoker() = default;
 
-  auto compile(const path& t_dir, const path& t_basename) -> void;
+  auto compile(const path& t_filepath) -> void;
 
   virtual ~ClangFrontendInvoker() = default;
 };

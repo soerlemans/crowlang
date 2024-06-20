@@ -56,15 +56,16 @@ def cmake_build_args(t_mode: str) -> str:
             pass
 
         case BuildMode.DEBUG:
-            args += '-DCMAKE_BUILD_TYPE=Debug'
+            args += '-DCMAKE_BUILD_TYPE=Debug '
             pass
 
         case BuildMode.RELEASEDEBUG:
-            args += '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
+            args += '-DCMAKE_BUILD_TYPE=RelWithDebInfo '
             pass
 
         case BuildMode.TEST:
-            args += '-DBUILD_CROW_TESTS=TRUE'
+            args += '-DCMAKE_BUILD_TYPE=Debug '
+            args += '-DBUILD_CROW_TESTS=TRUE '
             pass
 
         case _:

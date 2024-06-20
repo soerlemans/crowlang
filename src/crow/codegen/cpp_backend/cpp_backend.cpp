@@ -206,25 +206,17 @@ auto CppBackend::codegen(NodePtr t_ast, const path& t_out) -> void
 auto CppBackend::compile(NodePtr t_ast) -> void
 {
   const auto tmp_dir{lib::temporary_directory()};
+  const path tmp_src{tmp_dir / "main.cpp"};
 
-  const auto tmp_src{tmp_dir / "main.cpp"};
-  const auto tmp_obj{tmp_dir / "main.o"};
-
-  const path binary{"main.out"};
-
-  // Log stuff
+  // Log stuff:
   DBG_INFO("tmp_dir: ", tmp_dir);
   DBG_INFO("tmp_src: ", tmp_src);
-  DBG_INFO("tmp_obj: ", tmp_obj);
-  DBG_INFO("binary: ", binary);
 
   // Generate C++ source file.
   codegen(t_ast, tmp_src);
 
   // Invoke clang frontend to generate a binary.
   ClangFrontendInvoker inv{};
-  inv.compile(tmp_dir, "main");
-
-  DBG_CRITICAL("Binary was generated!: ", binary);
+  inv.compile(tmp_src);
 }
 } // namespace codegen::cpp_backend

@@ -43,3 +43,11 @@ You can install the dependencies with the following aptitude command:
 ```shell
 apt install -y libcurl4 libcli11-dev llvm-17-dev libclang-17-dev liblld-17-dev libboost-all-dev libzstd-dev
 ```
+
+## Project documentation
+
+ - `cmake/` Cmake sources that are needed to build the project.
+ - `src/` Sources of the Crow project.
+ - `tests/` Unit tests of the Crow project.
+ - `samples/` Crow sources that can be compiled to demonstrate the functionalities of Crow.
+ - `tools/` Collection of tools and scripts, that aid development.

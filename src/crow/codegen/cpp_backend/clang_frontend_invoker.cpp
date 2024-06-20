@@ -58,28 +58,31 @@ auto ClangFrontendInvoker::init_llvm_targets() -> void
 
 // Public Methods:
 // TODO: Refactor.
-auto ClangFrontendInvoker::compile(const path &t_dir, const path &t_basename)
-  -> void
+auto ClangFrontendInvoker::compile(const path &t_filepath) -> void
 {
   using namespace llvm;
   using namespace lld;
   using namespace clang;
 
-  const auto tmp_base{t_dir / t_basename};
+  const auto stem{t_filepath.stem()};
 
-  path tmp_src{tmp_base};
-  tmp_src.concat(".cpp");
+  const auto tmp_base{t_filepath.parent_path() / stem};
+  auto tmp_obj{tmp_base};
+  tmp_obj += ".o";
 
-  path tmp_obj{tmp_base};
-  tmp_obj.concat(".o");
+  auto binary{stem};
+  binary += ".out";
 
-  path binary{t_basename};
-  binary.concat(".out");
+  // Logging:
+  DBG_INFO("tmp_obj: ", tmp_obj);
+  DBG_INFO("binary: ", binary);
 
   // FIXME: This is a temporary workaround till the programmatic approach works.
-  std::stringstream cmd_ss;
-  cmd_ss << "g++ " << tmp_src << " -o " << binary;
-  std::system(cmd_ss.str().c_str());
+  const auto cmd{
+    std::format("g++ {} -o {}", t_filepath.native(), binary.native())};
+  std::system(cmd.c_str());
+
+  DBG_CRITICAL("Binary was generated!: ", binary);
 
   /*
   // Do compiling magic, terrible code must refactor later.

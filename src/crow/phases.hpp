@@ -28,7 +28,7 @@ auto lex(const container::TextStreamPtr& t_stream) -> token::TokenStream;
 auto parse(const token::TokenStream& t_ts) -> ast::node::NodePtr;
 
 //! Print the AST, only available if @ref DEBUG is defined.
-auto print_ast([[maybe_unused]] ast::node::NodePtr t_ast) -> void;
+auto print_ast(ast::node::NodePtr t_ast) -> void;
 
 //! Type check the AST.
 auto check_types(ast::node::NodePtr t_ast) -> void;
