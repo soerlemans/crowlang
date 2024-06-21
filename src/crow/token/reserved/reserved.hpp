@@ -24,7 +24,7 @@
 namespace token::reserved {
 // Aliases:
 template<typename Key = std::string_view>
-using TTypeMap = boost::bimap<Key, TokenType>;
+using TerminalMap = boost::bimap<Key, TokenType>;
 
 // clang-format off
 // Language reserved keywords
@@ -42,7 +42,7 @@ namespace keywords {
   // Object oriented:
   DEFINE_TERMINAL(g_struct,    "struct",    STRUCT);
   DEFINE_TERMINAL(g_interface, "interface", INTERFACE);
-  DEFINE_TERMINAL(g_impl,       "impl",     IMPL);
+  DEFINE_TERMINAL(g_impl,      "impl",      IMPL);
 
   // Control statements:
   DEFINE_TERMINAL(g_fn,    "fn",    FUNCTION);
@@ -63,8 +63,9 @@ namespace keywords {
   DEFINE_TERMINAL(g_false, "False", FALSE);
 
 	// TODO: Convert keywords to boost::bimap.
-  // const TTypeMap g_keywords = boost::assign::list_of<TTypeMap<std::string_view>::relation>
-	// 	(g_let.pair()) (g_var.pair())
+  // const TerminalMap g_keywords2 = boost::assign::list_of<TerminalMap<std::string_view>::relation>
+	// 	(g_let.pair())
+	// 	(g_var.pair())
 	// 	(g_module.pair()) (g_import.pair()) (g_priv.pair()) (g_pub.pair())
 	// 	(g_struct.pair()) (g_interface.pair()) (g_impl.pair())
 	//   (g_fn.pair())
@@ -142,7 +143,7 @@ namespace symbols {
   DEFINE_TERMINAL(g_dot,           '.',  DOT);
   DEFINE_TERMINAL(g_comma,         ',',  COMMA);
   DEFINE_TERMINAL(g_question_mark, '?',  QUESTION_MARK);
-  DEFINE_TERMINAL(g_double_colon,  "::",  DOUBLE_COLON);
+  DEFINE_TERMINAL(g_double_colon,  "::", DOUBLE_COLON);
   DEFINE_TERMINAL(g_colon,         ':',  COLON);
   DEFINE_TERMINAL(g_semicolon,     ';',  SEMICOLON);
 

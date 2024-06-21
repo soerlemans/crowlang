@@ -44,7 +44,16 @@ class Arithmetic : public NodePosition,
 };
 
 // Functions:
-auto arithmetic_op2str() -> std::string_view;
+/*!
+ * Important to note that this function is used in the code generation step.
+ * So the translation from enumeration to string should be a valid C++ operator.
+ *
+ * @param[in] t_op Operator to convert to a string.
+ *
+ * @return String view of the arithmetic operator, if the given @ref t_op was
+ * not found throws.
+ */
+auto arithmetic_op2str(ArithmeticOp t_op) -> std::string_view;
 } // namespace ast::node::operators
 
 // Cereal type registration:

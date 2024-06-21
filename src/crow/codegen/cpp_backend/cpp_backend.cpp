@@ -1,8 +1,14 @@
 #include "cpp_backend.hpp"
 
+// STL Includes:
+#include <format>
+#include <fstream>
+#include <sstream>
+
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
 #include "crow/debug/log.hpp"
+#include "crow/exception/error.hpp"
 #include "lib/types.hpp"
 
 // Local Includes:
@@ -15,12 +21,61 @@ using namespace ast::visitor;
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
+// Protected:
+auto CppBackend::header() -> std::string
+{
+  std::stringstream ss;
+
+  return ss.str();
+}
+
+auto CppBackend::prototypes() -> std::string
+{
+  std::stringstream ss;
+
+  return ss.str();
+}
+
+auto CppBackend::resolve(NodePtr t_ptr) -> std::string
+{
+  using exception::error;
+
+  std::stringstream ss;
+
+  if(t_ptr) {
+    const auto any{traverse(t_ptr)};
+
+    try {
+      ss << std::any_cast<std::string>(any);
+    } catch(std::bad_any_cast& exception) {
+      error(exception.what());
+    }
+  }
+
+  return ss.str();
+}
+
+// Public:
 // Control:
 auto CppBackend::visit([[maybe_unused]] If* t_if) -> Any
 {
-  // const auto condition{traverse(t_if->init_expr())};
+  const auto init_expr{resolve(t_if->init_expr())};
+  const auto cond{resolve(t_if->condition())};
 
-  return {};
+  const auto then{resolve(t_if->init_expr())};
+  const auto alt{resolve(t_if->init_expr())};
+
+  std::stringstream ss;
+
+  // clang-format off
+	ss << std::format("if({}; {}) {{\n", init_expr, cond)
+		 << then
+		 << "} else {\n"
+		 << alt
+		 << "}\n";
+  // clang-format on
+
+  return ss.str();
 }
 
 auto CppBackend::visit([[maybe_unused]] Loop* t_loop) -> Any
@@ -33,11 +88,11 @@ AST_VISITOR_STUB(CppBackend, Break)
 
 auto CppBackend::visit(Return* t_ret) -> Any
 {
-  write("{}", "return");
-  traverse(t_ret->expr());
-  write("{}", ";");
+  std::stringstream ss;
 
-  return {};
+  ss << std::format("return {};\n", resolve(t_ret->expr()));
+
+  return ss.str();
 }
 
 // Functions:
@@ -53,15 +108,16 @@ auto CppBackend::visit(Function* t_fn) -> Any
   // TODO: Some day resolve the TypeVariant, for now every method returns int.
   const auto ret_type{"int"};
 
-  write("auto {}() -> {}", identifier, ret_type);
-  write("{}", "{");
+  std::stringstream ss;
 
-  // Generate code for the body.
-  traverse(t_fn->body());
+  // clang-format off
+  ss << std::format("auto {}() -> {}\n", identifier, ret_type)
+     << "{\n"
+		 << resolve(t_fn->body())
+		 << "}\n";
+  // clang-format on
 
-  write("{}", "}");
-
-  return {};
+  return ss.str();
 }
 
 AST_VISITOR_STUB(CppBackend, Call)
@@ -73,56 +129,31 @@ AST_VISITOR_STUB(CppBackend, Let)
 auto CppBackend::visit(Var* t_var) -> Any
 {
   const auto identifier{t_var->identifier()};
+  const auto init_expr{resolve(t_var->init_expr())};
 
-  write("auto {}{{", identifier);
-  traverse(t_var->init_expr());
-  write("}};");
-
-  return {};
+  return std::format("auto {}{{ {} }};\n", identifier, init_expr);
 }
 
 auto CppBackend::visit(Variable* t_var) -> Any
 {
   const auto identifier{t_var->identifier()};
 
-  write("{}", identifier);
-
-  return {};
+  return std::format("{}", identifier);
 }
 
 // Operators:
 auto CppBackend::visit(Arithmetic* t_arith) -> Any
 {
-  using ast::node::operators::ArithmeticOp;
+  using ast::node::operators::arithmetic_op2str;
 
-  // TODO: Cleanup/Move else where!
-  switch(t_arith->op()) {
-    case ArithmeticOp::POWER:
-      break;
+  const auto op{arithmetic_op2str(t_arith->op())};
 
-    case ArithmeticOp::MULTIPLY:
-      break;
+  const auto left{resolve(t_arith->left())};
+  const auto right{resolve(t_arith->right())};
 
-    case ArithmeticOp::DIVIDE:
-      break;
-    case ArithmeticOp::MODULO:
-      break;
-
-    case ArithmeticOp::ADD:
-      traverse(t_arith->left());
-      write("{}", "+");
-      traverse(t_arith->right());
-      break;
-
-    case ArithmeticOp::SUBTRACT:
-      break;
-
-    default:
-      // TODO: Throw.
-      break;
-  }
-
-  return {};
+  // We surround the sub expressions in parenthesis to enforce the precedence,
+  // Of Crow over C++.
+  return std::format("({}) {} ({})", left, op, right);
 }
 
 AST_VISITOR_STUB(CppBackend, Assignment)
@@ -152,32 +183,32 @@ AST_VISITOR_STUB(CppBackend, Import)
 AST_VISITOR_STUB(CppBackend, ModuleDecl)
 
 // RValue:
-// TODO: Implement
 auto CppBackend::visit([[maybe_unused]] Float* t_float) -> Any
 {
+  const auto value{t_float->get()};
 
-  return {};
+  return std::format("{}", value);
 }
 
 auto CppBackend::visit(Integer* t_int) -> Any
 {
   const auto value{t_int->get()};
 
-  write("{}", value);
-
-  return {};
+  return std::format("{}", value);
 }
 
-// TODO: Implement
 auto CppBackend::visit([[maybe_unused]] String* t_str) -> Any
 {
-  return {};
+  const auto value{t_str->get()};
+
+  return std::format("{}", value);
 }
 
-// TODO: Implement
 auto CppBackend::visit([[maybe_unused]] Boolean* t_bool) -> Any
 {
-  return {};
+  const auto value{t_bool->get()};
+
+  return std::format("{}", value);
 }
 
 // Typing:
@@ -188,6 +219,18 @@ AST_VISITOR_STUB(CppBackend, Struct)
 AST_VISITOR_STUB(CppBackend, Impl)
 AST_VISITOR_STUB(CppBackend, DotExpr)
 
+// Misc:
+auto CppBackend::visit(List* t_list) -> Any
+{
+  std::stringstream ss;
+
+  for(NodePtr& node : *t_list) {
+    ss << resolve(node);
+  }
+
+  return ss.str();
+}
+
 // Util:
 /*!
  * Transpile the AST to valid C++ code.
@@ -195,12 +238,10 @@ AST_VISITOR_STUB(CppBackend, DotExpr)
  */
 auto CppBackend::codegen(NodePtr t_ast, const path& t_out) -> void
 {
-  m_ofs.open(t_out);
+  std::ofstream ofs{t_out};
 
   // Generate C++ code.
-  traverse(t_ast);
-
-  m_ofs.close();
+  ofs << resolve(t_ast);
 }
 
 auto CppBackend::compile(NodePtr t_ast) -> void

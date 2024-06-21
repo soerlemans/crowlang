@@ -81,9 +81,9 @@ auto str2nativetype(const std::string_view t_str) -> NativeType
   if(iter != lmap.end()) {
     type = iter->second;
   } else {
-    DBG_CRITICAL("Cant convert ", std::quoted(t_str), " to NativeType!");
+    DBG_ERROR("Cant convert ", std::quoted(t_str), " to NativeType!");
 
-    throw std::runtime_error{""};
+    throw std::invalid_argument{"String could not be converted to NativeType."};
   }
 
   return type;
@@ -98,9 +98,10 @@ auto nativetype2str(const NativeType t_native_type) -> std::string
   if(iter != rmap.end()) {
     id = iter->second;
   } else {
-    DBG_CRITICAL("NativeType key not found in native_types map!");
+    std::string_view str{"NativeType could not be converted to std::string."};
+    DBG_ERROR(str);
 
-    throw std::runtime_error{""};
+    throw std::invalid_argument{str.data()};
   }
 
   return id;
