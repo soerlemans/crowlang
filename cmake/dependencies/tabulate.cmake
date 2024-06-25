@@ -13,5 +13,5 @@ FetchContent_MakeAvailable(tabulate)
 
 target_link_libraries(
 	${TARGET_CROW_LIB}
-	PRIVATE tabulate::tabulate
+	PUBLIC tabulate::tabulate
 )

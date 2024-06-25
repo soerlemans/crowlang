@@ -24,7 +24,10 @@ set(CMAKE_CXX_WARNING_FLAGS
     "-Wcast-align"
     "-Wmissing-declarations"
     "-Wmissing-field-initializers"
-    "-Wnull-dereference"
+		# The standard library triggers this warning.
+		# So we cannot use it in conjunction.
+		# With -Werror.
+    # "-Wnull-dereference"
     "-Wundef"
     "-Wunused-but-set-variable"
     "-Wvla"

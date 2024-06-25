@@ -15,5 +15,5 @@ include_directories(
 
 target_link_libraries(
 	${TARGET_CROW_LIB}
-  PRIVATE ${Boost_LIBRARIES}
+  PUBLIC ${Boost_LIBRARIES}
 )

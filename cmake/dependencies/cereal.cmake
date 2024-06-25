@@ -17,5 +17,5 @@ set(JUST_INSTALL_CEREAL ON CACHE INTERNAL "Only build Cereal.")
 
 target_link_libraries(
 	${TARGET_CROW_LIB}
-	PRIVATE cereal
+	PUBLIC cereal
 )

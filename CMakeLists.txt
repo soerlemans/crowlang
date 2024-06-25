@@ -48,7 +48,7 @@ target_include_directories(
 add_subdirectory(src)
 target_link_libraries(
 	${TARGET_CROW}
-	PRIVATE ${TARGET_CROW_LIB})
+	PUBLIC ${TARGET_CROW_LIB})
 
 # Build tests.
 if(DEFINED BUILD_CROW_TESTS)

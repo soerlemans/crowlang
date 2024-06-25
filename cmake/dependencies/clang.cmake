@@ -35,5 +35,5 @@ set(CLANG_LIBS
 # Link libraries:
 target_link_libraries(
 	${TARGET_CROW_LIB}
-	PRIVATE ${CLANG_LIBS}
+	PUBLIC ${CLANG_LIBS}
 )
