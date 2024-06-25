@@ -8,5 +8,5 @@ find_package(
 
 target_link_libraries(
 	${TARGET_CROW_LIB}
-	Threads::Threads
+	PRIVATE Threads::Threads
 )

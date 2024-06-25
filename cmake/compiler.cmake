@@ -45,6 +45,8 @@ function(cxx_configure_target T_TARGET)
 	# Set warnings for target.
 	target_compile_options(${T_TARGET} PRIVATE
 		${CMAKE_CXX_WARNING_FLAGS}
+		$<$<CONFIG:Release>:-Werror>
+		$<$<CONFIG:RelWithDebInfo>:-Werror>
 	)
 endfunction()
 
@@ -60,8 +62,6 @@ set_target_properties(
 )
 
 # Configure compiler for targets:
-# Compiler flags:
-
 cxx_configure_target(${TARGET_CROW})
 cxx_configure_target(${TARGET_CROW_LIB})
 #cxx_configure_target(${TARGET_CROW_STDLIB})

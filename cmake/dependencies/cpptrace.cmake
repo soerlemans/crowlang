@@ -17,7 +17,7 @@ FetchContent_MakeAvailable(cpptrace)
 
 target_link_libraries(
 	${TARGET_CROW_LIB}
-	cpptrace::cpptrace
+	PRIVATE cpptrace::cpptrace
 )
 
 # On windows copy cpptrace.dll to the same directory as the executable for crow.

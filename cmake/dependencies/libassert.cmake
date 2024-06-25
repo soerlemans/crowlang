@@ -13,7 +13,7 @@ FetchContent_MakeAvailable(libassert)
 
 target_link_libraries(
 	${TARGET_CROW_LIB}
-	libassert::assert
+	PRIVATE libassert::assert
 )
 
 # On windows copy libassert.dll to the same directory as the executable for crow.

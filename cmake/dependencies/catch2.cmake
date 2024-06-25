@@ -12,7 +12,7 @@ FetchContent_MakeAvailable(Catch2)
 
 target_link_libraries(
 	${TARGET_CROW_TESTS}
-	Catch2::Catch2WithMain
+	PRIVATE Catch2::Catch2WithMain
 )
 
 endif(DEFINED BUILD_CROW_TESTS)

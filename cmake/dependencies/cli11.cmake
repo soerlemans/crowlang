@@ -9,5 +9,5 @@ find_package(
 
 target_link_libraries(
 	${TARGET_CROW_LIB}
-	CLI11::CLI11
+	PRIVATE CLI11::CLI11
 )
