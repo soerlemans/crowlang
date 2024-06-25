@@ -14,7 +14,7 @@ enum ExitCode {
 };
 
 // TODO: Relocate.
-auto disable_absorb_exceptions() -> void
+static auto disable_absorb_exceptions() -> void
 {
 #ifdef DEBUG
   // Do not absorb cpptrace errors on debug build.

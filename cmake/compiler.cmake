@@ -13,7 +13,10 @@ set(CMAKE_CXX_WARNING_FLAGS
     "-Wunused-label"
     "-Wunreachable-code"
     "-Wreturn-type"
-    "-Wshadow"
+		# Clang sees multiple if statements with init clause.
+		# Where the variable has the same name as shadowing.
+		# So until this is fixed it will be disabled.
+    # "-Wshadow"
     "-Wconversion"
     "-Wlogical-op"
     "-Wfloat-equal"
