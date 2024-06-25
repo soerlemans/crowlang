@@ -27,11 +27,14 @@ using cereal::XMLInputArchive;
 using cereal::XMLOutputArchive;
 
 // Aliases:
+// clang-format off
 using Archive =
-  std::variant<std::monostate, JSONOutputArchive, JSONInputArchive,
-               XMLOutputArchive, XMLInputArchive, BinaryOutputArchive,
-               BinaryInputArchive, PortableBinaryOutputArchive,
-               PortableBinaryInputArchive>;
+  std::variant<std::monostate,
+							 JSONOutputArchive, JSONInputArchive,
+               XMLOutputArchive, XMLInputArchive,
+							 BinaryOutputArchive, BinaryInputArchive,
+							 PortableBinaryOutputArchive, PortableBinaryInputArchive>;
+// clang-format on
 
 // Enums:
 enum class ArchiveType {
@@ -43,7 +46,7 @@ enum class ArchiveType {
 
 // Classes:
 /*!
- * Serializes an AST.
+ * Utility class for Serializing and deserializing the AST.
  * Useful for when compiling multiple files to keep memory footprint low by
  * serializing an AST to disk. Also commonly used for inspecting the AST.
  */
@@ -56,6 +59,13 @@ class AstArchive : public NodeVisitor {
   auto set_archive_out(ArchiveType t_type, std::ostream& t_os) -> void;
   auto set_archive_in(ArchiveType t_type, std::istream& t_is) -> void;
 
+	/*!
+	 * Helper method for archiving AST nodes.
+	 * Throws if @ref m_archive is std::monostate.
+	 *
+	 * @param[in] t_args Variadic argument of AST nodes to archive.
+	 *
+	 */
   template<typename... Args>
   auto archive(Args&&... t_args) -> void
   {

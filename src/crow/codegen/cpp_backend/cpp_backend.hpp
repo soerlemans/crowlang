@@ -102,6 +102,9 @@ class CppBackend : public ast::visitor::NodeVisitor {
   auto visit(node::List* t_list) -> Any override;
 
   // Util:
+  /*!
+   * Transpile the @ref t_ast to valid C++ code and write it to @ref t_out.
+   */
   auto codegen(NodePtr t_ast, const path& t_out) -> void;
   auto compile(NodePtr t_ast) -> void;
 

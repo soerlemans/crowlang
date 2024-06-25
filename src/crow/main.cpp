@@ -13,7 +13,7 @@ enum ExitCode {
   CLI11_EXCEPTION = 700,
 };
 
-// TODO: Relocate?
+// TODO: Relocate.
 auto disable_absorb_exceptions() -> void
 {
 #ifdef DEBUG

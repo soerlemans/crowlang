@@ -21,7 +21,7 @@ class InitExpr : virtual public NodeInterface {
   template<typename Archive>
   auto serialize(Archive& t_archive) -> void
   {
-    t_archive(m_init);
+    t_archive(CEREAL_NVP(m_init));
   }
 
   AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);

@@ -235,10 +235,6 @@ auto CppBackend::visit(List* t_list) -> Any
 }
 
 // Util:
-/*!
- * Transpile the AST to valid C++ code.
- * The C++ source is stored in a temporary directory.
- */
 auto CppBackend::codegen(NodePtr t_ast, const path& t_out) -> void
 {
   std::ofstream ofs{t_out};

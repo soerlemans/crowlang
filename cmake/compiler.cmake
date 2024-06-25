@@ -1,11 +1,47 @@
 # Configure the compiler settings.
 
+# Variables:
+set(CMAKE_CXX_WARNING_FLAGS
+    "-Wall"
+    "-Wextra"
+    "-Wpedantic"
+    "-Wunused"
+    "-Wunused-parameter"
+    "-Wunused-variable"
+    "-Wunused-function"
+    "-Wunused-value"
+    "-Wunused-label"
+    "-Wunreachable-code"
+    "-Wreturn-type"
+    "-Wshadow"
+    "-Wconversion"
+    "-Wlogical-op"
+    "-Wfloat-equal"
+    "-Wcast-qual"
+    "-Wcast-align"
+    "-Wmissing-declarations"
+    "-Wmissing-field-initializers"
+    "-Wnull-dereference"
+    "-Wundef"
+    "-Wunused-but-set-variable"
+    "-Wvla"
+    "-Wwrite-strings"
+)
+
 # Functions:
-function(COMPILE_FLAGS T_TARGET)
+function(cxx_configure_target T_TARGET)
+	# Add DEBUG macro definition for debugging builds.
+	target_compile_definitions(${T_TARGET} PRIVATE
+		$<$<CONFIG:Debug>:DEBUG>
+		$<$<CONFIG:RelWithDebInfo>:DEBUG>
+	)
+
+	# All available and default enabled warnings in Gcc/Clang can be listed with:
+	# g++ -Q --help=warning | less
+
+	# Set warnings for target.
 	target_compile_options(${T_TARGET} PRIVATE
-		-Wall
-		-Wextra
-		-pedantic
+		${CMAKE_CXX_WARNING_FLAGS}
 	)
 endfunction()
 
@@ -20,29 +56,12 @@ set_target_properties(
 	C_COMPILER "clang"
 )
 
-# Define DEBUG macro if build type is Debug
-target_compile_definitions(${TARGET_CROW} PRIVATE
-  $<$<CONFIG:Debug>:DEBUG>
-)
-
-target_compile_definitions(${TARGET_CROW_LIB} PRIVATE
-  $<$<CONFIG:Debug>:DEBUG>
-)
-
+# Configure compiler for targets:
 # Compiler flags:
-# All available and default enabled warnings in Gcc/Clang can be listed with:
-# g++ -Q --help=warning | less
-target_compile_options(${TARGET_CROW} PRIVATE
-  -Wall
-  -Wextra
-  -pedantic
-)
 
-target_compile_options(${TARGET_CROW_LIB} PRIVATE
-  -Wall
-  -Wextra
-  -pedantic
-)
+cxx_configure_target(${TARGET_CROW})
+cxx_configure_target(${TARGET_CROW_LIB})
+#cxx_configure_target(${TARGET_CROW_STDLIB})
 
 # Set the flags for debugging.
 set(CMAKE_CXX_FLAGS_DEBUG
