@@ -18,6 +18,11 @@ Arithmetic::Arithmetic(TextPosition t_pos, const ArithmeticOp t_op,
     BinaryOperator{std::move(t_left), std::move(t_right)}
 {}
 
+auto Arithmetic::op2str() const -> std::string_view
+{
+  return arithmetic_op2str(op());
+}
+
 // Functions:
 auto arithmetic_op2str(const ArithmeticOp t_op) -> std::string_view
 {
@@ -25,9 +30,11 @@ auto arithmetic_op2str(const ArithmeticOp t_op) -> std::string_view
 
   switch(t_op) {
     MATCH(POWER, "+");
+
     MATCH(MULTIPLY, "*");
     MATCH(DIVIDE, "/");
     MATCH(MODULO, "%");
+
     MATCH(ADD, "+");
     MATCH(SUBTRACT, "-");
 
@@ -39,5 +46,4 @@ auto arithmetic_op2str(const ArithmeticOp t_op) -> std::string_view
 
   return str;
 }
-
 } // namespace ast::node::operators

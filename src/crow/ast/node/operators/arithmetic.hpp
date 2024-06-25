@@ -36,6 +36,8 @@ class Arithmetic : public NodePosition,
   Arithmetic(TextPosition t_pos, ArithmeticOp t_op, NodePtr&& t_left,
              NodePtr&& t_right);
 
+  auto op2str() const -> std::string_view;
+
   AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Arithmetic, NodePosition,
                                       Op<ArithmeticOp>, BinaryOperator)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);

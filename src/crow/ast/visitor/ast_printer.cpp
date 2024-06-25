@@ -7,9 +7,12 @@
 
 
 // Macros:
-//! TODO: Comment.
+/*!
+ * Instantiates a @ref CountGuard object.
+ * Which will use RAII to manage indentation.
+ */
 #define COUNTG_INIT() \
-  CountGuard guard    \
+  CountGuard guard__  \
   {                   \
     m_counter         \
   }
@@ -108,9 +111,11 @@ auto AstPrinter::visit(Arithmetic* t_arith) -> Any
 {
   COUNTG_INIT();
 
+  const auto str{t_arith->op2str()};
+
   print("Arithmetic");
   print_traits(t_arith);
-  // print("| OP: TODO!");
+  print("| OP: ", str);
 
   return {};
 }
@@ -119,9 +124,11 @@ auto AstPrinter::visit(Assignment* t_assign) -> Any
 {
   COUNTG_INIT();
 
+  const auto str{t_assign->op2str()};
+
   print("Assignment");
   print_traits(t_assign);
-  // print("| OP: TODO!");
+  print("| OP: ", str);
 
   return {};
 }
@@ -130,9 +137,11 @@ auto AstPrinter::visit(Comparison* t_comp) -> Any
 {
   COUNTG_INIT();
 
+  const auto str{t_comp->op2str()};
+
   print("Comparison");
   print_traits(t_comp);
-  // print("| OP: TODO!");
+  print("| OP: ", str);
 
   return {};
 }
@@ -163,9 +172,11 @@ auto AstPrinter::visit(UnaryPrefix* t_up) -> Any
 {
   COUNTG_INIT();
 
+  const auto str{t_up->op2str()};
+
   print("UnaryPrefix");
   print_traits(t_up);
-  print("| OP: TODO!");
+  print("| OP: ", str);
 
   return {};
 }

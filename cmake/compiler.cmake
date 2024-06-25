@@ -30,6 +30,8 @@ target_compile_definitions(${TARGET_CROW_LIB} PRIVATE
 )
 
 # Compiler flags:
+# All available and default enabled warnings in Gcc/Clang can be listed with:
+# g++ -Q --help=warning | less
 target_compile_options(${TARGET_CROW} PRIVATE
   -Wall
   -Wextra
@@ -42,13 +44,7 @@ target_compile_options(${TARGET_CROW_LIB} PRIVATE
   -pedantic
 )
 
-#add_compile_options(
-#  -Wall
-#  -Wextra
-#  -pedantic
-#)
-
-# Set the flags for debugging
+# Set the flags for debugging.
 set(CMAKE_CXX_FLAGS_DEBUG
 	"-g3 -gdwarf"
 )

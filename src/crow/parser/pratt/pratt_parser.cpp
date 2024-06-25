@@ -126,6 +126,7 @@ auto PrattParser::unary_prefix() -> NodePtr
       syntax_error("Expected an expression after + or -");
     }
 
+		// TODO: Have the UnaryPrefix class handle the conversion.
     UnaryPrefixOp op{UnaryPrefixOp::PLUS};
     if(token.type() == TokenType::MINUS) {
       op = UnaryPrefixOp::MINUS;

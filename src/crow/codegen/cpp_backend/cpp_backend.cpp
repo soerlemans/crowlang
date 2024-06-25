@@ -26,6 +26,9 @@ auto CppBackend::header() -> std::string
 {
   std::stringstream ss;
 
+  // TODO: Include necessary includes and boiler plate, for the generated code
+  // to work.
+
   return ss.str();
 }
 
