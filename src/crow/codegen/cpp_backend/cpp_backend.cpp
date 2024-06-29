@@ -123,7 +123,12 @@ auto CppBackend::visit(Function* t_fn) -> Any
   return ss.str();
 }
 
-AST_VISITOR_STUB(CppBackend, Call)
+auto CppBackend::visit(Call* t_call) -> Any
+{
+
+	return {};
+}
+
 AST_VISITOR_STUB(CppBackend, ReturnType)
 
 // Lvalue:
@@ -147,9 +152,8 @@ auto CppBackend::visit(Variable* t_var) -> Any
 // Operators:
 auto CppBackend::visit(Arithmetic* t_arith) -> Any
 {
-  using ast::node::operators::arithmetic_op2str;
 
-  const auto op{arithmetic_op2str(t_arith->op())};
+  const auto op{t_arith->op2str()};
 
   const auto left{resolve(t_arith->left())};
   const auto right{resolve(t_arith->right())};
@@ -159,23 +163,44 @@ auto CppBackend::visit(Arithmetic* t_arith) -> Any
   return std::format("({}) {} ({})", left, op, right);
 }
 
-AST_VISITOR_STUB(CppBackend, Assignment)
-
-auto CppBackend::visit([[maybe_unused]] Comparison* t_comp) -> Any
+auto CppBackend::visit(Assignment* t_assign) -> Any
 {
-  return {};
+
+  const auto op{t_assign->op2str()};
+
+  const auto left{resolve(t_assign->left())};
+  const auto right{resolve(t_assign->right())};
+
+  return std::format("{} {} {};\n", left, op, right);
+}
+
+auto CppBackend::visit(Comparison* t_comp) -> Any
+{
+  const auto op{t_comp->op2str()};
+
+  const auto left{resolve(t_comp->left())};
+  const auto right{resolve(t_comp->right())};
+
+  return std::format("({}) {} ({})", left, op, right);
 }
 
 AST_VISITOR_STUB(CppBackend, Increment)
 AST_VISITOR_STUB(CppBackend, Decrement)
-AST_VISITOR_STUB(CppBackend, UnaryPrefix)
+
+auto CppBackend::visit(UnaryPrefix* t_up) -> Any
+{
+  const auto op{t_up->op2str()};
+  const auto left{resolve(t_up->left())};
+
+  return std::format("({}{})", op, left);
+}
 
 // Logical:
 auto CppBackend::visit(Not* t_not) -> Any
 {
   const auto left{resolve(t_not->left())};
 
-	return std::format("(!{}})", left);
+  return std::format("(!{})", left);
 }
 
 auto CppBackend::visit(And* t_and) -> Any
@@ -194,7 +219,16 @@ auto CppBackend::visit(Or* t_or) -> Any
   return std::format("({}) || ({})", left, right);
 }
 
-AST_VISITOR_STUB(CppBackend, Ternary)
+auto CppBackend::visit([[maybe_unused]] Ternary* t_ternary) -> Any
+{
+  // const auto left{resolve(t_or->left())};
+  // const auto right{resolve(t_or->right())};
+
+  //  return std::format("({}) ? ({}) : ({})", left, right);
+
+  return {};
+}
+
 
 // Packaging:
 AST_VISITOR_STUB(CppBackend, Import)
