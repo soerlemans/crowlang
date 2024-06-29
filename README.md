@@ -10,16 +10,16 @@ Semicolons are completely optional in Crow.
 In order to compile the project you will need to following dependencies:
 
 - C++ compiler with support for C++23
-- Make (Used to invoke CMake and scripts)
+- [Invoke](https://www.pyinvoke.org/) (Used to invoke CMake and scripts)
 - [Cmake](https://cmake.org/)  (Main buildsysstem)
 - [CLI11](https://github.com/CLIUtils/CLI11) (CLI option parsing library)
 - [rang](https://github.com/agauniyal/rang/tree/master) (cross platform terminal coloring library)
 - [tabulate](https://github.com/p-ranav/tabulate) (Text table library)
-- [Boost]() (Utility libraries for C++)
-- [LLVM](https://llvm.org) (LLVM for code generation and optimization)
+- [Boost](https://www.boost.org/) (Utility libraries for C++)
+- [LLVM](https://llvm.org) (LLVM is used for code generation and optimization)
 - [libclang](https://clang.llvm.org/doxygen/group__CINDEX.html) (libclang for compiling C++ sources (part of the LLVM project.))
-- [cereal]() (TODO)
-- [libassert]() (TODO)
+- [cereal](https://uscilab.github.io/cereal/) (Serialization library used for the AST)
+- [libassert](https://github.com/jeremy-rifkin/libassert) (Modern assertion library for compile and runtime assertion checking)
 
 ### Buildsystem
 In order to compile the project you will need `invoke`, `clang` and `cmake`.

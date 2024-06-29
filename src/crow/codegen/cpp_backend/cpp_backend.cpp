@@ -171,12 +171,27 @@ AST_VISITOR_STUB(CppBackend, Decrement)
 AST_VISITOR_STUB(CppBackend, UnaryPrefix)
 
 // Logical:
-AST_VISITOR_STUB(CppBackend, Not)
-AST_VISITOR_STUB(CppBackend, And)
-
-auto CppBackend::visit([[maybe_unused]] Or* t_or) -> Any
+auto CppBackend::visit(Not* t_not) -> Any
 {
-  return {};
+  const auto left{resolve(t_not->left())};
+
+	return std::format("(!{}})", left);
+}
+
+auto CppBackend::visit(And* t_and) -> Any
+{
+  const auto left{resolve(t_and->left())};
+  const auto right{resolve(t_and->right())};
+
+  return std::format("({}) && ({})", left, right);
+}
+
+auto CppBackend::visit(Or* t_or) -> Any
+{
+  const auto left{resolve(t_or->left())};
+  const auto right{resolve(t_or->right())};
+
+  return std::format("({}) || ({})", left, right);
 }
 
 AST_VISITOR_STUB(CppBackend, Ternary)

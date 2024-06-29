@@ -11,10 +11,6 @@ debug::LogLevel g_loglevel{debug::LogLevel::WARNING};
 
 // Namespace Debug:
 namespace debug {
-/*!
- * Checks if the @ref LogLevel is lower than the current g_loglevel.
- */
-// TODO: This could be constexpr.
 [[nodiscard("Returned boolean result must be used.")]]
 auto is_lower_loglevel(const LogLevel t_loglevel) -> bool
 {

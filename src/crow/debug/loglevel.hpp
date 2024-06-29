@@ -48,9 +48,11 @@ constexpr auto loglevel2str(const LogLevel t_loglevel) -> std::string_view
 
     default:
       throw std::invalid_argument{
-        "loglevel2str() could not convert loglevel to string"};
+        "loglevel2str() could not convert loglevel to string."};
       break;
   }
+
+  return {};
 }
 
 constexpr auto loglevel2color(const LogLevel t_loglevel) -> rang::fg
@@ -64,12 +66,20 @@ constexpr auto loglevel2color(const LogLevel t_loglevel) -> rang::fg
 
     default:
       throw std::invalid_argument{
-        "loglevel2color() could not convert loglevel to string"};
+        "loglevel2color() could not convert loglevel to string."};
       break;
   }
 }
 
+/*!
+ * Checks if the @ref LogLevel is lower than the current g_loglevel.
+ */
 auto is_lower_loglevel(LogLevel t_loglevel) -> bool;
+
+
+/*!
+ * Change the loglevel of the logging.
+ */
 auto set_loglevel(LogLevel t_loglevel) -> void;
 } // namespace debug
 
