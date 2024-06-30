@@ -44,7 +44,7 @@ class AstPrinter : public NodeVisitor {
     (m_os << ... << t_args);
 
     // Create the indentation level denoter
-    m_os << " - (" << m_counter << ")\n";
+    m_os << " (indent: " << m_counter << ")\n";
   }
 
   template<typename Base, typename Ptr, typename Fn>

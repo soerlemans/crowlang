@@ -123,10 +123,17 @@ auto CppBackend::visit(Function* t_fn) -> Any
   return ss.str();
 }
 
-auto CppBackend::visit(Call* t_call) -> Any
+auto CppBackend::visit([[maybe_unused]] Call* t_call) -> Any
 {
+  // const auto identifier{resolve(t_call->identifier())};
 
-	return {};
+  // FIXME: This wont work for a raw function or method call.
+  // As when we assign it directly to a variable it will work but not else.
+  // As we need to append a semicolon.
+
+  // return std::format("{}()", identifier);
+
+  return {};
 }
 
 AST_VISITOR_STUB(CppBackend, ReturnType)

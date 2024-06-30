@@ -1,6 +1,9 @@
 #ifndef CROW_CROW_AST_NODE_OPERATORS_UNARY_PREFIX_HPP
 #define CROW_CROW_AST_NODE_OPERATORS_UNARY_PREFIX_HPP
 
+// Absolute Includes:
+#include "crow/token/token_type.hpp"
+
 // Includes:
 #include "../node_traits/include.hpp"
 
@@ -21,6 +24,10 @@ enum class UnaryPrefixOp {
 // Classes:
 class UnaryPrefix : public Op<UnaryPrefixOp>, public UnaryOperator {
   public:
+	/*!
+	 * Constructor will throw if given inconvertible @ref TokenType.
+	 */
+  UnaryPrefix(token::TokenType t_op, NodePtr&& t_left);
   UnaryPrefix(UnaryPrefixOp t_op, NodePtr&& t_left);
 
   auto op2str() const -> std::string_view;
@@ -33,6 +40,12 @@ class UnaryPrefix : public Op<UnaryPrefixOp>, public UnaryOperator {
 };
 
 // Functions:
+/*!
+ * Converts a @ref TokenType to a @ref UnaryPrefixOp.
+ * If the conversion is not possible throws.
+ */
+auto token_type2unary_prefix_op(token::TokenType t_type) -> UnaryPrefixOp;
+
 /*!
  * Important to note that this function is used in the code generation step.
  * So the translation from enumeration to string should be a valid C++ operator.
