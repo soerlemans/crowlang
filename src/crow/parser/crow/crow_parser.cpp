@@ -385,6 +385,9 @@ auto CrowParser::statement() -> NodePtr
     node = std::move(ptr);
   } else if(auto ptr{body()}; ptr) {
     node = std::move(ptr);
+    // TODO: Detect expressions which have no side effects and throw.
+    // } else if() {
+    // syntax_error();
   }
 
   return node;
@@ -406,8 +409,9 @@ auto CrowParser::statement_list() -> NodeListPtr
 }
 
 // Body:
-/*! The body() should never be optional, or else we will consume newlines
- * unintentionally
+/*!
+ * The @ref body() should never be optional.
+ * Or else we will consume newlines unintentionally.
  */
 auto CrowParser::body() -> NodeListPtr
 {

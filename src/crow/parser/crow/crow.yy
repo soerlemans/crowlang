@@ -111,6 +111,16 @@ logical          : expr newline_opt AND expr
                  ;
 
 // Expressions:
+
+// FIXME: Following expressions cause side effects thus should be valid as a loose expression.
+// function_call should be valid in an expression but should not be a free_expr.
+
+// precrement
+// postcrement
+// function_call
+
+// FIXME: We should handle precrement like Go where it is a statement not an expression.
+
 expr             : lvalue
 				         | literal
                  | grouping
