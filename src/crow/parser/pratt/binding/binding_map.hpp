@@ -8,30 +8,36 @@
 // Absolute Includes:
 #include "crow/token/token_type.hpp"
 
-namespace parser::pratt::binding {
 // Macros:
-//! Convenience macro so we can omit the TokenType prefix
+//! Convenience macro so we can omit the @ref TokenType prefix
 #define INSERT_BINDING(t_type, t_lbp, t_rbp) \
-  insert_binding(token::TokenType::t_type, t_lbp, t_rbp);
+  insert_binding(TokenType::t_type, t_lbp, t_rbp);
 
+namespace parser::pratt::binding {
 // Using Statements:
 using token::TokenType;
 
 // Aliases:
-//! Two integers are used to indicate the binding power
+//! Two integers are used to indicate the binding power.
 using BindingPower = std::pair<int, int>;
 
+//! Internal type used to map tokens to their @ref BindingPower.
+using TokenBindingMap = std::unordered_map<TokenType, BindingPower>;
+
 // Classes:
-// TODO: Make std::unordered_map a member and not a parent.
-//! Binding map contains the precedence bindings.
-class BindingMap : public std::unordered_map<TokenType, BindingPower> {
+//! Binding map contains the precedence bindings for tokens.
+class BindingMap {
+  private:
+  TokenBindingMap m_map;
+
   protected:
-  //! Constructor is protected, to disallow direct usage
+  //! Constructor is protected, to disallow direct usage.
   BindingMap() = default;
 
   auto insert_binding(TokenType t_type, int t_lbp, int t_rbp) -> void;
 
   public:
+  auto at(TokenType t_type) const -> BindingPower;
   auto rbp(TokenType t_type) const -> int;
   auto lbp(TokenType t_type) const -> int;
 

@@ -6,6 +6,7 @@ set(FETCHCONTENT_QUIET FALSE)
 
 # Includes:
 # TODO: Figure out a way to include these relatively.
+include(cmake/dependencies/tomlplusplus.cmake)
 include(cmake/dependencies/rang.cmake)
 include(cmake/dependencies/tabulate.cmake)
 include(cmake/dependencies/boost.cmake)
