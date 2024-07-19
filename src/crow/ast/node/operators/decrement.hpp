@@ -13,13 +13,8 @@ using node_traits::UnaryOperator;
 
 // Classes:
 class Decrement : public UnaryOperator {
-  private:
-  bool m_prefix;
-
   public:
-  Decrement(NodePtr&& t_left, bool t_prefix);
-
-  auto prefix() const -> bool;
+  Decrement(NodePtr&& t_left);
 
   AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Decrement, UnaryOperator)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);

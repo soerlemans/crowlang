@@ -82,10 +82,6 @@ unary_prefix     : '+' expr
                  | '-' expr
                  ;
 
-precrement       : INCREMENT lvalue
-				         | DECREMENT lvalue
-                 ;
-
 postcrement      : lvalue INCREMENT
 				         | lvalue DECREMENT
                  ;
@@ -115,19 +111,16 @@ logical          : expr newline_opt AND expr
 // FIXME: Following expressions cause side effects thus should be valid as a loose expression.
 // function_call should be valid in an expression but should not be a free_expr.
 
-// precrement
 // postcrement
 // function_call
 
-// FIXME: We should handle precrement like Go where it is a statement not an expression.
+// FIXME: We should handle postcrement like Go where it is a statement not an expression.
 
 expr             : lvalue
 				         | literal
                  | grouping
                  | unary_prefix
                  | negation
-                 | precrement
-                 | postcrement
 				         | function_call
                  | arithmetic
                  | comparison
@@ -172,7 +165,6 @@ assignment       : lvalue MUL_ASSIGN newline_opt expr
 result_statement : decl_expr terminator
 				         | assignment terminator
 				         | function_call terminator
-				         | precrement terminator
 				         | postcrement terminator
 				         /* | ';' */
                  ;

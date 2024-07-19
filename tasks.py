@@ -90,14 +90,18 @@ def all(ctx):
     pass
 
 @task
-def install(ctx):
+def install(ctx, parallel=True):
     print('TODO: Implement.')
+
+    ctx.run();
+    mode = mode if mode in enum_values else 'build'
+    cmake(ctx, mode, parallel)
     pass
 
 @task(help={'mode': '', 'parallel': 'Flag indicating concurrent builds.'})
 def build(ctx, mode='', parallel=True):
     '''
-    Build the compiler.
+    Build the project.
     '''
     enum_values = [ item.value for item in BuildMode ]
     mode = mode if mode in enum_values else 'build'

@@ -17,10 +17,6 @@ class PrefixMap : public BindingMap {
     // Dereference:
     INSERT_BINDING(ASTERISK, 15, 15);
 
-    // Precrement:
-    INSERT_BINDING(INCREMENT, 14, 14);
-    INSERT_BINDING(DECREMENT, 14, 14);
-
     // Unary operators:
     INSERT_BINDING(NOT, 14, 14);
     INSERT_BINDING(PLUS, 14, 14);

@@ -151,7 +151,6 @@ auto AstPrinter::visit(Increment* t_inc) -> Any
   COUNTG_INIT();
 
   print("Increment");
-  print("| Prefix: ", t_inc->prefix());
   print_traits(t_inc);
 
   return {};
@@ -162,7 +161,6 @@ auto AstPrinter::visit(Decrement* t_dec) -> Any
   COUNTG_INIT();
 
   print("Decrement");
-  print("| Prefix: ", t_dec->prefix());
   print_traits(t_dec);
 
   return {};

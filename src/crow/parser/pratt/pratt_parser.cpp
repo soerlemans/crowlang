@@ -132,32 +132,6 @@ auto PrattParser::unary_prefix() -> NodePtr
   return node;
 }
 
-auto PrattParser::precrement() -> NodePtr
-{
-  DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
-
-  const auto lambda{[&]<typename T>() {
-    if(auto ptr{lvalue()}; ptr) {
-      node = make_node<T>(std::move(ptr), true);
-    } else {
-      syntax_error("Expected an lvalue");
-    }
-  }};
-
-  const auto token{get_token()};
-  if(next_if(TokenType::INCREMENT)) {
-    PARSER_FOUND(TokenType::INCREMENT, " (pre)");
-    lambda.template operator()<Increment>();
-
-  } else if(next_if(TokenType::DECREMENT)) {
-    PARSER_FOUND(TokenType::DECREMENT, " (pre)");
-    lambda.template operator()<Decrement>();
-  }
-
-  return node;
-}
-
 //! This function parses function calls
 auto PrattParser::function_call() -> NodePtr
 {
@@ -203,8 +177,6 @@ auto PrattParser::prefix() -> NodePtr
   } else if(auto ptr{function_call()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{lvalue()}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{precrement()}; ptr) {
     node = std::move(ptr);
   }
 

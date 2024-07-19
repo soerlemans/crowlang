@@ -23,7 +23,8 @@ class Token;
 
 // Aliases:
 using TokenOpt = std::optional<Token>;
-using TokenStream = Stream<std::vector<Token>>;
+using TokenVec = std::vector<Token>;
+using TokenStream = Stream<TokenVec>;
 using TokenValue = std::variant<int, double, std::string>;
 
 // Classes:

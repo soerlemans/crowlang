@@ -10,7 +10,12 @@ namespace parser {
 using ast::node::List;
 using ast::node::NodeListPtr;
 
-// Methods:
+// Protected Methods:
+auto Parser::get_tokenstream() -> TokenStream&
+{
+  return m_tokenstream;
+}
+
 auto Parser::syntax_error(const std::string_view t_msg) const -> void
 {
   using exception::SyntaxError;
@@ -132,6 +137,7 @@ auto Parser::list_of(const ParseFn t_fn) -> NodeListPtr
   return nodes;
 }
 
+// Methods:
 Parser::Parser(TokenStream&& t_tokenstream)
   : m_tokenstream{std::forward<TokenStream>(t_tokenstream)}
 {}

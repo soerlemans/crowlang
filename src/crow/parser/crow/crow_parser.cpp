@@ -6,7 +6,21 @@
 
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
+#include "crow/container/stream_guard.hpp"
 #include "crow/debug/trace.hpp"
+
+// Macros
+/*!
+ * Resets the position of the iterator in m_tokenstream if the passed ptr.
+ */
+#define TOKENSTREAM_GUARD(ptr)                                      \
+  container::StreamGuard<token::TokenVec> CONCAT(tokenstream_guard, \
+                                                 __COUNTER__)       \
+  {                                                                 \
+    get_tokenstream(), [&]() -> bool {                              \
+      return ptr != nullptr;                                        \
+    }                                                               \
+  }
 
 namespace parser::crow {
 // Using statements:
@@ -207,7 +221,11 @@ auto CrowParser::assignment() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
+  // FIXME: At the moment if we dont find an assignment operator
+  // We discard the lvalue().
   if(auto lhs{lvalue()}; lhs) {
+    TOKENSTREAM_GUARD(node);
+
     const auto pos{get_position()};
     const auto lambda{[&](const AssignmentOp t_op) {
       newline_opt();
@@ -245,6 +263,27 @@ auto CrowParser::assignment() -> NodePtr
   return node;
 }
 
+auto CrowParser::postcrement() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+
+  if(auto ptr{lvalue()}; ptr) {
+    TOKENSTREAM_GUARD(node);
+    if(next_if(TokenType::INCREMENT)) {
+      PARSER_FOUND(TokenType::INCREMENT);
+      node = make_node<Increment>(std::move(ptr));
+    } else if(next_if(TokenType::DECREMENT)) {
+      PARSER_FOUND(TokenType::DECREMENT);
+      node = make_node<Increment>(std::move(ptr));
+    }
+  }
+
+
+  return node;
+}
+
 auto CrowParser::result_statement() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -256,7 +295,7 @@ auto CrowParser::result_statement() -> NodePtr
     node = std::move(ptr);
   } else if(auto ptr{assignment()}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{precrement()}; ptr) {
+  } else if(auto ptr{postcrement()}; ptr) {
     node = std::move(ptr);
   }
 
