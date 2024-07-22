@@ -71,23 +71,44 @@ auto CppBackend::visit([[maybe_unused]] If* t_if) -> Any
   std::stringstream ss;
 
   // clang-format off
-	ss << std::format("if({}; {}) {{\n", init_expr, cond)
-		 << then
-		 << "} else {\n"
-		 << alt
-		 << "}\n";
+  ss << std::format("if({}; {}) {{\n", init_expr, cond)
+     << then
+     << "} else {\n"
+     << alt
+     << "}\n";
   // clang-format on
 
   return ss.str();
 }
 
-auto CppBackend::visit([[maybe_unused]] Loop* t_loop) -> Any
+auto CppBackend::visit(Loop* t_loop) -> Any
 {
-  return {};
+  const auto init_expr{resolve(t_loop->init_expr())};
+  const auto cond{resolve(t_loop->condition())};
+
+  const auto expr{resolve(t_loop->expr())};
+  const auto body{resolve(t_loop->body())};
+
+  std::stringstream ss;
+
+  // clang-format off
+  ss << std::format("for({}; {}; {}) {{\n", init_expr, cond, expr)
+     << body
+     << "}\n";
+  // clang-format on
+
+  return ss.str();
 }
 
-AST_VISITOR_STUB(CppBackend, Continue)
-AST_VISITOR_STUB(CppBackend, Break)
+auto CppBackend::visit([[maybe_unused]] Continue* t_continue) -> Any
+{
+  return std::format("continue;\n");
+}
+
+auto CppBackend::visit([[maybe_unused]] Break* t_break) -> Any
+{
+  return std::format("break;\n");
+}
 
 auto CppBackend::visit(Return* t_ret) -> Any
 {

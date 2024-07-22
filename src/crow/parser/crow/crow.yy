@@ -184,8 +184,8 @@ jump_statement   : Continue terminator
 
 // Loop statement:
 loop_statement   : Loop body
-				         | Loop eval_expr body
-				         | Loop eval_expr ';' expr body
+                 | Loop eval_expr body
+                 | Loop eval_expr ';' expr body
                  ;
 
 // Match statement:

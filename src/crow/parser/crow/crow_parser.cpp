@@ -305,6 +305,9 @@ auto CrowParser::jump_statement() -> NodePtr
   return node;
 }
 
+// FIXME: Currently i++ (postcrement) is not a expression.
+// So we have to change the grammar to allow result_statements or similar.
+// Potentially we could add a new grammar rule special for loops.
 auto CrowParser::loop_statement() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
