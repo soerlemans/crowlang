@@ -139,7 +139,13 @@ auto CppBackend::visit([[maybe_unused]] Call* t_call) -> Any
 AST_VISITOR_STUB(CppBackend, ReturnType)
 
 // Lvalue:
-AST_VISITOR_STUB(CppBackend, Let)
+auto CppBackend::visit(Let* t_let) -> Any
+{
+  const auto identifier{t_let->identifier()};
+  const auto init_expr{resolve(t_let->init_expr())};
+
+  return std::format("const auto {}{{ {} }};\n", identifier, init_expr);
+}
 
 auto CppBackend::visit(Var* t_var) -> Any
 {
