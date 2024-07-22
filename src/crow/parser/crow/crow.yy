@@ -82,10 +82,6 @@ unary_prefix     : '+' expr
                  | '-' expr
                  ;
 
-postcrement      : lvalue INCREMENT
-				         | lvalue DECREMENT
-                 ;
-
 // Infix:
 arithmetic       : expr newline_opt '*' expr
                  | expr newline_opt '/' expr
@@ -111,7 +107,6 @@ logical          : expr newline_opt AND expr
 // FIXME: Following expressions cause side effects thus should be valid as a loose expression.
 // function_call should be valid in an expression but should not be a free_expr.
 
-// postcrement
 // function_call
 
 // FIXME: We should handle postcrement like Go where it is a statement not an expression.
@@ -160,13 +155,13 @@ assignment       : lvalue MUL_ASSIGN newline_opt expr
                  | lvalue ADD_ASSIGN newline_opt expr
                  | lvalue SUB_ASSIGN newline_opt expr
                  | lvalue '=' newline_opt expr
+		 | lvalue INCREMENT
+		 | lvalue DECREMENT
                  ;
 
 result_statement : decl_expr terminator
-				         | assignment terminator
-				         | function_call terminator
-				         | postcrement terminator
-				         /* | ';' */
+                 | assignment terminator
+                 | function_call terminator
                  ;
 
 // Expression lists:
@@ -182,8 +177,8 @@ expr_list_opt    : // empty
 // Jump statement:
 jump_statement   : Continue terminator
                  | Break terminator
-				         | Defer expr_statement
-				         | Defer body
+                 | Defer expr_statement
+                 | Defer body
                  | Return expr_opt terminator
                  ;
 

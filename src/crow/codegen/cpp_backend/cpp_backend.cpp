@@ -191,8 +191,19 @@ auto CppBackend::visit(Comparison* t_comp) -> Any
   return std::format("({}) {} ({})", left, op, right);
 }
 
-AST_VISITOR_STUB(CppBackend, Increment)
-AST_VISITOR_STUB(CppBackend, Decrement)
+auto CppBackend::visit(Increment* t_inc) -> Any
+{
+  const auto left{resolve(t_inc->left())};
+
+  return std::format("{}++;\n", left);
+}
+
+auto CppBackend::visit(Decrement* t_dec) -> Any
+{
+  const auto left{resolve(t_dec->left())};
+
+  return std::format("{}--;\n", left);
+}
 
 auto CppBackend::visit(UnaryPrefix* t_up) -> Any
 {

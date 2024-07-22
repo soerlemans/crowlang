@@ -39,8 +39,10 @@ class StreamGuard {
 
   virtual ~StreamGuard()
   {
+    const bool check{m_check()};
+
     // Check passed function to check if we should restore from the point.
-    if(m_check()) {
+    if(!check) {
       restore();
     }
   }

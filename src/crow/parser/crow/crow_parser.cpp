@@ -9,19 +9,6 @@
 #include "crow/container/stream_guard.hpp"
 #include "crow/debug/trace.hpp"
 
-// Macros
-/*!
- * Resets the position of the iterator in m_tokenstream if the passed ptr.
- */
-#define TOKENSTREAM_GUARD(ptr)                                      \
-  container::StreamGuard<token::TokenVec> CONCAT(tokenstream_guard, \
-                                                 __COUNTER__)       \
-  {                                                                 \
-    get_tokenstream(), [&]() -> bool {                              \
-      return ptr != nullptr;                                        \
-    }                                                               \
-  }
-
 namespace parser::crow {
 // Using statements:
 NODE_USING_ALL_NAMESPACES()
@@ -221,10 +208,7 @@ auto CrowParser::assignment() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  // FIXME: At the moment if we dont find an assignment operator
-  // We discard the lvalue().
   if(auto lhs{lvalue()}; lhs) {
-    TOKENSTREAM_GUARD(node);
 
     const auto pos{get_position()};
     const auto lambda{[&](const AssignmentOp t_op) {
@@ -257,29 +241,16 @@ auto CrowParser::assignment() -> NodePtr
     } else if(next_if(TokenType::ASSIGNMENT)) {
       PARSER_FOUND(TokenType::ASSIGNMENT);
       lambda(AssignmentOp::REGULAR);
-    }
-  }
 
-  return node;
-}
-
-auto CrowParser::postcrement() -> NodePtr
-{
-  DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
-
-
-  if(auto ptr{lvalue()}; ptr) {
-    TOKENSTREAM_GUARD(node);
-    if(next_if(TokenType::INCREMENT)) {
+      // Postcrement part of the method.
+    } else if(next_if(TokenType::INCREMENT)) {
       PARSER_FOUND(TokenType::INCREMENT);
-      node = make_node<Increment>(std::move(ptr));
+      node = make_node<Increment>(std::move(lhs));
     } else if(next_if(TokenType::DECREMENT)) {
       PARSER_FOUND(TokenType::DECREMENT);
-      node = make_node<Increment>(std::move(ptr));
+      node = make_node<Increment>(std::move(lhs));
     }
   }
-
 
   return node;
 }
@@ -294,8 +265,6 @@ auto CrowParser::result_statement() -> NodePtr
   } else if(auto ptr{decl_expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{assignment()}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{postcrement()}; ptr) {
     node = std::move(ptr);
   }
 

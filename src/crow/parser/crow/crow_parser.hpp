@@ -44,7 +44,6 @@ class CrowParser : public pratt::PrattParser {
 
   // Result statement:
   virtual auto assignment() -> NodePtr;
-	virtual auto postcrement() -> NodePtr;
   virtual auto result_statement() -> NodePtr;
 
   // Jump statements:
