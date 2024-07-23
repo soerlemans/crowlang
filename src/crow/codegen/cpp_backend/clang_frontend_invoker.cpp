@@ -64,6 +64,7 @@ auto ClangFrontendInvoker::compile(const path &t_filepath) -> void
   using namespace lld;
   using namespace clang;
 
+  // TODO: Get the clang frontend integration to work.
   const auto stem{t_filepath.stem()};
 
   const auto tmp_base{t_filepath.parent_path() / stem};
@@ -80,10 +81,13 @@ auto ClangFrontendInvoker::compile(const path &t_filepath) -> void
   // FIXME: This is a temporary workaround till the programmatic approach works.
   const auto cmd{
     std::format("g++ {} -o {}", t_filepath.native(), binary.native())};
-  std::system(cmd.c_str());
+  const auto status_code{std::system(cmd.c_str())};
 
-  DBG_CRITICAL("Binary was generated!: ", binary);
+  if(status_code == 0) {
+    DBG_CRITICAL("Binary was generated!: ", binary);
+  }
 
+  // TODO: Fix ugly Clang code.
   /*
   // Do compiling magic, terrible code must refactor later.
   std::vector<const char *> args = {tmp_src.native().c_str(), "-o",

@@ -91,10 +91,24 @@ auto CppBackend::visit(Loop* t_loop) -> Any
 
   std::stringstream ss;
 
+  // FIXME: The eval_expr in the loop_statement grammar.
+  // Can have multiple semicolons.
+  // This can mess up the code generation.
+
   // clang-format off
+  // Here is an ugly temporary solution/workaround:
+  ss << "{\n"
+     << std::format("{};\n", init_expr)
+     << std::format("for(; {}; {}) {{\n", cond, expr)
+     << body
+     << "}\n"
+     << "}\n";
+
+  /* TODO: Get the more elegant solution to work.
   ss << std::format("for({}; {}; {}) {{\n", init_expr, cond, expr)
      << body
      << "}\n";
+  */
   // clang-format on
 
   return ss.str();

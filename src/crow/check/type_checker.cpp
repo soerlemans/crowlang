@@ -68,13 +68,15 @@ TypeChecker::TypeChecker(): m_envs{}
 // Control:
 auto TypeChecker::visit(If* t_if) -> Any
 {
+  // Init expression must be evaluated before condition.
+  traverse(t_if->init_expr());
+
   const auto cond{get_symbol_data(t_if->condition())};
 
   DBG_INFO("Condition: ", cond);
 
   handle_condition(cond, t_if->position());
 
-  traverse(t_if->init_expr());
   traverse(t_if->then());
   traverse(t_if->alt());
 
@@ -83,6 +85,9 @@ auto TypeChecker::visit(If* t_if) -> Any
 
 auto TypeChecker::visit(Loop* t_loop) -> Any
 {
+  // Init expression must be evaluated before condition.
+  traverse(t_loop->init_expr());
+
   // A loops condition maybe empty, which is an endless loop.
   if(t_loop->condition()) {
     const auto cond{get_symbol_data(t_loop->condition())};
@@ -92,7 +97,6 @@ auto TypeChecker::visit(Loop* t_loop) -> Any
     handle_condition(cond, t_loop->position());
   }
 
-  traverse(t_loop->init_expr());
   traverse(t_loop->body());
   traverse(t_loop->expr());
 
