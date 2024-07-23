@@ -5,10 +5,9 @@
 // Library Includes:
 #include <catch2/catch_test_macros.hpp>
 
-// Crow Includes:
-#include "ast/visitor/ast_archive.hpp"
-#include "phases.hpp"
-
+// Crow Absolute Includes:
+#include "crow/ast/visitor/ast_archive.hpp"
+#include "crow/phases.hpp"
 
 // Test Cases:
 TEST_CASE("AstArchive", "[visitor]")
@@ -31,18 +30,20 @@ TEST_CASE("AstArchive", "[visitor]")
   NodePtr ast_new{};
 
   // Create a stream too save too:
-  std::fstream fs("data.xml");
-  AstArchive archive{ArchiveType::XML};
+  std::stringstream ss("data.xml");
+  AstArchive archive{ArchiveType::JSON};
 
   SECTION("Serialize")
   {
-    archive.out(ast, fs);
+    archive.out(ast, ss);
   }
+
+  std::cout << "Ast serialized:\n" << ss.str();
 
   SECTION("Deserialize")
   {
-    archive.in(ast_new, fs);
+    archive.in(ast_new, ss);
   }
 
-	REQUIRE(false);
+  REQUIRE(false);
 }

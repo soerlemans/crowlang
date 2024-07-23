@@ -1,21 +1,27 @@
 #include "binding_map.hpp"
 
 namespace parser::pratt::binding {
-auto BindingMap::insert_binding(const token::TokenType t_type, const int t_lbp,
+// Methods:
+auto BindingMap::insert_binding(const TokenType t_type, const int t_lbp,
                                 const int t_rbp) -> void
 {
-  this->insert({
-    t_type, BindingPower{t_lbp, t_rbp}
-  });
+  const BindingPower pair{t_lbp, t_rbp};
+
+  m_map.insert({t_type, pair});
 }
 
-auto BindingMap::rbp(token::TokenType t_type) const -> int
+auto BindingMap::at(const TokenType t_type) const -> BindingPower
 {
-  return this->at(t_type).second;
+  return m_map.at(t_type);
 }
 
-auto BindingMap::lbp(token::TokenType t_type) const -> int
+auto BindingMap::rbp(const TokenType t_type) const -> int
 {
-  return this->at(t_type).first;
+  return m_map.at(t_type).second;
+}
+
+auto BindingMap::lbp(const TokenType t_type) const -> int
+{
+  return m_map.at(t_type).first;
 }
 } // namespace parser::pratt::binding

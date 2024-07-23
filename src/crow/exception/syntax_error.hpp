@@ -11,18 +11,22 @@
 #include "error.hpp"
 
 namespace exception {
+// Using Statements:
+using container::TextPosition;
+
+// Classes:
 /*!
  * Is thrown when source code of a crow program contains a syntax error.
  */
 class SyntaxError : public Error {
   private:
-  auto format(std::string_view t_msg) -> std::string;
+  auto format(std::string_view t_msg, const TextPosition& t_pos) const -> std::string;
 
   protected:
   container::TextPosition m_pos;
 
   public:
-  SyntaxError(std::string_view t_msg, const container::TextPosition& t_pos);
+  SyntaxError(std::string_view t_msg, const TextPosition& t_pos);
 
   virtual ~SyntaxError() = default;
 };

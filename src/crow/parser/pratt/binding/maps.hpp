@@ -9,17 +9,13 @@ namespace parser::pratt::binding {
 // them a binding power!
 
 // Classes:
-//! This class is a map of prefix operator binding powers
+//! This class is a map of prefix operator binding powers.
 class PrefixMap : public BindingMap {
   public:
   PrefixMap()
   {
     // Dereference:
     INSERT_BINDING(ASTERISK, 15, 15);
-
-    // Precrement:
-    INSERT_BINDING(INCREMENT, 14, 14);
-    INSERT_BINDING(DECREMENT, 14, 14);
 
     // Unary operators:
     INSERT_BINDING(NOT, 14, 14);
@@ -28,7 +24,7 @@ class PrefixMap : public BindingMap {
   }
 };
 
-//! This class is a map of prefix operator binding powers
+//! This class is a map of infix operator binding powers.
 class InfixMap : public BindingMap {
   public:
   InfixMap()
@@ -70,14 +66,6 @@ class InfixMap : public BindingMap {
     INSERT_BINDING(ASSIGNMENT, 2, 1);
   }
 };
-
-//! This class is a map of prefix operator binding powers
-class PostfixMap : public BindingMap {
-  public:
-  PostfixMap()
-  {}
-};
-
 } // namespace parser::pratt::binding
 
 #endif // CROW_CROW_PARSER_PRATT_BINDING_MAPS_HPP

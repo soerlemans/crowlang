@@ -13,5 +13,5 @@ FetchContent_MakeAvailable(rang)
 
 target_link_libraries(
 	${TARGET_CROW_LIB}
-	rang
+	PUBLIC rang
 )

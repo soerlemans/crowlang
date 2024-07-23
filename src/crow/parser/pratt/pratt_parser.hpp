@@ -13,16 +13,19 @@
 #include "binding/maps.hpp"
 
 namespace parser::pratt {
+// Using Statements:
+using binding::InfixMap;
+using binding::PrefixMap;
+
 //! This type is used to get the right hand side of a binary expressions
 using RhsFn = std::function<NodePtr(TokenType)>;
 
 // Classes:
 class PrattParser : public Parser {
   private:
-  // Note that these come from a submodule
-  binding::PrefixMap m_prefix;
-  binding::InfixMap m_infix;
-  binding::PostfixMap m_postfix;
+  // Note these come from the binding submodule.
+  PrefixMap m_prefix;
+  InfixMap m_infix;
 
   public:
   PrattParser(TokenStream&& t_tokenstream);
@@ -38,7 +41,6 @@ class PrattParser : public Parser {
   virtual auto grouping() -> NodePtr;
   virtual auto unary_prefix() -> NodePtr;
   virtual auto negation() -> NodePtr;
-  virtual auto precrement() -> NodePtr;
   virtual auto function_call() -> NodePtr;
 
   virtual auto prefix() -> NodePtr;

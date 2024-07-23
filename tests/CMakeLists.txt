@@ -4,5 +4,4 @@ target_sources(${TARGET_CROW} PRIVATE
 )
 
 # Add directorie:
-add_subdirectory(lexer)
 add_subdirectory(visitor)

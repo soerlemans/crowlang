@@ -1,10 +1,6 @@
 #ifndef CROW_CROW_CODEGEN_CPP_BACKEND_CPP_BACKEND_HPP
 #define CROW_CROW_CODEGEN_CPP_BACKEND_CPP_BACKEND_HPP
 
-// STL Includes:
-#include <format>
-#include <fstream>
-
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
 #include "lib/filesystem.hpp"
@@ -21,25 +17,30 @@ using std::filesystem::path;
 // Classes:
 /*!
  * @brief Tree walk codegenerator generating safe C++ code.
- * The generated C++ is stored in a cross platform location.
+ * The generated C++ is stored in a cross platform temporary location.
  * This generated C++ code could later be compiled with libclang.
  * Or any compiler of choice.
  */
 class CppBackend : public ast::visitor::NodeVisitor {
-  private:
-  std::ofstream m_ofs;
-
   protected:
-  auto resolve() -> void;
+  /*!
+   * Generate pretext for basics of using Crow.
+   */
+  auto header() -> std::string;
 
-  template<typename... Args>
-  auto write(const std::string_view t_fmt, Args&&... t_args) -> void
-  {
-    const auto fmt_args{std::make_format_args(std::forward<Args>(t_args)...)};
+  /*!
+   * Generate function and type prototypes, so the code can be written position
+   * independently.
+   */
+  auto prototypes() -> std::string;
 
-    m_ofs << std::vformat(t_fmt, fmt_args);
-    m_ofs << '\n';
-  }
+  /*!
+   * Convert the given AST node to C++ code.
+   *
+   * @note Throws an exception if it fails at converting the @ref Any.
+   */
+  auto resolve(NodePtr t_ptr) -> std::string;
+
 
   public:
   CppBackend() = default;
@@ -90,14 +91,20 @@ class CppBackend : public ast::visitor::NodeVisitor {
   auto visit(node::rvalue::Boolean* t_bool) -> Any override;
 
   // Typing:
-  auto visit(ast::node::typing::MethodDecl* t_md) -> Any override;
-  auto visit(ast::node::typing::Interface* t_ifc) -> Any override;
-  auto visit(ast::node::typing::MemberDecl* t_md) -> Any override;
-  auto visit(ast::node::typing::Struct* t_struct) -> Any override;
-  auto visit(ast::node::typing::Impl* t_impl) -> Any override;
-  auto visit(ast::node::typing::DotExpr* t_dot_expr) -> Any override;
+  auto visit(node::typing::MethodDecl* t_md) -> Any override;
+  auto visit(node::typing::Interface* t_ifc) -> Any override;
+  auto visit(node::typing::MemberDecl* t_md) -> Any override;
+  auto visit(node::typing::Struct* t_struct) -> Any override;
+  auto visit(node::typing::Impl* t_impl) -> Any override;
+  auto visit(node::typing::DotExpr* t_dot_expr) -> Any override;
+
+  // Misc:
+  auto visit(node::List* t_list) -> Any override;
 
   // Util:
+  /*!
+   * Transpile the @ref t_ast to valid C++ code and write it to @ref t_out.
+   */
   auto codegen(NodePtr t_ast, const path& t_out) -> void;
   auto compile(NodePtr t_ast) -> void;
 

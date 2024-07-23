@@ -24,7 +24,7 @@ class TypeAnnotation : virtual public NodeInterface {
   template<typename Archive>
   auto serialize(Archive& t_archive) -> void
   {
-    t_archive(m_type);
+    t_archive(CEREAL_NVP(m_type));
   }
 
   AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);

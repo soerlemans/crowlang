@@ -126,38 +126,7 @@ auto PrattParser::unary_prefix() -> NodePtr
       syntax_error("Expected an expression after + or -");
     }
 
-    UnaryPrefixOp op{UnaryPrefixOp::PLUS};
-    if(token.type() == TokenType::MINUS) {
-      op = UnaryPrefixOp::MINUS;
-    }
-
-    node = make_node<UnaryPrefix>(op, std::move(rhs));
-  }
-
-  return node;
-}
-
-auto PrattParser::precrement() -> NodePtr
-{
-  DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
-
-  const auto lambda{[&]<typename T>() {
-    if(auto ptr{lvalue()}; ptr) {
-      node = make_node<T>(std::move(ptr), true);
-    } else {
-      syntax_error("Expected an lvalue");
-    }
-  }};
-
-  const auto token{get_token()};
-  if(next_if(TokenType::INCREMENT)) {
-    PARSER_FOUND(TokenType::INCREMENT, " (pre)");
-    lambda.template operator()<Increment>();
-
-  } else if(next_if(TokenType::DECREMENT)) {
-    PARSER_FOUND(TokenType::DECREMENT, " (pre)");
-    lambda.template operator()<Decrement>();
+    node = make_node<UnaryPrefix>(token.type(), std::move(rhs));
   }
 
   return node;
@@ -208,8 +177,6 @@ auto PrattParser::prefix() -> NodePtr
   } else if(auto ptr{function_call()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{lvalue()}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{precrement()}; ptr) {
     node = std::move(ptr);
   }
 

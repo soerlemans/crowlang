@@ -91,7 +91,7 @@ auto NodeVisitor::visit([[maybe_unused]] Nil* t_nil) -> Any
 }
 
 //! This catches the error case where a node does not have its own method
-auto NodeVisitor::visit(NodeInterface* t_ptr) -> Any
+auto NodeVisitor::visit([[maybe_unused]] NodeInterface* t_ptr) -> Any
 {
   assert_msg("NodeVisitor: Received a NodeInterface*", t_ptr);
 

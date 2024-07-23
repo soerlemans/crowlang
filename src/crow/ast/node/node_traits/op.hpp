@@ -22,9 +22,13 @@ class Op : virtual public NodeInterface {
     return m_op;
   }
 
+  /*!
+   */
+  virtual auto op2str() const -> std::string_view = 0;
+
   AST_ARCHIVE_MAKE_ARCHIVEABLE(Op)
   {
-    t_archive(m_op);
+    t_archive(CEREAL_NVP(m_op));
   }
 
   AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);

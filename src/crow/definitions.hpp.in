@@ -27,7 +27,7 @@
  * If this is not possible return the absolute path.
  */
 #define CROW_PROJECT_RELATIVE_PATH                                           \
-  ([]() consteval {                                                          \
+  ([]() consteval noexcept {                                                 \
     constexpr std::string_view file{__FILE__};                               \
     constexpr std::string_view crow_src_dir{CROW_PROJECT_SRC_DIRECTORY "/"}; \
                                                                              \
@@ -47,7 +47,7 @@
  * @param[in] t_in .
  */
 #define CROW_PROJECT_ROOT_ABSOLUTE_PATH(t_path)                               \
-  ([]() consteval {                                                           \
+  ([]() consteval noexcept {                                                  \
     constexpr std::string_view path{t_path};                                  \
     constexpr std::string_view crow_src_dir{CROW_PROJECT_ROOT_DIRECTORY "/"}; \
                                                                               \

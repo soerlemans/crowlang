@@ -54,7 +54,7 @@ auto CrowParser::expr_opt() -> NodePtr
   return expr();
 }
 
-// FIXME: This is "temporary fix".
+// FIXME: This is "temporary method", improve later.
 auto CrowParser::init_expr(const TokenType t_type) -> NodePtr
 {
   using namespace token;
@@ -80,6 +80,8 @@ auto CrowParser::init_expr(const TokenType t_type) -> NodePtr
 
       if(next_if(TokenType::ASSIGNMENT)) {
         get_expr();
+      } else if(t_type == TokenType::LET) {
+        syntax_error("Variables declared with Let must be initialized.");
       }
     } else {
       expect(TokenType::ASSIGNMENT);
@@ -137,11 +139,7 @@ auto CrowParser::eval_expr() -> EvalPair
 
     pair = {std::move(ptr), expr()};
   } else if(auto ptr{expr()}; ptr) {
-    if(next_if(TokenType::SEMICOLON)) {
-      pair = {std::move(ptr), expr()};
-    } else {
-      pair.second = std::move(ptr);
-    }
+    pair.second = std::move(ptr);
   }
 
   return pair;
@@ -208,6 +206,7 @@ auto CrowParser::assignment() -> NodePtr
   NodePtr node;
 
   if(auto lhs{lvalue()}; lhs) {
+
     const auto pos{get_position()};
     const auto lambda{[&](const AssignmentOp t_op) {
       newline_opt();
@@ -239,6 +238,14 @@ auto CrowParser::assignment() -> NodePtr
     } else if(next_if(TokenType::ASSIGNMENT)) {
       PARSER_FOUND(TokenType::ASSIGNMENT);
       lambda(AssignmentOp::REGULAR);
+
+      // Postcrement part of the method.
+    } else if(next_if(TokenType::INCREMENT)) {
+      PARSER_FOUND(TokenType::INCREMENT);
+      node = make_node<Increment>(std::move(lhs));
+    } else if(next_if(TokenType::DECREMENT)) {
+      PARSER_FOUND(TokenType::DECREMENT);
+      node = make_node<Increment>(std::move(lhs));
     }
   }
 
@@ -255,8 +262,6 @@ auto CrowParser::result_statement() -> NodePtr
   } else if(auto ptr{decl_expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{assignment()}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{precrement()}; ptr) {
     node = std::move(ptr);
   }
 
@@ -298,6 +303,9 @@ auto CrowParser::jump_statement() -> NodePtr
   return node;
 }
 
+// FIXME: Currently i++ (postcrement) is not a expression.
+// So we have to change the grammar to allow result_statements or similar.
+// Potentially we could add a new grammar rule special for loops.
 auto CrowParser::loop_statement() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -309,11 +317,10 @@ auto CrowParser::loop_statement() -> NodePtr
 
     NodePtr expr_ptr;
     if(next_if(TokenType::SEMICOLON)) {
-      expr_ptr = expr();
+      expr_ptr = assignment();
     }
 
     auto body_ptr{body()};
-
     node = make_node<Loop>(pos, std::move(init), std::move(cond),
                            std::move(expr_ptr), std::move(body_ptr));
   }
@@ -385,6 +392,9 @@ auto CrowParser::statement() -> NodePtr
     node = std::move(ptr);
   } else if(auto ptr{body()}; ptr) {
     node = std::move(ptr);
+    // TODO: Detect expressions which have no side effects and throw.
+    // } else if() {
+    // syntax_error();
   }
 
   return node;
@@ -406,8 +416,9 @@ auto CrowParser::statement_list() -> NodeListPtr
 }
 
 // Body:
-/*! The body() should never be optional, or else we will consume newlines
- * unintentionally
+/*!
+ * The @ref body() should never be optional.
+ * Or else we will consume newlines unintentionally.
  */
 auto CrowParser::body() -> NodeListPtr
 {

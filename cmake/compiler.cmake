@@ -1,11 +1,55 @@
 # Configure the compiler settings.
 
+# Variables:
+set(CMAKE_CXX_WARNING_FLAGS
+    "-Wall"
+    "-Wextra"
+    "-Wpedantic"
+    "-Wunused"
+    "-Wunused-parameter"
+    "-Wunused-variable"
+    "-Wunused-function"
+    "-Wunused-value"
+    "-Wunused-label"
+    "-Wunreachable-code"
+    "-Wreturn-type"
+		# Clang sees multiple if statements with init clause.
+		# Where the variable has the same name as shadowing.
+		# So until this is fixed it will be disabled.
+    # "-Wshadow"
+    "-Wconversion"
+    "-Wlogical-op"
+    "-Wfloat-equal"
+    "-Wcast-qual"
+    "-Wcast-align"
+    "-Wmissing-declarations"
+    "-Wmissing-field-initializers"
+		# The standard library triggers this warning.
+		# So we cannot use it in conjunction.
+		# With -Werror.
+    # "-Wnull-dereference"
+    "-Wundef"
+    "-Wunused-but-set-variable"
+    "-Wvla"
+    "-Wwrite-strings"
+)
+
 # Functions:
-function(COMPILE_FLAGS T_TARGET)
+function(cxx_configure_target T_TARGET)
+	# Add DEBUG macro definition for debugging builds.
+	target_compile_definitions(${T_TARGET} PRIVATE
+		$<$<CONFIG:Debug>:DEBUG>
+		$<$<CONFIG:RelWithDebInfo>:DEBUG>
+	)
+
+	# All available and default enabled warnings in Gcc/Clang can be listed with:
+	# g++ -Q --help=warning | less
+
+	# Set warnings for target.
 	target_compile_options(${T_TARGET} PRIVATE
-		-Wall
-		-Wextra
-		-pedantic
+		${CMAKE_CXX_WARNING_FLAGS}
+		$<$<CONFIG:Release>:-Werror>
+		$<$<CONFIG:RelWithDebInfo>:-Werror>
 	)
 endfunction()
 
@@ -20,35 +64,12 @@ set_target_properties(
 	C_COMPILER "clang"
 )
 
-# Define DEBUG macro if build type is Debug
-target_compile_definitions(${TARGET_CROW} PRIVATE
-  $<$<CONFIG:Debug>:DEBUG>
-)
+# Configure compiler for targets:
+cxx_configure_target(${TARGET_CROW})
+cxx_configure_target(${TARGET_CROW_LIB})
+#cxx_configure_target(${TARGET_CROW_STDLIB})
 
-target_compile_definitions(${TARGET_CROW_LIB} PRIVATE
-  $<$<CONFIG:Debug>:DEBUG>
-)
-
-# Compiler flags:
-target_compile_options(${TARGET_CROW} PRIVATE
-  -Wall
-  -Wextra
-  -pedantic
-)
-
-target_compile_options(${TARGET_CROW_LIB} PRIVATE
-  -Wall
-  -Wextra
-  -pedantic
-)
-
-#add_compile_options(
-#  -Wall
-#  -Wextra
-#  -pedantic
-#)
-
-# Set the flags for debugging
+# Set the flags for debugging.
 set(CMAKE_CXX_FLAGS_DEBUG
 	"-g3 -gdwarf"
 )

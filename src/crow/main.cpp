@@ -13,8 +13,8 @@ enum ExitCode {
   CLI11_EXCEPTION = 700,
 };
 
-// TODO: Relocate?
-auto disable_absorb_exceptions() -> void
+// TODO: Relocate.
+static auto disable_absorb_exceptions() -> void
 {
 #ifdef DEBUG
   // Do not absorb cpptrace errors on debug build.

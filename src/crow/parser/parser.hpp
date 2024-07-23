@@ -43,7 +43,9 @@ class Parser {
   TokenStream m_tokenstream;
 
   protected:
-  DBG_TRACE_INIT()
+  DBG_TRACE_INIT();
+
+  auto get_tokenstream() -> TokenStream&;
 
   /*!
    * Wrapper method for std::make_shared() makes it easy to change smart

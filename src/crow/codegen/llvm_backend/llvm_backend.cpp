@@ -185,7 +185,7 @@ auto LlvmBackend::visit(Arithmetic* t_arith) -> Any
 {
   using namespace llvm;
 
-  Value* expr;
+  Value* expr{nullptr};
   auto* lhs{get_value(t_arith->left())};
   auto* rhs{get_value(t_arith->right())};
 

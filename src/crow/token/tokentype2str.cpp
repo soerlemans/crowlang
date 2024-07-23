@@ -5,7 +5,10 @@
 #include <sstream>
 #include <stdexcept>
 
-// Local Includes
+// Absolute Includes:
+#include "crow/debug/log.hpp"
+
+// Local Includes:
 #include "reserved/reserved.hpp"
 
 // Macros:
@@ -16,10 +19,9 @@
     }                                \
   } while(false)
 
-#define CASE_STR(t_type)  \
+#define MATCH_STR(t_type) \
   case TokenType::t_type: \
     return #t_type;
-
 
 // Using statements:
 using namespace token;
@@ -61,30 +63,34 @@ auto tokentype2str(const token::TokenType t_type) -> std::string
 
   // Miscellenous:
   switch(t_type) {
-    CASE_STR(IDENTIFIER)
+    MATCH_STR(IDENTIFIER)
 
     // Literals:
-    CASE_STR(INTEGER)
-    CASE_STR(FLOAT)
-    CASE_STR(STRING)
+    MATCH_STR(INTEGER)
+    MATCH_STR(FLOAT)
+    MATCH_STR(STRING)
 
     // Braces:
-    CASE_STR(PAREN_OPEN)
-    CASE_STR(PAREN_CLOSE)
-    CASE_STR(ACCOLADE_OPEN)
-    CASE_STR(ACCOLADE_CLOSE)
-    CASE_STR(BRACE_OPEN)
-    CASE_STR(BRACE_CLOSE)
+    MATCH_STR(PAREN_OPEN)
+    MATCH_STR(PAREN_CLOSE)
+    MATCH_STR(ACCOLADE_OPEN)
+    MATCH_STR(ACCOLADE_CLOSE)
+    MATCH_STR(BRACE_OPEN)
+    MATCH_STR(BRACE_CLOSE)
 
     // Miscellaneous:
-    CASE_STR(NEWLINE)
+    MATCH_STR(NEWLINE)
 
     default:
+      const std::string_view str{
+        "TokenType could not be converteted to std::string_view."};
+
+      DBG_ERROR(str);
+      throw std::invalid_argument{str.data()};
       break;
   }
 
-  throw std::invalid_argument{
-    "TokenType can not be converteted to std::string_view"};
+  return {};
 }
 } // namespace token
 

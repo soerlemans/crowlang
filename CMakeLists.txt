@@ -9,11 +9,12 @@ project(
 	LANGUAGES CXX C
 )
 
-# Set the targets
+# Set the target variables.
 include(cmake/targets.cmake)
 
 # Define the executable for the crow compiler.
 add_library(${TARGET_CROW_LIB} STATIC)
+# add_library(${TARGET_CROW_STDLIB} SHARED)
 add_executable(${TARGET_CROW})
 
 # Configure include-what-you-use.
@@ -45,7 +46,9 @@ target_include_directories(
 
 # Compile sources.
 add_subdirectory(src)
-target_link_libraries(${TARGET_CROW} ${TARGET_CROW_LIB})
+target_link_libraries(
+	${TARGET_CROW}
+	PUBLIC ${TARGET_CROW_LIB})
 
 # Build tests.
 if(DEFINED BUILD_CROW_TESTS)

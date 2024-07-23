@@ -8,7 +8,8 @@
 
 namespace container {
 // Classes:
-/*! Streams are containers that keep track of their current element.
+/*!
+ * Streams are containers that keep track of their current element.
  */
 template<typename T>
   requires std::bidirectional_iterator<typename T::iterator>
@@ -62,7 +63,7 @@ class Stream : public T {
     return m_iter;
   }
 
-  virtual auto set(Iterator t_iter) -> void
+  virtual auto set(const Iterator t_iter) -> void
   {
     m_iter = std::move(t_iter);
   }

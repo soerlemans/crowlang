@@ -19,7 +19,7 @@ class UnaryOperator : virtual public NodeInterface {
 
   AST_ARCHIVE_MAKE_ARCHIVEABLE(UnaryOperator)
   {
-    t_archive(m_left);
+    t_archive(CEREAL_NVP(m_left));
   }
 
   AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);

@@ -22,8 +22,8 @@ concept IsAnyOf = (std::same_as<Args, Type> || ...);
 
 // Classes:
 /*!
- * @brief Visitor made for printing the AST Node per node
- * Has a unique overload for every print
+ * Visitor made for printing the AST Node per node.
+ * Has a unique overload for every print.
  */
 class AstPrinter : public NodeVisitor {
   private:
@@ -31,6 +31,7 @@ class AstPrinter : public NodeVisitor {
   std::ostream& m_os;
 
   protected:
+  //! Prints the given @ref t_str only if the @ref t_ptr is true.
   auto print_if(std::string_view t_str, ast::node::NodePtr t_ptr) -> void;
 
   template<typename... Args>
@@ -43,7 +44,7 @@ class AstPrinter : public NodeVisitor {
     (m_os << ... << t_args);
 
     // Create the indentation level denoter
-    m_os << " - (" << m_counter << ")\n";
+    m_os << " (indent: " << m_counter << ")\n";
   }
 
   template<typename Base, typename Ptr, typename Fn>
@@ -60,6 +61,8 @@ class AstPrinter : public NodeVisitor {
     return is_derived;
   }
 
+  // TODO: There is likely a more elegant solution to this, but for now this
+  // works.
   template<typename Ptr>
   auto print_traits(Ptr t_ptr) -> void
   {
@@ -189,7 +192,6 @@ class AstPrinter : public NodeVisitor {
   auto visit(node::List* t_list) -> Any override;
   auto visit(node::Nil* t_nil) -> Any override;
 
-  // TODO: Add ostream& parameter.
   auto print(NodePtr t_ast) -> void;
 
   virtual ~AstPrinter() = default;

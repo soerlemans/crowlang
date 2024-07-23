@@ -6,12 +6,13 @@
 
 namespace exception {
 // Methods:
-auto SyntaxError::format(const std::string_view t_msg) -> std::string
+auto SyntaxError::format(const std::string_view t_msg,
+                         const TextPosition& t_pos) const -> std::string
 {
   std::stringstream ss;
   std::stringstream lineno_ss;
 
-  const auto [path, line, lineno, columnno] = m_pos;
+  const auto [path, line, lineno, columnno] = t_pos;
 
   // Line number is zero indexed
   lineno_ss << " - Line(";
@@ -22,6 +23,11 @@ auto SyntaxError::format(const std::string_view t_msg) -> std::string
   ss << "Error description: " << std::quoted(t_msg) << '\n';
   ss << lineno_ss.str();
 
+  // If the line does not have a newline at the end add it.
+  if(line.back() != '\n') {
+    ss << '\n';
+  }
+
   ss << line;
 
   const auto indent{lineno_ss.str().size() + columnno};
@@ -31,7 +37,7 @@ auto SyntaxError::format(const std::string_view t_msg) -> std::string
 }
 
 SyntaxError::SyntaxError(const std::string_view t_msg,
-                         const container::TextPosition& t_pos)
-  : Error{format(t_msg)}, m_pos(t_pos)
+                         const TextPosition& t_pos)
+  : Error{format(t_msg, t_pos)}, m_pos(t_pos)
 {}
 } // namespace exception
