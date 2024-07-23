@@ -80,15 +80,11 @@ auto CrowParser::init_expr(const TokenType t_type) -> NodePtr
 
       if(next_if(TokenType::ASSIGNMENT)) {
         get_expr();
+      } else if(t_type == TokenType::LET) {
+        syntax_error("Variables declared with Let must be initialized.");
       }
-
-      // Let expressions must be initialized.
-    } else if(t_type == TokenType::LET) {
+    } else {
       expect(TokenType::ASSIGNMENT);
-      get_expr();
-
-      // With var we do not need to assign a base value.
-    } else if(next_if(TokenType::ASSIGNMENT)) {
       get_expr();
     }
 

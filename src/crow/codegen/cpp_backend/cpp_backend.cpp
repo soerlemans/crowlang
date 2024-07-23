@@ -86,21 +86,25 @@ auto CppBackend::visit(Loop* t_loop) -> Any
   const auto init_expr{resolve(t_loop->init_expr())};
   const auto cond{resolve(t_loop->condition())};
 
-  const auto expr{resolve(t_loop->expr())};
+  const auto post_expr{resolve(t_loop->expr())};
   const auto body{resolve(t_loop->body())};
 
   std::stringstream ss;
 
   // FIXME: The eval_expr in the loop_statement grammar.
-  // Can have multiple semicolons.
+  // Can contain multiple semicolons.
+  // Same applies to post_expr as postcrement and assignment add a semicolon.
   // This can mess up the code generation.
 
   // clang-format off
   // Here is an ugly temporary solution/workaround:
   ss << "{\n"
      << std::format("{};\n", init_expr)
-     << std::format("for(; {}; {}) {{\n", cond, expr)
+     << std::format("for(;{};) {{\n", cond)
+     << "do {\n"
      << body
+     << "} while(false); \n"
+     << post_expr
      << "}\n"
      << "}\n";
 
