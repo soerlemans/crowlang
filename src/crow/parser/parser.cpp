@@ -29,7 +29,6 @@ auto Parser::syntax_error(const std::string_view t_msg) const -> void
 auto Parser::eos_error(const std::string_view t_msg) const -> void
 {
   if(m_tokenstream.eos()) {
-    // TODO: Make a function for this
     std::stringstream ss;
     ss << "EOS reached!\n";
     ss << " - ";

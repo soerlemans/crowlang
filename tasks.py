@@ -73,10 +73,12 @@ def cmake_build_args(t_mode: str) -> str:
     return args
 
 
-def cmake(t_ctx, t_mode: str, t_parallel: bool):
+def cmake(t_ctx, t_mode: str, t_parallel: bool, t_lint: bool):
     ''' TODO: Document. '''
     parallel_arg = cmake_parallel_arg(t_parallel)
     build_args = cmake_build_args(t_mode)
+
+    # TODO: Add lint as an option for enabling .clang-tidy.
 
     run(t_ctx, f'cmake -S . -B {t_mode}/ {build_args}')
     run(t_ctx, f'cmake --build {t_mode}/ {parallel_arg}')
@@ -85,8 +87,11 @@ def cmake(t_ctx, t_mode: str, t_parallel: bool):
 
 # Tasks:
 @task
-def all(ctx):
-    print('TODO: Implement.')
+def all(ctx, parallel=True, lint=False):
+    for mode in BuildMode:
+        print(f'@Invoke: Building \'{mode}\'')
+        build(ctx, mode, parallel)
+        pass
     pass
 
 @task
@@ -99,13 +104,13 @@ def install(ctx, parallel=True):
     pass
 
 @task(help={'mode': '', 'parallel': 'Flag indicating concurrent builds.'})
-def build(ctx, mode='', parallel=True):
+def build(ctx, mode='', parallel=True, lint=False):
     '''
     Build the project.
     '''
     enum_values = [ item.value for item in BuildMode ]
     mode = mode if mode in enum_values else 'build'
-    cmake(ctx, mode, parallel)
+    cmake(ctx, mode, parallel, lint)
     pass
 
 @task
@@ -118,7 +123,7 @@ def clean(ctx, objects=False):
         path += '/CMakeFiles' if objects else ''
         path += '/*'
 
-        print(f'Removing: {path}')
+        print(f'@Invoke: Removing: {path}')
         ctx.run(f'rm -rf {path}/*')
         pass
     pass

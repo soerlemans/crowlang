@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_DEFINITIONS_HPP
-#define CROW_CROW_DEFINITIONS_HPP
+#ifndef CROW_VERSION_HPP
+#define CROW_VERSION_HPP
 
 // STL Includes:
 #include <string_view>
@@ -54,4 +54,4 @@
     return crow_src_dir + path;                                               \
   }())
 
-#endif // CROW_CROW_DEFINITIONS_HPP
+#endif // CROW_PROJECT_VERSION_HPP

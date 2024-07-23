@@ -2,7 +2,7 @@
 root = true
 
 # Configure crow source
-[*.{cr}]
+[*.{cw}]
 charset = utf-8
 indent_style = space
 indent_size = 2

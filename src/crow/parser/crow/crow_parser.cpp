@@ -54,7 +54,7 @@ auto CrowParser::expr_opt() -> NodePtr
   return expr();
 }
 
-// FIXME: This is "temporary fix".
+// FIXME: This is "temporary method", improve later.
 auto CrowParser::init_expr(const TokenType t_type) -> NodePtr
 {
   using namespace token;
@@ -81,8 +81,14 @@ auto CrowParser::init_expr(const TokenType t_type) -> NodePtr
       if(next_if(TokenType::ASSIGNMENT)) {
         get_expr();
       }
-    } else {
+
+      // Let expressions must be initialized.
+    } else if(t_type == TokenType::LET) {
       expect(TokenType::ASSIGNMENT);
+      get_expr();
+
+      // With var we do not need to assign a base value.
+    } else if(next_if(TokenType::ASSIGNMENT)) {
       get_expr();
     }
 
@@ -137,11 +143,7 @@ auto CrowParser::eval_expr() -> EvalPair
 
     pair = {std::move(ptr), expr()};
   } else if(auto ptr{expr()}; ptr) {
-    if(next_if(TokenType::SEMICOLON)) {
-      pair = {std::move(ptr), expr()};
-    } else {
-      pair.second = std::move(ptr);
-    }
+    pair.second = std::move(ptr);
   }
 
   return pair;
@@ -319,11 +321,10 @@ auto CrowParser::loop_statement() -> NodePtr
 
     NodePtr expr_ptr;
     if(next_if(TokenType::SEMICOLON)) {
-      expr_ptr = expr();
+      expr_ptr = assignment();
     }
 
     auto body_ptr{body()};
-
     node = make_node<Loop>(pos, std::move(init), std::move(cond),
                            std::move(expr_ptr), std::move(body_ptr));
   }

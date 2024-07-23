@@ -22,6 +22,11 @@ auto SyntaxError::format(const std::string_view t_msg) -> std::string
   ss << "Error description: " << std::quoted(t_msg) << '\n';
   ss << lineno_ss.str();
 
+  // If the line does not have a newline at the end add it.
+  if(line.back() != '\n') {
+    ss << '\n';
+  }
+
   ss << line;
 
   const auto indent{lineno_ss.str().size() + columnno};

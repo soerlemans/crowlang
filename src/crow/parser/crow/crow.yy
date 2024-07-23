@@ -112,11 +112,11 @@ logical          : expr newline_opt AND expr
 // FIXME: We should handle postcrement like Go where it is a statement not an expression.
 
 expr             : lvalue
-				         | literal
+		 | literal
                  | grouping
                  | unary_prefix
                  | negation
-				         | function_call
+		 | function_call
                  | arithmetic
                  | comparison
                  | logical
@@ -127,12 +127,12 @@ expr_opt         : // empty
                  ;
 
 // TODO: Refactor Var and Let to be more elegant
-let_expr         : Let IDENTIFIER ':' IDENTIFIER
-                 | Let IDENTIFIER '=' newline_opt expr
+let_expr         : Let IDENTIFIER '=' newline_opt expr
                  | Let IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
                  ;
 
-var_expr         : Var IDENTIFIER '=' newline_opt expr
+var_expr         : Var IDENTIFIER ':' IDENTIFIER
+                 | Var IDENTIFIER '=' newline_opt expr
                  | Var IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
                  ;
 
@@ -142,7 +142,6 @@ decl_expr        : var_expr
 
 eval_expr        : decl_expr ';' expr
                  | expr
-                 | expr ';' expr
                  ;
 
 expr_statement   : expr terminator
@@ -183,9 +182,12 @@ jump_statement   : Continue terminator
                  ;
 
 // Loop statement:
+// FIXME: Expr and assignment both accept lvalue's.
+// So we cannot distinguish using the top-down parser.
+// We need to figure out a workaround or leave as is.
 loop_statement   : Loop body
                  | Loop eval_expr body
-                 | Loop eval_expr ';' expr body
+                 | Loop eval_expr ';' assignment body
                  ;
 
 // Match statement:

@@ -1,9 +1,12 @@
 fn main() -> int {
-   var sum = 0
+   var sum = 10
 
-   loop sum < 10 {
-       sum++
+   loop sum < 20; sum++ {
    }
 
-   return sum
+   loop {
+     break
+   }
+
+   return sum # + index
 }

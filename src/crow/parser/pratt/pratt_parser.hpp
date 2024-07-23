@@ -13,9 +13,8 @@
 #include "binding/maps.hpp"
 
 namespace parser::pratt {
-// Using Declarations:
+// Using Statements:
 using binding::InfixMap;
-using binding::PostfixMap;
 using binding::PrefixMap;
 
 //! This type is used to get the right hand side of a binary expressions
@@ -27,7 +26,6 @@ class PrattParser : public Parser {
   // Note these come from the binding submodule.
   PrefixMap m_prefix;
   InfixMap m_infix;
-  PostfixMap m_postfix;
 
   public:
   PrattParser(TokenStream&& t_tokenstream);

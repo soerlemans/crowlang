@@ -66,13 +66,6 @@ class InfixMap : public BindingMap {
     INSERT_BINDING(ASSIGNMENT, 2, 1);
   }
 };
-
-//! This class is a map of postfix operator binding powers.
-class PostfixMap : public BindingMap {
-  public:
-  PostfixMap()
-  {}
-};
 } // namespace parser::pratt::binding
 
 #endif // CROW_CROW_PARSER_PRATT_BINDING_MAPS_HPP

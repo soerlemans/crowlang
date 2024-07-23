@@ -308,6 +308,8 @@ auto Lexer::tokenize() -> TokenStream
         DBG_INFO("NEWLINE");
         m_ts.push_back(create_token(TokenType::NEWLINE));
       }
+
+      // TODO: change the comment character to // and /*
     } else if(ch == '#') {
       // '#' are used for comments.
       // If we just skip to the next line we ignore the \n at the end, so we
