@@ -100,11 +100,8 @@ auto CppBackend::visit(Loop* t_loop) -> Any
   // Here is an ugly temporary solution/workaround:
   ss << "{\n"
      << std::format("{};\n", init_expr)
-     << std::format("for(;{};) {{\n", cond)
-     << "do {\n"
+     << std::format("for(;{}; [&]() {{ return {} }}() ) {{\n", cond, post_expr)
      << body
-     << "} while(false); \n"
-     << post_expr
      << "}\n"
      << "}\n";
 

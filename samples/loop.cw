@@ -1,5 +1,5 @@
 fn main() -> int {
-   var empty
+   #var empty: int
 
    var sum = 10
    loop sum < 20; sum++ {
@@ -8,9 +8,9 @@ fn main() -> int {
    loop var index = 10; index < 20; index++ {
    }
 
-   loop {
-     break
-   }
+   #loop {
+     #break
+   #}
 
-   return sum # + index
+   return sum
 }
