@@ -46,7 +46,7 @@ def cmake_parallel_arg(t_parallel: bool) -> str:
 
     return arg
 
-def cmake_build_args(t_mode: str) -> str:
+def cmake_mode_args(t_mode: str) -> str:
     '''
     Get the cmake arguments for a specific build m
     '''
@@ -65,7 +65,7 @@ def cmake_build_args(t_mode: str) -> str:
 
         case BuildMode.TEST:
             args += '-DCMAKE_BUILD_TYPE=Debug '
-            args += '-DBUILD_CROW_TESTS=TRUE '
+            args += '-DCROW_BUILD_TESTS=TRUE '
             pass
 
         case _:
@@ -76,9 +76,11 @@ def cmake_build_args(t_mode: str) -> str:
 def cmake(t_ctx, t_mode: str, t_parallel: bool, t_lint: bool):
     ''' TODO: Document. '''
     parallel_arg = cmake_parallel_arg(t_parallel)
-    build_args = cmake_build_args(t_mode)
+    build_args = cmake_mode_args(t_mode)
 
-    # TODO: Add lint as an option for enabling .clang-tidy.
+    # Add
+    if t_lint:
+        build_args += '-DCROW_CLANG_TIDY=TRUE'
 
     run(t_ctx, f'cmake -S . -B {t_mode}/ {build_args}')
     run(t_ctx, f'cmake --build {t_mode}/ {parallel_arg}')

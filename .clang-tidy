@@ -7,13 +7,12 @@ Checks: |
  modernize-*,
  performance-*,
  readability-*,
- -modernize-use-nodiscard,
+ - modernize-use-nodiscard,
  -readability-implicit-bool-conversion,
  -readability-braces-around-statements,
  -readability-identifier-length,
  -readability-function-cognitive-complexity,
  -bugprone-easily-swappable-parameters
-WarningsAsErrors: ""
 HeaderFilterRegex: ""
 CheckOptions:
   - key: readability-braces-around-statements

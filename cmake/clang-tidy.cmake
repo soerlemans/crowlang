@@ -1,6 +1,6 @@
 # Configure clang-tidy.
 
-# Clang-tidy is processing dependencies and failing
+if(DEFINED CROW_CLANG_TIDY)
 find_program(
 	CLANG_TIDY_PATH
 	NAMES clang-tidy
@@ -18,4 +18,6 @@ set_target_properties(
 	${TARGET_CROW_LIB}
 	PROPERTIES
 	CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}"
-)
+      )
+
+endif()

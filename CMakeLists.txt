@@ -30,7 +30,9 @@ set_target_properties(
 include(cmake/compiler.cmake)
 
 # Configure include-what-you-use.
-#include(cmake/clang-tidy.cmake)
+
+# Configure clang-tidy.
+include(cmake/clang-tidy.cmake)
 
 # Generate the definitions header.
 include(cmake/definitions.cmake)
@@ -50,9 +52,9 @@ target_link_libraries(
 	${TARGET_CROW}
 	PUBLIC ${TARGET_CROW_LIB})
 
-# Build tests.
-if(DEFINED BUILD_CROW_TESTS)
+# Build tests:
+if(DEFINED CROW_BUILD_TESTS)
 include(cmake/dependencies/catch2.cmake)
 
 add_subdirectory(tests)
-endif(DEFINED BUILD_CROW_TESTS)
+endif()

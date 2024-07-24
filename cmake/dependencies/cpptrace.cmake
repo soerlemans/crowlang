@@ -4,7 +4,7 @@ message(STATUS "[+] Fetching cpptrace library.")
 FetchContent_Declare(
   cpptrace
   GIT_REPOSITORY https://github.com/jeremy-rifkin/cpptrace.git
-  GIT_TAG        v0.6.0
+  GIT_TAG        v0.6.3
   GIT_PROGRESS TRUE
 	SYSTEM
 )
