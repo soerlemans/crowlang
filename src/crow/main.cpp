@@ -23,9 +23,12 @@ static auto disable_absorb_exceptions() -> void
 }
 
 // Main:
-auto main(int t_argc, char* t_argv[]) -> int {
+auto main(int t_argc, char* t_argv[]) -> int
+{
   // Initialize command line argument parser.
-  CLI::App app{"Compiler for Crow(lang)"}; try {disable_absorb_exceptions();
+  CLI::App app{"Compiler for Crow(lang)"};
+  try {
+    disable_absorb_exceptions();
     cli_args(app, t_argc, t_argv);
 
     // Set loglevel.
