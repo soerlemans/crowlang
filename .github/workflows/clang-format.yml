@@ -18,23 +18,11 @@ jobs:
       with:
         fetch-depth: 2
 
-    - name: Find changed files.
-      id: changed-files
-      run: |
-        #CHANGED_FILES="$(git diff --name-only --diff-filter=ACM HEAD HEAD~1 -- '*.[ch]pp' '*.[ch]')"
-        #echo "CHANGED_FILES=$CHANGED_FILES" >> "$GITHUB_OUTPUT"
-
     - name: Check formatting.
       id: check-format
       run: |
-        CHANGED_FILES="$(git diff --name-only --diff-filter=ACM HEAD HEAD~1 -- '*.[ch]pp' '*.[ch]')"
-        if [[ -z "$CHANGED_FILES" ]]
-        then
-          echo "No source files changed."
-          exit 0
-        fi
-
         STATUS=0
+        FILES="$(git diff --name-only --diff-filter=ACM HEAD HEAD~1 -- '*.[ch]pp' '*.[ch]')"
         echo "$FILES" | while read LINE; do
           if [[ -f "$LINE" ]]
           then
@@ -44,8 +32,6 @@ jobs:
               STATUS=1
             fi
             echo -e "END $LINE\n"
-          else
-            tree
           fi
         done
 
