@@ -21,7 +21,7 @@ jobs:
     - name: Find changed files.
       id: changed-files
       run: |
-        CHANGED_FILES=$(git diff --name-only --diff-filter=ACM HEAD HEAD~1 -- '*.[ch]pp' '*.[ch]')
+        CHANGED_FILES="$(git diff --name-only --diff-filter=ACM HEAD HEAD~1 -- '*.[ch]pp' '*.[ch]')"
         echo "::set-output name=FILES::$CHANGED_FILES"
 
     - name: Check formatting.
