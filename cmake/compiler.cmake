@@ -75,9 +75,9 @@ set(CMAKE_CXX_FLAGS_DEBUG
 )
 
 # Make it possible for tests to include sources from the project root.
-if(DEFINED BUILD_CROW_TESTS)
+if(DEFINED CROW_BUILD_TESTS)
 target_include_directories(
 	${TARGET_CROW_TESTS}
 	PUBLIC ${CMAKE_SOURCE_DIR}/src
 )
-endif(DEFINED BUILD_CROW_TESTS)
+endif()

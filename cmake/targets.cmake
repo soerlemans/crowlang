@@ -8,8 +8,10 @@ set(TARGET_CROW_STDLIB "stdcrowlib")
 
 set(TARGET_CROW_TESTS "crow_tests")
 
-# Conditionally set the main target.
+# Conditionally set the main target:
 set(TARGET_CROW "crow")
-if(DEFINED BUILD_CROW_TESTS)
+
+# Change the main target if we are building tests.
+if(DEFINED CROW_BUILD_TESTS)
 set(TARGET_CROW ${TARGET_CROW_TESTS})
-endif(DEFINED BUILD_CROW_TESTS)
+endif()

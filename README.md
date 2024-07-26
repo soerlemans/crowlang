@@ -1,6 +1,6 @@
-Crow
-====
-This project is me experimentation with creating my own programming language.
+Crowlang
+========
+This project is me experimenting with creating my own programming language.
 For this project I am using C++23.
 
 Crow's syntax is inspired by Swift and Rust.

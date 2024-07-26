@@ -1,0 +1,43 @@
+name: Clang-format check.
+
+on:
+  pull_request:
+    paths:
+      - '**/*.cpp'
+      - '**/*.h'
+      - '**/*.c'
+      - '**/*.hpp'
+
+jobs:
+ clang-format-check:
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Check out repository code.
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+
+    - name: Check formatting.
+      id: check-format
+      run: |
+        STATUS=0
+        FILES="$(git diff --name-only --diff-filter=ACM HEAD HEAD~1 -- '*.[ch]pp' '*.[ch]')"
+        while read LINE; do
+          if [[ -f "$LINE" ]]
+          then
+            if ! clang-format --dry-run -Werror "$LINE"
+            then
+              echo "BEGIN $LINE"
+              STATUS=1
+              echo -e "END $LINE\n"
+            fi
+          fi
+        done < <(echo "$FILES")
+
+        exit $STATUS
+
+    - name: Format check result.
+      if: failure()
+      run: |
+        echo "Run clang-format on unformatted files."
