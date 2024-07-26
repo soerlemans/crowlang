@@ -10,7 +10,7 @@ on:
 
 jobs:
  clang-format-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
     - name: Check out repository code.
@@ -23,17 +23,17 @@ jobs:
       run: |
         STATUS=0
         FILES="$(git diff --name-only --diff-filter=ACM HEAD HEAD~1 -- '*.[ch]pp' '*.[ch]')"
-        echo "$FILES" | while read LINE; do
+        while read LINE; do
           if [[ -f "$LINE" ]]
           then
-            echo "BEGIN $LINE"
             if ! clang-format --dry-run -Werror "$LINE"
             then
+              echo "BEGIN $LINE"
               STATUS=1
+              echo -e "END $LINE\n"
             fi
-            echo -e "END $LINE\n"
           fi
-        done
+        done < <(echo "$FILES")
 
         exit $STATUS
 

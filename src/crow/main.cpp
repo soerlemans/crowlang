@@ -30,7 +30,6 @@ auto main(int t_argc, char* t_argv[]) -> int
   try {
     disable_absorb_exceptions();
     cli_args(app, t_argc, t_argv);
-
     // Set loglevel.
     debug::set_loglevel(settings.m_level);
   } catch(const CLI::ParseError& e) {
