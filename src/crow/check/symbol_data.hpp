@@ -40,7 +40,7 @@ class SymbolData : public Variant {
 } // namespace check
 
 // Functions:
-auto operator<<(std::ostream& t_os, const check::SymbolData& t_data)
-  -> std::ostream&;
+auto operator<<(std::ostream& t_os,
+                const check::SymbolData& t_data) -> std::ostream&;
 
 #endif // CROW_CROW_CHECK_SYMBOL_DATA_HPP

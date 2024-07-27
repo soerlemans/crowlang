@@ -18,7 +18,7 @@ jobs:
       with:
         fetch-depth: 2
 
-    - name: Check formatting.
+    - name: Print clang-format version.
       id: clang-format-version
       run: |
         echo "Clang-format version:"

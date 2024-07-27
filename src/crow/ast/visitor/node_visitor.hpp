@@ -9,11 +9,11 @@
 
 
 // Macros:
-#define AST_VISITOR_STUB(t_class, t_type)                  \
-  /* NOLINTBEGIN */                                        \
-  auto t_class::visit([[maybe_unused]] t_type* t_ptr)->Any \
-  {                                                        \
-    return {};                                             \
+#define AST_VISITOR_STUB(t_class, t_type)                    \
+  /* NOLINTBEGIN */                                          \
+  auto t_class::visit([[maybe_unused]] t_type* t_ptr) -> Any \
+  {                                                          \
+    return {};                                               \
   }
 
 /* NOLINTBEGIN */

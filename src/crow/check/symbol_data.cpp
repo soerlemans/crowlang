@@ -41,7 +41,8 @@ auto SymbolData::is_const() const -> bool
     return false;
   }};
 
-  const auto not_const{[]([[maybe_unused]] const auto& t_data) {
+  const auto not_const{[]([[maybe_unused]]
+                          const auto& t_data) {
     return false;
   }};
 
@@ -109,8 +110,8 @@ auto SymbolData::strip() const -> TypeVariant
 } // namespace check
 
 // Functions:
-auto operator<<(std::ostream& t_os, const check::SymbolData& t_data)
-  -> std::ostream&
+auto operator<<(std::ostream& t_os,
+                const check::SymbolData& t_data) -> std::ostream&
 {
   std::visit(
     [&](auto&& t_v) {
