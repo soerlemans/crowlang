@@ -295,13 +295,15 @@ auto CrowParser::jump_statement() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  if(next_if(TokenType::CONTINUE)) {
+  if(check(TokenType::CONTINUE)) {
     context_check(Context::LOOP);
+    next();
 
     terminator();
     node = make_node<Continue>();
-  } else if(next_if(TokenType::BREAK)) {
+  } else if(check(TokenType::BREAK)) {
     context_check(Context::LOOP);
+    next();
 
     terminator();
     node = make_node<Break>();

@@ -14,27 +14,29 @@
 
 
 // Macros:
-#define LOG_TOK(t_msg, t_str) DBG_INFO(t_msg, std::quoted(std::string{t_str}))
+#define LOG_TOKEN(t_msg, t_str) DBG_INFO(t_msg, std::quoted(std::string{t_str}))
 
 namespace lexer {
-// Using statements:
-using token::Token;
+// Using Statements:
 using token::TokenType;
-using token::TokenTypeOpt;
 
-// Error handling:
+// Protected Methods:
+auto Lexer::text_position() const -> TextPosition
+{
+  return m_text->position();
+}
+
 auto Lexer::syntax_error(const std::string_view t_msg) const -> void
 {
   using exception::SyntaxError;
 
-  throw SyntaxError{std::string{t_msg}, m_text->position()};
+  throw SyntaxError{std::string{t_msg}, text_position()};
 }
 
-// Public constructors:
+// Public methods:
 Lexer::Lexer(TextStreamPtr t_text): m_text{t_text}
 {}
 
-// Public methods:
 auto Lexer::is_keyword(const std::string_view t_identifier) -> TokenTypeOpt
 {
   using namespace token::reserved::keywords;
@@ -42,7 +44,7 @@ auto Lexer::is_keyword(const std::string_view t_identifier) -> TokenTypeOpt
   TokenTypeOpt opt;
 
   if(const auto iter{g_keywords.find(t_identifier)}; iter != g_keywords.end()) {
-    LOG_TOK("KEYWORD: ", iter->first);
+    LOG_TOKEN("KEYWORD: ", iter->first);
     opt = iter->second;
   }
 
@@ -54,6 +56,7 @@ auto Lexer::identifier() -> Token
   using namespace token::reserved::symbols;
 
   Token token;
+  auto position{text_position()};
   std::stringstream ss;
 
   auto is_valid_id{[&](const char t_char) -> bool {
@@ -75,10 +78,10 @@ auto Lexer::identifier() -> Token
 
   // Verify if it is a keyword or not
   if(const auto opt{is_keyword(ss.str())}; opt) {
-    token = create_token(opt.value());
+    token = Token{opt.value(), position};
   } else {
-    LOG_TOK("IDENTIFIER: ", ss.str());
-    token = create_token(TokenType::IDENTIFIER, ss.str());
+    LOG_TOKEN("IDENTIFIER: ", ss.str());
+    token = Token{TokenType::IDENTIFIER, ss.str(), position};
   }
 
   return token;
@@ -101,6 +104,8 @@ auto Lexer::is_hex_literal() -> bool
 
 auto Lexer::handle_hex() -> Token
 {
+  auto position{text_position()};
+
   std::stringstream ss;
 
   // Extract hex
@@ -118,10 +123,10 @@ auto Lexer::handle_hex() -> Token
     }
   }
 
-  LOG_TOK("HEX: ", ss.str());
+  LOG_TOKEN("HEX: ", ss.str());
   const int number{(int)std::stoul(ss.str(), nullptr, 16)};
 
-  return create_token(TokenType::INTEGER, number);
+  return Token(TokenType::INTEGER, number, position);
 }
 
 // t_str and t_dot have default arguments
@@ -131,8 +136,9 @@ auto Lexer::handle_float(const std::string_view t_str) -> Token
 {
   using namespace token::reserved::symbols;
 
-  std::stringstream ss;
+  auto position{text_position()};
 
+  std::stringstream ss;
   ss << t_str;
 
   while(!m_text->eos()) {
@@ -149,17 +155,21 @@ auto Lexer::handle_float(const std::string_view t_str) -> Token
     }
   }
 
-  LOG_TOK("FLOAT: ", ss.str());
-  return create_token(TokenType::FLOAT, std::stod(ss.str()));
+  LOG_TOKEN("FLOAT: ", ss.str());
+  const double number{std::stod(ss.str())};
+
+  return Token{TokenType::FLOAT, number, position};
 }
 
 auto Lexer::handle_integer() -> Token
 {
   using namespace token::reserved::symbols;
 
+  auto position{text_position()};
+
   std::stringstream ss;
 
-  // Extract integer
+  // Extract integer.
   if(std::isdigit(m_text->character())) {
     ss << m_text->character();
     while(!m_text->eos()) {
@@ -179,8 +189,10 @@ auto Lexer::handle_integer() -> Token
     }
   }
 
-  LOG_TOK("INTEGER: ", ss.str());
-  return create_token(TokenType::INTEGER, (int)std::stoi(ss.str()));
+  LOG_TOKEN("INTEGER: ", ss.str());
+  const int number{std::stoi(ss.str())};
+
+  return Token{TokenType::INTEGER, number, position};
 }
 
 auto Lexer::literal_numeric() -> Token
@@ -202,6 +214,7 @@ auto Lexer::literal_string() -> Token
 {
   using namespace token::reserved::symbols::none;
 
+  const auto position{text_position()};
   std::stringstream ss;
 
   bool quit{false};
@@ -225,8 +238,8 @@ auto Lexer::literal_string() -> Token
     }
   }
 
-  LOG_TOK("STRING: ", ss.str());
-  return create_token(TokenType::STRING, ss.str());
+  LOG_TOKEN("STRING: ", ss.str());
+  return Token{TokenType::STRING, ss.str(), position};
 }
 
 auto Lexer::is_multi_symbol() -> TokenTypeOpt
@@ -245,7 +258,7 @@ auto Lexer::is_multi_symbol() -> TokenTypeOpt
 
     if(const auto iter{g_multi_symbols.find(ss.str())};
        iter != g_multi_symbols.end()) {
-      LOG_TOK("MULTI SYMBOL: ", iter->first);
+      LOG_TOKEN("MULTI SYMBOL: ", iter->first);
       opt = iter->second;
       m_text->next();
     }
@@ -263,7 +276,7 @@ auto Lexer::is_single_symbol() -> TokenTypeOpt
 
   if(const auto iter{g_single_symbols.find(ch)};
      iter != g_single_symbols.end()) {
-    LOG_TOK("SINGLE SYMBOL: ", iter->first);
+    LOG_TOKEN("SINGLE SYMBOL: ", iter->first);
     opt = iter->second;
   }
 
@@ -272,6 +285,7 @@ auto Lexer::is_single_symbol() -> TokenTypeOpt
 
 auto Lexer::symbol() -> Token
 {
+  const auto position{text_position()};
   TokenTypeOpt opt;
 
   // First check for multi symbol
@@ -290,7 +304,7 @@ auto Lexer::symbol() -> Token
   }
 
   // Add the symbol if we recognize it
-  return create_token(opt.value());
+  return Token{opt.value(), position};
 }
 
 // TODO: refactor this
@@ -306,7 +320,7 @@ auto Lexer::tokenize() -> TokenStream
       // Just ignore whitespace, but do not ignore newlines
       if(ch == g_newline.m_identifier) {
         DBG_INFO("NEWLINE");
-        m_ts.push_back(create_token(TokenType::NEWLINE));
+        m_ts.emplace_back(TokenType::NEWLINE, text_position());
       }
 
       // TODO: change the comment character to // and /*
@@ -314,9 +328,8 @@ auto Lexer::tokenize() -> TokenStream
       // '#' are used for comments.
       // If we just skip to the next line we ignore the \n at the end, so we
       // Must add a NEWLINE explicitly!
-      // FIXME: Inserting NEWLINE is not needed?
       DBG_INFO("INSERTING NEWLINE");
-      m_ts.push_back(create_token(TokenType::NEWLINE));
+      m_ts.emplace_back(TokenType::NEWLINE, text_position());
 
       // Skip to next line
       m_text->next_line();
