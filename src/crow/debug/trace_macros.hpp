@@ -7,21 +7,25 @@
 
 // Macros:
 #ifdef DEBUG
-#define DBG_TRACE_INIT() int m_counter__{0}
+#define DBG_TRACE_INIT() \
+  int m_counter__        \
+  {                      \
+    0                    \
+  }
 
 // TRACE is intended for showing which functions call which in a tree like
 // manner
-#define DBG_TRACE(loglevel, ...)                      \
-  debug::Trace CONCAT(trace, __COUNTER__)             \
-  {                                                   \
+#define DBG_TRACE(loglevel, ...)                        \
+  debug::Trace CONCAT(trace, __COUNTER__)               \
+  {                                                     \
     m_counter__, debug::LogLevel::loglevel, __VA_ARGS__ \
   }
 
 // Creates a trace object in an enclosed scope, usefull for printing TRACE info
 // on the same level within a function
-#define DBG_TRACE_PRINT(loglevel, ...)                    \
-  do {                                                    \
-    debug::Trace CONCAT(trace, __COUNTER__){              \
+#define DBG_TRACE_PRINT(loglevel, ...)                      \
+  do {                                                      \
+    debug::Trace CONCAT(trace, __COUNTER__){                \
       m_counter__, debug::LogLevel::loglevel, __VA_ARGS__}; \
   } while(false)
 

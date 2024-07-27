@@ -16,7 +16,6 @@
     return {};                                             \
   }
 
-
 /* NOLINTBEGIN */
 namespace ast::visitor {
 // Using statements:
@@ -97,6 +96,7 @@ class NodeVisitor {
   virtual ~NodeVisitor() = default;
 };
 } // namespace ast::visitor
+
 /* NOLINTEND */
 
 #endif // CROW_CROW_AST_VISITOR_NODE_VISITOR_HPP

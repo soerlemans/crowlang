@@ -143,7 +143,7 @@ def format(ctx):
     '''
     Clang-format all Ctx++ sources and headers.
     '''
-    ctx.run('find src/ -iname "*.[ch]pp" -exec clang-format -i {} \;')
+    ctx.run('find src/ -iname "*.[ch]pp" -exec clang-format -i "{}" \;')
     pass
 
 @task

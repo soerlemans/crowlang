@@ -79,8 +79,8 @@ auto ClangFrontendInvoker::compile(const path &t_filepath) -> void
   DBG_INFO("binary: ", binary);
 
   // FIXME: This is a temporary workaround till the programmatic approach works.
-  const auto cmd{
-    std::format("g++ {} -g3 -ggdb -o {}", t_filepath.native(), binary.native())};
+  const auto cmd{std::format("g++ {} -g3 -ggdb -o {}", t_filepath.native(),
+                             binary.native())};
   const auto status_code{std::system(cmd.c_str())};
 
   if(status_code == 0) {

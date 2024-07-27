@@ -59,13 +59,13 @@ class AstArchive : public NodeVisitor {
   auto set_archive_out(ArchiveType t_type, std::ostream& t_os) -> void;
   auto set_archive_in(ArchiveType t_type, std::istream& t_is) -> void;
 
-	/*!
-	 * Helper method for archiving AST nodes.
-	 * Throws if @ref m_archive is std::monostate.
-	 *
-	 * @param[in] t_args Variadic argument of AST nodes to archive.
-	 *
-	 */
+  /*!
+   * Helper method for archiving AST nodes.
+   * Throws if @ref m_archive is std::monostate.
+   *
+   * @param[in] t_args Variadic argument of AST nodes to archive.
+   *
+   */
   template<typename... Args>
   auto archive(Args&&... t_args) -> void
   {

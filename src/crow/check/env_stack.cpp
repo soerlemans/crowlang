@@ -46,7 +46,7 @@ auto EnvStack::get_symbol(const std::string_view t_id) -> SymbolData
       data = iter->second;
 
       DBG_INFO("Found Symbol ", str, " of type ", data, " in Env!");
-			break;
+      break;
     }
   }
 
