@@ -174,6 +174,7 @@ expr_list_opt    : // empty
                  ;
 
 // Jump statement:
+// Continue and Break are only allowed to be used in loops.
 jump_statement   : Continue terminator
                  | Break terminator
                  | Defer expr_statement
@@ -207,22 +208,22 @@ match_statement  : Match match_body
 
 // Branch statements:
 if_statement     : If eval_expr body
-				         | If eval_expr body Else body
-				         | If eval_expr body elif_statement
+		 | If eval_expr body Else body
+		 | If eval_expr body elif_statement
                  ;
 
 elif_statement   : ElIf eval_expr body
-				         | ElIf eval_expr body Else body
-				         | ElIf eval_expr body elif_statement
+		 | ElIf eval_expr body Else body
+		 | ElIf eval_expr body elif_statement
                  ;
 
 // Statements:
 statement        : result_statement
-				         | if_statement
-				         | match_statement
-				         | loop_statement
-				         | keyword_statement
-				         | body
+		 | if_statement
+		 | match_statement
+		 | loop_statement
+		 | keyword_statement
+		 | body
                  ;
 
 statement_list   : statement newline_opt
@@ -236,12 +237,12 @@ body             : newline_opt '{' newline_opt '}'
 
 // Attributes:
 attribute        : Private
-				         | Public
+		 | Public
                  ;
 
 // Typing:
-// TODO:
-/* alias_def        : Use? */
+// TODO: Figure out how to name aliases?
+/* alias_def     : Alias? */
 
 // Enum:
 enum_def         : Enum IDENTIFIER newline_opt
@@ -253,8 +254,8 @@ method_decl      : Fn IDENTIFIER '(' param_list_opt ')' return_type terminator
 
 
 method_decl_list : // empty
-				         | method_decl
-				         | fn_decl_list method_decl
+		 | method_decl
+		 | fn_decl_list method_decl
                  ;
 
 interface_def    : Interface IDENTIFIER newline_opt
@@ -267,7 +268,7 @@ member_decl      : IDENTIFIER ':' IDENTIFIER terminator
 
 member_decl_list : // empty
                  | member_decl
-				         | member_decl_list member_decl
+		 | member_decl_list member_decl
                  ;
 
 struct_def       : Struct IDENTIFIER newline_opt
@@ -284,14 +285,13 @@ def_list         : newline_opt function
                  | impl_list newline_opt function
                  ;
 
-def_block        : Def IDENTIFIER newline_opt
+def_block        : Define IDENTIFIER newline_opt
                    '{' impl_list '}'
-                 | Def IDENTIFIER newline_opt
+                 | Define IDENTIFIER newline_opt
                    '{' impl_list '}'
                  ;
 
 // Function:
-// TODO: Think about having in, out and inout specifiers like ADA?
 param_list       : IDENTIFIER ':' IDENTIFIER
                  | param_list ',' IDENTIFIER ':' IDENTIFIER
                  ;

@@ -73,12 +73,12 @@ def cmake_mode_args(t_mode: str) -> str:
     return args
 
 
-def cmake(t_ctx, t_mode: str, t_parallel: bool, t_lint: bool):
+def cmake(t_ctx, t_mode: str, t_parallel: bool, t_lint=False):
     ''' TODO: Document. '''
     parallel_arg = cmake_parallel_arg(t_parallel)
     build_args = cmake_mode_args(t_mode)
 
-    # Add
+    # Perform static analysis if specified.
     if t_lint:
         build_args += '-DCROW_CLANG_TIDY=TRUE'
 
@@ -110,6 +110,14 @@ def build(ctx, mode='', parallel=True, lint=False):
     '''
     Build the project.
     '''
+    print(f'@Invoke: Building project.')
+    print(f'''@Invoke: Args:
+    {{
+      mode={mode},
+      parallel={parallel},
+      lint={lint}
+    }}''')
+
     enum_values = [ item.value for item in BuildMode ]
     mode = mode if mode in enum_values else 'build'
     cmake(ctx, mode, parallel, lint)
