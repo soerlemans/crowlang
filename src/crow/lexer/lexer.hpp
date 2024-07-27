@@ -12,9 +12,12 @@
 #include "crow/token/token.hpp"
 
 namespace lexer {
-// Using declarations:
+// Using Statements:
+using container::TextPosition;
 using container::TextStreamPtr;
+using token::Token;
 using token::TokenStream;
+using token::TokenTypeOpt;
 
 // Classes:
 class Lexer {
@@ -22,15 +25,9 @@ class Lexer {
   TextStreamPtr m_text;
   TokenStream m_ts;
 
-  // Token stream handling:
-  //! Construct a token with the current @ref TextPosition.
-  template<typename... Args>
-  auto create_token(Args&&... t_args) -> token::Token
-  {
-    return token::Token{std::forward<Args>(t_args)..., m_text->position()};
-  }
+  protected:
+  auto text_position() const -> TextPosition;
 
-  // Error handling:
   auto syntax_error(std::string_view t_msg) const -> void;
 
   public:
@@ -41,25 +38,25 @@ class Lexer {
   auto comment() -> void;
 
   // Name:
-  static auto is_keyword(std::string_view t_identifier) -> token::TokenTypeOpt;
-  auto identifier() -> token::Token;
+  static auto is_keyword(std::string_view t_identifier) -> TokenTypeOpt;
+  auto identifier() -> Token;
 
   // Integer literal lexing:
   auto is_hex_literal() -> bool;
-  auto handle_hex() -> token::Token;
-  auto handle_float(std::string_view t_str) -> token::Token;
-  auto handle_integer() -> token::Token;
+  auto handle_hex() -> Token;
+  auto handle_float(std::string_view t_str) -> Token;
+  auto handle_integer() -> Token;
 
   // Literal lexing:
-  auto literal_numeric() -> token::Token;
-  auto literal_string() -> token::Token;
+  auto literal_numeric() -> Token;
+  auto literal_string() -> Token;
 
   // Symbol lexing:
-  auto is_multi_symbol() -> token::TokenTypeOpt;
-  auto is_single_symbol() -> token::TokenTypeOpt;
-  auto symbol() -> token::Token;
+  auto is_multi_symbol() -> TokenTypeOpt;
+  auto is_single_symbol() -> TokenTypeOpt;
+  auto symbol() -> Token;
 
-  auto tokenize() -> token::TokenStream;
+  auto tokenize() -> TokenStream;
 
   virtual ~Lexer() = default;
 };
