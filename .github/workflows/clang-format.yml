@@ -19,6 +19,12 @@ jobs:
         fetch-depth: 2
 
     - name: Check formatting.
+      id: clang-format-version
+      run: |
+        echo "Clang-format version:"
+        clang-format --version
+
+    - name: Check formatting.
       id: check-format
       run: |
         STATUS=0
