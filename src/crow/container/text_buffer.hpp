@@ -39,8 +39,8 @@ class TextBuffer : public TextStream {
 
   auto position() const -> TextPosition override;
 
-  friend auto operator<<(std::ostream& t_os, const TextBuffer& t_tb)
-    -> std::ostream&;
+  friend auto operator<<(std::ostream& t_os,
+                         const TextBuffer& t_tb) -> std::ostream&;
 
   virtual ~TextBuffer() = default;
 };

@@ -10,8 +10,8 @@ find_program(
 set(
 	CLANG_TIDY_COMMAND
 	${CLANG_TIDY_PATH};
-	-header-filter=src/.*;
-	-extra-arg=-std=c++2b;
+	--header-filter=src/.*;
+	--extra-arg=-std=c++2b;
 )
 
 set_target_properties(

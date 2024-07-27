@@ -8,13 +8,30 @@
 #include "crow/ast/node/include_nodes.hpp"
 #include "crow/debug/trace.hpp"
 
+// Macros:
+#define CONTEXT_GUARD(t_context)                   \
+  context::ContextGuard CONCAT(trace, __COUNTER__) \
+  {                                                \
+    context::Context::t_context, m_store           \
+  }
+
 namespace parser::crow {
 // Using statements:
 NODE_USING_ALL_NAMESPACES()
 
-// Methods:
+// Protected Methods:
+auto CrowParser::context_check(const Context t_context) -> void
+{
+  const auto enabled{m_store.get(t_context)};
+
+  if(!enabled) {
+    syntax_error("Keyword used outside of proper context.");
+  }
+}
+
+// Public Methods:
 CrowParser::CrowParser(TokenStream t_tokenstream)
-  : PrattParser{std::move(t_tokenstream)}
+  : PrattParser{std::move(t_tokenstream)}, m_store{}
 {}
 
 auto CrowParser::newline_opt() -> void
@@ -279,9 +296,13 @@ auto CrowParser::jump_statement() -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::CONTINUE)) {
+    context_check(Context::LOOP);
+
     terminator();
     node = make_node<Continue>();
   } else if(next_if(TokenType::BREAK)) {
+    context_check(Context::LOOP);
+
     terminator();
     node = make_node<Break>();
   } else if(next_if(TokenType::DEFER)) {
@@ -320,6 +341,8 @@ auto CrowParser::loop_statement() -> NodePtr
       expr_ptr = assignment();
     }
 
+    // We are in the loop context now.
+    CONTEXT_GUARD(LOOP);
     auto body_ptr{body()};
     node = make_node<Loop>(pos, std::move(init), std::move(cond),
                            std::move(expr_ptr), std::move(body_ptr));

@@ -7,9 +7,14 @@
 // Absolute Includes:
 #include "crow/parser/pratt/pratt_parser.hpp"
 
+// Local Includes:
+#include "context/context_guard.hpp"
+
 namespace parser::crow {
 // Using Statements:
 using ast::node::packaging::Import;
+using context::Context;
+using context::ContextStore;
 
 // Aliases:
 using EvalPair = std::pair<NodePtr, NodePtr>;
@@ -20,6 +25,19 @@ using EvalPair = std::pair<NodePtr, NodePtr>;
  * See crow.yy for grammar specification (BNF).
  */
 class CrowParser : public pratt::PrattParser {
+  private:
+  ContextStore m_store;
+
+  protected:
+  /*!
+   * Check if a certain context is enabled.
+   *
+   * @note If the passed Context is not enabled throw a @ref SyntaxError.
+   *
+   * @param[in] t_context Context to check for.
+   */
+  auto context_check(Context t_context) -> void;
+
   public:
   CrowParser(TokenStream t_tokenstream);
 

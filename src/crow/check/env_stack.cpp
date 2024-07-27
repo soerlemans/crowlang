@@ -20,8 +20,8 @@ EnvStack::EnvStack(): m_envs{}
   m_envs.emplace_back();
 }
 
-auto EnvStack::add_symbol(const std::string_view t_id, const SymbolData t_data)
-  -> void
+auto EnvStack::add_symbol(const std::string_view t_id,
+                          const SymbolData t_data) -> void
 {
   Symbol pair{t_id, t_data};
 
@@ -46,7 +46,7 @@ auto EnvStack::get_symbol(const std::string_view t_id) -> SymbolData
       data = iter->second;
 
       DBG_INFO("Found Symbol ", str, " of type ", data, " in Env!");
-			break;
+      break;
     }
   }
 

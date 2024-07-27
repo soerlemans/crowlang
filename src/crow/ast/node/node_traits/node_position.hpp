@@ -3,8 +3,8 @@
 
 
 // Includes:
-#include "crow/container/text_position.hpp"
 #include "../include.hpp"
+#include "crow/container/text_position.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"

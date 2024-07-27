@@ -24,12 +24,12 @@ using TypeList = std::list<SymbolData>;
 } // namespace check
 
 // Functions:
-auto operator<<(std::ostream& t_os, check::StructTypePtr t_struct)
-  -> std::ostream&;
+auto operator<<(std::ostream& t_os,
+                check::StructTypePtr t_struct) -> std::ostream&;
 auto operator<<(std::ostream& t_os, check::FnTypePtr t_fn) -> std::ostream&;
 auto operator<<(std::ostream& t_os, check::VarTypePtr t_var) -> std::ostream&;
 
-auto operator<<(std::ostream& t_os, const check::TypeList& t_list)
-  -> std::ostream&;
+auto operator<<(std::ostream& t_os,
+                const check::TypeList& t_list) -> std::ostream&;
 
 #endif // CROW_CROW_CHECK_CHECK_HPP

@@ -84,7 +84,7 @@ auto set_loglevel(LogLevel t_loglevel) -> void;
 } // namespace debug
 
 // Functions:
-auto operator<<(std::ostream& t_os, debug::LogLevel t_loglevel)
-  -> std::ostream&;
+auto operator<<(std::ostream& t_os,
+                debug::LogLevel t_loglevel) -> std::ostream&;
 
 #endif // CROW_CROW_DEBUG_LOGLEVEL_HPP

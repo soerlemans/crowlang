@@ -20,7 +20,8 @@ using container::TextPosition;
  */
 class SyntaxError : public Error {
   private:
-  auto format(std::string_view t_msg, const TextPosition& t_pos) const -> std::string;
+  auto format(std::string_view t_msg,
+              const TextPosition& t_pos) const -> std::string;
 
   protected:
   container::TextPosition m_pos;

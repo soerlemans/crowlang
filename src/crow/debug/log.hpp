@@ -18,7 +18,7 @@ using container::SourcePosition;
 
 // Functions:
 template<typename... Args>
-auto print(Args&&... t_args) -> void
+auto print(Args &&...t_args) -> void
 {
   // We use std::clog for logging.
   (std::clog << ... << t_args);
@@ -29,7 +29,7 @@ auto print(Args&&... t_args) -> void
 }
 
 template<typename... Args>
-auto println(Args&&... t_args) -> void
+auto println(Args &&...t_args) -> void
 {
   // Fold expression
   print(std::forward<Args>(t_args)..., '\n');
@@ -45,8 +45,8 @@ auto println(Args&&... t_args) -> void
  * @param[in] t_args Arguments to log.
  */
 template<typename... Args>
-inline auto log(const SourcePosition t_pos, LogLevel t_loglevel,
-                Args&&... t_args) -> void
+inline auto log(SourcePosition &&t_pos, LogLevel t_loglevel,
+                Args &&...t_args) -> void
 {
   using namespace rang;
 

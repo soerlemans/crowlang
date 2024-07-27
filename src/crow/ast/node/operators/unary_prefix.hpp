@@ -24,9 +24,9 @@ enum class UnaryPrefixOp {
 // Classes:
 class UnaryPrefix : public Op<UnaryPrefixOp>, public UnaryOperator {
   public:
-	/*!
-	 * Constructor will throw if given inconvertible @ref TokenType.
-	 */
+  /*!
+   * Constructor will throw if given inconvertible @ref TokenType.
+   */
   UnaryPrefix(token::TokenType t_op, NodePtr&& t_left);
   UnaryPrefix(UnaryPrefixOp t_op, NodePtr&& t_left);
 

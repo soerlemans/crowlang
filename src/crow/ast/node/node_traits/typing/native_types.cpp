@@ -108,8 +108,8 @@ auto nativetype2str(const NativeType t_native_type) -> std::string
 }
 } // namespace ast::node::node_traits::typing
 
-auto operator<<(std::ostream& t_os, const NativeType t_native_type)
-  -> std::ostream&
+auto operator<<(std::ostream& t_os,
+                const NativeType t_native_type) -> std::ostream&
 {
   t_os << nativetype2str(t_native_type);
 

@@ -1,6 +1,5 @@
 #include "banner.hpp"
 
-
 auto make_banner() -> std::string
 {
   using namespace rang;
