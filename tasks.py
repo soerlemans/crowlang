@@ -9,10 +9,10 @@ TODO: Document.
 # Library Imports:
 from invoke import task
 
-
 # Standard Imports:
-from enum import StrEnum
+import json
 import multiprocessing
+from enum import StrEnum
 
 
 # Globals:
@@ -27,6 +27,12 @@ class BuildMode(StrEnum):
 
 
 # Functions:
+def json_report(*args, **kwargs):
+    if args:
+        kwargs.update({'args': args})
+
+    return json.dumps(kwargs)
+
 #def run(t_context, t_cmd: str, **kwargs: Any) -> Optional[invoke.Result]:
 def run(t_context, t_cmd: str, **kwargs):
     '''
@@ -90,6 +96,11 @@ def cmake(t_ctx, t_mode: str, t_parallel: bool, t_lint=False):
 # Tasks:
 @task
 def all(ctx, parallel=True, lint=False):
+    print(f'@Invoke: Args: {report}')
+
+    report=json_report(parallel=parallel, lint=lint)
+    print(f'@Invoke: Args: {report}')
+
     for mode in BuildMode:
         print(f'@Invoke: Building \'{mode}\'')
         build(ctx, mode, parallel)
@@ -105,18 +116,16 @@ def install(ctx, parallel=True):
     cmake(ctx, mode, parallel)
     pass
 
-@task(help={'mode': '', 'parallel': 'Flag indicating concurrent builds.'})
+# TODO: Shorten help string, possibly use a global?
+@task(help={'mode': '', 'parallel': 'Flag indicating concurrent builds.', 'lint': 'Perform static analysis on source code using clang-tidy'})
 def build(ctx, mode='', parallel=True, lint=False):
     '''
     Build the project.
     '''
     print(f'@Invoke: Building project.')
-    print(f'''@Invoke: Args:
-    {{
-      mode={mode},
-      parallel={parallel},
-      lint={lint}
-    }}''')
+
+    report=json_report(mode=mode, parallel=parallel, lint=lint)
+    print(f'@Invoke: Args: {report}')
 
     enum_values = [ item.value for item in BuildMode ]
     mode = mode if mode in enum_values else 'build'

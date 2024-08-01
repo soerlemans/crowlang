@@ -10,9 +10,9 @@ namespace codegen::cpp_backend {
 using namespace ast;
 
 // Using Declarations:
-using ast::node::NodePtr;
-using ast::visitor::Any;
+using node::NodePtr;
 using std::filesystem::path;
+using visitor::Any;
 
 // Classes:
 /*!
@@ -32,13 +32,14 @@ class CppBackend : public ast::visitor::NodeVisitor {
    * Generate function and type prototypes, so the code can be written position
    * independently.
    */
-  auto prototypes() -> std::string;
+  auto prototypes(NodePtr t_ast) -> std::string;
 
   /*!
    * Convert the given AST node to C++ code.
    *
    * @note Throws an exception if it fails at converting the @ref Any.
    */
+  [[nodiscard("Pure method must use results.")]]
   auto resolve(NodePtr t_ptr) -> std::string;
 
 
