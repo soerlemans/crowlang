@@ -10,7 +10,7 @@ fn main() -> int {
 
    #loop {
      #break
-     continue
+     #continue
    #}
 
    return sum

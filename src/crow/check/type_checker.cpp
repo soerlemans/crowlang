@@ -268,7 +268,6 @@ auto TypeChecker::visit(Arithmetic* t_arith) -> Any
   DBG_INFO("Typeof lhs: ", lhs);
   DBG_INFO("Typeof rhs: ", rhs);
 
-  // TODO: Implement type promotion later
   const auto opt{promote(lhs, rhs)};
   if(opt) {
     ret = opt.value();

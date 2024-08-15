@@ -13,6 +13,7 @@
 
 // Local Includes:
 #include "clang_frontend_invoker.hpp"
+#include "prototype_generator.hpp"
 
 namespace codegen::cpp_backend {
 // Using Statements:
@@ -32,11 +33,11 @@ auto CppBackend::header() -> std::string
   return ss.str();
 }
 
-auto CppBackend::prototypes() -> std::string
+auto CppBackend::prototypes(NodePtr t_ast) -> std::string
 {
-  std::stringstream ss;
+  PrototypeGenerator generator{};
 
-  return ss.str();
+  return generator.generate(t_ast);
 }
 
 auto CppBackend::resolve(NodePtr t_ptr) -> std::string
@@ -169,7 +170,7 @@ auto CppBackend::visit([[maybe_unused]] Call* t_call) -> Any
 
   // return std::format("{}()", identifier);
 
-  return {};
+  return {}; // TODO: Implement correctly.
 }
 
 AST_VISITOR_STUB(CppBackend, ReturnType)
@@ -348,7 +349,12 @@ auto CppBackend::codegen(NodePtr t_ast, const path& t_out) -> void
 {
   std::ofstream ofs{t_out};
 
+  // Generate forward declarations, to make code position independent.
+  ofs << "// Protoypes:\n";
+  ofs << prototypes(t_ast) << '\n';
+
   // Generate C++ code.
+  ofs << "// C++ code:\n";
   ofs << resolve(t_ast);
 }
 

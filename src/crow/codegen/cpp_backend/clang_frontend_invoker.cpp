@@ -78,6 +78,7 @@ auto ClangFrontendInvoker::compile(const path &t_filepath) -> void
   DBG_INFO("tmp_obj: ", tmp_obj);
   DBG_INFO("binary: ", binary);
 
+  // TODO: Add -O2 flag on release builds.
   // FIXME: This is a temporary workaround till the programmatic approach works.
   const auto cmd{std::format("g++ {} -g3 -ggdb -o {}", t_filepath.native(),
                              binary.native())};
