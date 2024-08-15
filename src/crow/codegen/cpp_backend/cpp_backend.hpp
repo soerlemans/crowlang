@@ -24,9 +24,14 @@ using visitor::Any;
 class CppBackend : public ast::visitor::NodeVisitor {
   protected:
   /*!
-   * Generate pretext for basics of using Crow.
+   * Generate the prologue for the generated C++ code.
    */
-  auto header() -> std::string;
+  auto prologue() -> std::string;
+
+  /*!
+   * Generate the epilogue for the generated C++ code.
+   */
+  auto epilogue() -> std::string;
 
   /*!
    * Generate function and type prototypes, so the code can be written position

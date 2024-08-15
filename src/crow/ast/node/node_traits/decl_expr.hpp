@@ -10,15 +10,18 @@
 #include "init_expr.hpp"
 #include "node_position.hpp"
 #include "type_annotation.hpp"
+#include "typing/type_data.hpp"
 
 namespace ast::node::node_traits {
 // Using Statements:
 using container::TextPosition;
+using node_traits::typing::TypeData;
 
 // Classes:
 class DeclExpr : public NodePosition,
                  public Identifier,
                  public TypeAnnotation,
+                 public TypeData,
                  public InitExpr {
   public:
   DeclExpr(TextPosition&& t_pos, std::string_view t_identifier,

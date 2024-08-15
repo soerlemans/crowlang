@@ -14,6 +14,8 @@ using Variant =
   std::variant<StructTypePtr, FnTypePtr, VarTypePtr, typing::NativeType>;
 
 // Classes:
+// FIXME: We probably should probably not inherit from Variant.
+// Instead we should prefer composition.
 /*!
  * Recursive @ref Variant tree structure that denotes the type tree of a symbol.
  */

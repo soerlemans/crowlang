@@ -92,7 +92,8 @@ auto ClangFrontendInvoker::compile(const path &t_filepath) -> void
 #ifdef DEBUG
   DBG_PRINTLN("# C++ codegeneration:");
 
-  const auto cmd_cat{std::format("cat {}", t_filepath.native())};
+  const auto cmd_cat{
+    std::format("cat {} | clang-format --style=LLVM", t_filepath.native())};
   std::system(cmd_cat.c_str());
 #endif // DEBUG
 

@@ -28,7 +28,7 @@ auto SymbolData::var() const -> VarTypePtr
   return std::get<VarTypePtr>(*this);
 }
 
-//! Verify if a symbol is const or not.
+//! Verify if a symbol is immutable.
 auto SymbolData::is_const() const -> bool
 {
   bool result{false};
@@ -41,8 +41,7 @@ auto SymbolData::is_const() const -> bool
     return false;
   }};
 
-  const auto not_const{[]([[maybe_unused]]
-                          const auto& t_data) {
+  const auto not_const{[]([[maybe_unused]] const auto& t_data) {
     return false;
   }};
 
@@ -51,12 +50,17 @@ auto SymbolData::is_const() const -> bool
   return result;
 }
 
-//! All data except information related to types is stripped.
+/*!
+ * All data except information related to types is stripped.
+ * This makes the underlying return type of a function accessible.
+ */
 auto SymbolData::resolve_type() const -> SymbolData
 {
   SymbolData data;
 
-  if(auto opt{native_type()}; opt) {
+  // If we can resolve to a native type then return that.
+  // Else just return the instance itself.
+  if(const auto opt{native_type()}; opt) {
     data = opt.value();
   } else {
     data = *this;
@@ -65,7 +69,9 @@ auto SymbolData::resolve_type() const -> SymbolData
   return data;
 }
 
-//! Resolves a Symbol's data  to a NativeType if possible.
+/*!
+ * Resolves a Symbol's data  to a @ref NativeType if possible.
+ */
 auto SymbolData::native_type() const -> NativeTypeOpt
 {
   NativeTypeOpt opt;
@@ -87,6 +93,10 @@ auto SymbolData::native_type() const -> NativeTypeOpt
   return opt;
 }
 
+/*!
+ * Strip recursively resolves types to @ref NativeType's.
+ * Used for getting the return type of a function as well.
+ */
 auto SymbolData::strip() const -> TypeVariant
 {
   TypeVariant variant;
@@ -110,8 +120,8 @@ auto SymbolData::strip() const -> TypeVariant
 } // namespace check
 
 // Functions:
-auto operator<<(std::ostream& t_os,
-                const check::SymbolData& t_data) -> std::ostream&
+auto operator<<(std::ostream& t_os, const check::SymbolData& t_data)
+  -> std::ostream&
 {
   std::visit(
     [&](auto&& t_v) {

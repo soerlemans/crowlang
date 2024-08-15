@@ -7,6 +7,7 @@
 namespace check {
 // Structs:
 // TODO: use VarTypePtr and FnTypePtr in combination with a map?
+// This way we will be able to determine 
 struct StructType {
   std::string m_identifier;
 
@@ -18,6 +19,7 @@ struct StructType {
   auto strip() const -> TypeVariant;
 };
 
+// TODO: Add utilities for verifying if parameters and their types line up.
 struct FnType {
   TypeList m_params;
   SymbolData m_return_type;

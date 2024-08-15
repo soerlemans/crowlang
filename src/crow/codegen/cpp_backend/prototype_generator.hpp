@@ -1,5 +1,5 @@
-#ifndef PROTOTYPE_GENERATOR_HPP
-#define PROTOTYPE_GENERATOR_HPP
+#ifndef CROW_CROW_CODEGEN_CPP_BACKEND_PROTOTYPE_GENERATOR_HPP
+#define CROW_CROW_CODEGEN_CPP_BACKEND_PROTOTYPE_GENERATOR_HPP
 
 // STL Includes:
 #include <string>
@@ -51,4 +51,4 @@ class PrototypeGenerator : public NodeVisitor {
 };
 } // namespace codegen::cpp_backend
 
-#endif // PROTOTYPE_GENERATOR_HPP
+#endif // CROW_CROW_CODEGEN_CPP_BACKEND_PROTOTYPE_GENERATOR_HPP

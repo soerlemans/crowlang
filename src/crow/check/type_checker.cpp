@@ -216,6 +216,8 @@ auto TypeChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
 
   DBG_INFO(id, ss.str(), " = <expr>: ", expr);
 
+  t_decl->set_type(expr.strip());
+
   return expr;
 }
 

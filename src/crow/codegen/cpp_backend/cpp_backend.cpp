@@ -14,6 +14,7 @@
 // Local Includes:
 #include "clang_frontend_invoker.hpp"
 #include "prototype_generator.hpp"
+#include "type_data2cpp_type.hpp"
 
 namespace codegen::cpp_backend {
 // Using Statements:
@@ -23,12 +24,21 @@ NODE_USING_ALL_NAMESPACES()
 
 // Methods:
 // Protected:
-auto CppBackend::header() -> std::string
+auto CppBackend::prologue() -> std::string
 {
   std::stringstream ss;
 
-  // TODO: Include necessary includes and boiler plate, for the generated code
-  // to work.
+  // Crow's native types often translate.
+  // To C++ fixed width integers and floats.
+  ss << "#include <cstdint>\n";
+  // ss << "#include <stdfloat>\n"; // Uncomment when support by clang libc++.
+
+  return ss.str();
+}
+
+auto CppBackend::epilogue() -> std::string
+{
+  std::stringstream ss;
 
   return ss.str();
 }
@@ -181,7 +191,10 @@ auto CppBackend::visit(Let* t_let) -> Any
   const auto identifier{t_let->identifier()};
   const auto init_expr{resolve(t_let->init_expr())};
 
-  return std::format("const auto {}{{ {} }};\n", identifier, init_expr);
+  const auto type_variant{t_let->get_type()};
+  const auto type{type_data2cpp_type(type_variant)};
+
+  return std::format("const {} {}{{ {} }};\n", type, identifier, init_expr);
 }
 
 auto CppBackend::visit(Var* t_var) -> Any
@@ -348,6 +361,10 @@ auto CppBackend::visit(List* t_list) -> Any
 auto CppBackend::codegen(NodePtr t_ast, const path& t_out) -> void
 {
   std::ofstream ofs{t_out};
+
+  // Generate header includes basic typedefinitions and similar.
+  ofs << "// Prologue:\n";
+  ofs << prologue() << '\n';
 
   // Generate forward declarations, to make code position independent.
   ofs << "// Protoypes:\n";
