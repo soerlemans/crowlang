@@ -156,6 +156,9 @@ auto CppBackend::visit(Function* t_fn) -> Any
   const auto identifier{t_fn->identifier()};
 
   // TODO: Some day resolve the TypeVariant, for now every method returns int.
+  const auto type_variant{t_fn->get_type()};
+  const auto type{type_data2cpp_type(type_variant)};
+
   const auto ret_type{"int"};
 
   std::stringstream ss;
@@ -186,6 +189,7 @@ auto CppBackend::visit([[maybe_unused]] Call* t_call) -> Any
 AST_VISITOR_STUB(CppBackend, ReturnType)
 
 // Lvalue:
+// TODO: Reduce code duplication between the Let and Var methods.
 auto CppBackend::visit(Let* t_let) -> Any
 {
   const auto identifier{t_let->identifier()};
@@ -202,7 +206,10 @@ auto CppBackend::visit(Var* t_var) -> Any
   const auto identifier{t_var->identifier()};
   const auto init_expr{resolve(t_var->init_expr())};
 
-  return std::format("auto {}{{ {} }};\n", identifier, init_expr);
+  const auto type_variant{t_let->get_type()};
+  const auto type{type_data2cpp_type(type_variant)};
+
+  return std::format("{} {}{{ {} }};\n", type, identifier, init_expr);
 }
 
 auto CppBackend::visit(Variable* t_var) -> Any

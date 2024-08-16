@@ -33,14 +33,26 @@ class SymbolData : public Variant {
   auto resolve_type() const -> SymbolData;
   auto native_type() const -> NativeTypeOpt;
 
+  /*!
+   * Strip recursively resolves types to @ref NativeType's.
+   * Used for getting the return type of a function as well.
+   * This method is used when we are interested in the result of something.
+   */
   auto strip() const -> TypeVariant;
+
+  /*!
+   * Used to return the @ref TypeVariant as is.
+   * This is needed when storing type information for Functions.
+   * As we dont want to strip away the types of parameters.
+   */
+  auto variant() const -> TypeVariant;
 
   virtual ~SymbolData() = default;
 };
 } // namespace check
 
 // Functions:
-auto operator<<(std::ostream& t_os,
-                const check::SymbolData& t_data) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const check::SymbolData& t_data)
+  -> std::ostream&;
 
 #endif // CROW_CROW_CHECK_SYMBOL_DATA_HPP

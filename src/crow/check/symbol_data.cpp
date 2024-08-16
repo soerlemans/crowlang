@@ -93,10 +93,13 @@ auto SymbolData::native_type() const -> NativeTypeOpt
   return opt;
 }
 
-/*!
- * Strip recursively resolves types to @ref NativeType's.
- * Used for getting the return type of a function as well.
- */
+auto SymbolData::variant() const -> TypeVariant
+{
+  TypeVariant variant{*this};
+
+  return variant;
+}
+
 auto SymbolData::strip() const -> TypeVariant
 {
   TypeVariant variant;

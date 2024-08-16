@@ -129,16 +129,18 @@ auto TypeChecker::visit(Function* t_fn) -> Any
 {
   const auto id{t_fn->identifier()};
 
-  const auto type{str2nativetype(t_fn->type())};
+  const auto ret_type{str2nativetype(t_fn->type())};
 
   // FIXME: Parameters are stored in the AST as a Variable, this does not
   // properly resolve in the TypeChecker as they are not defined ahead
   const auto params{get_type_list(t_fn->params())};
 
-  const SymbolData data{check::make_function(params, type)};
+  const SymbolData data{check::make_function(params, ret_type)};
   m_envs.add_symbol(id, data);
 
-  DBG_INFO("Function: ", id, "(", params, ") -> ", type);
+  DBG_INFO("Function: ", id, "(", params, ") -> ", ret_type);
+
+  t_fn->set_type(data.variant());
 
   traverse(t_fn->body());
 
