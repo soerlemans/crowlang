@@ -95,9 +95,14 @@ auto SymbolData::native_type() const -> NativeTypeOpt
 
 auto SymbolData::variant() const -> TypeVariant
 {
-  TypeVariant variant{*this};
+  // FIXME: Implement.
+  // return std::visit(
+  //   [](auto&& t_data) {
+  //     return t_data;
+  //   },
+  //   *this);
 
-  return variant;
+  return {};
 }
 
 auto SymbolData::strip() const -> TypeVariant

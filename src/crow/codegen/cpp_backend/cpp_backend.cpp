@@ -206,7 +206,7 @@ auto CppBackend::visit(Var* t_var) -> Any
   const auto identifier{t_var->identifier()};
   const auto init_expr{resolve(t_var->init_expr())};
 
-  const auto type_variant{t_let->get_type()};
+  const auto type_variant{t_var->get_type()};
   const auto type{type_data2cpp_type(type_variant)};
 
   return std::format("{} {}{{ {} }};\n", type, identifier, init_expr);
