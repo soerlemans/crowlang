@@ -1,7 +1,6 @@
 Crowlang
 ========
-
-![]
+![Logo](assets/crowlang_banner.png)
 
 This project is me experimenting with creating my own programming language.
 For this project I am using C++23.
