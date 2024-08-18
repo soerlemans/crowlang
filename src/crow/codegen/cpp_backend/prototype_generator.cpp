@@ -7,6 +7,9 @@
 #include "crow/ast/node/include_nodes.hpp"
 #include "crow/exception/error.hpp"
 
+// Local Includes:
+#include "type_variant2cpp_type.hpp"
+
 namespace codegen::cpp_backend {
 // Using Statements:
 using namespace ast::visitor;
@@ -46,8 +49,8 @@ auto PrototypeGenerator::visit(Function* t_fn) -> Any
 {
   const auto identifier{t_fn->identifier()};
 
-  // TODO: Some day resolve the TypeVariant, for now every method returns int.
-  const auto ret_type{"int"};
+  const auto fn_type{t_fn->get_type().function()};
+  const auto ret_type{type_variant2cpp_type(fn_type->m_return_type)};
 
   std::stringstream ss;
 
