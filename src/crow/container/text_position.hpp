@@ -22,8 +22,8 @@ struct TextPosition {
   TextPosition(std::string_view t_source, std::string_view t_line,
                std::size_t t_lineno, std::size_t t_columnno);
 
-  friend auto operator<<(std::ostream& t_os,
-                         const TextPosition& t_fp) -> std::ostream&;
+  friend auto operator<<(std::ostream& t_os, const TextPosition& t_fp)
+    -> std::ostream&;
 
   virtual ~TextPosition() = default;
 };

@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CODEGEN_CPP_BACKEND_TYPE_DATA2CPP_TYPE_HPP
-#define CROW_CROW_CODEGEN_CPP_BACKEND_TYPE_DATA2CPP_TYPE_HPP
+#ifndef CROW_CROW_CODEGEN_CPP_BACKEND_TYPE_VARIANT2CPP_TYPE_HPP
+#define CROW_CROW_CODEGEN_CPP_BACKEND_TYPE_VARIANT2CPP_TYPE_HPP
 
 // STL Includes:
 #include <string_view>
@@ -16,4 +16,4 @@ using ast::node::node_traits::typing::TypeVariant;
 auto type_variant2cpp_type(const TypeVariant& t_variant) -> std::string_view;
 } // namespace codegen::cpp_backend
 
-#endif // CROW_CROW_CODEGEN_CPP_BACKEND_TYPE_DATA2CPP_TYPE_HPP
+#endif // CROW_CROW_CODEGEN_CPP_BACKEND_TYPE_VARIANT2CPP_TYPE_HPP
