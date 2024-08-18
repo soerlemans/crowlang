@@ -17,12 +17,19 @@ using ast::node::node_traits::typing::TypeVariant;
 using Variant = std::variant<StructTypePtr, FnTypePtr, VarTypePtr, NativeType>;
 
 // Classes:
+// FIXME: We probably should probably not inherit from Variant.
+// Instead we should prefer composition.
 /*!
  * Contains all data relating to a symbol.
+ * This is different from @ref TypeVariant.
+ * As this also constitues data ralting to a symbol.
+ * Like constness and other helper methods.
+ * @ref TypeVariant has a separate type tree.
+ * And you need to convert between these two.
  */
 class SymbolData : public Variant {
   public:
-  // Use the constructors of the variant
+  // Use the constructors of the parent class.
   using Variant::Variant;
 
   auto struct_() const -> StructTypePtr;
@@ -34,18 +41,14 @@ class SymbolData : public Variant {
   auto native_type() const -> NativeTypeOpt;
 
   /*!
-   * Strip recursively resolves types to @ref NativeType's.
-   * Used for getting the return type of a function as well.
-   * This method is used when we are interested in the result of something.
+   * Used to convert @ref SymbolData to a  @ref typing::TypeVariant.
+   * The type tree for @ref SymbolData is different..
+   * From @ref TypeVariant and requires conversion.
+   * When we annotate the AST we dont want to include symbol specifics.
+   * Like if something is const or pure.
+   * So this information is stripped.
    */
-  auto strip() const -> TypeVariant;
-
-  /*!
-   * Used to return the @ref TypeVariant as is.
-   * This is needed when storing type information for Functions.
-   * As we dont want to strip away the types of parameters.
-   */
-  auto variant() const -> TypeVariant;
+  auto type_variant() const -> TypeVariant;
 
   virtual ~SymbolData() = default;
 };

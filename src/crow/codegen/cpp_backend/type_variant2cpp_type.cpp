@@ -1,4 +1,4 @@
-#include "type_data2cpp_type.hpp"
+#include "type_variant2cpp_type.hpp"
 
 // STL Includes:
 #include <exception>
@@ -78,7 +78,7 @@ namespace codegen::cpp_backend {
 // Using Statements:
 NODE_USING_ALL_NAMESPACES()
 
-auto type_data2cpp_type(const TypeVariant& t_variant) -> std::string_view
+auto type_variant2cpp_type(const TypeVariant& t_variant) -> std::string_view
 {
   std::string_view str{};
 

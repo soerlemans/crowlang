@@ -14,7 +14,7 @@
 // Local Includes:
 #include "clang_frontend_invoker.hpp"
 #include "prototype_generator.hpp"
-#include "type_data2cpp_type.hpp"
+#include "type_variant2cpp_type.hpp"
 
 namespace codegen::cpp_backend {
 // Using Statements:
@@ -155,19 +155,16 @@ auto CppBackend::visit(Function* t_fn) -> Any
 {
   const auto identifier{t_fn->identifier()};
 
-  // TODO: Some day resolve the TypeVariant, for now every method returns int.
-  const auto type_variant{t_fn->get_type()};
-  const auto type{type_data2cpp_type(type_variant)};
-
-  const auto ret_type{"int"};
+  const auto fn_type{t_fn->get_type().function()};
+  const auto ret_type{type_variant2cpp_type(fn_type->m_return_type)};
 
   std::stringstream ss;
 
   // clang-format off
   ss << std::format("auto {}() -> {}\n", identifier, ret_type)
      << "{\n"
-		 << resolve(t_fn->body())
-		 << "}\n";
+     << resolve(t_fn->body())
+     << "}\n";
   // clang-format on
 
   return ss.str();
@@ -196,7 +193,7 @@ auto CppBackend::visit(Let* t_let) -> Any
   const auto init_expr{resolve(t_let->init_expr())};
 
   const auto type_variant{t_let->get_type()};
-  const auto type{type_data2cpp_type(type_variant)};
+  const auto type{type_variant2cpp_type(type_variant)};
 
   return std::format("const {} {}{{ {} }};\n", type, identifier, init_expr);
 }
@@ -207,7 +204,7 @@ auto CppBackend::visit(Var* t_var) -> Any
   const auto init_expr{resolve(t_var->init_expr())};
 
   const auto type_variant{t_var->get_type()};
-  const auto type{type_data2cpp_type(type_variant)};
+  const auto type{type_variant2cpp_type(type_variant)};
 
   return std::format("{} {}{{ {} }};\n", type, identifier, init_expr);
 }

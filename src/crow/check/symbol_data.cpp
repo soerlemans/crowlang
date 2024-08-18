@@ -1,5 +1,9 @@
 #include "symbol_data.hpp"
 
+// STL Includes:
+#include <format>
+#include <functional>
+
 // Absolute Includes:
 #include "crow/debug/log.hpp"
 #include "crow/exception/error.hpp"
@@ -8,9 +12,29 @@
 // Local Includes:
 #include "symbol_types.hpp"
 
+// Internal:
+namespace {
+/*!
+ * Check if a @ref std::shared_ptr is a nullptr or not.
+ * If the given ptr is a nullptr we should throw.
+ * Only use in cases where you are certain a nullptr should never happen.
+ */
+template<typename T>
+auto nullptr_check(const std::string_view t_str,
+                   const std::shared_ptr<T>& t_ptr) -> void
+{
+  using exception::error;
+
+  if(!t_ptr) {
+    const auto msg{std::format("{} ptr is nullptr!", t_str)};
+
+    error("ptr is nullptr!");
+  }
+}
+
+} // namespace
+
 namespace check {
-// Using Statements:
-using exception::error;
 
 // Methods:
 auto SymbolData::struct_() const -> StructTypePtr
@@ -34,11 +58,9 @@ auto SymbolData::is_const() const -> bool
   bool result{false};
 
   const auto var_type{[&](const VarTypePtr& t_data) {
-    if(t_data) {
-      return t_data->m_const;
-    }
+    nullptr_check("Variable", t_data);
 
-    return false;
+    return t_data->m_const;
   }};
 
   const auto not_const{[]([[maybe_unused]] const auto& t_data) {
@@ -80,32 +102,18 @@ auto SymbolData::native_type() const -> NativeTypeOpt
     return t_type;
   }};
 
-  const auto methods{[&](const std::shared_ptr<auto>& t_data) {
-    if(!t_data) {
-      error("ptr is nullptr!");
-    }
+  const auto rest{[&](const std::shared_ptr<auto>& t_data) {
+    nullptr_check("", t_data);
 
     return t_data->native_type();
   }};
 
-  opt = std::visit(Overload{native, methods}, *this);
+  opt = std::visit(Overload{native, rest}, *this);
 
   return opt;
 }
 
-auto SymbolData::variant() const -> TypeVariant
-{
-  // FIXME: Implement.
-  // return std::visit(
-  //   [](auto&& t_data) {
-  //     return t_data;
-  //   },
-  //   *this);
-
-  return {};
-}
-
-auto SymbolData::strip() const -> TypeVariant
+auto SymbolData::type_variant() const -> TypeVariant
 {
   TypeVariant variant;
 
@@ -113,15 +121,14 @@ auto SymbolData::strip() const -> TypeVariant
     return {t_type};
   }};
 
-  const auto methods{[&](const std::shared_ptr<auto>& t_data) {
-    if(!t_data) {
-      error("ptr is nullptr!");
-    }
+  // Calls variant() method of types defined in symbol_types.hpp header.
+  const auto rest{[&](const std::shared_ptr<auto>& t_data) {
+    nullptr_check("", t_data);
 
-    return t_data->strip();
+    return t_data->type_variant();
   }};
 
-  variant = std::visit(Overload{native, methods}, *this);
+  variant = std::visit(Overload{native, rest}, *this);
 
   return variant;
 }

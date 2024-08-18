@@ -16,7 +16,7 @@ struct StructType {
     return {};
   }
 
-  auto strip() const -> TypeVariant;
+  auto type_variant() const -> TypeVariant;
 };
 
 // TODO: Add utilities for verifying if parameters and their types line up.
@@ -29,7 +29,7 @@ struct FnType {
     return {};
   }
 
-  auto strip() const -> TypeVariant;
+  auto type_variant() const -> TypeVariant;
 };
 
 // TODO: Ignore m_const value when comparing
@@ -42,7 +42,7 @@ struct VarType {
     return m_type.native_type();
   }
 
-  auto strip() const -> TypeVariant;
+  auto type_variant() const -> TypeVariant;
 };
 
 // Functions:

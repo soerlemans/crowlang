@@ -108,18 +108,16 @@ AST_VISITOR_STUB(TypeChecker, Break)
 
 auto TypeChecker::visit(Return* t_return) -> Any
 {
+  // FIXME: Check if type of expression being returned.
+  // Matches the functions return type.
   const auto data{get_symbol_data(t_return->expr())};
 
-  // TODO: Compare or indicate ReturnType to function somehow?
-  // Return is the only statement that returns data, use that? (very error prone
-  // approach)
   return data;
 }
 
 // Function:
 auto TypeChecker::visit(Parameter* t_param) -> Any
 {
-  // For now only deal with native types as arguments
   const auto type{str2nativetype(t_param->type())};
 
   return SymbolData{type};
@@ -130,9 +128,6 @@ auto TypeChecker::visit(Function* t_fn) -> Any
   const auto id{t_fn->identifier()};
 
   const auto ret_type{str2nativetype(t_fn->type())};
-
-  // FIXME: Parameters are stored in the AST as a Variable, this does not
-  // properly resolve in the TypeChecker as they are not defined ahead
   const auto params{get_type_list(t_fn->params())};
 
   const SymbolData data{check::make_function(params, ret_type)};
@@ -140,7 +135,8 @@ auto TypeChecker::visit(Function* t_fn) -> Any
 
   DBG_INFO("Function: ", id, "(", params, ") -> ", ret_type);
 
-  t_fn->set_type(data.variant());
+  // Annotate AST.
+  t_fn->set_type(data.type_variant());
 
   traverse(t_fn->body());
 
@@ -218,7 +214,8 @@ auto TypeChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
 
   DBG_INFO(id, ss.str(), " = <expr>: ", expr);
 
-  t_decl->set_type(expr.strip());
+  // Annotate AST.
+  t_decl->set_type(expr.type_variant());
 
   return expr;
 }
@@ -255,8 +252,8 @@ auto TypeChecker::visit(Variable* t_var) -> Any
 
   DBG_INFO("Variable ", std::quoted(id), " of type ", var);
 
-  // Annotate the AST.
-  t_var->set_type(var.strip());
+  // Annotate AST.
+  t_var->set_type(var.type_variant());
 
   return var;
 }
@@ -290,7 +287,7 @@ auto TypeChecker::visit(Arithmetic* t_arith) -> Any
   }
 
   // Annotate AST.
-  t_arith->set_type(ret.strip());
+  t_arith->set_type(ret.type_variant());
 
   DBG_INFO("Result: ", ret);
 
