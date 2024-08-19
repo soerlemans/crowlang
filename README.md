@@ -1,10 +1,22 @@
 Crowlang
 ========
+![Crowlang banner](assets/crowlang_banner.png)
+
 This project is me experimenting with creating my own programming language.
 For this project I am using C++23.
 
-Crow's syntax is inspired by Swift and Rust.
-Semicolons are completely optional in Crow.
+Crow's syntax is somewhat inspired by Swift and Rust.
+In this programming language expressions are not statements.
+This allows us to write code without any need for semicolons.
+
+Here is a snippet (printing is not yet implemented):
+```
+fn main() -> int {
+    let sum = 10 + 10
+
+    return sum
+}
+```
 
 ## Dependencies
 In order to compile the project you will need to following dependencies:
@@ -46,8 +58,9 @@ apt install -y libcurl4 libcli11-dev llvm-17-dev libclang-17-dev liblld-17-dev l
 
 ## Project documentation
 
- - `cmake/` Cmake sources that are needed to build the project.
- - `src/` Sources of the Crow project.
- - `tests/` Unit tests of the Crow project.
- - `samples/` Crow sources that can be compiled to demonstrate the functionalities of Crow.
- - `tools/` Collection of tools and scripts, that aid development.
+ - `cmake/`: Non code related assets like images.
+ - `cmake/`: Cmake sources that are needed to build the project.
+ - `src/`: Sources of the Crow project.
+ - `tests/`: Unit tests of the Crow project.
+ - `samples/`: Crow sources that can be compiled to demonstrate the functionalities of Crow.
+ - `tools/`: Collection of tools and scripts, that aid development.

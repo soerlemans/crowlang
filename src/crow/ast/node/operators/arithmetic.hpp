@@ -8,7 +8,7 @@
 #include "fdecl.hpp"
 
 namespace ast::node::operators {
-// Namespace aliases:
+// Using Statements:
 using container::TextPosition;
 using node_traits::BinaryOperator;
 using node_traits::NodePosition;

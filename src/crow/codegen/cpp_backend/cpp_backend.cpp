@@ -14,6 +14,7 @@
 // Local Includes:
 #include "clang_frontend_invoker.hpp"
 #include "prototype_generator.hpp"
+#include "type_variant2cpp_type.hpp"
 
 namespace codegen::cpp_backend {
 // Using Statements:
@@ -23,12 +24,21 @@ NODE_USING_ALL_NAMESPACES()
 
 // Methods:
 // Protected:
-auto CppBackend::header() -> std::string
+auto CppBackend::prologue() -> std::string
 {
   std::stringstream ss;
 
-  // TODO: Include necessary includes and boiler plate, for the generated code
-  // to work.
+  // Crow's native types often translate.
+  // To C++ fixed width integers and floats.
+  ss << "#include <cstdint>\n";
+  // ss << "#include <stdfloat>\n"; // Uncomment when support by clang libc++.
+
+  return ss.str();
+}
+
+auto CppBackend::epilogue() -> std::string
+{
+  std::stringstream ss;
 
   return ss.str();
 }
@@ -145,43 +155,50 @@ auto CppBackend::visit(Function* t_fn) -> Any
 {
   const auto identifier{t_fn->identifier()};
 
-  // TODO: Some day resolve the TypeVariant, for now every method returns int.
-  const auto ret_type{"int"};
+  const auto fn_type{t_fn->get_type().function()};
+  const auto ret_type{type_variant2cpp_type(fn_type->m_return_type)};
 
   std::stringstream ss;
+
+  // TODO: Process parameters.
 
   // clang-format off
   ss << std::format("auto {}() -> {}\n", identifier, ret_type)
      << "{\n"
-		 << resolve(t_fn->body())
-		 << "}\n";
+     << resolve(t_fn->body())
+     << "}\n";
   // clang-format on
 
   return ss.str();
 }
 
-auto CppBackend::visit([[maybe_unused]] Call* t_call) -> Any
+auto CppBackend::visit(Call* t_call) -> Any
 {
-  // const auto identifier{resolve(t_call->identifier())};
+  const auto identifier{t_call->identifier()};
 
   // FIXME: This wont work for a raw function or method call.
   // As when we assign it directly to a variable it will work but not else.
   // As we need to append a semicolon.
 
-  // return std::format("{}()", identifier);
+  // FIXME: Figure out a way to detect if this function call is inline.
+  // Or if this function is being called without as a statement.
 
-  return {}; // TODO: Implement correctly.
+  return std::format("{}();\n", identifier);
 }
 
 AST_VISITOR_STUB(CppBackend, ReturnType)
 
 // Lvalue:
+// TODO: Reduce code duplication between the Let and Var methods.
 auto CppBackend::visit(Let* t_let) -> Any
 {
   const auto identifier{t_let->identifier()};
   const auto init_expr{resolve(t_let->init_expr())};
 
-  return std::format("const auto {}{{ {} }};\n", identifier, init_expr);
+  const auto type_variant{t_let->get_type()};
+  const auto type{type_variant2cpp_type(type_variant)};
+
+  return std::format("const {} {}{{ {} }};\n", type, identifier, init_expr);
 }
 
 auto CppBackend::visit(Var* t_var) -> Any
@@ -189,7 +206,10 @@ auto CppBackend::visit(Var* t_var) -> Any
   const auto identifier{t_var->identifier()};
   const auto init_expr{resolve(t_var->init_expr())};
 
-  return std::format("auto {}{{ {} }};\n", identifier, init_expr);
+  const auto type_variant{t_var->get_type()};
+  const auto type{type_variant2cpp_type(type_variant)};
+
+  return std::format("{} {}{{ {} }};\n", type, identifier, init_expr);
 }
 
 auto CppBackend::visit(Variable* t_var) -> Any
@@ -348,6 +368,10 @@ auto CppBackend::visit(List* t_list) -> Any
 auto CppBackend::codegen(NodePtr t_ast, const path& t_out) -> void
 {
   std::ofstream ofs{t_out};
+
+  // Generate header includes basic typedefinitions and similar.
+  ofs << "// Prologue:\n";
+  ofs << prologue() << '\n';
 
   // Generate forward declarations, to make code position independent.
   ofs << "// Protoypes:\n";

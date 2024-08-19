@@ -18,8 +18,8 @@ struct SourcePosition {
   SourcePosition(std::string_view t_source, std::size_t t_line_nr,
                  std::string_view t_function);
 
-  friend auto operator<<(std::ostream& t_os,
-                         const SourcePosition& t_sp) -> std::ostream&;
+  friend auto operator<<(std::ostream& t_os, const SourcePosition& t_sp)
+    -> std::ostream&;
 
   virtual ~SourcePosition() = default;
 };

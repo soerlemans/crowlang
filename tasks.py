@@ -152,7 +152,7 @@ def format(ctx):
     '''
     Clang-format all Ctx++ sources and headers.
     '''
-    ctx.run('find src/ -iname "*.[ch]pp" -exec clang-format -i "{}" \;')
+    ctx.run(r'find src/ -iname "*.[ch]pp" -exec clang-format -i "{}" \;')
     pass
 
 @task
@@ -160,7 +160,7 @@ def header_guard(ctx):
     '''
     Regenerate all heade guards to be unique.
     '''
-    ctx.run('PROJECT_NAME=CROW find src/ -name "*.hpp" -exec ./tools/header_guard.awk {} \;')
+    ctx.run(r'PROJECT_NAME=CROW find src/ -name "*.hpp" -exec ./tools/header_guard.awk {} \;')
     pass
 
 @task

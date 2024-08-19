@@ -7,6 +7,7 @@ DeclExpr::DeclExpr(TextPosition&& t_pos, const std::string_view t_identifier,
   : NodePosition{std::move(t_pos)},
     Identifier{t_identifier},
     TypeAnnotation{t_type},
+    TypeData{},
     InitExpr{std::move(t_init)}
 {}
 } // namespace ast::node::node_traits

@@ -1,5 +1,5 @@
-#ifndef CONTEXT_GUARD_HPP
-#define CONTEXT_GUARD_HPP
+#ifndef CROW_CROW_PARSER_CROW_CONTEXT_CONTEXT_GUARD_HPP
+#define CROW_CROW_PARSER_CROW_CONTEXT_CONTEXT_GUARD_HPP
 
 // Local Includes:
 #include "context_store.hpp"
@@ -20,4 +20,4 @@ class ContextGuard {
 };
 } // namespace parser::crow::context
 
-#endif // CONTEXT_GUARD_HPP
+#endif // CROW_CROW_PARSER_CROW_CONTEXT_CONTEXT_GUARD_HPP

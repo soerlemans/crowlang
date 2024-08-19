@@ -88,6 +88,15 @@ auto ClangFrontendInvoker::compile(const path &t_filepath) -> void
     DBG_CRITICAL("Binary was generated!: ", binary);
   }
 
+  // Print generated code (lazy implementation).
+#ifdef DEBUG
+  DBG_PRINTLN("# C++ codegeneration:");
+
+  const auto cmd_cat{
+    std::format("cat {} | clang-format --style=LLVM", t_filepath.native())};
+  std::system(cmd_cat.c_str());
+#endif // DEBUG
+
   // TODO: Fix ugly Clang code.
   /*
   // Do compiling magic, terrible code must refactor later.

@@ -15,7 +15,8 @@ Arithmetic::Arithmetic(TextPosition t_pos, const ArithmeticOp t_op,
                        NodePtr&& t_left, NodePtr&& t_right)
   : NodePosition{std::move(t_pos)},
     Op{t_op},
-    BinaryOperator{std::move(t_left), std::move(t_right)}
+    BinaryOperator{std::move(t_left), std::move(t_right)},
+    TypeData{}
 {}
 
 auto Arithmetic::op2str() const -> std::string_view

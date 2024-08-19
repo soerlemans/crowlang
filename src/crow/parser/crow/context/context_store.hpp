@@ -1,5 +1,5 @@
-#ifndef CONTEXT_VALIDATOR_HPP
-#define CONTEXT_VALIDATOR_HPP
+#ifndef CROW_CROW_PARSER_CROW_CONTEXT_CONTEXT_STORE_HPP
+#define CROW_CROW_PARSER_CROW_CONTEXT_CONTEXT_STORE_HPP
 
 // STL Includes:
 #include <unordered_map>
@@ -31,4 +31,4 @@ class ContextStore {
 };
 } // namespace parser::crow::context
 
-#endif // CONTEXT_VALIDATOR_HPP
+#endif // CROW_CROW_PARSER_CROW_CONTEXT_CONTEXT_STORE_HPP

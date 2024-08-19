@@ -18,11 +18,13 @@ jobs:
       with:
         fetch-depth: 2
 
-    - name: Print clang-format version.
-      id: clang-format-version
+    - name: Install Clang format version 16.
+      id: install-clang-format
       run: |
+        apt update && apt install clang-format-16
+
         echo "Clang-format version:"
-        clang-format --version
+        clang-format-16 --version
 
     - name: Check formatting.
       id: check-format
@@ -32,7 +34,7 @@ jobs:
         while read LINE; do
           if [[ -f "$LINE" ]]
           then
-            if ! clang-format --dry-run -Werror "$LINE"
+            if ! clang-format-16 --dry-run -Werror "$LINE"
             then
               echo "BEGIN $LINE"
               STATUS=1

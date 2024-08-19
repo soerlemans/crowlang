@@ -30,8 +30,8 @@ class TypePromoter {
   TypeLadder m_uint;
 
   protected:
-  auto get_priority(const TypeLadder& t_ladder,
-                    NativeType t_type) const -> TypeLadder::mapped_type;
+  auto get_priority(const TypeLadder& t_ladder, NativeType t_type) const
+    -> TypeLadder::mapped_type;
 
   public:
   TypePromoter();

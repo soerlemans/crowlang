@@ -11,8 +11,8 @@ using ast::node::node_traits::typing::NativeType;
 using ast::node::node_traits::typing::NativeTypeOpt;
 
 namespace {
-// TODO: Move to somewhere in crow/src/lib.
-//! Check if a NativeType is one of the following arguments.
+// TODO: Move to somewhere in src/lib and make it more generic.
+//! Check if a @ref NativeType is one of the following arguments.
 template<typename... Args>
 constexpr auto any_of(const NativeType& t_key, Args&&... t_args) -> bool
 {
@@ -26,17 +26,17 @@ auto is_integer(const NativeType t_native_type) -> bool
 {
   // clang-format off
   return any_of(t_native_type,
-									 // Signed integers:
-									 NativeType::INT,
-									 NativeType::I8, NativeType::I16,
-                   NativeType::I32, NativeType::I64,
-								   NativeType::I128, NativeType::ISIZE,
+		// Signed integers:
+		NativeType::INT,
+		NativeType::I8, NativeType::I16,
+		NativeType::I32, NativeType::I64,
+		NativeType::ISIZE,
 
-									 // Unsigned integers:
-									 NativeType::UINT,
-									 NativeType::U8, NativeType::U16,
-									 NativeType::U32, NativeType::U64,
-								   NativeType::U128, NativeType::USIZE);
+		// Unsigned integers:
+		NativeType::UINT,
+		NativeType::U8, NativeType::U16,
+		NativeType::U32, NativeType::U64,
+		NativeType::USIZE);
 
   // clang-format on
 }
@@ -108,8 +108,8 @@ auto nativetype2str(const NativeType t_native_type) -> std::string
 }
 } // namespace ast::node::node_traits::typing
 
-auto operator<<(std::ostream& t_os,
-                const NativeType t_native_type) -> std::ostream&
+auto operator<<(std::ostream& t_os, const NativeType t_native_type)
+  -> std::ostream&
 {
   t_os << nativetype2str(t_native_type);
 

@@ -26,8 +26,8 @@ auto set_loglevel(const LogLevel t_loglevel) -> void
 } // namespace debug
 
 // Functions:
-auto operator<<(std::ostream& t_os,
-                const debug::LogLevel t_loglevel) -> std::ostream&
+auto operator<<(std::ostream& t_os, const debug::LogLevel t_loglevel)
+  -> std::ostream&
 {
   using namespace rang;
 

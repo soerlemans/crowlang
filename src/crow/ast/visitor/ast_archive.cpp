@@ -10,12 +10,12 @@
  *
  * @param[in] t_type Type of Node to accept.
  */
-#define DEFINE_SERIALIZE_METHOD(t_type)                         \
-  auto AstArchive::visit([[maybe_unused]] t_type* t_ptr) -> Any \
-  {                                                             \
-    archive(*t_ptr);                                            \
-                                                                \
-    return {};                                                  \
+#define DEFINE_SERIALIZE_METHOD(t_type)                       \
+  auto AstArchive::visit([[maybe_unused]] t_type* t_ptr)->Any \
+  {                                                           \
+    archive(*t_ptr);                                          \
+                                                              \
+    return {};                                                \
   }
 
 namespace ast::visitor {
@@ -24,8 +24,8 @@ NODE_USING_ALL_NAMESPACES()
 
 // Methods:
 // Protected Methods:
-auto AstArchive::set_archive_out(const ArchiveType t_type,
-                                 std::ostream& t_os) -> void
+auto AstArchive::set_archive_out(const ArchiveType t_type, std::ostream& t_os)
+  -> void
 {
   using exception::error;
 
@@ -52,8 +52,8 @@ auto AstArchive::set_archive_out(const ArchiveType t_type,
   }
 }
 
-auto AstArchive::set_archive_in(const ArchiveType t_type,
-                                std::istream& t_is) -> void
+auto AstArchive::set_archive_in(const ArchiveType t_type, std::istream& t_is)
+  -> void
 {
   using exception::error;
 

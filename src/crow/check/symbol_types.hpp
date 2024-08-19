@@ -7,6 +7,7 @@
 namespace check {
 // Structs:
 // TODO: use VarTypePtr and FnTypePtr in combination with a map?
+// This way we will be able to determine
 struct StructType {
   std::string m_identifier;
 
@@ -15,9 +16,10 @@ struct StructType {
     return {};
   }
 
-  auto strip() const -> TypeVariant;
+  auto type_variant() const -> TypeVariant;
 };
 
+// TODO: Add utilities for verifying if parameters and their types line up.
 struct FnType {
   TypeList m_params;
   SymbolData m_return_type;
@@ -27,7 +29,7 @@ struct FnType {
     return {};
   }
 
-  auto strip() const -> TypeVariant;
+  auto type_variant() const -> TypeVariant;
 };
 
 // TODO: Ignore m_const value when comparing
@@ -40,7 +42,7 @@ struct VarType {
     return m_type.native_type();
   }
 
-  auto strip() const -> TypeVariant;
+  auto type_variant() const -> TypeVariant;
 };
 
 // Functions:

@@ -46,7 +46,6 @@ enum class NativeType {
   I16,
   I32,
   I64,
-  I128,
   ISIZE,
 
   UINT,
@@ -54,7 +53,6 @@ enum class NativeType {
   U16,
   U32,
   U64,
-  U128,
   USIZE,
 
   // String:
@@ -70,7 +68,7 @@ const NativeTypeMap native_types = boost::assign::list_of<NativeTypeMap::relatio
 
   // Floats:
   (TYPING_NTYPE_PAIR(F32))
-	(TYPING_NTYPE_PAIR(F64))
+  (TYPING_NTYPE_PAIR(F64))
 
   // Integers:
   (TYPING_NTYPE_PAIR(INT))
@@ -78,7 +76,6 @@ const NativeTypeMap native_types = boost::assign::list_of<NativeTypeMap::relatio
   (TYPING_NTYPE_PAIR(I16))
   (TYPING_NTYPE_PAIR(I32))
   (TYPING_NTYPE_PAIR(I64))
-  (TYPING_NTYPE_PAIR(I128))
   (TYPING_NTYPE_PAIR(ISIZE))
 
   (TYPING_NTYPE_PAIR(UINT))
@@ -86,10 +83,13 @@ const NativeTypeMap native_types = boost::assign::list_of<NativeTypeMap::relatio
   (TYPING_NTYPE_PAIR(U16))
   (TYPING_NTYPE_PAIR(U32))
   (TYPING_NTYPE_PAIR(U64))
-  (TYPING_NTYPE_PAIR(U128))
   (TYPING_NTYPE_PAIR(USIZE))
 
-	// String:
+  // String:
+  // FIXME: Should String be a native type?
+  // This should probably be named STRING_VIEW or something else indicating.
+  // Or something else indicating that this is fact an immutable string.
+  // Like a (const char*).
   (TYPING_NTYPE_PAIR(STRING))
 
   // // Boolean:

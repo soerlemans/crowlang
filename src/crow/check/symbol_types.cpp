@@ -6,28 +6,30 @@
 // Using Statements:
 namespace check {
 // StructType:
-auto StructType::strip() const -> TypeVariant
+auto StructType::type_variant() const -> TypeVariant
 {
-  namespace typing = ast::node::node_traits::typing;
+  using ast::node::node_traits::typing::make_struct;
 
-  return {typing::make_struct(m_identifier)};
+  return {make_struct(m_identifier)};
 }
 
 // FnType:
-auto FnType::strip() const -> TypeVariant
+auto FnType::type_variant() const -> TypeVariant
 {
-  namespace typing = ast::node::node_traits::typing;
+  using ast::node::node_traits::typing::make_function;
+  using ast::node::node_traits::typing::TypeList;
 
-  typing::TypeList params;
+  // TODO: Convert TypeList of @ref FnType to typing::TypeList.
+  TypeList params;
 
-  return {typing::make_function(params, m_return_type.strip())};
+  return {make_function(params, m_return_type.type_variant())};
 }
 
 // VarType:
-auto VarType::strip() const -> TypeVariant
+auto VarType::type_variant() const -> TypeVariant
 {
-  namespace typing = ast::node::node_traits::typing;
+  using ast::node::node_traits::typing::make_variable;
 
-  return {typing::make_variable(m_type.strip())};
+  return {make_variable(m_type.type_variant())};
 }
 } // namespace check

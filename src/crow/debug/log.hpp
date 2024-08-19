@@ -45,8 +45,8 @@ auto println(Args &&...t_args) -> void
  * @param[in] t_args Arguments to log.
  */
 template<typename... Args>
-inline auto log(SourcePosition &&t_pos, LogLevel t_loglevel,
-                Args &&...t_args) -> void
+inline auto log(SourcePosition &&t_pos, LogLevel t_loglevel, Args &&...t_args)
+  -> void
 {
   using namespace rang;
 

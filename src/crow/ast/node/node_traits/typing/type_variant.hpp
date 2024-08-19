@@ -9,17 +9,23 @@
 #include "typing.hpp"
 
 namespace ast::node::node_traits::typing {
+// Using Statements:
+using ast::node::node_traits::typing::NativeType;
+
 // Aliases:
-using Variant =
-  std::variant<StructTypePtr, FnTypePtr, VarTypePtr, typing::NativeType>;
+using Variant = std::variant<StructTypePtr, FnTypePtr, VarTypePtr, NativeType>;
 
 // Classes:
+// FIXME: We probably should probably not inherit from Variant.
+// Instead we should prefer composition.
 /*!
  * Recursive @ref Variant tree structure that denotes the type tree of a symbol.
+ * This class unlike @ref SymbolData solely holds the type information.
+ * The type tree is also a separate one from @ref SymbolData.
  */
 class TypeVariant : public Variant {
   public:
-  // Use the constructors of the variant
+  // Use the constructors of the parent class.
   using Variant::Variant;
 
   auto struct_() const -> StructTypePtr;
