@@ -9,7 +9,7 @@
 // Absolute Includes:
 #include "crow/container/text_stream.hpp"
 #include "crow/token/reserved/reserved.hpp"
-#include "crow/token/token.hpp"
+#include "crow/token/tokenstream.hpp"
 
 namespace lexer {
 // Using Statements:
@@ -35,7 +35,7 @@ class Lexer {
 
   // Misc:
   auto whitespace() -> void;
-  auto comment() -> void;
+  auto comment() -> Token;
 
   // Name:
   static auto is_keyword(std::string_view t_identifier) -> TokenTypeOpt;

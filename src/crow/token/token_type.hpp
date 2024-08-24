@@ -97,6 +97,9 @@ enum class TokenType {
   AND,
   OR,
 
+  // Comment:
+  DOC_COMMENT,
+
   // Miscellaneous:
   ARROW,
   DOT,

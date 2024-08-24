@@ -24,7 +24,7 @@
     return #t_type;
 
 // Using statements:
-using namespace token;
+using token::TokenType;
 
 namespace {
 // Aliases:

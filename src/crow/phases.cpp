@@ -35,8 +35,12 @@ auto lex(const path& t_path) -> token::TokenStream
   using container::TextBuffer;
   using lexer::Lexer;
 
+  DBG_PRINTLN("<lexing>");
+
   const auto stream_ptr{std::make_shared<TextBuffer>(open_file(t_path))};
   const auto tokenstream{lex(stream_ptr)};
+
+  DBG_PRINTLN("</lexing>");
 
   return tokenstream;
 }
@@ -118,6 +122,8 @@ auto run() -> void
 {
   for(const auto& path : settings.m_paths) {
     const auto ts{lex(path)};
+    DBG_PRINTLN("TokenStream: ", ts);
+
     const auto ast{parse(ts)};
 
     print_ast(ast);

@@ -8,10 +8,12 @@
 #include "codegen/cpp_backend/cpp_backend.hpp"
 #include "codegen/llvm_backend/llvm_backend.hpp"
 #include "container/text_buffer.hpp"
-#include "debug/log.hpp"
 #include "lexer/lexer.hpp"
 #include "parser/crow/crow_parser.hpp"
-#include "token/token.hpp"
+
+// FIXME: log has to be included as last in order to see all operator<<().
+// Add a rule for this in the .clang-format file.
+#include "debug/log.hpp"
 
 // Local Includes:
 #include "cli.hpp"

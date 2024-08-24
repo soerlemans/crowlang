@@ -58,25 +58,25 @@ namespace keywords {
   DEFINE_TERMINAL(g_defer,    "defer",    DEFER);
   DEFINE_TERMINAL(g_return,   "return",   RETURN);
 
-	// Literals:
+  // Literals:
   DEFINE_TERMINAL(g_true,  "True",  TRUE);
   DEFINE_TERMINAL(g_false, "False", FALSE);
 
-	// TODO: Convert keywords to boost::bimap.
+  // TODO: Convert keywords to boost::bimap.
   // const TerminalMap g_keywords2 = boost::assign::list_of<TerminalMap<std::string_view>::relation>
-	// 	(g_let.pair())
-	// 	(g_var.pair())
-	// 	(g_module.pair()) (g_import.pair()) (g_priv.pair()) (g_pub.pair())
-	// 	(g_struct.pair()) (g_interface.pair()) (g_impl.pair())
-	//   (g_fn.pair())
-	// 	(g_match.pair())
-	//   (g_if.pair()) (g_else.pair()) (g_elif.pair())
-	//   (g_loop.pair())
-	//   (g_break.pair()) (g_continue.pair()) (g_defer.pair()) (g_return.pair())
-  //   (g_true.pair()) (g_false.pair())
-  //   ;
+  // 	(g_let.pair())
+  // 	(g_var.pair())
+  // 	(g_module.pair()) (g_import.pair()) (g_priv.pair()) (g_pub.pair())
+  // 	(g_struct.pair()) (g_interface.pair()) (g_impl.pair())
+  //    (g_fn.pair())
+  // 	(g_match.pair())
+  //    (g_if.pair()) (g_else.pair()) (g_elif.pair())
+  //    (g_loop.pair())
+  //    (g_break.pair()) (g_continue.pair()) (g_defer.pair()) (g_return.pair())
+  //    (g_true.pair()) (g_false.pair())
+  //    ;
 
-	const std::map g_keywords {
+  const std::map g_keywords {
     g_let.pair(), g_var.pair(),
     g_module.pair(), g_import.pair(), g_priv.pair(), g_pub.pair(),
     g_struct.pair(), g_interface.pair(), g_impl.pair(),
@@ -120,20 +120,17 @@ namespace symbols {
 
   DEFINE_TERMINAL(g_assignment, '=',  ASSIGNMENT);
 
-	// Comparisons:
-  DEFINE_TERMINAL(g_less_than,       '<',   LESS_THAN);
+  // Comparisons:
+  DEFINE_TERMINAL(g_less_than,       '<',  LESS_THAN);
   DEFINE_TERMINAL(g_less_than_equal, "<=", LESS_THAN_EQUAL);
 
   DEFINE_TERMINAL(g_equal,     "==", EQUAL);
   DEFINE_TERMINAL(g_not_equal, "!=", NOT_EQUAL);
 
-  DEFINE_TERMINAL(g_greater_than,       '>',   GREATER_THAN);
+  DEFINE_TERMINAL(g_greater_than,       '>',  GREATER_THAN);
   DEFINE_TERMINAL(g_greater_than_equal, ">=", GREATER_THAN_EQUAL);
 
   // Logic:
-  DEFINE_TERMINAL(g_true, "true",  TRUE);
-  DEFINE_TERMINAL(g_false, "false",  FALSE);
-
   DEFINE_TERMINAL(g_not, '!',  NOT);
   DEFINE_TERMINAL(g_or,  "||", OR);
   DEFINE_TERMINAL(g_and, "&&", AND);
@@ -149,68 +146,71 @@ namespace symbols {
 
   DEFINE_TERMINAL(g_newline,  '\n', NEWLINE);
 
-	const std::map g_single_symbols {
-	  g_paren_open.pair(),
-	  g_paren_close.pair(),
-	  g_accolade_open.pair(),
-	  g_accolade_close.pair(),
-	  g_brace_open.pair(),
-	  g_brace_close.pair(),
+  const std::map g_single_symbols {
+    g_paren_open.pair(),
+    g_paren_close.pair(),
+    g_accolade_open.pair(),
+    g_accolade_close.pair(),
+    g_brace_open.pair(),
+    g_brace_close.pair(),
 
-	  g_assignment.pair(),
+    g_assignment.pair(),
 
-	  g_less_than.pair(),
-	  g_greater_than.pair(),
+    g_less_than.pair(),
+    g_greater_than.pair(),
 
-	  g_not.pair(),
+    g_not.pair(),
 
-	  g_dot.pair(),
-	  g_comma.pair(),
-	  g_question_mark.pair(),
-	  g_colon.pair(),
-	  g_semicolon.pair(),
+    g_dot.pair(),
+    g_comma.pair(),
+    g_question_mark.pair(),
+    g_colon.pair(),
+    g_semicolon.pair(),
 
-	  g_plus.pair(),
-	  g_minus.pair(),
-	  g_asterisk.pair(),
-	  g_slash.pair(),
-	  g_percent_sign.pair(),
+    g_plus.pair(),
+    g_minus.pair(),
+    g_asterisk.pair(),
+    g_slash.pair(),
+    g_percent_sign.pair(),
 
-		g_newline.pair()
+    g_newline.pair()
   };
 
-	const std::map g_multi_symbols{
-	  g_increment.pair(),
-	  g_decrement.pair(),
+  const std::map g_multi_symbols{
+    g_increment.pair(),
+    g_decrement.pair(),
 
-	  g_mul_assign.pair(),
-	  g_div_assign.pair(),
-	  g_mod_assign.pair(),
+    g_mul_assign.pair(),
+    g_div_assign.pair(),
+    g_mod_assign.pair(),
 
-	  g_add_assign.pair(),
-	  g_sub_assign.pair(),
+    g_add_assign.pair(),
+    g_sub_assign.pair(),
 
-	  g_less_than_equal.pair(),
+    g_less_than_equal.pair(),
 
-	  g_equal.pair(),
-	  g_not_equal.pair(),
+    g_equal.pair(),
+    g_not_equal.pair(),
 
-	  g_greater_than_equal.pair(),
+    g_greater_than_equal.pair(),
 
-	  g_true.pair(),
-	  g_false.pair(),
+    g_or.pair(),
+    g_and.pair(),
 
-	  g_or.pair(),
-	  g_and.pair(),
+    g_arrow.pair(),
+    g_double_colon.pair()
+  };
 
-		g_arrow.pair(),
-		g_double_colon.pair()
-	};
+  namespace none {
+    constexpr auto g_double_quote{'"'};
+    constexpr auto g_backslash{'\\'};
 
-	namespace none {
-		constexpr auto g_double_quote{'"'};
-		constexpr auto g_backslash{'\\'};
-	}
+    // These are for dealing with comments:
+    constexpr auto g_exclamation_mark{'!'};
+    constexpr auto g_slash{'/'};
+    constexpr auto g_asterisk{'*'};
+    constexpr auto g_newline{'\n'};
+  }
 } // namespace symbols
 } // namespace reserved
 
