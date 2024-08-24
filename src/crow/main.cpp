@@ -25,6 +25,9 @@ static auto disable_absorb_exceptions() -> void
 // Main:
 auto main(int t_argc, char* t_argv[]) -> int
 {
+  using rang::fg;
+  using rang::style;
+
   // Initialize command line argument parser.
   CLI::App app{"Compiler for Crow(lang)"};
   try {
@@ -41,7 +44,6 @@ auto main(int t_argc, char* t_argv[]) -> int
   try {
     run();
   } catch(std::exception& e) {
-    using namespace rang;
 
     std::cerr << "\n";
     std::cerr << style::bold << " - ";

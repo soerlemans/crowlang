@@ -1,6 +1,12 @@
 # Configure the compiler settings.
 
 # Variables:
+set(CMAKE_CXX_RELEASE_FLAGS
+  "-Werror"
+  "-pedantic"
+  "-O2"
+)
+
 set(CMAKE_CXX_WARNING_FLAGS
     "-Wall"
     "-Wextra"
@@ -13,9 +19,9 @@ set(CMAKE_CXX_WARNING_FLAGS
     "-Wunused-label"
     "-Wunreachable-code"
     "-Wreturn-type"
-		# Clang sees multiple if statements with init clause.
-		# Where the variable has the same name as shadowing.
-		# So until this is fixed it will be disabled.
+    # Clang sees multiple if statements with init clause.
+    # Where the variable has the same name as shadowing.
+    # So until this is fixed it will be disabled.
     # "-Wshadow"
     "-Wconversion"
     "-Wlogical-op"
@@ -24,9 +30,9 @@ set(CMAKE_CXX_WARNING_FLAGS
     "-Wcast-align"
     "-Wmissing-declarations"
     "-Wmissing-field-initializers"
-		# The standard library triggers this warning.
-		# So we cannot use it in conjunction.
-		# With -Werror.
+    # The standard library triggers this warning.
+    # So we cannot use it in conjunction.
+    # With -Werror.
     # "-Wnull-dereference"
     "-Wundef"
     "-Wunused-but-set-variable"
@@ -48,8 +54,8 @@ function(cxx_configure_target T_TARGET)
 	# Set warnings for target.
 	target_compile_options(${T_TARGET} PRIVATE
 		${CMAKE_CXX_WARNING_FLAGS}
-		$<$<CONFIG:Release>:-Werror>
-		$<$<CONFIG:RelWithDebInfo>:-Werror>
+		$<$<CONFIG:Release>:${CMAKE_CXX_RELEASE_FLAGS}>
+		$<$<CONFIG:RelWithDebInfo>:${CMAKE_CXX_RELEASE_FLAGS}>
 	)
 endfunction()
 
