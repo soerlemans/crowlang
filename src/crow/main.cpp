@@ -10,7 +10,7 @@ enum ExitCode {
   IMPROPER_USAGE,
   EXCEPTION = 100,
   SIGNAL = 200,
-  CLI11_EXCEPTION = 700,
+  CLI11_EXCEPTION = 300,
 };
 
 // TODO: Relocate.

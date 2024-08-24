@@ -66,10 +66,10 @@ chain_expr       : IDENTIFIER
 
 // Literals:
 literal          : NUMBER
-				         | STRING
-				         | TRUE
-				         | FALSE
-				         ;
+                 | STRING
+                 | TRUE
+                 | FALSE
+                 ;
 
 grouping         : '(' expr ')'
                  ;
