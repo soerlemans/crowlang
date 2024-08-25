@@ -4,12 +4,11 @@
 
 // Private Functions:
 namespace {
+// FIXME: Place somewhere more appropiate, like in src/lib somewhere.
 /*!
  * Escape all special characters and backslashes.
- * @warn We do not escape the NULL terminator.
  *
- * @note FIXME: Place somewhere more appropiate, likely in src/lib.
- * This is a utility function so it should probably go there.
+ * @warn We do not escape the NULL terminator.
  */
 std::string escape_str(const std::string_view& t_str)
 {
