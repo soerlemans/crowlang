@@ -52,6 +52,10 @@ class Token {
 
   virtual ~Token() = default;
 };
+
+// Functions:
+//! Used to convert @ref Token to a string representation.
+auto token2str(const Token& t_token) -> std::string;
 } // namespace token
 
 // Functions:

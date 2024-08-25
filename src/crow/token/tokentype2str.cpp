@@ -78,6 +78,10 @@ auto tokentype2str(const token::TokenType t_type) -> std::string
     MATCH_STR(BRACE_OPEN)
     MATCH_STR(BRACE_CLOSE)
 
+    // Comments:
+    MATCH_STR(LINE_COMMENT)
+    MATCH_STR(BLOCK_COMMENT)
+
     // Miscellaneous:
     MATCH_STR(NEWLINE)
 

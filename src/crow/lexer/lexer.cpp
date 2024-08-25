@@ -40,74 +40,82 @@ Lexer::Lexer(TextStreamPtr t_text): m_text{t_text}
 auto Lexer::whitespace() -> void
 {}
 
+auto Lexer::handle_line_comment() -> Token
+{
+  using namespace token::reserved::symbols::none;
+
+  std::stringstream ss;
+
+  const auto position{text_position()};
+  m_text->next(); // Discard '/'.
+  m_text->next(); // Discard '/'.
+
+  while(!m_text->eos()) {
+    const auto ch{m_text->character()};
+
+    if(ch == g_newline) {
+      break;
+    }
+
+    ss << ch;
+
+    m_text->next();
+  }
+
+  LOG_TOKEN("LINE_COMMENT: ", ss.str());
+  return Token{TokenType::LINE_COMMENT, ss.str(), position};
+}
+
+auto Lexer::handle_block_comment() -> Token
+{
+  using namespace token::reserved::symbols::none;
+
+  std::stringstream ss;
+
+  const auto position{text_position()};
+  m_text->next(); // Discard '/'.
+  m_text->next(); // Discard '*'.
+
+  while(!m_text->eos()) {
+    const auto ch{m_text->character()};
+    if(ch == g_asterisk) {
+      if(const auto opt{m_text->peek()}; opt) {
+        if(opt.value() == g_slash) {
+          m_text->next();
+          break;
+        }
+      }
+    } else {
+      // We ignore Asterisks
+      ss << ch;
+    }
+
+    m_text->next();
+  }
+
+  LOG_TOKEN("BLOCK_COMMENT:\n", ss.str());
+  return Token{TokenType::BLOCK_COMMENT, ss.str(), position};
+}
+
 auto Lexer::comment() -> Token
 {
   using namespace token::reserved::symbols::none;
 
   Token token;
-  const auto position{text_position()};
-
   std::stringstream ss;
 
-  const auto start_ch{m_text->character()};
-  if(const auto opt{m_text->peek()}; opt && start_ch == g_slash) {
+  // Check the second character after the '/' to determine.
+  // If this is a line comment or block comment.
+  if(const auto opt{m_text->peek()}; opt) {
     const auto peek_ch{opt.value()};
-
-    auto is_doc_comment{false};
 
     // Is a comment:
     if(peek_ch == g_slash) {
-      m_text->next(); // Discard '/'.
-      m_text->next(); // Discard '/'.
-
-      if(m_text->character() == g_exclamation_mark) {
-        is_doc_comment = true;
-        m_text->next(); // Discard '!'.
-      }
-
-      while(!m_text->eos()) {
-        const auto ch{m_text->character()};
-
-        if(ch == g_newline) {
-          break;
-        }
-
-        ss << ch;
-
-        m_text->next();
-      }
-
-      LOG_TOKEN("COMMENT: ", ss.str());
+      token = handle_line_comment();
 
       // Is a comment block:
     } else if(peek_ch == g_asterisk) {
-      m_text->next(); // Discard '/'.
-      m_text->next(); // Discard '*'.
-
-      if(m_text->character() == g_exclamation_mark) {
-        is_doc_comment = true;
-        m_text->next(); // Discard '!'.
-      }
-
-      while(!m_text->eos()) {
-        const auto ch{m_text->character()};
-        if(ch == g_asterisk) {
-          if(const auto opt{m_text->peek()}; opt) {
-            if(opt.value() == g_slash)
-              break;
-          }
-        } else {
-          // We ignore Asterisks
-          ss << ch;
-        }
-
-        m_text->next();
-      }
-
-      LOG_TOKEN("COMMENT BLOCK:\n", ss.str());
-    }
-
-    if(is_doc_comment) {
+      token = handle_block_comment();
     }
   }
 
@@ -420,18 +428,20 @@ auto Lexer::tokenize() -> TokenStream
         m_ts.emplace_back(TokenType::NEWLINE, text_position());
       }
     } else if(is_comment()) {
-      // Handle comments
+      // TODO: Currently comments are not part of the grammar.
+      // Meaning we have no way to properly translate them to source yet.
+      // If we want the generated C++ code to have comments.
+      // We need to find a way to translate it to the source.
+      // This is especially the case for documentation comments (start with !).
+      // For now we discard comments.
       comment();
+      // m_ts.push_back(comment());
 
       // '//' and '/*' are used for comments.
       // If we just skip to the next line we ignore the \n at the end.
       // So we must add a NEWLINE explicitly!
       DBG_INFO("INSERTING NEWLINE");
-      m_ts.emplace_back(TokenType::NEWLINE, text_position());
-
-      // Skip to next line
-      // m_text->next_line();
-      // continue;
+      // m_ts.emplace_back(TokenType::NEWLINE, text_position());
     } else if(std::isalpha(ch)) {
       m_ts.push_back(identifier());
     } else if(std::isdigit(ch)) {

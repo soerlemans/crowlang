@@ -35,6 +35,9 @@ class Lexer {
 
   // Misc:
   auto whitespace() -> void;
+
+  auto handle_line_comment() -> Token;
+  auto handle_block_comment() -> Token;
   auto comment() -> Token;
 
   // Name:
