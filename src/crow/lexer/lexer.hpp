@@ -34,10 +34,13 @@ class Lexer {
   Lexer(TextStreamPtr t_text);
 
   // Misc:
-  auto whitespace() -> void;
+  auto newline() -> Token;
 
+  // Comment:
   auto handle_line_comment() -> Token;
   auto handle_block_comment() -> Token;
+
+  auto is_comment() -> bool;
   auto comment() -> Token;
 
   // Name:

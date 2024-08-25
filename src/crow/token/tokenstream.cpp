@@ -5,24 +5,31 @@
 // Private Functions:
 namespace {
 /*!
- * Convert a string to a raw string.
+ * Escape all special characters and backslashes.
+ *
+ * @note FIXME: Place somewhere more appropiate, likely in src/lib.
+ * This is a utility function so it should probably go there.
  */
 std::string escape_str(const std::string_view& t_str)
 {
   std::stringstream ss;
   for(const auto ch : t_str) {
     switch(ch) {
-      case '\\':
-        ss << "\\\\"; // Escape backslashes.
-        break;
-
-      case '"':
-        ss << "\\\""; // Escape double quotes.
+      case '\t':
+        ss << "\\t"; // Escape tab.
         break;
 
       case '\n':
         ss << "\\n"; // Escape newline.
-	break;
+        break;
+
+      case '\v':
+        ss << "\\v"; // Escape vertical tab.
+        break;
+
+      case '\r':
+        ss << "\\r"; // Escape carriage return.
+        break;
 
       default:
         ss << ch; // Append normal characters.

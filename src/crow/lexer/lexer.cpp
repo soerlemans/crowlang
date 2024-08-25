@@ -37,8 +37,16 @@ auto Lexer::syntax_error(const std::string_view t_msg) const -> void
 Lexer::Lexer(TextStreamPtr t_text): m_text{t_text}
 {}
 
-auto Lexer::whitespace() -> void
-{}
+auto Lexer::newline() -> Token
+{
+  const auto position{text_position()};
+
+  // Generally whitespace is ignored.
+  // Newlines are used for statement/semicolon interference.
+  // So they are a part of the grammar.
+  DBG_INFO("NEWLINE");
+  return Token{TokenType::NEWLINE, position};
+}
 
 auto Lexer::handle_line_comment() -> Token
 {
@@ -53,6 +61,7 @@ auto Lexer::handle_line_comment() -> Token
   while(!m_text->eos()) {
     const auto ch{m_text->character()};
 
+    // Line comments stop on newlines.
     if(ch == g_newline) {
       break;
     }
@@ -78,7 +87,10 @@ auto Lexer::handle_block_comment() -> Token
 
   while(!m_text->eos()) {
     const auto ch{m_text->character()};
+
+    // We ignore Asterisks.
     if(ch == g_asterisk) {
+      // block comments stop on */.
       if(const auto opt{m_text->peek()}; opt) {
         if(opt.value() == g_slash) {
           m_text->next();
@@ -86,7 +98,6 @@ auto Lexer::handle_block_comment() -> Token
         }
       }
     } else {
-      // We ignore Asterisks
       ss << ch;
     }
 
@@ -95,6 +106,26 @@ auto Lexer::handle_block_comment() -> Token
 
   LOG_TOKEN("BLOCK_COMMENT:\n", ss.str());
   return Token{TokenType::BLOCK_COMMENT, ss.str(), position};
+}
+
+/*!
+ * Determine if we are at the start of a comment.
+ */
+auto Lexer::is_comment() -> bool
+{
+  using namespace token::reserved::symbols::none;
+
+  auto ret{false};
+
+  const auto ch{m_text->character()};
+  if(const auto opt{m_text->peek()}; opt && ch == g_slash) {
+    const auto peek_ch{opt.value()};
+    if(peek_ch == g_slash || peek_ch == g_asterisk) {
+      ret = true;
+    }
+  }
+
+  return ret;
 }
 
 auto Lexer::comment() -> Token
@@ -406,26 +437,11 @@ auto Lexer::tokenize() -> TokenStream
   while(!m_text->eos()) {
     const auto ch{m_text->character()};
 
-    // Lambda's:
-    const auto is_comment{[&]() -> bool {
-      auto ret{false};
-
-      if(const auto opt{m_text->peek()}; opt && ch == none::g_slash) {
-        const auto peek_ch{opt.value()};
-        if(peek_ch == none::g_slash || peek_ch == none::g_asterisk) {
-          ret = true;
-        }
-      }
-
-      return ret;
-    }};
-
     // Lexing loop:
     if(std::isspace(ch)) {
-      // Just ignore whitespace, but do not ignore newlines
+      // Ignore everything except newlines.
       if(ch == g_newline.m_identifier) {
-        DBG_INFO("NEWLINE");
-        m_ts.emplace_back(TokenType::NEWLINE, text_position());
+        m_ts.push_back(newline());
       }
     } else if(is_comment()) {
       // TODO: Currently comments are not part of the grammar.
@@ -441,7 +457,7 @@ auto Lexer::tokenize() -> TokenStream
       // If we just skip to the next line we ignore the \n at the end.
       // So we must add a NEWLINE explicitly!
       DBG_INFO("INSERTING NEWLINE");
-      // m_ts.emplace_back(TokenType::NEWLINE, text_position());
+      m_ts.emplace_back(TokenType::NEWLINE, text_position());
     } else if(std::isalpha(ch)) {
       m_ts.push_back(identifier());
     } else if(std::isdigit(ch)) {
