@@ -7,7 +7,7 @@
 // Absolute Includes:
 #include "crow/ast/node/fdecl.hpp"
 #include "crow/debug/trace.hpp"
-#include "crow/token/token.hpp"
+#include "crow/token/tokenstream.hpp"
 #include "crow/token/tokentype2str.hpp"
 
 

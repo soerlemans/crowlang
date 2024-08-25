@@ -37,12 +37,129 @@ auto Lexer::syntax_error(const std::string_view t_msg) const -> void
 Lexer::Lexer(TextStreamPtr t_text): m_text{t_text}
 {}
 
+auto Lexer::newline() -> Token
+{
+  const auto position{text_position()};
+
+  // Generally whitespace is ignored.
+  // Newlines are used for statement/semicolon interference.
+  // So they are a part of the grammar.
+  DBG_INFO("NEWLINE");
+  return Token{TokenType::NEWLINE, position};
+}
+
+auto Lexer::handle_line_comment() -> Token
+{
+  using namespace token::reserved::symbols::none;
+
+  std::stringstream ss;
+
+  const auto position{text_position()};
+  m_text->next(); // Discard '/'.
+  m_text->next(); // Discard '/'.
+
+  while(!m_text->eos()) {
+    const auto ch{m_text->character()};
+
+    // Line comments stop on newlines.
+    if(ch == g_newline) {
+      break;
+    }
+
+    ss << ch;
+
+    m_text->next();
+  }
+
+  LOG_TOKEN("LINE_COMMENT: ", ss.str());
+  return Token{TokenType::LINE_COMMENT, ss.str(), position};
+}
+
+auto Lexer::handle_block_comment() -> Token
+{
+  using namespace token::reserved::symbols::none;
+
+  std::stringstream ss;
+
+  const auto position{text_position()};
+  m_text->next(); // Discard '/'.
+  m_text->next(); // Discard '*'.
+
+  while(!m_text->eos()) {
+    const auto ch{m_text->character()};
+
+    // We ignore Asterisks.
+    if(ch == g_asterisk) {
+      // block comments stop on */.
+      if(const auto opt{m_text->peek()}; opt) {
+        if(opt.value() == g_slash) {
+          m_text->next();
+          break;
+        }
+      }
+    } else {
+      ss << ch;
+    }
+
+    m_text->next();
+  }
+
+  LOG_TOKEN("BLOCK_COMMENT:\n", ss.str());
+  return Token{TokenType::BLOCK_COMMENT, ss.str(), position};
+}
+
+/*!
+ * Determine if we are at the start of a comment.
+ */
+auto Lexer::is_comment() -> bool
+{
+  using namespace token::reserved::symbols::none;
+
+  auto ret{false};
+
+  const auto ch{m_text->character()};
+  if(const auto opt{m_text->peek()}; opt && ch == g_slash) {
+    const auto peek_ch{opt.value()};
+    if(peek_ch == g_slash || peek_ch == g_asterisk) {
+      ret = true;
+    }
+  }
+
+  return ret;
+}
+
+auto Lexer::comment() -> Token
+{
+  using namespace token::reserved::symbols::none;
+
+  Token token;
+  std::stringstream ss;
+
+  // Check the second character after the '/' to determine.
+  // If this is a line comment or block comment.
+  if(const auto opt{m_text->peek()}; opt) {
+    const auto peek_ch{opt.value()};
+
+    // Is a comment:
+    if(peek_ch == g_slash) {
+      token = handle_line_comment();
+
+      // Is a comment block:
+    } else if(peek_ch == g_asterisk) {
+      token = handle_block_comment();
+    }
+  }
+
+  return token;
+}
+
 auto Lexer::is_keyword(const std::string_view t_identifier) -> TokenTypeOpt
 {
   using namespace token::reserved::keywords;
 
   TokenTypeOpt opt;
 
+  // If the keyword was found return its @ref TokenType.
   if(const auto iter{g_keywords.find(t_identifier)}; iter != g_keywords.end()) {
     LOG_TOKEN("KEYWORD: ", iter->first);
     opt = iter->second;
@@ -63,11 +180,14 @@ auto Lexer::identifier() -> Token
     return std::isalnum(t_char) || t_char == '_';
   }};
 
-  // Extract identifier
-  if(std::isalpha(m_text->character())) {
-    ss << m_text->character();
+  // Extract identifier:
+  const auto ch{m_text->character()};
+  if(std::isalpha(ch)) {
+    ss << ch;
     while(!m_text->eos()) {
-      if(const auto ch{m_text->peek()}; ch && is_valid_id(ch.value())) {
+      const auto opt{m_text->peek()};
+
+      if(opt && is_valid_id(opt.value())) {
         m_text->next();
         ss << m_text->character();
       } else {
@@ -93,8 +213,8 @@ auto Lexer::is_hex_literal() -> bool
   bool is_hex{false};
 
   if(m_text->character() == '0' && m_text->peek() == 'x') {
-    m_text->next(); // Discard '0'
-    m_text->next(); // Discard 'x'
+    m_text->next(); // Discard '0'.
+    m_text->next(); // Discard 'x'.
 
     is_hex = true;
   }
@@ -109,11 +229,13 @@ auto Lexer::handle_hex() -> Token
   std::stringstream ss;
 
   // Extract hex
-  if(std::isxdigit(m_text->character())) {
-    ss << m_text->character();
+  const auto ch{m_text->character()};
+  if(std::isxdigit(ch)) {
+    ss << ch;
+
     while(!m_text->eos()) {
-      if(const auto ch{m_text->peek()}; ch) {
-        if(std::isxdigit(ch.value())) {
+      if(const auto opt{m_text->peek()}; opt) {
+        if(std::isxdigit(opt.value())) {
           m_text->next();
           ss << m_text->character();
         } else {
@@ -311,34 +433,36 @@ auto Lexer::symbol() -> Token
 auto Lexer::tokenize() -> TokenStream
 {
   using namespace token::reserved::symbols;
-  using namespace token::reserved::symbols::none;
 
   while(!m_text->eos()) {
     const auto ch{m_text->character()};
 
+    // Lexing loop:
     if(std::isspace(ch)) {
-      // Just ignore whitespace, but do not ignore newlines
+      // Ignore everything except newlines.
       if(ch == g_newline.m_identifier) {
-        DBG_INFO("NEWLINE");
-        m_ts.emplace_back(TokenType::NEWLINE, text_position());
+        m_ts.push_back(newline());
       }
+    } else if(is_comment()) {
+      // TODO: Currently comments are not part of the grammar.
+      // Meaning we have no way to properly translate them to source yet.
+      // If we want the generated C++ code to have comments.
+      // We need to find a way to translate it to the source.
+      // This is especially the case for documentation comments (start with !).
+      // For now we discard comments.
+      comment();
+      // m_ts.push_back(comment());
 
-      // TODO: change the comment character to // and /*
-    } else if(ch == '#') {
-      // '#' are used for comments.
-      // If we just skip to the next line we ignore the \n at the end, so we
-      // Must add a NEWLINE explicitly!
+      // '//' and '/*' are used for comments.
+      // If we just skip to the next line we ignore the \n at the end.
+      // So we must add a NEWLINE explicitly!
       DBG_INFO("INSERTING NEWLINE");
       m_ts.emplace_back(TokenType::NEWLINE, text_position());
-
-      // Skip to next line
-      m_text->next_line();
-      continue;
     } else if(std::isalpha(ch)) {
       m_ts.push_back(identifier());
     } else if(std::isdigit(ch)) {
       m_ts.push_back(literal_numeric());
-    } else if(ch == g_double_quote) {
+    } else if(ch == none::g_double_quote) {
       m_ts.push_back(literal_string());
     } else {
       m_ts.push_back(symbol());

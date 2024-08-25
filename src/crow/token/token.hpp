@@ -2,12 +2,11 @@
 #define CROW_CROW_TOKEN_TOKEN_HPP
 
 // STL Includes:
+#include <iosfwd>
 #include <string>
 #include <variant>
-#include <vector>
 
 // Absolute Includes:
-#include "crow/container/stream.hpp"
 #include "crow/container/text_position.hpp"
 
 // Local Includes:
@@ -15,16 +14,12 @@
 
 namespace token {
 // Using Statements:
-using container::Stream;
 using container::TextPosition;
 
 // Forward Declarations:
 class Token;
 
 // Aliases:
-using TokenOpt = std::optional<Token>;
-using TokenVec = std::vector<Token>;
-using TokenStream = Stream<TokenVec>;
 using TokenValue = std::variant<int, double, std::string>;
 
 // Classes:
@@ -57,6 +52,14 @@ class Token {
 
   virtual ~Token() = default;
 };
+
+// Functions:
+//! Used to convert @ref Token to a string representation.
+auto token2str(const Token& t_token) -> std::string;
 } // namespace token
+
+// Functions:
+auto operator<<(std::ostream& t_os, const token::Token& t_token)
+  -> std::ostream&;
 
 #endif // CROW_CROW_TOKEN_TOKEN_HPP
