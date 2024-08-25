@@ -98,7 +98,7 @@ enum class TokenType {
   OR,
 
   // Comments:
-  LINE_COMMENT,       // Starts with "//".
+  LINE_COMMENT,  // Starts with "//".
   BLOCK_COMMENT, // Starts with "/*" ends with "*/", may span multiple lines.
 
   // Miscellaneous:
