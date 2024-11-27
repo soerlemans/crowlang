@@ -19,30 +19,15 @@
  */
 
 // Macros:
-#define STYLE(t_style)        \
-  {                           \
-    .m_style = style::t_style \
-  }
+#define STYLE(t_style) {.m_style = style::t_style}
 
-#define FG(t_color)     \
-  {                     \
-    .m_fg = fg::t_color \
-  }
+#define FG(t_color) {.m_fg = fg::t_color}
 
-#define BG(t_color)     \
-  {                     \
-    .m_bg = bg::t_color \
-  }
+#define BG(t_color) {.m_bg = bg::t_color}
 
-#define FGB(t_color)     \
-  {                      \
-    .m_fg = fgB::t_color \
-  }
+#define FGB(t_color) {.m_fg = fgB::t_color}
 
-#define BGB(t_color)     \
-  {                      \
-    .m_bg = bgB::t_color \
-  }
+#define BGB(t_color) {.m_bg = bgB::t_color}
 
 
 // Forward Declarations:

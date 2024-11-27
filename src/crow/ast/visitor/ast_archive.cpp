@@ -10,12 +10,12 @@
  *
  * @param[in] t_type Type of Node to accept.
  */
-#define DEFINE_SERIALIZE_METHOD(t_type)                       \
-  auto AstArchive::visit([[maybe_unused]] t_type* t_ptr)->Any \
-  {                                                           \
-    archive(*t_ptr);                                          \
-                                                              \
-    return {};                                                \
+#define DEFINE_SERIALIZE_METHOD(t_type)                         \
+  auto AstArchive::visit([[maybe_unused]] t_type* t_ptr) -> Any \
+  {                                                             \
+    archive(*t_ptr);                                            \
+                                                                \
+    return {};                                                  \
   }
 
 namespace ast::visitor {

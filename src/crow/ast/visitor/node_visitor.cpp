@@ -12,12 +12,12 @@
 // TODO: Place somewhere appropriate
 #define assert_msg(t_msg, t_expr) assert(((void)t_msg, t_expr))
 
-#define STUB(t_type)                                           \
-  auto NodeVisitor::visit([[maybe_unused]] t_type* t_ptr)->Any \
-  {                                                            \
-    DBG_WARNING("Not overriden!");                             \
-                                                               \
-    return {};                                                 \
+#define STUB(t_type)                                             \
+  auto NodeVisitor::visit([[maybe_unused]] t_type* t_ptr) -> Any \
+  {                                                              \
+    DBG_WARNING("Not overriden!");                               \
+                                                                 \
+    return {};                                                   \
   }
 
 namespace ast::visitor {

@@ -63,7 +63,8 @@ auto SymbolData::is_const() const -> bool
     return t_data->m_const;
   }};
 
-  const auto not_const{[]([[maybe_unused]] const auto& t_data) {
+  const auto not_const{[]([[maybe_unused]]
+                          const auto& t_data) {
     return false;
   }};
 
