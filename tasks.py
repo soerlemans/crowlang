@@ -17,9 +17,7 @@ from enum import StrEnum
 
 # Globals:
 class BuildMode(StrEnum):
-    '''
-    Enumeration containing the different build configurations.
-    '''
+    'Enumeration containing the different build configurations.'
     BUILD = 'build'
     DEBUG = 'debug-build'
     RELEASEDEBUG = 'reldebug-build'
@@ -35,15 +33,11 @@ def json_report(*args, **kwargs):
 
 #def run(t_context, t_cmd: str, **kwargs: Any) -> Optional[invoke.Result]:
 def run(t_context, t_cmd: str, **kwargs):
-    '''
-    Helper method for colored output as a default.
-    '''
+    'Helper method for colored output as a default.'
     return t_context.run(t_cmd, pty=True)
 
 def cmake_parallel_arg(t_parallel: bool) -> str:
-    '''
-    Get the cmake arguments for building with multiple threads.
-    '''
+    'Get the cmake arguments for building with multiple threads.'
     arg = ''
     if t_parallel:
         max_jobs = multiprocessing.cpu_count() // 3
@@ -53,9 +47,7 @@ def cmake_parallel_arg(t_parallel: bool) -> str:
     return arg
 
 def cmake_mode_args(t_mode: str) -> str:
-    '''
-    Get the cmake arguments for a specific build m
-    '''
+    'Get the cmake arguments for a specific build mode.'
     args = ''
     match t_mode:
         case BuildMode.BUILD:
@@ -80,7 +72,7 @@ def cmake_mode_args(t_mode: str) -> str:
 
 
 def cmake(t_ctx, t_mode: str, t_parallel: bool, t_lint=False):
-    ''' TODO: Document. '''
+    'TODO: Document.'
     parallel_arg = cmake_parallel_arg(t_parallel)
     build_args = cmake_mode_args(t_mode)
 
@@ -118,6 +110,11 @@ def all(ctx, parallel=True, lint=False):
 
 @task
 def install(ctx, mode='', parallel=True):
+    print(f'@Invoke: Building project.')
+
+    report=json_report(mode=mode, parallel=parallel)
+    print(f'@Invoke: Args: {report}')
+
     enum_values = [ item.value for item in BuildMode ]
     mode = mode if mode in enum_values else 'build'
     cmake(ctx, mode, parallel, False)
@@ -139,9 +136,7 @@ def install(ctx, mode='', parallel=True):
 # TODO: Shorten help string, possibly use a global?
 @task(help={'mode': '', 'parallel': 'Flag indicating concurrent builds.', 'lint': 'Perform static analysis on source code using clang-tidy'})
 def build(ctx, mode='', parallel=True, lint=False):
-    '''
-    Build the project.
-    '''
+    'Build the project.'
     print(f'@Invoke: Building project.')
 
     report=json_report(mode=mode, parallel=parallel, lint=lint)
@@ -154,9 +149,7 @@ def build(ctx, mode='', parallel=True, lint=False):
 
 @task
 def clean(ctx, objects=False):
-    '''
-    Cleans the build files.
-    '''
+    'Cleans the build files.'
     for directory in BuildMode:
         path = directory
         path += '/CMakeFiles' if objects else ''
@@ -169,25 +162,19 @@ def clean(ctx, objects=False):
 
 @task
 def format(ctx):
-    '''
-    Clang-format all Ctx++ sources and headers.
-    '''
+    'Clang-format all Ctx++ sources and headers.'
     ctx.run(r'find src/ -iname "*.[ch]pp" -exec clang-format -i "{}" \;')
     pass
 
 @task
 def header_guard(ctx):
-    '''
-    Regenerate all heade guards to be unique.
-    '''
+    'Regenerate all heade guards to be unique.'
     ctx.run(r'PROJECT_NAME=CROW find src/ -name "*.hpp" -exec ./tools/header_guard.awk {} \;')
     pass
 
-@task
+@task(help={ 'pdf':'Generate PDF Doxygen output or not.' })
 def docs(ctx, pdf=False):
-    '''
-    Generate Doxygen documentation.
-    '''
+    'Generate Doxygen documentation.'
     ctx.run(f'doxygen .doxyfile')
 
     # TODO: Figure out if this is a good idea as we now depend on make.

@@ -148,6 +148,12 @@ auto TypeChecker::visit(Call* t_fn_call) -> Any
   // TODO: Improve this code to be more generic and clean, error if this is not
   // a function name
   const auto id{t_fn_call->identifier()};
+
+  // FIXME: Temporary whitelist for standard lib print and println:
+  if(id == "print" || id == "println") {
+    return {};
+  }
+
   const auto data{m_envs.get_symbol(id)};
   const auto args{get_type_list(t_fn_call->args())};
 

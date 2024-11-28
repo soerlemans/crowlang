@@ -1,17 +1,21 @@
 #ifndef CROW_STDLIB_IO_HPP
 #define CROW_STDLIB_IO_HPP
 
+// STL Includes:
+#include <format>
+#include <print>
+
 namespace libcrow {
 template<typename... Args>
 inline auto print(std::format_string<Args...> t_fmt, Args&&... t_args) -> void
 {
-  std::print(fmt, std::forward<Args>(t_args)...);
+  std::print(t_fmt, std::forward<Args>(t_args)...);
 }
 
 template<typename... Args>
 inline auto println(std::format_string<Args...> t_fmt, Args&&... t_args) -> void
 {
-  std::println(fmt, std::forward<Args>(t_args)...);
+  std::println(t_fmt, std::forward<Args>(t_args)...);
 }
 } // namespace libcrow
 

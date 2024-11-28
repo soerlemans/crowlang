@@ -33,6 +33,9 @@ auto CppBackend::prologue() -> std::string
   ss << "#include <cstdint>\n";
   // ss << "#include <stdfloat>\n"; // Uncomment when support by clang libc++.
 
+  // FIXME: Temporary input for printing purposes.
+  ss << "#include \"libcrow/io.hpp\"\n";
+
   return ss.str();
 }
 
@@ -174,7 +177,17 @@ auto CppBackend::visit(Function* t_fn) -> Any
 
 auto CppBackend::visit(Call* t_call) -> Any
 {
-  const auto identifier{t_call->identifier()};
+  // FIXME: When get non shitty import resolution.
+  // const auto identifier{t_call->identifier()};
+  auto identifier{t_call->identifier()};
+  const auto args{t_call->args()};
+
+  // Temporary measures (I fucking hope).
+  if(identifier == "print") {
+    identifier = "libcrow::print";
+  } else if(identifier == "println") {
+    identifier = "libcrow::println";
+  }
 
   // FIXME: This wont work for a raw function or method call.
   // As when we assign it directly to a variable it will work but not else.
@@ -182,8 +195,21 @@ auto CppBackend::visit(Call* t_call) -> Any
 
   // FIXME: Figure out a way to detect if this function call is inline.
   // Or if this function is being called without as a statement.
+  // (I hope this is doable).
 
-  return std::format("{}();\n", identifier);
+  std::stringstream ss{};
+  std::string_view sep{""};
+
+  for(const auto& ptr : *args) {
+    const auto argument{resolve(ptr)};
+    ss << sep << argument;
+
+    sep = ", ";
+  }
+
+  const auto arguments{ss.str()};
+
+  return std::format("{}({});\n", identifier, arguments);
 }
 
 AST_VISITOR_STUB(CppBackend, ReturnType)
@@ -334,7 +360,7 @@ auto CppBackend::visit([[maybe_unused]] String* t_str) -> Any
 {
   const auto value{t_str->get()};
 
-  return std::format("{}", value);
+  return std::format("\"{}\"", value);
 }
 
 auto CppBackend::visit([[maybe_unused]] Boolean* t_bool) -> Any

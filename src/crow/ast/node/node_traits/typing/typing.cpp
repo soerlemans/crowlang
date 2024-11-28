@@ -58,12 +58,11 @@ auto operator<<(std::ostream& t_os, VarTypePtr t_var) -> std::ostream&
 
 auto operator<<(std::ostream& t_os, const TypeList& t_list) -> std::ostream&
 {
-  for(auto iter{t_list.cbegin()}; iter != t_list.cend(); iter++) {
-    if(iter != t_list.cbegin()) {
-      t_os << ", ";
-    }
+  std::string_view sep{""};
+  for(const auto& elem : t_list) {
+    t_os << sep << elem;
 
-    t_os << *iter;
+    sep = ", ";
   }
 
   return t_os;
