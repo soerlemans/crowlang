@@ -108,12 +108,23 @@ def all(ctx, parallel=True, lint=False):
     pass
 
 @task
-def install(ctx, parallel=True):
-    print('TODO: Implement.')
-
-    ctx.run();
+def install(ctx, mode='', parallel=True):
+    enum_values = [ item.value for item in BuildMode ]
     mode = mode if mode in enum_values else 'build'
-    cmake(ctx, mode, parallel)
+    cmake(ctx, mode, parallel, False)
+
+    # TODO: Check if the build made it or not.
+    # TODO: Copy transpiler from Mode install location to /usr/local/bin/
+
+
+    # Install binary to /usr/local/bin/
+    ctx.run(f'sudo cp -f ./{mode}/crow /usr/local/bin/crow')
+
+
+    # Standard library and headers install.
+    libcrow_path = '/usr/local/include/libcrow'
+    ctx.run(f'sudo mkdir -p {libcrow_path}')
+    ctx.run(f'sudo cp -f ./src/libcrow/*.hpp {libcrow_path}')
     pass
 
 # TODO: Shorten help string, possibly use a global?

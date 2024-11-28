@@ -78,10 +78,13 @@ auto ClangFrontendInvoker::compile(const path &t_filepath) -> void
   DBG_INFO("tmp_obj: ", tmp_obj);
   DBG_INFO("binary: ", binary);
 
-  // TODO: Add -O2 flag on release builds.
+  // TODO: Add -O2 flag on release and reldebug builds (not on debug).
   // FIXME: This is a temporary workaround till the programmatic approach works.
-  const auto cmd{std::format("g++ {} -g3 -ggdb -o {}", t_filepath.native(),
-                             binary.native())};
+
+  const auto source_str{t_filepath.native()};
+  const auto binary_str{binary.native()};
+
+  const auto cmd{std::format("g++ {} -g3 -ggdb -o {}", source_str, binary_str)};
   const auto status_code{std::system(cmd.c_str())};
 
   if(status_code == 0) {
@@ -92,8 +95,7 @@ auto ClangFrontendInvoker::compile(const path &t_filepath) -> void
 #ifdef DEBUG
   DBG_PRINTLN("# C++ codegeneration:");
 
-  const auto cmd_cat{
-    std::format("cat {} | clang-format --style=LLVM", t_filepath.native())};
+  const auto cmd_cat{std::format("clang-format --style=LLVM < {}", source_str)};
   std::system(cmd_cat.c_str());
 #endif // DEBUG
 
