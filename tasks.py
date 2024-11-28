@@ -95,6 +95,15 @@ def cmake(t_ctx, t_mode: str, t_parallel: bool, t_lint=False):
 
 # Tasks:
 @task
+def help(ctx):
+    'Show a help string.'
+    help_str = f'''Usage inv
+    '''
+
+    print(help_str)
+    pass
+
+@task
 def all(ctx, parallel=True, lint=False):
     print(f'@Invoke: Args: {report}')
 

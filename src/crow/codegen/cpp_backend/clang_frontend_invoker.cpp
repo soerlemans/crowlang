@@ -84,7 +84,10 @@ auto ClangFrontendInvoker::compile(const path &t_filepath) -> void
   const auto source_str{t_filepath.native()};
   const auto binary_str{binary.native()};
 
-  const auto cmd{std::format("g++ {} -g3 -ggdb -o {}", source_str, binary_str)};
+  // We add -I for the libcrow standard library headers.
+  const auto cmd{
+    std::format("g++ {} -I/usr/local/include/libcrow -g3 -ggdb -o {}",
+                source_str, binary_str)};
   const auto status_code{std::system(cmd.c_str())};
 
   if(status_code == 0) {
