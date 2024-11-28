@@ -3,7 +3,7 @@ Project documentation
 
  - `crow` contains the actual compiler code.
  - `lib` contains useful utilities used project wide.
- - `libcrow` contains the standard library of Crow used by the generated C++ code.
+ - `stdlibcrow` contains the standard library of Crow used by the generated C++ code.
 
 ## About includes
 Here is an example of how includes should ordered for a file titled `header.cpp`.

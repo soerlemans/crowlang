@@ -14,7 +14,7 @@ include(cmake/targets.cmake)
 
 # Define the executable for the crow compiler.
 add_library(${TARGET_CROW_LIB} STATIC)
-# add_library(${TARGET_CROW_STDLIB} SHARED)
+# add_library(${TARGET_CROW_STDLIBCROW} SHARED)
 add_executable(${TARGET_CROW})
 
 # Configure include-what-you-use.

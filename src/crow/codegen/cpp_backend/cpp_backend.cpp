@@ -34,7 +34,7 @@ auto CppBackend::prologue() -> std::string
   // ss << "#include <stdfloat>\n"; // Uncomment when support by clang libc++.
 
   // FIXME: Temporary input for printing purposes.
-  ss << "#include \"libcrow/io.hpp\"\n";
+  ss << "#include \"stdlibcrow/io.hpp\"\n";
 
   return ss.str();
 }
@@ -184,9 +184,9 @@ auto CppBackend::visit(Call* t_call) -> Any
 
   // Temporary measures (I fucking hope).
   if(identifier == "print") {
-    identifier = "libcrow::print";
+    identifier = "stdlibcrow::print";
   } else if(identifier == "println") {
-    identifier = "libcrow::println";
+    identifier = "stdlibcrow::println";
   }
 
   // FIXME: This wont work for a raw function or method call.

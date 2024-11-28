@@ -1,11 +1,11 @@
-#ifndef CROW_STDLIB_IO_HPP
-#define CROW_STDLIB_IO_HPP
+#ifndef CROW_STDLIBCROW_IO_HPP
+#define CROW_STDLIBCROW_IO_HPP
 
 // STL Includes:
 #include <format>
 #include <print>
 
-namespace libcrow {
+namespace stdlibcrow {
 template<typename... Args>
 inline auto print(std::format_string<Args...> t_fmt, Args&&... t_args) -> void
 {
@@ -17,6 +17,6 @@ inline auto println(std::format_string<Args...> t_fmt, Args&&... t_args) -> void
 {
   std::println(t_fmt, std::forward<Args>(t_args)...);
 }
-} // namespace libcrow
+} // namespace stdlibcrow
 
-#endif // CROW_STDLIB_IO_HPP
+#endif // CROW_STDLIBCROW_IO_HPP

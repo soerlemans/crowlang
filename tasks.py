@@ -134,17 +134,20 @@ def install(ctx, mode='', parallel=True):
     # Install binary to /usr/local/bin/
     ctx.run(f'sudo cp -f ./{mode}/crow /usr/local/bin/crow')
 
-    # Standard library and headers install.
-    libcrow_path = '/usr/local/include/libcrow'
-    ctx.run(f'sudo mkdir -p {libcrow_path}')
-    ctx.run(f'sudo cp -f ./src/libcrow/*.hpp {libcrow_path}')
+    # Install lbicrow headers.
+    stdlibcrow_path = '/usr/local/include/stdlibcrow'
+    ctx.run(f'sudo mkdir -p {stdlibcrow_path}')
+    ctx.run(f'sudo cp -f ./src/stdlibcrow/*.hpp {stdlibcrow_path}')
+
+    # TODO: Install shared stdlibcrow...
+    # ctx.run(f'sudo cp -f ./{mode}/libcrowlib.a {stdlibcrow_path}')
     pass
 
 
 def uninstall(ctx):
     '''Uninstall crow from /usr/local/'''
     ctx.run('sudo rm -f /usr/local/bin/crow')
-    ctx.run('sudo rm -rf /usr/local/include/libcrow')
+    ctx.run('sudo rm -rf /usr/local/include/stdlibcrow')
     pass
 
 

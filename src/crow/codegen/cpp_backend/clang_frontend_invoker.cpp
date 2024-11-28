@@ -96,8 +96,7 @@ auto ClangFrontendInvoker::compile(const path &t_filepath) -> void
   // TODO: Add -O2 flag on release and reldebug builds (not on debug).
   // FIXME: This is a temporary workaround till the programmatic approach works.
 
-  // We add -I for the libcrow standard library headers.
-  const auto flags{"-I/usr/local/include/libcrow -g -ggdb -std=c++23"};
+  const auto flags{"-g -ggdb -std=c++23"};
   const auto cmd{std::format("g++ {} {} -o {}", source_str, flags, binary_str)};
   const auto status_code{std::system(cmd.c_str())};
 
