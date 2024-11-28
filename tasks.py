@@ -22,19 +22,30 @@ class BuildMode(StrEnum):
     DEBUG = 'debug-build'
     RELEASEDEBUG = 'reldebug-build'
     TEST = 'test-build'
+    pass
 
 
 # Functions:
-def json_report(*args, **kwargs):
+def log(*args):
+    'Log function makes it clear what messages come from Invoke.'
+    print('@Invoke ', *args)
+    pass
+
+
+def log_args(*args, **kwargs):
+    'Log the arguments passed to a task.'
     if args:
         kwargs.update({'args': args})
 
-    return json.dumps(kwargs)
+    log(json.dumps(kwargs))
+    pass
+
 
 #def run(t_context, t_cmd: str, **kwargs: Any) -> Optional[invoke.Result]:
 def run(t_context, t_cmd: str, **kwargs):
     'Helper method for colored output as a default.'
     return t_context.run(t_cmd, pty=True)
+
 
 def cmake_parallel_arg(t_parallel: bool) -> str:
     'Get the cmake arguments for building with multiple threads.'
@@ -45,6 +56,7 @@ def cmake_parallel_arg(t_parallel: bool) -> str:
         pass
 
     return arg
+
 
 def cmake_mode_args(t_mode: str) -> str:
     'Get the cmake arguments for a specific build mode.'
@@ -91,16 +103,13 @@ def help(ctx):
     'Show a help string.'
     help_str = f'''Usage inv
     '''
-
-    print(help_str)
     pass
+
 
 @task
 def all(ctx, parallel=True, lint=False):
-    print(f'@Invoke: Args: {report}')
-
-    report=json_report(parallel=parallel, lint=lint)
-    print(f'@Invoke: Args: {report}')
+    log('Building all.')
+    log_args(parallel=parallel, lint=lint)
 
     for mode in BuildMode:
         print(f'@Invoke: Building \'{mode}\'')
@@ -108,12 +117,11 @@ def all(ctx, parallel=True, lint=False):
         pass
     pass
 
+
 @task
 def install(ctx, mode='', parallel=True):
-    print(f'@Invoke: Building project.')
-
-    report=json_report(mode=mode, parallel=parallel)
-    print(f'@Invoke: Args: {report}')
+    log('Building project.')
+    log_args(mode=mode, parallel=parallel)
 
     enum_values = [ item.value for item in BuildMode ]
     mode = mode if mode in enum_values else 'build'
@@ -126,26 +134,32 @@ def install(ctx, mode='', parallel=True):
     # Install binary to /usr/local/bin/
     ctx.run(f'sudo cp -f ./{mode}/crow /usr/local/bin/crow')
 
-
     # Standard library and headers install.
     libcrow_path = '/usr/local/include/libcrow'
     ctx.run(f'sudo mkdir -p {libcrow_path}')
     ctx.run(f'sudo cp -f ./src/libcrow/*.hpp {libcrow_path}')
     pass
 
+
+def uninstall(ctx):
+    '''Uninstall crow from /usr/local/'''
+    ctx.run('sudo rm -f /usr/local/bin/crow')
+    ctx.run('sudo rm -rf /usr/local/include/libcrow')
+    pass
+
+
 # TODO: Shorten help string, possibly use a global?
 @task(help={'mode': '', 'parallel': 'Flag indicating concurrent builds.', 'lint': 'Perform static analysis on source code using clang-tidy'})
 def build(ctx, mode='', parallel=True, lint=False):
     'Build the project.'
-    print(f'@Invoke: Building project.')
-
-    report=json_report(mode=mode, parallel=parallel, lint=lint)
-    print(f'@Invoke: Args: {report}')
+    log('Building project.')
+    log_args(mode=mode, parallel=parallel, lint=lint)
 
     enum_values = [ item.value for item in BuildMode ]
     mode = mode if mode in enum_values else 'build'
     cmake(ctx, mode, parallel, lint)
     pass
+
 
 @task
 def clean(ctx, objects=False):
@@ -160,11 +174,13 @@ def clean(ctx, objects=False):
         pass
     pass
 
+
 @task
 def format(ctx):
     'Clang-format all Ctx++ sources and headers.'
     ctx.run(r'find src/ -iname "*.[ch]pp" -exec clang-format -i "{}" \;')
     pass
+
 
 @task
 def header_guard(ctx):
@@ -172,12 +188,12 @@ def header_guard(ctx):
     ctx.run(r'PROJECT_NAME=CROW find src/ -name "*.hpp" -exec ./tools/header_guard.awk {} \;')
     pass
 
-@task(help={ 'pdf':'Generate PDF Doxygen output or not.' })
+
+@task(help={ 'pdf':'Generate PDF Doxygen output or not (requires make).' })
 def docs(ctx, pdf=False):
     'Generate Doxygen documentation.'
     ctx.run(f'doxygen .doxyfile')
 
-    # TODO: Figure out if this is a good idea as we now depend on make.
     if pdf:
         ctx.run('cd doxygen/latex && make')
         pass
