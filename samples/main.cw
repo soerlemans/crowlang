@@ -1,5 +1,5 @@
 fn main() -> int {
-    let sum = 10 + 10
+    println("Hello World!")
 
-    return sum
+    return 0
 }

@@ -23,7 +23,7 @@ static auto disable_absorb_exceptions() -> void
 }
 
 // Main:
-auto main(int t_argc, char* t_argv[]) -> int
+auto main(const int t_argc, char* t_argv[]) -> int
 {
   using rang::fg;
   using rang::style;
@@ -44,8 +44,6 @@ auto main(int t_argc, char* t_argv[]) -> int
   try {
     run();
   } catch(std::exception& e) {
-
-    std::cerr << "\n";
     std::cerr << style::bold << " - ";
     std::cerr << fg::red << "EXCEPTION";
     std::cerr << fg::reset << " - \n" << style::reset;

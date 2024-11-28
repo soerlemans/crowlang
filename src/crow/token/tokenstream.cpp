@@ -6,7 +6,7 @@
 namespace {
 // FIXME: Place somewhere more appropiate, like in src/lib somewhere.
 /*!
- * Escape all special characters and backslashes.
+ * str) << ", "Escape all special characters and backslashes.
  *
  * @warn We do not escape the NULL terminator.
  */
@@ -44,12 +44,16 @@ std::string escape_str(const std::string_view& t_str)
 auto operator<<(std::ostream& t_os, const token::TokenStream& t_ts)
   -> std::ostream&
 {
+  std::string_view seperator{""};
+
   t_os << '[';
 
   for(const auto& tok : t_ts) {
     const auto str{token::token2str(tok)};
 
-    t_os << escape_str(str) << ", ";
+    t_os << seperator << escape_str(str);
+
+    seperator = ", ";
   }
 
   t_os << ']';
