@@ -139,8 +139,10 @@ def install(ctx, mode='', parallel=True):
     ctx.run(f'sudo mkdir -p {stdlibcrow_path}')
     ctx.run(f'sudo cp -f ./src/stdlibcrow/*.hpp {stdlibcrow_path}')
 
-    # TODO: Install shared stdlibcrow...
-    # ctx.run(f'sudo cp -f ./{mode}/libcrowlib.a {stdlibcrow_path}')
+    # TODO: Have CMake generate stdlibcrow.a.
+    # TODO: Install shared stdlibcrow.a. 
+    # ctx.run(f'sudo mkdir -p /usr/local/lib/crow/')
+    #ctx.run(f'sudo cp -f ./{mode}/stdlibcrowlib.a /usr/local/lib/crow/')
     pass
 
 

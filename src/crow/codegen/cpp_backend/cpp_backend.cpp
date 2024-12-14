@@ -32,10 +32,12 @@ auto CppBackend::prologue() -> std::string
 
   // Crow's native types often translate.
   // To C++ fixed width integers and floats.
+  ss << "// STL Includes:\n";
   ss << "#include <cstdint>\n";
   // ss << "#include <stdfloat>\n"; // Uncomment when support by clang libc++.
 
   // FIXME: Temporary input for printing purposes.
+  ss << "// Stdlibcrow Includes:\n";
   ss << R"(#include "stdlibcrow/io.hpp")" << '\n';
 
   return ss.str();
@@ -101,7 +103,7 @@ auto CppBackend::resolve(NodePtr t_ptr, const bool t_terminate) -> std::string
 // Control:
 auto CppBackend::visit([[maybe_unused]] If* t_if) -> Any
 {
-  const auto init_expr{resolve(t_if->init_expr())};
+  const auto init_expr{resolve(t_if->init_expr(), false)};
   const auto cond{resolve(t_if->condition())};
 
   const auto then{resolve(t_if->init_expr())};
@@ -109,7 +111,7 @@ auto CppBackend::visit([[maybe_unused]] If* t_if) -> Any
 
   std::stringstream ss;
 
-  ss << std::format("if({}; {}) {{\n", init_expr, cond) << then;
+  ss << std::format("if({} {}) {{\n", init_expr, cond) << then;
 
   // Dont create else branch if we dont have a statement for it.
   if(!alt.empty()) {
