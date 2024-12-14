@@ -6,7 +6,7 @@
 // Internal:
 namespace {
 //! Private global keeping track of the current loglevel.
-debug::LogLevel g_loglevel{debug::LogLevel::WARNING};
+debug::LogLevel g_loglevel{debug::LogLevel::NOTICE};
 } // namespace
 
 // Namespace Debug:

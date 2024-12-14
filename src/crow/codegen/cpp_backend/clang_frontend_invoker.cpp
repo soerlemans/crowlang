@@ -101,7 +101,9 @@ auto ClangFrontendInvoker::compile(const path &t_filepath) -> void
   const auto status_code{std::system(cmd.c_str())};
 
   if(status_code == 0) {
-    DBG_CRITICAL("Binary was generated!: ", binary);
+    DBG_NOTICE("Binary was generated!: ", binary);
+  } else {
+    // TODO: Throw an exception.
   }
 
   // TODO: Fix ugly Clang code.

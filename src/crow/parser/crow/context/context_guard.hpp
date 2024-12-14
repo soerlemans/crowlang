@@ -7,6 +7,8 @@
 namespace parser::crow::context {
 /*!
  * Convienence class that is used to manage a context by using object lifetime.
+ * This is used for example to prevent keywords like `break`, `continue`, etc.
+ * From being used outside of loops.
  */
 class ContextGuard {
   private:

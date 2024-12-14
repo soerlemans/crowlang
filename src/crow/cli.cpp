@@ -21,6 +21,7 @@ auto add_loglevel_flag([[maybe_unused]] CLI::App& t_app) -> void
   map.insert({"critical", LogLevel::CRITICAL});
   map.insert({"error", LogLevel::ERROR});
   map.insert({"warning", LogLevel::WARNING});
+  map.insert({"notice", LogLevel::NOTICE});
   map.insert({"info", LogLevel::INFO});
   map.insert({"verbose", LogLevel::VERBOSE});
 

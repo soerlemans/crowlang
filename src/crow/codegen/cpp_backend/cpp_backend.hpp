@@ -45,7 +45,7 @@ class CppBackend : public ast::visitor::NodeVisitor {
    * @note Throws an exception if it fails at converting the @ref Any.
    */
   [[nodiscard("Pure method must use results.")]]
-  auto resolve(NodePtr t_ptr) -> std::string;
+  auto resolve(NodePtr t_ptr, bool context_inline = false) -> std::string;
 
 
   public:

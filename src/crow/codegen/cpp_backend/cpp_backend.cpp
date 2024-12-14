@@ -53,7 +53,8 @@ auto CppBackend::prototypes(NodePtr t_ast) -> std::string
   return generator.generate(t_ast);
 }
 
-auto CppBackend::resolve(NodePtr t_ptr) -> std::string
+// TODO: Add inline option for direct resolution.
+auto CppBackend::resolve(NodePtr t_ptr, const bool context_inline) -> std::string
 {
   using exception::error;
 
