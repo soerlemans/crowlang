@@ -4,6 +4,7 @@
 #include <format>
 #include <fstream>
 #include <sstream>
+#include <string_view>
 
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
@@ -19,6 +20,7 @@
 namespace codegen::cpp_backend {
 // Using Statements:
 using namespace ast::visitor;
+using namespace std::literals::string_view_literals;
 
 NODE_USING_ALL_NAMESPACES()
 
@@ -53,15 +55,37 @@ auto CppBackend::prototypes(NodePtr t_ast) -> std::string
   return generator.generate(t_ast);
 }
 
+auto CppBackend::should_terminate() -> bool
+{
+  return m_terminate.top();
+}
+
+auto CppBackend::terminate() -> std::string_view
+{
+  auto terminate{";\n"sv};
+
+  // Remove semicolon if we should not terminate.
+  [[unlikely]]
+  if(!should_terminate()) {
+    terminate = "\n";
+  }
+
+  return terminate;
+}
+
 // TODO: Add inline option for direct resolution.
-auto CppBackend::resolve(NodePtr t_ptr, const bool context_inline) -> std::string
+auto CppBackend::resolve(NodePtr t_ptr, const bool t_terminate) -> std::string
 {
   using exception::error;
 
   std::stringstream ss;
 
   if(t_ptr) {
+    m_terminate.push(t_terminate);
+
     const auto any{traverse(t_ptr)};
+
+    m_terminate.pop();
 
     try {
       ss << std::any_cast<std::string>(any);
@@ -85,46 +109,33 @@ auto CppBackend::visit([[maybe_unused]] If* t_if) -> Any
 
   std::stringstream ss;
 
-  // clang-format off
-  ss << std::format("if({}; {}) {{\n", init_expr, cond)
-     << then
-     << "} else {\n"
-     << alt
-     << "}\n";
-  // clang-format on
+  ss << std::format("if({}; {}) {{\n", init_expr, cond) << then;
+
+  // Dont create else branch if we dont have a statement for it.
+  if(!alt.empty()) {
+    ss << "} else {\n" << alt;
+  }
+
+  ss << "}\n";
 
   return ss.str();
 }
 
 auto CppBackend::visit(Loop* t_loop) -> Any
 {
-  const auto init_expr{resolve(t_loop->init_expr())};
+  const auto init_expr{resolve(t_loop->init_expr(), false)};
   const auto cond{resolve(t_loop->condition())};
 
-  const auto post_expr{resolve(t_loop->expr())};
+  const auto post_expr{resolve(t_loop->expr(), false)};
   const auto body{resolve(t_loop->body())};
 
   std::stringstream ss;
 
-  // FIXME: The eval_expr in the loop_statement grammar.
-  // Can contain multiple semicolons.
-  // Same applies to post_expr as postcrement and assignment add a semicolon.
-  // This can mess up the code generation.
-
   // clang-format off
-  // Here is an ugly temporary solution/workaround:
-  ss << "{\n"
-     << std::format("{};\n", init_expr)
-     << std::format("for(;{}; [&]() {{ return {} }}() ) {{\n", cond, post_expr)
-     << body
-     << "}\n"
-     << "}\n";
-
-  /* TODO: Get the more elegant solution to work.
-  ss << std::format("for({}; {}; {}) {{\n", init_expr, cond, expr)
+  ss << std::format("for({};{}; {} )", init_expr, cond, post_expr)
+     << "{\n"
      << body
      << "}\n";
-  */
   // clang-format on
 
   return ss.str();
@@ -231,7 +242,10 @@ auto CppBackend::visit(Let* t_let) -> Any
   const auto type_variant{t_let->get_type()};
   const auto type{type_variant2cpp_type(type_variant)};
 
-  return std::format("const {} {}{{ {} }};\n", type, identifier, init_expr);
+  const auto terminate_str{terminate()};
+
+  return std::format("const {} {}{{ {} }}{}", type, identifier, init_expr,
+                     terminate_str);
 }
 
 auto CppBackend::visit(Var* t_var) -> Any
@@ -242,7 +256,10 @@ auto CppBackend::visit(Var* t_var) -> Any
   const auto type_variant{t_var->get_type()};
   const auto type{type_variant2cpp_type(type_variant)};
 
-  return std::format("{} {}{{ {} }};\n", type, identifier, init_expr);
+  const auto terminate_str{terminate()};
+
+  return std::format("{} {}{{ {} }}{}", type, identifier, init_expr,
+                     terminate_str);
 }
 
 auto CppBackend::visit(Variable* t_var) -> Any
@@ -290,15 +307,17 @@ auto CppBackend::visit(Comparison* t_comp) -> Any
 auto CppBackend::visit(Increment* t_inc) -> Any
 {
   const auto left{resolve(t_inc->left())};
+  const auto terminate_str{terminate()};
 
-  return std::format("{}++;\n", left);
+  return std::format("{}++{}", left, terminate_str);
 }
 
 auto CppBackend::visit(Decrement* t_dec) -> Any
 {
   const auto left{resolve(t_dec->left())};
+  const auto terminate_str{terminate()};
 
-  return std::format("{}--;\n", left);
+  return std::format("{}--{}", left, terminate_str);
 }
 
 auto CppBackend::visit(UnaryPrefix* t_up) -> Any

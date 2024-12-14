@@ -1,6 +1,9 @@
 #ifndef CROW_CROW_CODEGEN_CPP_BACKEND_CPP_BACKEND_HPP
 #define CROW_CROW_CODEGEN_CPP_BACKEND_CPP_BACKEND_HPP
 
+// STL Includes:
+#include <stack>
+
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
 #include "lib/filesystem.hpp"
@@ -22,6 +25,10 @@ using visitor::Any;
  * Or any compiler of choice.
  */
 class CppBackend : public ast::visitor::NodeVisitor {
+  private:
+  // TODO: Move terminate in its own class ass to separate concerns.
+  std::stack<bool> m_terminate;
+
   protected:
   /*!
    * Generate the prologue for the generated C++ code.
@@ -40,13 +47,24 @@ class CppBackend : public ast::visitor::NodeVisitor {
   auto prototypes(NodePtr t_ast) -> std::string;
 
   /*!
-   * Convert the given AST node to C++ code.
+   */
+  auto should_terminate() -> bool;
+
+  /*!
+   */
+  [[nodiscard("Pure method must use results")]]
+  auto terminate() -> std::string_view;
+
+  /*!
+   * Resolve the given AST node to C++ code.
    *
-   * @note Throws an exception if it fails at converting the @ref Any.
+   * @param[in] t_ptr AST node to convert to C++ code.
+   * @param[in] t_terminate If the next direct node should end with a semicolon.
+   *
+   * @warn Throws an exception if it fails at converting the @ref Any.
    */
   [[nodiscard("Pure method must use results.")]]
-  auto resolve(NodePtr t_ptr, bool context_inline = false) -> std::string;
-
+  auto resolve(NodePtr t_ptr, bool t_terminate = true) -> std::string;
 
   public:
   CppBackend() = default;
