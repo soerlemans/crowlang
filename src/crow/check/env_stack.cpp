@@ -13,7 +13,7 @@ namespace check {
 // Using Statements:
 using exception::type_error;
 
-// Methods:
+// Public Methods:
 EnvStack::EnvStack(): m_envs{}
 {
   // Always initialize the global scope
