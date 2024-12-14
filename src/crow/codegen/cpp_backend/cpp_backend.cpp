@@ -34,7 +34,7 @@ auto CppBackend::prologue() -> std::string
   // ss << "#include <stdfloat>\n"; // Uncomment when support by clang libc++.
 
   // FIXME: Temporary input for printing purposes.
-  ss << "#include \"stdlibcrow/io.hpp\"\n";
+  ss << R"(#include "stdlibcrow/io.hpp")" << '\n';
 
   return ss.str();
 }
@@ -212,7 +212,13 @@ auto CppBackend::visit(Call* t_call) -> Any
   return std::format("{}({});\n", identifier, arguments);
 }
 
-AST_VISITOR_STUB(CppBackend, ReturnType)
+auto CppBackend::visit([[maybe_unused]] ReturnType* t_rt) -> Any
+{
+  // Currently we do not dynamically compute return types.
+  // So for now converting a type_variant2cpp_type() is good enough.
+
+  return {};
+}
 
 // Lvalue:
 // TODO: Reduce code duplication between the Let and Var methods.

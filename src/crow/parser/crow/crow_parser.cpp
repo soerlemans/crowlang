@@ -262,7 +262,7 @@ auto CrowParser::assignment() -> NodePtr
       node = make_node<Increment>(std::move(lhs));
     } else if(next_if(TokenType::DECREMENT)) {
       PARSER_FOUND(TokenType::DECREMENT);
-      node = make_node<Increment>(std::move(lhs));
+      node = make_node<Decrement>(std::move(lhs));
     }
   }
 

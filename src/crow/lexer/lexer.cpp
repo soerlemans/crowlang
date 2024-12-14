@@ -459,6 +459,7 @@ auto Lexer::tokenize() -> TokenStream
       DBG_INFO("INSERTING NEWLINE");
       m_ts.emplace_back(TokenType::NEWLINE, text_position());
     } else if(std::isalpha(ch)) {
+      // TODO: Add a check for raw string literals like r"" (use peek).
       m_ts.push_back(identifier());
     } else if(std::isdigit(ch)) {
       m_ts.push_back(literal_numeric());
