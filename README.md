@@ -47,6 +47,12 @@ In order to make use of invoke you should install it through `pipx`:
 pipx install invoke
 ```
 
+#### Build
+After installing the necessary dependencies you can build the compiler by running:
+```
+inv build --parallel
+```
+
 ### Dynamic libraries
 Rang and tabulate are downloaded using CMake and statically linked.
 CLI11, Boost, LLVM and libclang are dynamically linked (CMake searches for it on your system).

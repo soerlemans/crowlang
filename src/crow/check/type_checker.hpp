@@ -35,6 +35,7 @@ class TypeChecker : public SymbolHelper {
   EnvStack m_envs;
   TypePromoter m_promoter;
 
+  protected:
   auto handle_condition(const SymbolData& t_data,
                         const TextPosition& t_pos) const -> void;
 

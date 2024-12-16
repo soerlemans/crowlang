@@ -1,5 +1,6 @@
-Project documentation
-=====================
+README
+======
+## Project documentation
 
  - `crow` contains the actual compiler code.
  - `lib` contains useful utilities used project wide.
