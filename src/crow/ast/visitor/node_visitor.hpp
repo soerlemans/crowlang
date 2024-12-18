@@ -39,6 +39,7 @@ class NodeVisitor {
   virtual auto visit(node::control::Loop* t_loop) -> Any;
   virtual auto visit(node::control::Continue* t_continue) -> Any;
   virtual auto visit(node::control::Break* t_break) -> Any;
+  virtual auto visit(node::control::Defer* t_defer) -> Any;
   virtual auto visit(node::control::Return* t_return) -> Any;
 
   // Function:

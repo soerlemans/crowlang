@@ -7,6 +7,7 @@
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
 #include "lib/filesystem.hpp"
+#include "lib/types.hpp"
 
 namespace codegen::cpp_backend {
 // Using Statements:
@@ -26,8 +27,12 @@ using visitor::Any;
  */
 class CppBackend : public ast::visitor::NodeVisitor {
   private:
-  // TODO: Move terminate in its own class ass to separate concerns.
+  // TODO: Move terminate functionality in its own class to separate concerns.
   std::stack<bool> m_terminate;
+
+  // Counter that is used to create unique identifier names.
+  // Is incremented after each usage to prevent collision.
+  u64 m_id_defer_count;
 
   protected:
   /*!
@@ -74,6 +79,7 @@ class CppBackend : public ast::visitor::NodeVisitor {
   auto visit(node::control::Loop* t_loop) -> Any override;
   auto visit(node::control::Continue* t_continue) -> Any override;
   auto visit(node::control::Break* t_break) -> Any override;
+  auto visit(node::control::Defer* t_defer) -> Any override;
   auto visit(node::control::Return* t_return) -> Any override;
 
   // Function:

@@ -12,8 +12,12 @@ This allows us to write code without any need for semicolons.
 One of the main focuses of the language is enforcing safe constructs by not allowing certain expressions as statements.
 
 Here a hello world.
-```
+```go
 fn main() -> int {
+    defer {
+	    println("Defer!")
+	}
+
     println("Hello World!")
 }
 ```

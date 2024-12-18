@@ -30,10 +30,10 @@ using cereal::XMLOutputArchive;
 // clang-format off
 using Archive =
   std::variant<std::monostate,
-							 JSONOutputArchive, JSONInputArchive,
-               XMLOutputArchive, XMLInputArchive,
-							 BinaryOutputArchive, BinaryInputArchive,
-							 PortableBinaryOutputArchive, PortableBinaryInputArchive>;
+     JSONOutputArchive, JSONInputArchive,
+     XMLOutputArchive, XMLInputArchive,
+     BinaryOutputArchive, BinaryInputArchive,
+     PortableBinaryOutputArchive, PortableBinaryInputArchive>;
 // clang-format on
 
 // Enums:
@@ -91,6 +91,7 @@ class AstArchive : public NodeVisitor {
   auto visit(node::control::Loop* t_loop) -> Any override;
   auto visit(node::control::Continue* t_continue) -> Any override;
   auto visit(node::control::Break* t_break) -> Any override;
+  auto visit(node::control::Defer* t_defer) -> Any override;
   auto visit(node::control::Return* t_ret) -> Any override;
 
   // Function:

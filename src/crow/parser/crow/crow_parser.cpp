@@ -282,7 +282,7 @@ auto CrowParser::result_statement() -> NodePtr
     node = std::move(ptr);
   }
 
-  // Terminate result statement
+  // Terminate result statement.
   if(node) {
     terminator();
   }
@@ -309,10 +309,10 @@ auto CrowParser::jump_statement() -> NodePtr
     node = make_node<Break>();
   } else if(next_if(TokenType::DEFER)) {
     auto body_ptr{make_node<List>()};
-    if(auto ptr{expr_statement()}; ptr) {
-      body_ptr->push_back(std::move(ptr));
-    } else if(auto ptr{body()}; ptr) {
+    if(auto ptr{body()}; ptr) {
       body_ptr = std::move(ptr);
+    } else if(auto ptr{expr_statement()}; ptr) {
+      body_ptr->push_back(std::move(ptr));
     }
 
     node = make_node<Defer>(std::move(body_ptr));
@@ -851,14 +851,14 @@ auto CrowParser::item() -> NodePtr
   return node;
 }
 
-// item list exists out of an item followed by a terminator
+// Item list exists out of an item followed by a terminator
 // Till there are are no more items
 auto CrowParser::item_list() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
 
   return list_of([this] -> NodePtr {
-    // Remove newlines before item
+    // Remove newlines before item.
     newline_opt();
     if(eos()) {
       return nullptr;
@@ -868,6 +868,7 @@ auto CrowParser::item_list() -> NodeListPtr
   });
 }
 
+// This is the grammars root node.
 auto CrowParser::program() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);

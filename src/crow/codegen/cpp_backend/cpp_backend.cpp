@@ -40,6 +40,21 @@ auto CppBackend::prologue() -> std::string
   ss << "// Stdlibcrow Includes:\n";
   ss << R"(#include "stdlibcrow/io.hpp")" << '\n';
 
+  // FIXME: Prototype implementation of Defer.
+  // Create a more mature implementation that wont collide.
+  ss << "template<typename T>\n";
+  ss << "class Defer {\n";
+  ss << "private:\n";
+  ss << "  T m_fn;\n\n";
+  ss << "public:\n";
+  ss << "  Defer(const T t_fn): m_fn{t_fn}\n";
+  ss << "  { }\n\n";
+  ss << "  ~Defer()\n";
+  ss << "  {\n";
+  ss << "    m_fn();\n";
+  ss << "  }\n";
+  ss << "};\n\n";
+
   return ss.str();
 }
 
@@ -151,13 +166,25 @@ auto CppBackend::visit([[maybe_unused]] Break* t_break) -> Any
   return std::format("break;\n");
 }
 
-auto CppBackend::visit(Return* t_ret) -> Any
+auto CppBackend::visit(Defer* t_defer) -> Any
 {
   std::stringstream ss;
 
-  ss << std::format("return {};\n", resolve(t_ret->expr(), false));
+  const auto body{resolve(t_defer->body())};
+
+  ss << std::format("const Defer {}_defer_object{{ ()[&]{{ {} }} }};\n",
+                    m_id_defer_count, body);
+
+  m_id_defer_count++;
 
   return ss.str();
+}
+
+auto CppBackend::visit(Return* t_ret) -> Any
+{
+  const auto expr{resolve(t_ret->expr(), false)};
+
+  return std::format("return {};\n", expr);
 }
 
 // Functions:
