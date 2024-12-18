@@ -9,6 +9,7 @@
 
 // Using Statements:
 using namespace check;
+using namespace std::literals::string_view_literals;
 
 // Functions:
 auto operator<<(std::ostream& t_os, StructTypePtr t_struct) -> std::ostream&
@@ -27,7 +28,7 @@ auto operator<<(std::ostream& t_os, StructTypePtr t_struct) -> std::ostream&
 auto operator<<(std::ostream& t_os, FnTypePtr t_fn) -> std::ostream&
 {
   if(t_fn) {
-    std::string_view sep{""};
+    auto sep{""sv};
     t_os << "(";
     for(const auto& param : t_fn->m_params) {
       t_os << sep << param;

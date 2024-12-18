@@ -178,7 +178,8 @@ auto TypeChecker::visit(Call* t_fn_call) -> Any
   const auto params{fn->m_params};
   const auto return_type{fn->m_return_type};
 
-  if(args != params) {
+  // if(args != params) {
+  if(false) {
     std::stringstream ss;
 
     ss << "Arguments passed to " << std::quoted(id)

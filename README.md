@@ -9,12 +9,12 @@ Crow's syntax is somewhat inspired by Swift and Rust.
 In this programming language expressions are not statements.
 This allows us to write code without any need for semicolons.
 
-Here is a snippet (printing is not yet implemented):
+One of the main focuses of the language is enforcing safe constructs by not allowing certain expressions as statements.
+
+Here a hello world.
 ```
 fn main() -> int {
-    let sum = 10 + 10
-
-    return sum
+    println("Hello World!")
 }
 ```
 

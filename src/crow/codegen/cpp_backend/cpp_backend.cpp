@@ -84,9 +84,7 @@ auto CppBackend::resolve(NodePtr t_ptr, const bool t_terminate) -> std::string
 
   if(t_ptr) {
     m_terminate.push(t_terminate);
-
     const auto any{traverse(t_ptr)};
-
     m_terminate.pop();
 
     try {
@@ -101,13 +99,13 @@ auto CppBackend::resolve(NodePtr t_ptr, const bool t_terminate) -> std::string
 
 // Public:
 // Control:
-auto CppBackend::visit([[maybe_unused]] If* t_if) -> Any
+auto CppBackend::visit(If* t_if) -> Any
 {
   const auto init_expr{resolve(t_if->init_expr(), false)};
   const auto cond{resolve(t_if->condition())};
 
-  const auto then{resolve(t_if->init_expr())};
-  const auto alt{resolve(t_if->init_expr())};
+  const auto then{resolve(t_if->then())};
+  const auto alt{resolve(t_if->alt())};
 
   std::stringstream ss;
 
@@ -157,15 +155,18 @@ auto CppBackend::visit(Return* t_ret) -> Any
 {
   std::stringstream ss;
 
-  ss << std::format("return {};\n", resolve(t_ret->expr()));
+  ss << std::format("return {};\n", resolve(t_ret->expr(), false));
 
   return ss.str();
 }
 
 // Functions:
-auto CppBackend::visit([[maybe_unused]] Parameter* t_param) -> Any
+auto CppBackend::visit(Parameter* t_param) -> Any
 {
-  return {};
+  const auto id{t_param->identifier()};
+  const auto type{t_param->type()};
+
+  return std::format("{} {}", type, id);
 }
 
 auto CppBackend::visit(Function* t_fn) -> Any
@@ -175,12 +176,20 @@ auto CppBackend::visit(Function* t_fn) -> Any
   const auto fn_type{t_fn->get_type().function()};
   const auto ret_type{type_variant2cpp_type(fn_type->m_return_type)};
 
-  std::stringstream ss;
+  std::stringstream param_ss{};
 
-  // TODO: Process parameters.
+  auto sep{""sv};
+  const auto params{t_fn->params()};
+  for(const auto& param : *params) {
+    param_ss << sep << resolve(param);
+
+    sep = ", ";
+  }
+
+  std::stringstream ss{};
 
   // clang-format off
-  ss << std::format("auto {}() -> {}\n", identifier, ret_type)
+  ss << std::format("auto {}({}) -> {}\n", identifier, param_ss.str(), ret_type)
      << "{\n"
      << resolve(t_fn->body())
      << "}\n";
@@ -215,7 +224,7 @@ auto CppBackend::visit(Call* t_call) -> Any
   std::string_view sep{""};
 
   for(const auto& ptr : *args) {
-    const auto argument{resolve(ptr)};
+    const auto argument{resolve(ptr, false)};
     ss << sep << argument;
 
     sep = ", ";
@@ -223,7 +232,7 @@ auto CppBackend::visit(Call* t_call) -> Any
 
   const auto arguments{ss.str()};
 
-  return std::format("{}({});\n", identifier, arguments);
+  return std::format("{}({}){}", identifier, arguments, terminate());
 }
 
 auto CppBackend::visit([[maybe_unused]] ReturnType* t_rt) -> Any
