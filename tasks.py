@@ -130,14 +130,18 @@ def install(ctx, mode='', parallel=True):
     # TODO: Check if the build made it or not.
     # TODO: Copy transpiler from Mode install location to /usr/local/bin/
 
-
+    print(f'\nGive password for installing to /usr/local/:')
     # Install binary to /usr/local/bin/
     ctx.run(f'sudo cp -f ./{mode}/crow /usr/local/bin/crow')
 
     # Install lbicrow headers.
+    # TODO: Automate this.
     stdlibcrow_path = '/usr/local/include/stdlibcrow'
     ctx.run(f'sudo mkdir -p {stdlibcrow_path}')
     ctx.run(f'sudo cp -f ./src/stdlibcrow/*.hpp {stdlibcrow_path}')
+
+    ctx.run(f'sudo mkdir -p {stdlibcrow_path}/internal')
+    ctx.run(f'sudo cp -f ./src/stdlibcrow/internal/*.hpp {stdlibcrow_path}/internal')
 
     # TODO: Have CMake generate stdlibcrow.a.
     # TODO: Install shared stdlibcrow.a. 

@@ -34,26 +34,14 @@ auto CppBackend::prologue() -> std::string
   // To C++ fixed width integers and floats.
   ss << "// STL Includes:\n";
   ss << "#include <cstdint>\n";
-  // ss << "#include <stdfloat>\n"; // Uncomment when support by clang libc++.
+  // ss << "#include <stdfloat>\n"; // TODO: Uncommnet when supported by clang.
+  ss << "\n";
 
   // FIXME: Temporary input for printing purposes.
   ss << "// Stdlibcrow Includes:\n";
   ss << R"(#include "stdlibcrow/io.hpp")" << '\n';
-
-  // FIXME: Prototype implementation of Defer.
-  // Create a more mature implementation that wont collide.
-  ss << "template<typename T>\n";
-  ss << "class Defer {\n";
-  ss << "private:\n";
-  ss << "  T m_fn;\n\n";
-  ss << "public:\n";
-  ss << "  Defer(const T t_fn): m_fn{t_fn}\n";
-  ss << "  { }\n\n";
-  ss << "  ~Defer()\n";
-  ss << "  {\n";
-  ss << "    m_fn();\n";
-  ss << "  }\n";
-  ss << "};\n\n";
+  ss << R"(#include "stdlibcrow/internal/defer.hpp")" << '\n';
+  ss << "\n\n";
 
   return ss.str();
 }
@@ -82,7 +70,8 @@ auto CppBackend::terminate() -> std::string_view
   auto terminate{";\n"sv};
 
   // Remove semicolon if we should not terminate.
-  [[unlikely]] if(!should_terminate()) {
+  [[unlikely]]
+  if(!should_terminate()) {
     terminate = "\n";
   }
 
