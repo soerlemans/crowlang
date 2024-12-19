@@ -82,8 +82,7 @@ auto CppBackend::terminate() -> std::string_view
   auto terminate{";\n"sv};
 
   // Remove semicolon if we should not terminate.
-  [[unlikely]]
-  if(!should_terminate()) {
+  [[unlikely]] if(!should_terminate()) {
     terminate = "\n";
   }
 

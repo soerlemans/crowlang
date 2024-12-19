@@ -36,7 +36,7 @@
 //!
 #define AST_ARCHIVE_DEFINE_SERIALIZE_METHOD() \
   template<typename Archive>                  \
-  auto serialize([[maybe_unused]] Archive& t_archive) -> void
+  auto serialize([[maybe_unused]] Archive& t_archive)->void
 
 //!
 #define AST_ARCHIVE_DEFINE_SERIALIZE_METHOD_NIL() \
