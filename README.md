@@ -14,11 +14,11 @@ One of the main focuses of the language is enforcing safe constructs by not allo
 Here a hello world.
 ```go
 fn main() -> int {
-    defer {
-	    println("Defer!")
-	}
+  defer {
+    println("Defer!")
+  }
 
-    println("Hello World!")
+  println("Hello World!")
 }
 ```
 
