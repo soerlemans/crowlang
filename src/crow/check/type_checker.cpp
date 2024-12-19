@@ -131,16 +131,17 @@ auto TypeChecker::visit(Parameter* t_param) -> Any
 
 auto TypeChecker::visit(Function* t_fn) -> Any
 {
-  m_envs.push_env();
 
   const auto id{t_fn->identifier()};
   const auto ret_type{str2nativetype(t_fn->type())};
 
   // Register parameters to environment.
+  // m_envs.push_env();
   const auto params{t_fn->params()};
   for(const auto& param : *params) {
     traverse(param);
   }
+  // m_envs.pop_env();
 
   // Register function type signature to environment.
   const auto params_type_list{get_type_list(params)};
@@ -156,7 +157,6 @@ auto TypeChecker::visit(Function* t_fn) -> Any
   // Run type checking on the function body.
   traverse(t_fn->body());
 
-  m_envs.pop_env();
 
   return {};
 }
@@ -173,14 +173,13 @@ auto TypeChecker::visit(Call* t_fn_call) -> Any
   }
 
   const auto data{m_envs.get_symbol(id)};
-  const auto args{get_type_list(t_fn_call->args())};
+  const auto args{get_resolved_type_list(t_fn_call->args())};
 
   const auto fn{data.function()};
   const auto params{fn->m_params};
   const auto return_type{fn->m_return_type};
 
-  // if(args != params) {
-  if(false) {
+  if(args != params) {
     std::stringstream ss;
 
     ss << "Arguments passed to " << std::quoted(id)

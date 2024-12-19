@@ -25,6 +25,7 @@ class SymbolHelper : public NodeVisitor {
   auto get_resolved_type(NodePtr t_ptr) -> SymbolData;
   auto get_native_type(NodePtr t_ptr) -> NativeTypeOpt;
   auto get_type_list(NodeListPtr t_list) -> TypeList;
+  auto get_resolved_type_list(NodeListPtr t_list) -> TypeList;
 
   public:
   SymbolHelper() = default;

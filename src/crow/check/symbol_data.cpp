@@ -72,10 +72,6 @@ auto SymbolData::is_const() const -> bool
   return result;
 }
 
-/*!
- * All data except information related to types is stripped.
- * This makes the underlying return type of a function accessible.
- */
 auto SymbolData::resolve_type() const -> SymbolData
 {
   SymbolData data;

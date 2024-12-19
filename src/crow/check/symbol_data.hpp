@@ -37,7 +37,13 @@ class SymbolData : public Variant {
   auto var() const -> VarTypePtr;
 
   auto is_const() const -> bool;
+
+  /*!
+   * All data except information related to types is stripped.
+   * This makes the underlying return type of a function accessible.
+   */
   auto resolve_type() const -> SymbolData;
+
   auto native_type() const -> NativeTypeOpt;
 
   /*!

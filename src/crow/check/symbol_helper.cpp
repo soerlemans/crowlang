@@ -48,4 +48,15 @@ auto SymbolHelper::get_type_list(NodeListPtr t_list) -> TypeList
 
   return list;
 }
+
+auto SymbolHelper::get_resolved_type_list(NodeListPtr t_list) -> TypeList
+{
+  TypeList list;
+
+  for(const auto& ptr : *t_list) {
+    list.push_back(get_resolved_type(ptr));
+  }
+
+  return list;
+}
 } // namespace check

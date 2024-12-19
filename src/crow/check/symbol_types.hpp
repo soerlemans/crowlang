@@ -4,6 +4,12 @@
 // Local Includes:
 #include "symbol_data.hpp"
 
+/*!
+ * @file
+ *
+ * TODO: Describe TypeVariant usage and why it is a good idea.
+ */
+
 namespace check {
 // Structs:
 // TODO: use VarTypePtr and FnTypePtr in combination with a map?
