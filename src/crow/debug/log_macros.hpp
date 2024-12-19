@@ -46,7 +46,7 @@
 #define DBG_CRITICAL(...) DBG_LOG(CRITICAL, __VA_ARGS__)
 #define DBG_ERROR(...)    DBG_LOG(ERROR, __VA_ARGS__)
 #define DBG_WARNING(...)  DBG_LOG(WARNING, __VA_ARGS__)
-#define DBG_NOTICE(...)  DBG_LOG(NOTICE, __VA_ARGS__)
+#define DBG_NOTICE(...)   DBG_LOG(NOTICE, __VA_ARGS__)
 #define DBG_INFO(...)     DBG_LOG(INFO, __VA_ARGS__)
 #define DBG_VERBOSE(...)  DBG_LOG(VERBOSE, __VA_ARGS__)
 
