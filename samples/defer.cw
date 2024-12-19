@@ -16,10 +16,11 @@ fn main() -> int {
 
     println("Regular print 1")
 
-    defer {
-        let calc = 10 + 10
-        println("Defer 4: ", calc)
-    }
+	// FIXME: Gives error, relating to TypeVariant.
+	// defer {
+	//     let calc = 10 + 10
+	//     println("Defer 4: ", calc)
+	// }
 
     println("Regular print 2")
 

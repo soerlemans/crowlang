@@ -105,6 +105,7 @@ auto TypeChecker::visit(Loop* t_loop) -> Any
 
 AST_VISITOR_STUB(TypeChecker, Continue)
 AST_VISITOR_STUB(TypeChecker, Break)
+AST_VISITOR_STUB(TypeChecker, Defer)
 
 auto TypeChecker::visit(Return* t_return) -> Any
 {

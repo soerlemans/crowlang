@@ -113,6 +113,9 @@ auto CppBackend::resolve(NodePtr t_ptr, const bool t_terminate) -> std::string
 }
 
 // Public:
+CppBackend::CppBackend(): m_terminate{}, m_id_defer_count{0}
+{}
+
 // Control:
 auto CppBackend::visit(If* t_if) -> Any
 {
@@ -172,7 +175,7 @@ auto CppBackend::visit(Defer* t_defer) -> Any
 
   const auto body{resolve(t_defer->body())};
 
-  ss << std::format("const Defer {}_defer_object{{ ()[&]{{ {} }} }};\n",
+  ss << std::format("const Defer defer_object{}{{ [&](){{ {} }} }};\n",
                     m_id_defer_count, body);
 
   m_id_defer_count++;

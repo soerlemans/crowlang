@@ -72,7 +72,7 @@ class CppBackend : public ast::visitor::NodeVisitor {
   auto resolve(NodePtr t_ptr, bool t_terminate = true) -> std::string;
 
   public:
-  CppBackend() = default;
+  CppBackend();
 
   // Control:
   auto visit(node::control::If* t_if) -> Any override;
