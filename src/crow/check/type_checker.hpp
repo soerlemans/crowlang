@@ -35,6 +35,7 @@ class TypeChecker : public SymbolHelper {
   EnvStack m_envs;
   TypePromoter m_promoter;
 
+  protected:
   auto handle_condition(const SymbolData& t_data,
                         const TextPosition& t_pos) const -> void;
 
@@ -49,6 +50,7 @@ class TypeChecker : public SymbolHelper {
   auto visit(node::control::Loop* t_loop) -> Any override;
   auto visit(node::control::Continue* t_continue) -> Any override;
   auto visit(node::control::Break* t_break) -> Any override;
+  auto visit(node::control::Defer* t_defer) -> Any override;
   auto visit(node::control::Return* t_return) -> Any override;
 
   // Function:

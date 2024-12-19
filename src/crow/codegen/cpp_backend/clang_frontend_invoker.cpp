@@ -85,7 +85,8 @@ auto ClangFrontendInvoker::compile(const path &t_filepath) -> void
 #ifdef DEBUG
   DBG_PRINTLN("# C++ codegeneration:");
 
-  const auto cmd_cat{std::format("clang-format --style=LLVM < {}", source_str)};
+  const auto cmd_cat{
+    std::format("clang-format --style=Google < {}", source_str)};
   std::system(cmd_cat.c_str());
 
   DBG_PRINTLN();
@@ -101,7 +102,9 @@ auto ClangFrontendInvoker::compile(const path &t_filepath) -> void
   const auto status_code{std::system(cmd.c_str())};
 
   if(status_code == 0) {
-    DBG_CRITICAL("Binary was generated!: ", binary);
+    DBG_NOTICE("Binary was generated!: ", binary);
+  } else {
+    // TODO: Throw an exception.
   }
 
   // TODO: Fix ugly Clang code.

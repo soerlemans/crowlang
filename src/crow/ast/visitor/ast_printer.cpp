@@ -22,15 +22,15 @@
  *
  * @param[in] t_type Type of Node to accept.
  */
-#define DEFINE_PRINTER_METHOD(t_type)                           \
-  auto AstPrinter::visit([[maybe_unused]] t_type* t_ptr) -> Any \
-  {                                                             \
-    COUNTG_INIT();                                              \
-                                                                \
-    print(#t_type);                                             \
-    print_traits(t_ptr);                                        \
-                                                                \
-    return {};                                                  \
+#define DEFINE_PRINTER_METHOD(t_type)                         \
+  auto AstPrinter::visit([[maybe_unused]] t_type* t_ptr)->Any \
+  {                                                           \
+    COUNTG_INIT();                                            \
+                                                              \
+    print(#t_type);                                           \
+    print_traits(t_ptr);                                      \
+                                                              \
+    return {};                                                \
   }
 
 namespace ast::visitor {
@@ -73,6 +73,7 @@ DEFINE_PRINTER_METHOD(If)
 DEFINE_PRINTER_METHOD(Loop)
 DEFINE_PRINTER_METHOD(Continue)
 DEFINE_PRINTER_METHOD(Break)
+DEFINE_PRINTER_METHOD(Defer)
 DEFINE_PRINTER_METHOD(Return)
 
 // Function:

@@ -9,11 +9,11 @@
 
 
 // Macros:
-#define AST_VISITOR_STUB(t_class, t_type)                    \
-  /* NOLINTBEGIN */                                          \
-  auto t_class::visit([[maybe_unused]] t_type* t_ptr) -> Any \
-  {                                                          \
-    return {};                                               \
+#define AST_VISITOR_STUB(t_class, t_type)                  \
+  /* NOLINTBEGIN */                                        \
+  auto t_class::visit([[maybe_unused]] t_type* t_ptr)->Any \
+  {                                                        \
+    return {};                                             \
   }
 
 /* NOLINTBEGIN */
@@ -39,6 +39,7 @@ class NodeVisitor {
   virtual auto visit(node::control::Loop* t_loop) -> Any;
   virtual auto visit(node::control::Continue* t_continue) -> Any;
   virtual auto visit(node::control::Break* t_break) -> Any;
+  virtual auto visit(node::control::Defer* t_defer) -> Any;
   virtual auto visit(node::control::Return* t_return) -> Any;
 
   // Function:

@@ -94,8 +94,7 @@ auto LlvmBackend::visit(If* t_if) -> Any
 
   fn->insert(fn->end(), merge);
   m_builder->SetInsertPoint(merge);
-  [[maybe_unused]]
-  auto* pn{
+  [[maybe_unused]] auto* pn{
     m_builder->CreatePHI(llvm::Type::getDoubleTy(*m_context), 2, "iftmp")};
 
   // Figure this out?

@@ -1,49 +1,105 @@
 // STL Includes:
+#include <fstream>
 #include <iostream>
 #include <sstream>
+#include <string_view>
 
 // Library Includes:
 #include <catch2/catch_test_macros.hpp>
 
 // Crow Absolute Includes:
+#include "crow/ast/node/include.hpp"
 #include "crow/ast/visitor/ast_archive.hpp"
-#include "crow/phases.hpp"
+#include "crow/ast/visitor/ast_printer.hpp"
+#include "crow/container/text_buffer.hpp"
+#include "crow/lexer/lexer.hpp"
+#include "crow/parser/crow/crow_parser.hpp"
+
+
+/*!
+ * @file
+ *
+ * For the archiving of the AST we likely will not use assertions.
+ * Currently we do not have a tool for comparing if two AST's are equal.
+ * So as of writing we can not check this.
+ * For now using ast printer is good enough.
+ * We could use the output of the AST printer and compare it but that is ugly.
+ */
+
+// Using namespace Declarations:
+using namespace std::literals::string_view_literals;
+
+// Helper functions:
+namespace {
+using ast::visitor::ArchiveType;
+using ast::visitor::AstArchive;
+using ast::visitor::AstPrinter;
+
+AstArchive archive{ArchiveType::JSON};
+AstPrinter printer{std::cout};
+
+auto test_archive(const std::string_view t_program) -> void
+{
+  using ast::node::NodePtr;
+  using container::TextBuffer;
+  using lexer::Lexer;
+  using parser::crow::CrowParser;
+  using token::TokenStream;
+
+  std::stringstream ss;
+
+  // Write program.
+  auto stream_ptr{std::make_shared<TextBuffer>()};
+  stream_ptr->add_line(std::string{t_program});
+
+  // Create AST from TextBuffer.
+  Lexer lexer{stream_ptr};
+  TokenStream tokenstream{lexer.tokenize()};
+  CrowParser parser{tokenstream};
+
+  NodePtr ast{parser.parse()};
+  NodePtr ast_new{};
+
+  // Test archiving.
+  std::cout << "AST.\n";
+  printer.print(ast);
+
+  std::cout << "Serialize AST.\n";
+  archive.out(ast, ss);
+
+  std::cout << "Ast serialized:\n" << ss.str() << '\n';
+
+  std::cout << "Deserialize AST.\n";
+  archive.in(ast_new, ss);
+
+  std::cout << "New AST.\n";
+  printer.print(ast_new);
+}
+} // namespace
 
 // Test Cases:
 TEST_CASE("AstArchive", "[visitor]")
 {
   using ast::node::NodePtr;
-  using ast::visitor::ArchiveType;
-  using ast::visitor::AstArchive;
-  using ast::visitor::AstPrinter;
-  using container::TextBuffer;
-  using lexer::Lexer;
+  using ast::node::rvalue::Integer;
 
-  // Create a simple crow program:
-  auto stream_ptr{std::make_shared<TextBuffer>()};
-  stream_ptr->add_line("fn main() -> int { return 0; }");
+  // Printer.
+  AstPrinter printer{std::cout};
 
-  // Create an AST:
-  Lexer lexer{stream_ptr};
-  const auto tokenstream{lexer.tokenize()};
-  NodePtr ast{parse(tokenstream)};
+  NodePtr ast{std::make_shared<Integer>(10)};
   NodePtr ast_new{};
 
-  // Create a stream too save too:
-  std::stringstream ss("data.xml");
-  AstArchive archive{ArchiveType::JSON};
-
-  SECTION("Serialize")
+  SECTION("Basic main")
   {
-    archive.out(ast, ss);
+    const auto program{"fn main() -> int { return 0; }"sv};
+    test_archive(program);
   }
 
-  std::cout << "Ast serialized:\n" << ss.str();
-
-  SECTION("Deserialize")
+  SECTION("Basic arithmetic")
   {
-    archive.in(ast_new, ss);
+    const auto program{"fn main() -> int { return 10 + 10; }"sv};
+    test_archive(program);
   }
 
-  REQUIRE(false);
+  printer.print(ast_new);
 }

@@ -9,12 +9,16 @@ Crow's syntax is somewhat inspired by Swift and Rust.
 In this programming language expressions are not statements.
 This allows us to write code without any need for semicolons.
 
-Here is a snippet (printing is not yet implemented):
-```
-fn main() -> int {
-    let sum = 10 + 10
+One of the main focuses of the language is enforcing safe constructs by not allowing certain expressions as statements.
 
-    return sum
+Here a hello world.
+```go
+fn main() -> int {
+    defer {
+	    println("Defer!")
+	}
+
+    println("Hello World!")
 }
 ```
 
@@ -45,6 +49,12 @@ In order to make use of invoke you should install it through `pipx`:
 
 ```shell
 pipx install invoke
+```
+
+#### Build
+After installing the necessary dependencies you can build the compiler by running:
+```
+inv build --parallel
 ```
 
 ### Dynamic libraries

@@ -27,11 +27,19 @@ namespace debug {
 /*!
  * Enumeration of the different logging levels.
  * The lower log levels have the most severity.
+ *
+ * - Critical: Sanity check logging, if this is shown something goes very wrong.
+ * - Error: General errors that should terminate.
+ * - Warning: General warnings (non terminating).
+ * - Notice: Important information that should always be shown.
+ * - Info: Informative information useful for when debugging.
+ * - Verbose: Execution details, used for rigorous debugging.
  */
 enum class LogLevel : u16 {
   CRITICAL = 0,
   ERROR,
   WARNING,
+  NOTICE,
   INFO,
   VERBOSE
 };
@@ -43,6 +51,7 @@ constexpr auto loglevel2str(const LogLevel t_loglevel) -> std::string_view
     DBG_CASE_LOGLEVEL2STR(CRITICAL);
     DBG_CASE_LOGLEVEL2STR(ERROR);
     DBG_CASE_LOGLEVEL2STR(WARNING);
+    DBG_CASE_LOGLEVEL2STR(NOTICE);
     DBG_CASE_LOGLEVEL2STR(INFO);
     DBG_CASE_LOGLEVEL2STR(VERBOSE);
 
@@ -61,6 +70,7 @@ constexpr auto loglevel2color(const LogLevel t_loglevel) -> rang::fg
     DBG_CASE_LOGLEVEL2COLOR(CRITICAL, red);
     DBG_CASE_LOGLEVEL2COLOR(ERROR, red);
     DBG_CASE_LOGLEVEL2COLOR(WARNING, yellow);
+    DBG_CASE_LOGLEVEL2COLOR(NOTICE, blue);
     DBG_CASE_LOGLEVEL2COLOR(INFO, green);
     DBG_CASE_LOGLEVEL2COLOR(VERBOSE, cyan);
 

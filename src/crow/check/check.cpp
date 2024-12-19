@@ -9,6 +9,7 @@
 
 // Using Statements:
 using namespace check;
+using namespace std::literals::string_view_literals;
 
 // Functions:
 auto operator<<(std::ostream& t_os, StructTypePtr t_struct) -> std::ostream&
@@ -27,13 +28,14 @@ auto operator<<(std::ostream& t_os, StructTypePtr t_struct) -> std::ostream&
 auto operator<<(std::ostream& t_os, FnTypePtr t_fn) -> std::ostream&
 {
   if(t_fn) {
-    t_os << "Params: ";
+    auto sep{""sv};
+    t_os << "(";
     for(const auto& param : t_fn->m_params) {
-      t_os << param << ",";
-    }
-    t_os << "\n";
+      t_os << sep << param;
 
-    t_os << "Return type: " << t_fn->m_return_type << "\n";
+      sep = ", ";
+    }
+    t_os << ") -> " << t_fn->m_return_type;
   } else {
     DBG_ERROR("(FnTypePtr) nullptr!");
 

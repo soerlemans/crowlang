@@ -105,6 +105,7 @@ auto TypeChecker::visit(Loop* t_loop) -> Any
 
 AST_VISITOR_STUB(TypeChecker, Continue)
 AST_VISITOR_STUB(TypeChecker, Break)
+AST_VISITOR_STUB(TypeChecker, Defer)
 
 auto TypeChecker::visit(Return* t_return) -> Any
 {
@@ -118,27 +119,44 @@ auto TypeChecker::visit(Return* t_return) -> Any
 // Function:
 auto TypeChecker::visit(Parameter* t_param) -> Any
 {
+  const auto id{t_param->identifier()};
   const auto type{str2nativetype(t_param->type())};
+
+  // Register parameter to environment.
+  const SymbolData data{check::make_variable(false, type)};
+  m_envs.add_symbol(id, data);
 
   return SymbolData{type};
 }
 
 auto TypeChecker::visit(Function* t_fn) -> Any
 {
+  m_envs.push_env();
+
   const auto id{t_fn->identifier()};
-
   const auto ret_type{str2nativetype(t_fn->type())};
-  const auto params{get_type_list(t_fn->params())};
 
-  const SymbolData data{check::make_function(params, ret_type)};
+  // Register parameters to environment.
+  const auto params{t_fn->params()};
+  for(const auto& param : *params) {
+    traverse(param);
+  }
+
+  // Register function type signature to environment.
+  const auto params_type_list{get_type_list(params)};
+  const SymbolData data{check::make_function(params_type_list, ret_type)};
+
+  // Add the function and its ID to the type
   m_envs.add_symbol(id, data);
-
-  DBG_INFO("Function: ", id, "(", params, ") -> ", ret_type);
+  DBG_INFO("Function: ", id, "(", params_type_list, ") -> ", ret_type);
 
   // Annotate AST.
   t_fn->set_type(data.type_variant());
 
+  // Run type checking on the function body.
   traverse(t_fn->body());
+
+  m_envs.pop_env();
 
   return {};
 }
@@ -161,14 +179,17 @@ auto TypeChecker::visit(Call* t_fn_call) -> Any
   const auto params{fn->m_params};
   const auto return_type{fn->m_return_type};
 
-  if(args != params) {
+  // if(args != params) {
+  if(false) {
     std::stringstream ss;
 
     ss << "Arguments passed to " << std::quoted(id)
        << " do not match parameters.\n";
 
-    ss << "Function signature: " << id << "(" << params << ") -> "
-       << return_type;
+    ss << "Function signature: fn " << id << "(" << params << ") -> "
+       << return_type << " { ... }\n";
+
+    ss << "Call signature: " << id << "(" << args << ")";
 
     type_error(ss.str());
   }

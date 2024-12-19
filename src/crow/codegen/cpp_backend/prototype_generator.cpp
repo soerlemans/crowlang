@@ -13,6 +13,7 @@
 namespace codegen::cpp_backend {
 // Using Statements:
 using namespace ast::visitor;
+using namespace std::literals::string_view_literals;
 
 NODE_USING_ALL_NAMESPACES()
 
@@ -39,10 +40,12 @@ auto PrototypeGenerator::resolve(NodePtr t_ptr) -> std::string
 }
 
 // Function:
-// TODO: Resolve the parameter type to a valid type.
 auto PrototypeGenerator::visit([[maybe_unused]] Parameter* t_param) -> Any
 {
-  return {};
+  // TODO: Perform type resolution as this will break on u8, i8, u16, etc.
+  const auto type{t_param->type()};
+
+  return std::format("{}", type);
 }
 
 auto PrototypeGenerator::visit(Function* t_fn) -> Any
@@ -52,15 +55,17 @@ auto PrototypeGenerator::visit(Function* t_fn) -> Any
   const auto fn_type{t_fn->get_type().function()};
   const auto ret_type{type_variant2cpp_type(fn_type->m_return_type)};
 
-  std::stringstream ss;
+  std::stringstream ss{};
 
-  // TODO: Process parameters.
+  auto sep{""sv};
+  const auto params{t_fn->params()};
+  for(const auto& param : *params) {
+    ss << sep << resolve(param);
 
-  // clang-format off
-  ss << std::format("auto {}() -> {};\n", identifier, ret_type);
-  // clang-format on
+    sep = ", ";
+  }
 
-  return ss.str();
+  return std::format("auto {}({}) -> {};\n", identifier, ss.str(), ret_type);
 }
 
 // Typing:

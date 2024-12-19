@@ -3,6 +3,7 @@
 
 /*!
  * @file
+ *
  * This file needs to exist because the operator<<() of @ref Stream<T>.
  * Is defined in the header as @ref Stream<T> is a templated class.
  * First we include @ref Token so that the operator<<() of @ref Stream<T>.

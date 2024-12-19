@@ -1,9 +1,13 @@
 #ifndef CROW_CROW_CODEGEN_CPP_BACKEND_CPP_BACKEND_HPP
 #define CROW_CROW_CODEGEN_CPP_BACKEND_CPP_BACKEND_HPP
 
+// STL Includes:
+#include <stack>
+
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
 #include "lib/filesystem.hpp"
+#include "lib/types.hpp"
 
 namespace codegen::cpp_backend {
 // Using Statements:
@@ -22,6 +26,14 @@ using visitor::Any;
  * Or any compiler of choice.
  */
 class CppBackend : public ast::visitor::NodeVisitor {
+  private:
+  // TODO: Move terminate functionality in its own class to separate concerns.
+  std::stack<bool> m_terminate;
+
+  // Counter that is used to create unique identifier names.
+  // Is incremented after each usage to prevent collision.
+  u64 m_id_defer_count;
+
   protected:
   /*!
    * Generate the prologue for the generated C++ code.
@@ -40,22 +52,34 @@ class CppBackend : public ast::visitor::NodeVisitor {
   auto prototypes(NodePtr t_ast) -> std::string;
 
   /*!
-   * Convert the given AST node to C++ code.
+   */
+  auto should_terminate() -> bool;
+
+  /*!
+   */
+  [[nodiscard("Pure method must use results")]]
+  auto terminate() -> std::string_view;
+
+  /*!
+   * Resolve the given AST node to C++ code.
    *
-   * @note Throws an exception if it fails at converting the @ref Any.
+   * @param[in] t_ptr AST node to convert to C++ code.
+   * @param[in] t_terminate If the next direct node should end with a semicolon.
+   *
+   * @warn Throws an exception if it fails at converting the @ref Any.
    */
   [[nodiscard("Pure method must use results.")]]
-  auto resolve(NodePtr t_ptr) -> std::string;
-
+  auto resolve(NodePtr t_ptr, bool t_terminate = true) -> std::string;
 
   public:
-  CppBackend() = default;
+  CppBackend();
 
   // Control:
   auto visit(node::control::If* t_if) -> Any override;
   auto visit(node::control::Loop* t_loop) -> Any override;
   auto visit(node::control::Continue* t_continue) -> Any override;
   auto visit(node::control::Break* t_break) -> Any override;
+  auto visit(node::control::Defer* t_defer) -> Any override;
   auto visit(node::control::Return* t_return) -> Any override;
 
   // Function:
