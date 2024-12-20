@@ -3,8 +3,10 @@
 // Using Declarations:
 using std::filesystem::path;
 
-// Functions:
-auto open_file(const path t_path) -> container::TextBuffer
+// Internal Functions:
+namespace {
+// TODO: Move to /lib with crow/container.
+auto read_file(const path t_path) -> container::TextBuffer
 {
   using container::TextBuffer;
   using std::filesystem::exists;
@@ -29,7 +31,9 @@ auto open_file(const path t_path) -> container::TextBuffer
 
   return tb;
 }
+} // namespace
 
+// Functions:
 auto lex(const path& t_path) -> token::TokenStream
 {
   using container::TextBuffer;
@@ -37,7 +41,7 @@ auto lex(const path& t_path) -> token::TokenStream
 
   DBG_PRINTLN("<lexing>");
 
-  const auto stream_ptr{std::make_shared<TextBuffer>(open_file(t_path))};
+  const auto stream_ptr{std::make_shared<TextBuffer>(read_file(t_path))};
   const auto tokenstream{lex(stream_ptr)};
 
   DBG_PRINTLN("</lexing>");

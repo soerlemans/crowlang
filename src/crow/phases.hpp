@@ -19,9 +19,6 @@
 #include "cli.hpp"
 
 // Functions:
-//! Open a file and store its contents in a @ref TextBuffer.
-auto open_file(const std::filesystem::path t_path) -> container::TextBuffer;
-
 //! Tokenize the text buffer.
 auto lex(const std::filesystem::path& t_path) -> token::TokenStream;
 auto lex(const container::TextStreamPtr& t_stream) -> token::TokenStream;

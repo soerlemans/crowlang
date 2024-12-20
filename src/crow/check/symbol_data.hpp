@@ -7,6 +7,13 @@
 // Local Includes:
 #include "check.hpp"
 
+/*!
+ * @file
+ *
+ * TODO: Describe the differences between the @ref TypeVariant.
+ * And @ref SymbolData.
+ */
+
 namespace check {
 // Using Statements:
 using ast::node::node_traits::typing::NativeType;
@@ -22,7 +29,7 @@ using Variant = std::variant<StructTypePtr, FnTypePtr, VarTypePtr, NativeType>;
 /*!
  * Contains all data relating to a symbol.
  * This is different from @ref TypeVariant.
- * As this also constitues data ralting to a symbol.
+ * As this also constitues data relating to a symbol.
  * Like constness and other helper methods.
  * @ref TypeVariant has a separate type tree.
  * And you need to convert between these two.
@@ -32,26 +39,32 @@ class SymbolData : public Variant {
   // Use the constructors of the parent class.
   using Variant::Variant;
 
+  // Only use these methods if you are sure about the underlying type.
   auto struct_() const -> StructTypePtr;
   auto function() const -> FnTypePtr;
   auto var() const -> VarTypePtr;
 
+  //! Verify if a symbol is immutable.
   auto is_const() const -> bool;
 
   /*!
-   * All data except information related to types is stripped.
-   * This makes the underlying return type of a function accessible.
+   * Stripts non type related information from the @ref SymbolData.
+   * Variables are resolved to their underlying types.
    */
   auto resolve_type() const -> SymbolData;
 
+  /*!
+   * Resolves a Symbol's data  to a @ref NativeType if possible.
+   * Usefull for when dealing with native type only operations.
+   * Like type promotion in arithmetic/comparison operations.
+   */
   auto native_type() const -> NativeTypeOpt;
 
   /*!
    * Used to convert @ref SymbolData to a  @ref typing::TypeVariant.
-   * The type tree for @ref SymbolData is different..
-   * From @ref TypeVariant and requires conversion.
-   * When we annotate the AST we dont want to include symbol specifics.
-   * Like if something is const or pure.
+   * The type tree for @ref SymbolData contains extra information.
+   * Like if a symbol is const or pure.
+   * When we annotate the AST we dont want to include this information.
    * So this information is stripped.
    */
   auto type_variant() const -> TypeVariant;

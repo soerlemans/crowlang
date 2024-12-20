@@ -52,7 +52,6 @@ auto SymbolData::var() const -> VarTypePtr
   return std::get<VarTypePtr>(*this);
 }
 
-//! Verify if a symbol is immutable.
 auto SymbolData::is_const() const -> bool
 {
   bool result{false};
@@ -63,7 +62,8 @@ auto SymbolData::is_const() const -> bool
     return t_data->m_const;
   }};
 
-  const auto not_const{[]([[maybe_unused]] const auto& t_data) {
+  const auto not_const{[]([[maybe_unused]]
+                          const auto& t_data) {
     return false;
   }};
 
@@ -87,9 +87,6 @@ auto SymbolData::resolve_type() const -> SymbolData
   return data;
 }
 
-/*!
- * Resolves a Symbol's data  to a @ref NativeType if possible.
- */
 auto SymbolData::native_type() const -> NativeTypeOpt
 {
   NativeTypeOpt opt;

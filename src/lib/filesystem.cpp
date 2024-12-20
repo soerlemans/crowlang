@@ -1,7 +1,6 @@
 #include "filesystem.hpp"
 
 namespace lib {
-[[nodiscard("Returned temporary directory path must be used.")]]
 auto temporary_directory() -> path
 {
   namespace b_fs = boost::filesystem;

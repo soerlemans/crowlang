@@ -6,6 +6,11 @@
 // Using Statements:
 namespace check {
 // StructType:
+auto StructType::native_type() const -> NativeTypeOpt
+{
+  return {};
+}
+
 auto StructType::type_variant() const -> TypeVariant
 {
   using ast::node::node_traits::typing::make_struct;
@@ -14,6 +19,11 @@ auto StructType::type_variant() const -> TypeVariant
 }
 
 // FnType:
+auto FnType::native_type() const -> NativeTypeOpt
+{
+  return {};
+}
+
 auto FnType::type_variant() const -> TypeVariant
 {
   using ast::node::node_traits::typing::make_function;
@@ -26,6 +36,11 @@ auto FnType::type_variant() const -> TypeVariant
 }
 
 // VarType:
+auto VarType::native_type() const -> NativeTypeOpt
+{
+  return m_type.native_type();
+}
+
 auto VarType::type_variant() const -> TypeVariant
 {
   using ast::node::node_traits::typing::make_variable;

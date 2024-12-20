@@ -13,15 +13,11 @@
 namespace check {
 // Structs:
 // TODO: use VarTypePtr and FnTypePtr in combination with a map?
-// This way we will be able to determine
+// This way we will be able to couple id's to type info.
 struct StructType {
   std::string m_identifier;
 
-  auto native_type() const -> NativeTypeOpt
-  {
-    return {};
-  }
-
+  auto native_type() const -> NativeTypeOpt;
   auto type_variant() const -> TypeVariant;
 };
 
@@ -30,11 +26,7 @@ struct FnType {
   TypeList m_params;
   SymbolData m_return_type;
 
-  auto native_type() const -> NativeTypeOpt
-  {
-    return {};
-  }
-
+  auto native_type() const -> NativeTypeOpt;
   auto type_variant() const -> TypeVariant;
 };
 
@@ -43,11 +35,7 @@ struct VarType {
   bool m_const;
   SymbolData m_type;
 
-  auto native_type() const -> NativeTypeOpt
-  {
-    return m_type.native_type();
-  }
-
+  auto native_type() const -> NativeTypeOpt;
   auto type_variant() const -> TypeVariant;
 };
 
