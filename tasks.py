@@ -181,6 +181,9 @@ def clean(ctx, objects=False):
         print(f'@Invoke: Removing: {path}')
         ctx.run(f'rm -rf {path}/*')
         pass
+
+    # Remove any generated binaries.
+    ctx.run(f'rm -rf *.out')
     pass
 
 
