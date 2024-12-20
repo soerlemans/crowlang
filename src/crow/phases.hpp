@@ -33,7 +33,8 @@ auto print_ast(ast::node::NodePtr t_ast) -> void;
 auto check_types(ast::node::NodePtr t_ast) -> void;
 
 //! Execute the codegeneration backend.
-auto backend(ast::node::NodePtr t_ast) -> void;
+auto backend(ast::node::NodePtr t_ast, const std::filesystem::path& t_path)
+  -> void;
 
 //! Crow compiler regular compilation flow.
 auto run() -> void;

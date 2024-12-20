@@ -136,7 +136,7 @@ class CppBackend : public ast::visitor::NodeVisitor {
    * Transpile the @ref t_ast to valid C++ code and write it to @ref t_out.
    */
   auto codegen(NodePtr t_ast, const path& t_out) -> void;
-  auto compile(NodePtr t_ast) -> void;
+  auto compile(NodePtr t_ast, path t_stem = "main") -> void;
 
   virtual ~CppBackend() = default;
 };

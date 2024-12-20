@@ -463,12 +463,12 @@ auto CppBackend::codegen(NodePtr t_ast, const path& t_out) -> void
   ofs << resolve(t_ast);
 }
 
-auto CppBackend::compile(NodePtr t_ast) -> void
+auto CppBackend::compile(NodePtr t_ast, path t_stem) -> void
 {
   const auto tmp_dir{lib::temporary_directory()};
-  const path tmp_src{tmp_dir / "main.cpp"};
+  const path tmp_src{tmp_dir / t_stem.concat(".cpp")};
 
-  // Log stuff:
+  // Log filepath's:
   DBG_INFO("tmp_dir: ", tmp_dir);
   DBG_INFO("tmp_src: ", tmp_src);
 

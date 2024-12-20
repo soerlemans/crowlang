@@ -110,14 +110,14 @@ auto check_types(ast::node::NodePtr t_ast) -> void
   DBG_PRINTLN("</type_checking>");
 }
 
-auto backend(ast::node::NodePtr t_ast) -> void
+auto backend(ast::node::NodePtr t_ast, const path& t_path) -> void
 {
   using codegen::cpp_backend::CppBackend;
 
   DBG_PRINTLN("<codegen>");
 
   CppBackend backend;
-  backend.compile(t_ast);
+  backend.compile(t_ast, t_path.stem());
 
   DBG_PRINTLN("</codegen>");
 }
@@ -129,12 +129,11 @@ auto run() -> void
     DBG_PRINTLN("TokenStream: ", ts);
 
     const auto ast{parse(ts)};
-
     print_ast(ast);
 
     check_types(ast);
     print_ast(ast);
 
-    backend(ast);
+    backend(ast, path);
   }
 }
