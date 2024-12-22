@@ -43,6 +43,9 @@ auto CppBackend::prologue() -> std::string
   ss << R"(#include "stdlibcrow/internal/defer.hpp")" << '\n';
   ss << "\n\n";
 
+  ss << "// Aliases:\n";
+  ss << "namespace stdinternal = stdlibcrow::internal;\n";
+
   return ss.str();
 }
 
@@ -163,8 +166,9 @@ auto CppBackend::visit(Defer* t_defer) -> Any
 
   const auto body{resolve(t_defer->body())};
 
-  ss << std::format("const Defer defer_object{}{{ [&](){{ {} }} }};\n",
-                    m_id_defer_count, body);
+  ss << std::format(
+    "const stdinternal::Defer defer_object{}{{ [&](){{ {} }} }};\n",
+    m_id_defer_count, body);
 
   m_id_defer_count++;
 

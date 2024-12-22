@@ -5,11 +5,13 @@
      * Create bindings for Javascript.
      * Create bindings for C.
    * Create an interface for the bindings generators:
-     * Named BindingsBackendInterface.
+     * Named InteropBackendInterface.
      * With methods:
 	   * prologue()
 	   * epilogue()
 	   * generate(NodePtr ast)
+	   * Now must be considered how we register a source to a backend as this can differ per interop backend.
+	   * Also registering a source might require a custom registration handles.
  * Create a cmake_backend for compiling the projects using CMake.
    * This backend should have an interface containing the following:
      * register_source()

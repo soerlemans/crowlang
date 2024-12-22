@@ -1,7 +1,8 @@
-#ifndef BINDING_GENERATOR_INTERFACE_HPP
-#define BINDING_GENERATOR_INTERFACE_HPP
+#ifndef CROW_CROW_CODEGEN_CPP_BACKEND_INTEROP_BACKENDS_INTEROP_BACKEND_INTERFACE_HPP
+#define CROW_CROW_CODEGEN_CPP_BACKEND_INTEROP_BACKENDS_INTEROP_BACKEND_INTERFACE_HPP
 
 // STL Includes:
+#include <memory>
 #include <string>
 
 // Absolute Includes:
@@ -9,8 +10,17 @@
 #include "lib/types.hpp"
 
 namespace codegen::cpp_backend::interop_backends {
+// Using Statements:
+using namespace ast;
+
 // Using Declarations:
 using node::NodePtr;
+
+// Forward Declarations:
+class InteropBackendInterface;
+
+// Aliases:
+using InteropBackendPtr = std::shared_ptr<InteropBackendInterface>;
 
 /*!
  * Interface used for
@@ -28,4 +38,4 @@ class InteropBackendInterface {
 
 } // namespace codegen::cpp_backend::interop_backends
 
-#endif // BINDING_GENERATOR_INTERFACE_HPP
+#endif // CROW_CROW_CODEGEN_CPP_BACKEND_INTEROP_BACKENDS_INTEROP_BACKEND_INTERFACE_HPP

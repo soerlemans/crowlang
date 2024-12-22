@@ -1,17 +1,23 @@
-#ifndef DEFER_HPP
-#define DEFER_HPP
+#ifndef CROW_STDLIBCROW_INTERNAL_DEFER_HPP
+#define CROW_STDLIBCROW_INTERNAL_DEFER_HPP
 
 // Include STL:
 #include <functional>
 
-namespace stdllibcrow::internal {
-template<typename T>
+namespace stdlibcrow::internal {
+// Aliases:
+using DeferFn = std::function<void()>;
+
+// Classes:
+/*!
+ * Construct used to ensure freeing of resources at the end of a blocks
+ */
 class Defer {
   private:
-  std::function<T> m_fn;
+  DeferFn m_fn;
 
   public:
-  Defer(std::function<T>&& t_fn): m_fn{t_fn}
+  Defer(DeferFn&& t_fn): m_fn{t_fn}
   {}
 
   ~Defer()
@@ -19,6 +25,6 @@ class Defer {
     m_fn();
   }
 };
-} // namespace stdllibcrow::internal
+} // namespace stdlibcrow::internal
 
-#endif // DEFER_HPP
+#endif // CROW_STDLIBCROW_INTERNAL_DEFER_HPP

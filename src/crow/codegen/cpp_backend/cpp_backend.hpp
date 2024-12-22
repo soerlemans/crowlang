@@ -9,11 +9,15 @@
 #include "lib/filesystem.hpp"
 #include "lib/types.hpp"
 
+// Relative Includes:
+#include "interop_backends/interop_backend_interface.hpp"
+
 namespace codegen::cpp_backend {
 // Using Statements:
 using namespace ast;
 
 // Using Declarations:
+using interop_backends::InteropBackendPtr;
 using node::NodePtr;
 using std::filesystem::path;
 using visitor::Any;
@@ -27,6 +31,8 @@ using visitor::Any;
  */
 class CppBackend : public ast::visitor::NodeVisitor {
   private:
+  std::vector<InteropBackendPtr> m_interop_backends;
+
   // TODO: Move terminate functionality in its own class to separate concerns.
   std::stack<bool> m_terminate;
 
