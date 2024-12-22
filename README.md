@@ -25,7 +25,7 @@ fn main() -> int {
 ## Dependencies
 In order to compile the project you will need to following dependencies:
 
-- C++ compiler with support for C++23
+- C++ compiler with support for C++23.
 - [Invoke](https://www.pyinvoke.org/) (Used to invoke CMake and scripts)
 - [Cmake](https://cmake.org/)  (Main buildsysstem)
 - [CLI11](https://github.com/CLIUtils/CLI11) (CLI option parsing library)
@@ -37,6 +37,8 @@ In order to compile the project you will need to following dependencies:
 - [cereal](https://uscilab.github.io/cereal/) (Serialization library used for the AST)
 - [libassert](https://github.com/jeremy-rifkin/libassert) (Modern assertion library for compile and runtime assertion checking)
 
+- [pybind11]() (Used to generate C++ to Python bindings.)
+
 ### Buildsystem
 In order to compile the project you will need `invoke`, `clang` and `cmake`.
 You can install most of the dependencies with the following aptitude command:
@@ -45,10 +47,11 @@ You can install most of the dependencies with the following aptitude command:
 apt install -y pipx clang cmake extra-cmake-modules
 ```
 
-In order to make use of invoke you should install it through `pipx`:
+In order to make use of invoke you should install it through `pipx`.
+Also you should install `pybind11` to your system as to automatically generate Python bindings for your code:
 
 ```shell
-pipx install invoke
+pipx install invoke pybind11
 ```
 
 #### Build

@@ -5,3 +5,8 @@ target_sources(${TARGET_CROW_LIB} PRIVATE
 	type_variant2cpp_type.cpp
 	clang_frontend_invoker.cpp
 )
+
+# Add subdirectories
+add_subdirectory(interop_backends)
+#add_subdirectory(cmake_backend) # Maybe support multiple backends?
+#add_subdirectory(build_backends) # Maybe support multiple backends?
