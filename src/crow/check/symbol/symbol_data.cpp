@@ -31,11 +31,9 @@ auto nullptr_check(const std::string_view t_str,
     error("ptr is nullptr!");
   }
 }
-
 } // namespace
 
 namespace check::symbol {
-
 // Methods:
 auto SymbolData::struct_() const -> StructTypePtr
 {
@@ -128,7 +126,7 @@ auto SymbolData::type_variant() const -> TypeVariant
 } // namespace check::symbol
 
 // Functions:
-auto operator<<(std::ostream& t_os, const check::SymbolData& t_data)
+auto operator<<(std::ostream& t_os, const check::symbol::SymbolData& t_data)
   -> std::ostream&
 {
   std::visit(

@@ -5,15 +5,18 @@
 #include "crow/ast/visitor/node_visitor.hpp"
 
 // Local Includes:
-#include "symbol_types.hpp"
+#include "symbol/symbol.hpp"
+#include "symbol/symbol_data.hpp"
 
 namespace check {
-// Using statements:
+// Using Declarations:
 using ast::node::NodeListPtr;
 using ast::node::NodePtr;
 using ast::node::node_traits::typing::NativeTypeOpt;
 using ast::visitor::Any;
 using ast::visitor::NodeVisitor;
+using symbol::SymbolData;
+using symbol::SymbolDataList;
 
 // Classes:
 /*!
@@ -24,8 +27,8 @@ class SymbolHelper : public NodeVisitor {
   auto get_symbol_data(NodePtr t_ptr) -> SymbolData;
   auto get_resolved_type(NodePtr t_ptr) -> SymbolData;
   auto get_native_type(NodePtr t_ptr) -> NativeTypeOpt;
-  auto get_type_list(NodeListPtr t_list) -> TypeList;
-  auto get_resolved_type_list(NodeListPtr t_list) -> TypeList;
+  auto get_type_list(NodeListPtr t_list) -> SymbolDataList;
+  auto get_resolved_type_list(NodeListPtr t_list) -> SymbolDataList;
 
   public:
   SymbolHelper() = default;

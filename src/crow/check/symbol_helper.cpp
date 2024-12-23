@@ -38,9 +38,9 @@ auto SymbolHelper::get_native_type(NodePtr t_ptr) -> NativeTypeOpt
   return get_symbol_data(t_ptr).native_type();
 }
 
-auto SymbolHelper::get_type_list(NodeListPtr t_list) -> TypeList
+auto SymbolHelper::get_type_list(NodeListPtr t_list) -> SymbolDataList
 {
-  TypeList list;
+  SymbolDataList list;
 
   for(const auto& ptr : *t_list) {
     list.push_back(get_symbol_data(ptr));
@@ -49,9 +49,9 @@ auto SymbolHelper::get_type_list(NodeListPtr t_list) -> TypeList
   return list;
 }
 
-auto SymbolHelper::get_resolved_type_list(NodeListPtr t_list) -> TypeList
+auto SymbolHelper::get_resolved_type_list(NodeListPtr t_list) -> SymbolDataList
 {
-  TypeList list;
+  SymbolDataList list;
 
   for(const auto& ptr : *t_list) {
     list.push_back(get_resolved_type(ptr));

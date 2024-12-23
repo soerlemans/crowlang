@@ -11,13 +11,19 @@
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
 #include "crow/debug/log.hpp"
-#include "symbol_data.hpp"
+
+// Local Includes:
+#include "symbol/symbol_data.hpp"
 
 namespace check {
 // Using Statements:
 using ast::node::node_traits::typing::NativeType;
 using container::TextPosition;
 using exception::type_error;
+using symbol::FnTypePtr;
+using symbol::StructTypePtr;
+using symbol::SymbolData;
+using symbol::VarTypePtr;
 
 NODE_USING_ALL_NAMESPACES()
 
@@ -123,7 +129,7 @@ auto TypeChecker::visit(Parameter* t_param) -> Any
   const auto type{str2nativetype(t_param->type())};
 
   // Register parameter to environment.
-  const SymbolData data{check::make_variable(false, type)};
+  const SymbolData data{symbol::make_variable(false, type)};
   m_envs.add_symbol(id, data);
 
   return SymbolData{type};
@@ -145,7 +151,7 @@ auto TypeChecker::visit(Function* t_fn) -> Any
 
   // Register function type signature to environment.
   const auto params_type_list{get_type_list(params)};
-  const SymbolData data{check::make_function(params_type_list, ret_type)};
+  const SymbolData data{symbol::make_function(params_type_list, ret_type)};
 
   // Add the function and its ID to the type
   m_envs.add_symbol(id, data);
@@ -253,7 +259,7 @@ auto TypeChecker::visit(Let* t_let) -> Any
   const auto expr_data{decl_expr(t_let)};
 
   // Create the SymbolData for a variable.
-  const SymbolData data{check::make_variable(true, expr_data)};
+  const SymbolData data{symbol::make_variable(true, expr_data)};
   m_envs.add_symbol(id, data);
 
   return {};
@@ -265,7 +271,7 @@ auto TypeChecker::visit(Var* t_var) -> Any
   const auto expr_data{decl_expr(t_var)};
 
   // Create the SymbolData for a variable.
-  const SymbolData data{check::make_variable(false, expr_data)};
+  const SymbolData data{symbol::make_variable(false, expr_data)};
   m_envs.add_symbol(id, data);
 
   return {};

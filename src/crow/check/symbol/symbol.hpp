@@ -20,16 +20,18 @@ using StructTypePtr = std::shared_ptr<StructType>;
 using FnTypePtr = std ::shared_ptr<FnType>;
 using VarTypePtr = std::shared_ptr<VarType>;
 
-using TypeList = std::list<SymbolData>;
-} // namespace check
+using SymbolDataList = std::list<SymbolData>;
+} // namespace check::symbol
 
 // Functions:
-auto operator<<(std::ostream& t_os, check::StructTypePtr t_struct)
+auto operator<<(std::ostream& t_os, check::symbol::StructTypePtr t_struct)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, check::FnTypePtr t_fn) -> std::ostream&;
-auto operator<<(std::ostream& t_os, check::VarTypePtr t_var) -> std::ostream&;
+auto operator<<(std::ostream& t_os, check::symbol::FnTypePtr t_fn)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os, check::symbol::VarTypePtr t_var)
+  -> std::ostream&;
 
-auto operator<<(std::ostream& t_os, const check::TypeList& t_list)
+auto operator<<(std::ostream& t_os, const check::symbol::SymbolDataList& t_list)
   -> std::ostream&;
 
 #endif // CROW_CROW_CHECK_CHECK_HPP

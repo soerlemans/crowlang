@@ -62,14 +62,14 @@ auto operator<<(std::ostream& t_os, VarTypePtr t_var) -> std::ostream&
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const TypeList& t_list) -> std::ostream&
+auto operator<<(std::ostream& t_os, const SymbolDataList& t_list) -> std::ostream&
 {
-  for(auto iter{t_list.cbegin()}; iter != t_list.cend(); iter++) {
-    if(iter != t_list.cbegin()) {
-      t_os << ", ";
-    }
+  using namespace std::literals::string_view_literals;
 
-    t_os << *iter;
+  auto sep{""sv};
+  for(const auto& elem : t_list) {
+    t_os << sep << elem;
+    sep = ", ";
   }
 
   return t_os;

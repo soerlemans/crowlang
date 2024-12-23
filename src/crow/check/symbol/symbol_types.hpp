@@ -23,7 +23,7 @@ struct StructType {
 
 // TODO: Add utilities for verifying if parameters and their types line up.
 struct FnType {
-  TypeList m_params;
+  SymbolDataList m_params;
   SymbolData m_return_type;
 
   auto native_type() const -> NativeTypeOpt;

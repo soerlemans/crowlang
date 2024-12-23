@@ -20,9 +20,10 @@
  */
 
 namespace check {
-// Using statements:
+// Using Statements:
 using namespace ast;
 
+// Using Declarations:
 using ast::node::NodePtr;
 using ast::node::node_traits::typing::NativeType;
 using ast::node::node_traits::typing::NativeTypeOpt;
@@ -32,7 +33,7 @@ using container::TextPosition;
 // Classes:
 class TypeChecker : public SymbolHelper {
   private:
-  EnvStack m_envs;
+  EnvState m_envs;
   TypePromoter m_promoter;
 
   protected:

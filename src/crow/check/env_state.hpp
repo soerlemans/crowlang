@@ -13,13 +13,18 @@
 #include "symbol/symbol_types.hpp"
 
 namespace check {
+// Using Declarations:
+using symbol::SymbolData;
+
 // Aliases:
 using Symbol = std::pair<std::string, SymbolData>;
 using Env = std::unordered_map<std::string, SymbolData>;
 
 // Classes:
 /*!
- * Keep track of the current state of the environment and its Symbols..
+ * Keep track of the current state of the environment and its Symbols.
+ * This construct merely keeps track of the symbols that are in scope.
+ * When we use the @ref TypeChecker.
  */
 class EnvState {
   private:

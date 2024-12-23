@@ -9,7 +9,7 @@
 #include "lib/filesystem.hpp"
 #include "lib/types.hpp"
 
-// Relative Includes:
+// Local Includes:
 #include "interop_backends/interop_backend_interface.hpp"
 
 namespace codegen::cpp_backend {
