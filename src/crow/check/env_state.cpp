@@ -1,4 +1,4 @@
-#include "env_stack.hpp"
+#include "env_state.hpp"
 
 // STL Includes:
 #include <algorithm>
@@ -14,13 +14,13 @@ namespace check {
 using exception::type_error;
 
 // Public Methods:
-EnvStack::EnvStack(): m_envs{}
+EnvState::EnvState(): m_envs{}
 {
   // Always initialize the global scope
   m_envs.emplace_back();
 }
 
-auto EnvStack::add_symbol(const std::string_view t_id, const SymbolData t_data)
+auto EnvState::add_symbol(const std::string_view t_id, const SymbolData t_data)
   -> void
 {
   Symbol pair{t_id, t_data};
@@ -31,7 +31,7 @@ auto EnvStack::add_symbol(const std::string_view t_id, const SymbolData t_data)
   }
 }
 
-auto EnvStack::get_symbol(const std::string_view t_id) -> SymbolData
+auto EnvState::get_symbol(const std::string_view t_id) -> SymbolData
 {
   bool found{false};
   SymbolData data;
@@ -57,13 +57,13 @@ auto EnvStack::get_symbol(const std::string_view t_id) -> SymbolData
   return data;
 }
 
-auto EnvStack::push_env() -> void
+auto EnvState::push_env() -> void
 {}
 
-auto EnvStack::pop_env() -> void
+auto EnvState::pop_env() -> void
 {}
 
-auto EnvStack::clear() -> void
+auto EnvState::clear() -> void
 {
   m_envs.clear();
 

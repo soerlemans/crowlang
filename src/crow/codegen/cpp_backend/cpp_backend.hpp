@@ -31,6 +31,7 @@ using visitor::Any;
  */
 class CppBackend : public ast::visitor::NodeVisitor {
   private:
+  // TODO: Register backends to this.
   std::vector<InteropBackendPtr> m_interop_backends;
 
   // TODO: Move terminate functionality in its own class to separate concerns.

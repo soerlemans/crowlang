@@ -8,7 +8,7 @@
 #include "crow/container/text_position.hpp"
 
 // Local includes:
-#include "env_stack.hpp"
+#include "env_state.hpp"
 #include "symbol_helper.hpp"
 #include "type_promoter.hpp"
 

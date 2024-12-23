@@ -4,7 +4,7 @@
 #include "crow/debug/log.hpp"
 
 // Using Statements:
-namespace check {
+namespace check::symbol {
 // StructType:
 auto StructType::native_type() const -> NativeTypeOpt
 {
@@ -47,4 +47,4 @@ auto VarType::type_variant() const -> TypeVariant
 
   return {make_variable(m_type.type_variant())};
 }
-} // namespace check
+} // namespace check::symbol

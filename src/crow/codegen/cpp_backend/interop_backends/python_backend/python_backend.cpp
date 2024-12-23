@@ -3,16 +3,25 @@
 namespace codegen::cpp_backend::interop_backends {
 auto PythonBackend::prologue() -> std::string
 {
-  return {};
+  std::stringstream ss;
+
+  ss << "// Pybind Includes:\n"
+  ss << "#include <pybind11/pybind11.h>\n\n"
+
+  return ss.str();
 }
 
 auto PythonBackend::epilogue() -> std::string
 {
-  return {};
+  std::stringstream ss;
+
+  return ss.str();
 }
 
 auto PythonBackend::generate(NodePtr t_ast) -> std::string
 {
-  return {};
+  std::stringstream ss;
+
+  return ss.str();
 }
 } // namespace codegen::cpp_backend::interop_backends

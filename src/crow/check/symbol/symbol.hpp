@@ -7,7 +7,7 @@
 #include <memory>
 #include <optional>
 
-namespace check {
+namespace check::symbol {
 // Forward Declarations:
 class SymbolData;
 

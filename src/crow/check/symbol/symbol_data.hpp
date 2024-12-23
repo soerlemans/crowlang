@@ -5,7 +5,7 @@
 #include "crow/ast/node/node_traits/typing/types.hpp"
 
 // Local Includes:
-#include "check.hpp"
+#include "symbol.hpp"
 
 /*!
  * @file
@@ -14,7 +14,7 @@
  * And @ref SymbolData.
  */
 
-namespace check {
+namespace check::symbol {
 // Using Statements:
 using ast::node::node_traits::typing::NativeType;
 using ast::node::node_traits::typing::NativeTypeOpt;
@@ -71,7 +71,7 @@ class SymbolData : public Variant {
 
   virtual ~SymbolData() = default;
 };
-} // namespace check
+} // namespace check::symbol
 
 // Functions:
 auto operator<<(std::ostream& t_os, const check::SymbolData& t_data)

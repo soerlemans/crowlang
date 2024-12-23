@@ -2,28 +2,31 @@
 #define CROW_CROW_CHECK_ENV_STACK_HPP
 
 // STL Includes:
-#include <map>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 
 // Absolute Includes:
 #include "crow/exception/type_error.hpp"
 
 // Local Includes:
-#include "symbol_types.hpp"
+#include "symbol/symbol_types.hpp"
 
 namespace check {
 // Aliases:
 using Symbol = std::pair<std::string, SymbolData>;
-using Env = std::map<std::string, SymbolData>;
+using Env = std::unordered_map<std::string, SymbolData>;
 
 // Classes:
-class EnvStack {
+/*!
+ * Keep track of the current state of the environment and its Symbols..
+ */
+class EnvState {
   private:
   std::list<Env> m_envs;
 
   public:
-  EnvStack();
+  EnvState();
 
   auto add_symbol(std::string_view t_id, SymbolData t_data) -> void;
   auto get_symbol(std::string_view t_id) -> SymbolData;
@@ -33,7 +36,7 @@ class EnvStack {
 
   auto clear() -> void;
 
-  virtual ~EnvStack() = default;
+  virtual ~EnvState() = default;
 };
 } // namespace check
 

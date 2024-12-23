@@ -13,7 +13,7 @@ auto SymbolHelper::get_symbol_data(NodePtr t_ptr) -> SymbolData
 {
   SymbolData data;
 
-  auto any{traverse(t_ptr)};
+  const auto any{traverse(t_ptr)};
   if(any.has_value()) {
     try {
       data = std::any_cast<SymbolData>(any);

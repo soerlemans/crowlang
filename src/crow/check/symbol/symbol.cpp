@@ -1,4 +1,4 @@
-#include "check.hpp"
+#include "symbol.hpp"
 
 // Absolute Includes:
 #include "crow/debug/log.hpp"
@@ -8,7 +8,7 @@
 
 
 // Using Statements:
-using namespace check;
+using namespace check::symbol;
 using namespace std::literals::string_view_literals;
 
 // Functions:

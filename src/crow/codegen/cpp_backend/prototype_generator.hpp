@@ -17,6 +17,12 @@ using visitor::Any;
 using visitor::NodeVisitor;
 
 // Classes:
+/*!
+ * TODO:
+ * Currently the prototype generator is a node visitor.
+ * As traversing the AST is a costly operation.
+ * It is best that we replace this by walking the symbol table.
+ */
 class PrototypeGenerator : public NodeVisitor {
   protected:
   /*!

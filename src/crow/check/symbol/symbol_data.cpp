@@ -34,7 +34,7 @@ auto nullptr_check(const std::string_view t_str,
 
 } // namespace
 
-namespace check {
+namespace check::symbol {
 
 // Methods:
 auto SymbolData::struct_() const -> StructTypePtr
@@ -125,7 +125,7 @@ auto SymbolData::type_variant() const -> TypeVariant
 
   return variant;
 }
-} // namespace check
+} // namespace check::symbol
 
 // Functions:
 auto operator<<(std::ostream& t_os, const check::SymbolData& t_data)
