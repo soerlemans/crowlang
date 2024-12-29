@@ -17,23 +17,25 @@ namespace check {
 using symbol::SymbolData;
 
 // Aliases:
-using Symbol = std::pair<std::string, SymbolData>;
-using Env = std::unordered_map<std::string, SymbolData>;
+using EnvMap = std::unordered_map<std::string, SymbolData>;
+using EnvSymbol = EnvMap::value_type;
+using EnvStack = std::list<EnvMap>;
 
 // Classes:
 /*!
  * Keep track of the current state of the environment and its Symbols.
- * This construct merely keeps track of the symbols that are in scope.
- * When we use the @ref TypeChecker.
+ * This is a Scoped @ref SymbolTable, that only keeps track of the symbols.
+ * That are currently in scope when traversing the AST.
+ * Used in @ref TypeChecker.
  */
 class EnvState {
   private:
-  std::list<Env> m_envs;
+  EnvStack m_envs;
 
   public:
   EnvState();
 
-  auto add_symbol(std::string_view t_id, SymbolData t_data) -> void;
+  auto add_symbol(EnvSymbol t_pair) -> void;
   auto get_symbol(std::string_view t_id) -> SymbolData;
 
   auto push_env() -> void;

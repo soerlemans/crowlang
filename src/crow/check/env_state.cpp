@@ -16,18 +16,17 @@ using exception::type_error;
 // Public Methods:
 EnvState::EnvState(): m_envs{}
 {
-  // Always initialize the global scope
+  // Always initialize the global scope.
+  // Or esle we will get lookup errors.
   m_envs.emplace_back();
 }
 
-auto EnvState::add_symbol(const std::string_view t_id, const SymbolData t_data)
-  -> void
+auto EnvState::add_symbol(const EnvSymbol t_pair) -> void
 {
-  Symbol pair{t_id, t_data};
-
-  const auto result{m_envs.back().insert(pair)};
+  const auto result{m_envs.back().insert(t_pair)};
   if(!result.second) {
-    // TODO: Throw exception, that name was already defined
+    // TODO: Add name of already defined symbol to exception.
+    throw std::invalid_argument{"Symbol already defined in current scope."};
   }
 }
 

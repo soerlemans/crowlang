@@ -20,6 +20,7 @@ struct SymbolBlock;
 // Aliases:
 using SymbolMapVariant = std::variant<SymbolData, SymbolBlock>;
 using SymbolMap = std::unordered_map<std::string, SymbolMapVariant>;
+using SymbolEntry = SymbolMap::value_type;
 
 // Structs:
 /*!
@@ -34,19 +35,24 @@ struct SymbolBlock {
 
 // Classes:
 /*!
- * This classes stores the symbol table.
+ * This classes stores the global symbol table.
+ * This keeps track of all the symbols in a module.
  */
 class SymbolTable {
   private:
   SymbolMap m_table;
 
   public:
-  SymbolTable() = default;
+  SymbolTable();
 
+  // TODO: Add toplevel lookup, toplevel symbols should be order independent.
   // TODO: Implement.
-  auto insert(SymbolMap::value_type t_pair)
-    -> std::pair<SymbolMap::iterator, bool>;
-  auto lookup(std::string_view t_symbol_name) -> void;
+  auto insert(SymbolEntry t_pair) -> std::pair<SymbolMap::iterator, bool>;
+  auto lookup(std::string_view t_symbol_name) const -> SymbolData;
+  auto lookup_toplevel(std::string_view t_symbol_name) const -> SymbolData;
+  auto table() const -> const SymbolMap&;
+
+  auto clear() -> void;
 
   virtual ~SymbolTable() = default;
 };
