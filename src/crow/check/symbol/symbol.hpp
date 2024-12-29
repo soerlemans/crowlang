@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CHECK_CHECK_HPP
-#define CROW_CROW_CHECK_CHECK_HPP
+#ifndef CROW_CROW_CHECK_SYMBOL_SYMBOL_HPP
+#define CROW_CROW_CHECK_SYMBOL_SYMBOL_HPP
 
 // STL Includes:
 #include <iostream>
@@ -34,4 +34,4 @@ auto operator<<(std::ostream& t_os, check::symbol::VarTypePtr t_var)
 auto operator<<(std::ostream& t_os, const check::symbol::SymbolDataList& t_list)
   -> std::ostream&;
 
-#endif // CROW_CROW_CHECK_CHECK_HPP
+#endif // CROW_CROW_CHECK_SYMBOL_SYMBOL_HPP

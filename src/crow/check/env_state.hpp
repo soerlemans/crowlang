@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CHECK_ENV_STACK_HPP
-#define CROW_CROW_CHECK_ENV_STACK_HPP
+#ifndef CROW_CROW_CHECK_ENV_STATE_HPP
+#define CROW_CROW_CHECK_ENV_STATE_HPP
 
 // STL Includes:
 #include <string>
@@ -45,4 +45,4 @@ class EnvState {
 };
 } // namespace check
 
-#endif // CROW_CROW_CHECK_ENV_STACK_HPP
+#endif // CROW_CROW_CHECK_ENV_STATE_HPP

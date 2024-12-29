@@ -1,5 +1,5 @@
-#ifndef SYMBOL_TABLE_HPP
-#define SYMBOL_TABLE_HPP
+#ifndef CROW_CROW_CHECK_SYMBOL_TABLE_SYMBOL_TABLE_HPP
+#define CROW_CROW_CHECK_SYMBOL_TABLE_SYMBOL_TABLE_HPP
 
 // STL Include:
 #include <optional>
@@ -8,18 +8,33 @@
 #include <unordered_map>
 
 // Absolute includes:
-#include "crow/check/symbol/symbol.hpp"
+#include "crow/check/symbol/symbol_data.hpp"
 
 namespace check::symbol_table {
 // Using Declarations:
 using symbol::SymbolData;
 
-// Aliases:
-using SymbolMap = std::unordered_map<std::string, SymbolData>;
+// Forward Declarations:
+struct SymbolBlock;
 
-// Clases:
+// Aliases:
+using SymbolMapVariant = std::variant<SymbolData, SymbolBlock>;
+using SymbolMap = std::unordered_map<std::string, SymbolMapVariant>;
+
+// Structs:
 /*!
- * This class gives
+ * Helper struct meant to add a nested functionality.
+ * On top of the @ref SymbolData class.
+ * This way we can nest the @ref SymbolTable.
+ */
+struct SymbolBlock {
+  SymbolData m_data;
+  SymbolMap m_table;
+};
+
+// Classes:
+/*!
+ * This classes stores the symbol table.
  */
 class SymbolTable {
   private:
@@ -29,11 +44,12 @@ class SymbolTable {
   SymbolTable() = default;
 
   // TODO: Implement.
-  auto insert(SymbolMap::value_type t_pair) -> bool;
-  auto lookup(std::string t_symbol_name) -> void;
+  auto insert(SymbolMap::value_type t_pair)
+    -> std::pair<SymbolMap::iterator, bool>;
+  auto lookup(std::string_view t_symbol_name) -> void;
 
   virtual ~SymbolTable() = default;
 };
 } // namespace check::symbol_table
 
-#endif // SYMBOL_TABLE_HPP
+#endif // CROW_CROW_CHECK_SYMBOL_TABLE_SYMBOL_TABLE_HPP
