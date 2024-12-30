@@ -100,14 +100,15 @@ auto print_ast([[maybe_unused]] ast::node::NodePtr t_ast) -> void
 
 auto check_types(ast::node::NodePtr t_ast) -> void
 {
-  using check::TypeChecker;
+  using check::SemanticChecker;
 
-  DBG_PRINTLN("<type_checking>");
+  DBG_PRINTLN("<semantic_checking>");
 
-  TypeChecker type_checker;
-  type_checker.check(t_ast);
+  // Check the semantics of the written program.
+  SemanticChecker checker;
+  checker.check(t_ast);
 
-  DBG_PRINTLN("</type_checking>");
+  DBG_PRINTLN("</semantic_checking>");
 }
 
 auto backend(ast::node::NodePtr t_ast, const path& t_path) -> void

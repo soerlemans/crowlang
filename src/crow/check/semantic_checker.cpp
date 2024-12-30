@@ -1,4 +1,4 @@
-#include "type_checker.hpp"
+#include "semantic_checker.hpp"
 
 // STL Includes:
 #include <algorithm>
@@ -18,7 +18,6 @@
 namespace check {
 // Using Statements:
 using ast::node::node_traits::typing::NativeType;
-using container::TextPosition;
 using exception::type_error;
 using symbol::FnTypePtr;
 using symbol::StructTypePtr;
@@ -28,51 +27,11 @@ using symbol::VarTypePtr;
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-//! Handle the case where a type must be treated as a conditional.
-auto TypeChecker::handle_condition(const SymbolData& t_data,
-                                   const TextPosition& t_pos) const -> void
-{
-  std::stringstream ss;
-
-  if(const auto opt{t_data.native_type()}; opt) {
-    if(!is_condition(opt.value())) {
-      ss << "Expected a pointer, integer or a boolean for a conditional "
-         << "expression.\n\n";
-
-      ss << t_pos;
-
-      type_error(ss.str());
-    }
-  } else {
-    ss << "Non native types can not casted to " << std::quoted("bool")
-       << ".\n\n";
-
-    ss << t_pos;
-
-    type_error(ss.str());
-  }
-}
-
-auto TypeChecker::promote(const SymbolData& t_lhs, const SymbolData& t_rhs,
-                          const bool enforce_lhs) const -> NativeTypeOpt
-{
-  NativeTypeOpt opt;
-
-  const auto lhs{t_lhs.native_type()};
-  const auto rhs{t_rhs.native_type()};
-
-  if(lhs && rhs) {
-    opt = m_promoter.promote(lhs.value(), rhs.value(), enforce_lhs);
-  }
-
-  return opt;
-}
-
-TypeChecker::TypeChecker(): m_envs{}
+SemanticChecker::SemanticChecker()
 {}
 
 // Control:
-auto TypeChecker::visit(If* t_if) -> Any
+auto SemanticChecker::visit(If* t_if) -> Any
 {
   // Init expression must be evaluated before condition.
   traverse(t_if->init_expr());
@@ -89,7 +48,7 @@ auto TypeChecker::visit(If* t_if) -> Any
   return {};
 }
 
-auto TypeChecker::visit(Loop* t_loop) -> Any
+auto SemanticChecker::visit(Loop* t_loop) -> Any
 {
   // Init expression must be evaluated before condition.
   traverse(t_loop->init_expr());
@@ -109,11 +68,11 @@ auto TypeChecker::visit(Loop* t_loop) -> Any
   return {};
 }
 
-AST_VISITOR_STUB(TypeChecker, Continue)
-AST_VISITOR_STUB(TypeChecker, Break)
-AST_VISITOR_STUB(TypeChecker, Defer)
+AST_VISITOR_STUB(SemanticChecker, Continue)
+AST_VISITOR_STUB(SemanticChecker, Break)
+AST_VISITOR_STUB(SemanticChecker, Defer)
 
-auto TypeChecker::visit(Return* t_return) -> Any
+auto SemanticChecker::visit(Return* t_return) -> Any
 {
   // FIXME: Check if type of expression being returned.
   // Matches the functions return type.
@@ -123,19 +82,19 @@ auto TypeChecker::visit(Return* t_return) -> Any
 }
 
 // Function:
-auto TypeChecker::visit(Parameter* t_param) -> Any
+auto SemanticChecker::visit(Parameter* t_param) -> Any
 {
   const auto id{t_param->identifier()};
   const auto type{str2nativetype(t_param->type())};
 
   // Register parameter to environment.
   const SymbolData data{symbol::make_variable(false, type)};
-  m_envs.add_symbol({std::string{id}, data});
+  add_symbol(id, data);
 
   return SymbolData{type};
 }
 
-auto TypeChecker::visit(Function* t_fn) -> Any
+auto SemanticChecker::visit(Function* t_fn) -> Any
 {
   const auto id{t_fn->identifier()};
   const auto ret_type{str2nativetype(t_fn->type())};
@@ -153,7 +112,7 @@ auto TypeChecker::visit(Function* t_fn) -> Any
   const SymbolData data{symbol::make_function(params_type_list, ret_type)};
 
   // Add the function and its ID to the type
-  m_envs.add_symbol({std::string{id}, data});
+  add_symbol(id, data);
   DBG_INFO("Function: ", id, "(", params_type_list, ") -> ", ret_type);
 
   // Annotate AST.
@@ -162,11 +121,10 @@ auto TypeChecker::visit(Function* t_fn) -> Any
   // Run type checking on the function body.
   traverse(t_fn->body());
 
-
   return {};
 }
 
-auto TypeChecker::visit(Call* t_fn_call) -> Any
+auto SemanticChecker::visit(Call* t_fn_call) -> Any
 {
   // TODO: Improve this code to be more generic and clean, error if this is not
   // a function name
@@ -177,7 +135,7 @@ auto TypeChecker::visit(Call* t_fn_call) -> Any
     return {};
   }
 
-  const auto data{m_envs.get_symbol(id)};
+  const auto data{get_symbol(id)};
   const auto args{get_resolved_type_list(t_fn_call->args())};
 
   const auto fn{data.function()};
@@ -201,7 +159,7 @@ auto TypeChecker::visit(Call* t_fn_call) -> Any
   return fn->m_return_type;
 }
 
-auto TypeChecker::visit(ReturnType* t_rt) -> Any
+auto SemanticChecker::visit(ReturnType* t_rt) -> Any
 {
   return SymbolData{str2nativetype(t_rt->type())};
 }
@@ -209,7 +167,7 @@ auto TypeChecker::visit(ReturnType* t_rt) -> Any
 // Lvalue:
 // TODO: Account for when init expr is a nullptr
 // TODO: Add TypeData annotation.
-auto TypeChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
+auto SemanticChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
 {
   auto expr{get_symbol_data(t_decl->init_expr())};
 
@@ -252,34 +210,34 @@ auto TypeChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
 }
 
 // TODO: FIXME Disallow redeclaration of variables.
-auto TypeChecker::visit(Let* t_let) -> Any
+auto SemanticChecker::visit(Let* t_let) -> Any
 {
   const auto id{t_let->identifier()};
   const auto expr_data{decl_expr(t_let)};
 
   // Create the SymbolData for a variable.
   const SymbolData data{symbol::make_variable(true, expr_data)};
-  m_envs.add_symbol({std::string{id}, data});
+  add_symbol(id, data);
 
   return {};
 }
 
-auto TypeChecker::visit(Var* t_var) -> Any
+auto SemanticChecker::visit(Var* t_var) -> Any
 {
   const auto id{t_var->identifier()};
   const auto expr_data{decl_expr(t_var)};
 
   // Create the SymbolData for a variable.
   const SymbolData data{symbol::make_variable(false, expr_data)};
-  m_envs.add_symbol({std::string{id}, data});
+  add_symbol(id, data);
 
   return {};
 }
 
-auto TypeChecker::visit(Variable* t_var) -> Any
+auto SemanticChecker::visit(Variable* t_var) -> Any
 {
   const auto id{t_var->identifier()};
-  const auto var{m_envs.get_symbol(id)};
+  const auto var{get_symbol(id)};
 
   DBG_INFO("Variable ", std::quoted(id), " of type ", var);
 
@@ -290,7 +248,7 @@ auto TypeChecker::visit(Variable* t_var) -> Any
 }
 
 // Operators:
-auto TypeChecker::visit(Arithmetic* t_arith) -> Any
+auto SemanticChecker::visit(Arithmetic* t_arith) -> Any
 {
   auto ret{get_symbol_data(t_arith->left())};
 
@@ -325,7 +283,7 @@ auto TypeChecker::visit(Arithmetic* t_arith) -> Any
   return ret;
 }
 
-auto TypeChecker::visit(Assignment* t_assign) -> Any
+auto SemanticChecker::visit(Assignment* t_assign) -> Any
 {
   using namespace exception;
 
@@ -370,7 +328,7 @@ auto TypeChecker::visit(Assignment* t_assign) -> Any
   return var;
 }
 
-auto TypeChecker::visit(Comparison* t_comp) -> Any
+auto SemanticChecker::visit(Comparison* t_comp) -> Any
 {
   const auto lhs{get_symbol_data(t_comp->left())};
   const auto rhs{get_symbol_data(t_comp->right())};
@@ -396,7 +354,7 @@ auto TypeChecker::visit(Comparison* t_comp) -> Any
   return SymbolData{NativeType::BOOL};
 }
 
-auto TypeChecker::visit(Increment* t_inc) -> Any
+auto SemanticChecker::visit(Increment* t_inc) -> Any
 {
   const auto opt{get_native_type(t_inc->left())};
 
@@ -416,7 +374,7 @@ auto TypeChecker::visit(Increment* t_inc) -> Any
   return SymbolData{opt.value()};
 }
 
-auto TypeChecker::visit(Decrement* t_dec) -> Any
+auto SemanticChecker::visit(Decrement* t_dec) -> Any
 {
   const auto opt{get_native_type(t_dec->left())};
 
@@ -436,7 +394,7 @@ auto TypeChecker::visit(Decrement* t_dec) -> Any
   return SymbolData{opt.value()};
 }
 
-auto TypeChecker::visit(UnaryPrefix* t_up) -> Any
+auto SemanticChecker::visit(UnaryPrefix* t_up) -> Any
 {
   const auto left{get_symbol_data(t_up->left())};
 
@@ -446,7 +404,7 @@ auto TypeChecker::visit(UnaryPrefix* t_up) -> Any
 }
 
 // Logical:
-auto TypeChecker::visit(Not* t_not) -> Any
+auto SemanticChecker::visit(Not* t_not) -> Any
 {
   const auto lhs{get_symbol_data(t_not->left())};
 
@@ -458,7 +416,7 @@ auto TypeChecker::visit(Not* t_not) -> Any
 }
 
 // TODO: Create a helper method for these types of type checks
-auto TypeChecker::visit(And* t_and) -> Any
+auto SemanticChecker::visit(And* t_and) -> Any
 {
   const auto lhs{get_symbol_data(t_and->left())};
   const auto rhs{get_symbol_data(t_and->right())};
@@ -472,7 +430,7 @@ auto TypeChecker::visit(And* t_and) -> Any
   return SymbolData{NativeType::BOOL};
 }
 
-auto TypeChecker::visit(Or* t_or) -> Any
+auto SemanticChecker::visit(Or* t_or) -> Any
 {
   const auto lhs{get_symbol_data(t_or->left())};
   const auto rhs{get_symbol_data(t_or->right())};
@@ -487,42 +445,42 @@ auto TypeChecker::visit(Or* t_or) -> Any
 }
 
 // Packaging:
-AST_VISITOR_STUB(TypeChecker, Import)
-AST_VISITOR_STUB(TypeChecker, ModuleDecl)
+AST_VISITOR_STUB(SemanticChecker, Import)
+AST_VISITOR_STUB(SemanticChecker, ModuleDecl)
 
 // Rvalue:
-auto TypeChecker::visit([[maybe_unused]] Float* t_float) -> Any
+auto SemanticChecker::visit([[maybe_unused]] Float* t_float) -> Any
 {
   return SymbolData{NativeType::F64};
 }
 
-auto TypeChecker::visit([[maybe_unused]] Integer* t_int) -> Any
+auto SemanticChecker::visit([[maybe_unused]] Integer* t_int) -> Any
 {
   return SymbolData{NativeType::INT};
 }
 
-auto TypeChecker::visit([[maybe_unused]] String* t_str) -> Any
+auto SemanticChecker::visit([[maybe_unused]] String* t_str) -> Any
 {
   return SymbolData{NativeType::STRING};
 }
 
-auto TypeChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
+auto SemanticChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
 {
   return SymbolData{NativeType::BOOL};
 }
 
 // Typing:
-AST_VISITOR_STUB(TypeChecker, MethodDecl)
-AST_VISITOR_STUB(TypeChecker, Interface)
-AST_VISITOR_STUB(TypeChecker, MemberDecl)
-AST_VISITOR_STUB(TypeChecker, Struct)
-AST_VISITOR_STUB(TypeChecker, Impl)
-AST_VISITOR_STUB(TypeChecker, DotExpr)
+AST_VISITOR_STUB(SemanticChecker, MethodDecl)
+AST_VISITOR_STUB(SemanticChecker, Interface)
+AST_VISITOR_STUB(SemanticChecker, MemberDecl)
+AST_VISITOR_STUB(SemanticChecker, Struct)
+AST_VISITOR_STUB(SemanticChecker, Impl)
+AST_VISITOR_STUB(SemanticChecker, DotExpr)
 
-auto TypeChecker::check(NodePtr t_ast) -> void
+auto SemanticChecker::check(NodePtr t_ast) -> void
 {
-  m_envs.clear();
-
   traverse(t_ast);
+
+  clear_env();
 }
 } // namespace check

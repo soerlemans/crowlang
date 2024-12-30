@@ -36,7 +36,7 @@ class EnvState {
   EnvState();
 
   auto add_symbol(EnvSymbol t_pair) -> void;
-  auto get_symbol(std::string_view t_id) -> SymbolData;
+  auto get_symbol(std::string_view t_id) const -> SymbolData;
 
   auto push_env() -> void;
   auto pop_env() -> void;

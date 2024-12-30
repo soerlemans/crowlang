@@ -30,7 +30,7 @@ auto EnvState::add_symbol(const EnvSymbol t_pair) -> void
   }
 }
 
-auto EnvState::get_symbol(const std::string_view t_id) -> SymbolData
+auto EnvState::get_symbol(const std::string_view t_id) const -> SymbolData
 {
   bool found{false};
   SymbolData data;

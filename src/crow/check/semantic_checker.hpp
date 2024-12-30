@@ -1,16 +1,11 @@
-#ifndef CROW_CROW_CHECK_TYPE_CHECKER_HPP
-#define CROW_CROW_CHECK_TYPE_CHECKER_HPP
+#ifndef CROW_CROW_CHECK_SEMANTIC_CHECKER_HPP
+#define CROW_CROW_CHECK_SEMANTIC_CHECKER_HPP
 
 // STL Includes:
 #include <string_view>
 
-// Absolute Includes:
-#include "crow/container/text_position.hpp"
-
 // Local includes:
-#include "env_state.hpp"
-#include "symbol_helper.hpp"
-#include "type_promoter.hpp"
+#include "semantic_checker_helper.hpp"
 
 /*!
  * @file
@@ -28,23 +23,11 @@ using ast::node::NodePtr;
 using ast::node::node_traits::typing::NativeType;
 using ast::node::node_traits::typing::NativeTypeOpt;
 using ast::visitor::Any;
-using container::TextPosition;
 
 // Classes:
-class TypeChecker : public SymbolHelper {
-  private:
-  EnvState m_envs;
-  TypePromoter m_promoter;
-
-  protected:
-  auto handle_condition(const SymbolData& t_data,
-                        const TextPosition& t_pos) const -> void;
-
-  auto promote(const SymbolData& t_lhs, const SymbolData& rhs,
-               bool enforce_lhs = false) const -> NativeTypeOpt;
-
+class SemanticChecker : public SemanticCheckerHelper {
   public:
-  TypeChecker();
+  SemanticChecker();
 
   // Control:
   auto visit(node::control::If* t_if) -> Any override;
@@ -103,8 +86,8 @@ class TypeChecker : public SymbolHelper {
 
   auto check(NodePtr t_ast) -> void;
 
-  virtual ~TypeChecker() = default;
+  virtual ~SemanticChecker() = default;
 };
 } // namespace check
 
-#endif // CROW_CROW_CHECK_TYPE_CHECKER_HPP
+#endif // CROW_CROW_CHECK_SEMANTIC_CHECKER_HPP

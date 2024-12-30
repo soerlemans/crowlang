@@ -4,7 +4,7 @@
 // Absolute Includes:
 #include "ast/node/fdecl.hpp"
 #include "ast/visitor/ast_printer.hpp"
-#include "check/type_checker.hpp"
+#include "check/semantic_checker.hpp"
 #include "codegen/cpp_backend/cpp_backend.hpp"
 #include "codegen/llvm_backend/llvm_backend.hpp"
 #include "container/text_buffer.hpp"
