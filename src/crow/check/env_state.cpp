@@ -5,9 +5,38 @@
 #include <any>
 #include <iomanip>
 #include <ranges>
+#include <sstream>
 
 // Absolute Includes:
 #include "crow/debug/log.hpp"
+
+// Internal:
+auto operator<<(std::ostream& t_os, const check::EnvStack& t_envs)
+  -> std::ostream&
+{
+  using namespace std::literals::string_view_literals;
+
+  auto sep{""sv};
+  auto env_index{0};
+  for(const auto& env : t_envs) {
+    t_os << sep << env_index << ":[";
+
+    auto sep_elem{""sv};
+    for(const auto& elem : env) {
+      const auto& [first, second] = elem;
+
+      t_os << sep_elem << '{' << first << ':' << second << '}';
+
+      sep_elem = ", "sv;
+    }
+    t_os << ']';
+
+    sep = ", "sv;
+    env_index++;
+  }
+
+  return t_os;
+}
 
 namespace check {
 // Using Statements:
@@ -21,13 +50,15 @@ EnvState::EnvState(): m_envs{}
   m_envs.emplace_back();
 }
 
-auto EnvState::add_symbol(const EnvSymbol t_pair) -> void
+auto EnvState::add_symbol(const EnvSymbol t_pair)
+  -> std::pair<EnvMap::iterator, bool>
 {
-  const auto result{m_envs.back().insert(t_pair)};
-  if(!result.second) {
-    // TODO: Add name of already defined symbol to exception.
-    throw std::invalid_argument{"Symbol already defined in current scope."};
-  }
+  auto& current_scope{m_envs.back()};
+  const auto result{current_scope.insert(t_pair)};
+
+  DBG_INFO("m_envs: ", m_envs);
+
+  return result;
 }
 
 auto EnvState::get_symbol(const std::string_view t_id) const -> SymbolData
@@ -57,10 +88,14 @@ auto EnvState::get_symbol(const std::string_view t_id) const -> SymbolData
 }
 
 auto EnvState::push_env() -> void
-{}
+{
+  m_envs.emplace_back();
+}
 
 auto EnvState::pop_env() -> void
-{}
+{
+  m_envs.pop_back();
+}
 
 auto EnvState::clear() -> void
 {

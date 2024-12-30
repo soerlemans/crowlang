@@ -98,28 +98,29 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
 {
   const auto id{t_fn->identifier()};
   const auto ret_type{str2nativetype(t_fn->type())};
-
-  // Register parameters to environment.
-  // m_envs.push_env();
   const auto params{t_fn->params()};
-  for(const auto& param : *params) {
-    traverse(param);
-  }
-  // m_envs.pop_env();
+
 
   // Register function type signature to environment.
   const auto params_type_list{get_type_list(params)};
   const SymbolData data{symbol::make_function(params_type_list, ret_type)};
 
-  // Add the function and its ID to the type
+  // Add the function and ID to the environment.
   add_symbol(id, data);
   DBG_INFO("Function: ", id, "(", params_type_list, ") -> ", ret_type);
 
   // Annotate AST.
   t_fn->set_type(data.type_variant());
 
+  // Register parameters to environment.
+  push_env();
+  for(const auto& param : *params) {
+    traverse(param);
+  }
+
   // Run type checking on the function body.
   traverse(t_fn->body());
+  pop_env();
 
   return {};
 }

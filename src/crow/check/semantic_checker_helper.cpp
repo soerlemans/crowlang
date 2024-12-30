@@ -17,6 +17,7 @@ auto SemanticCheckerHelper::add_symbol(const std::string_view t_id,
                                        const SymbolData& t_data) -> void
 {
   m_env.add_symbol({std::string{t_id}, t_data});
+  // m_symbol_table.insert();
 }
 
 auto SemanticCheckerHelper::get_symbol(const std::string_view t_id) const

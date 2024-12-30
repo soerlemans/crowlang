@@ -1,5 +1,5 @@
 fn main() -> int {
-    // Unsigned integers do not work currently.
+    // FIXME: Unsigned integers do not work currently.
     // (type inference is not handling this properly).
     // let var_u8: u8 = 0
     // let var_u16: u16 = 0
