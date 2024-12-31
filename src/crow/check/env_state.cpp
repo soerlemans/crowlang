@@ -56,7 +56,7 @@ auto EnvState::add_symbol(const EnvSymbol t_pair)
   auto& current_scope{m_envs.back()};
   const auto result{current_scope.insert(t_pair)};
 
-  DBG_INFO("m_envs: ", m_envs);
+  DBG_VERBOSE("m_envs: ", m_envs);
 
   return result;
 }

@@ -45,7 +45,7 @@ class SemanticCheckerHelper : public NodeVisitor {
    * Add symbol to current @ref EnvSate.
    * Also add the symbol to the global @ref SymbolTable.
    */
-  auto add_symbol(std::string_view t_id, const SymbolData& t_data) -> void;
+  auto add_symbol(std::string_view t_id, const SymbolData& t_data) -> bool;
   auto get_symbol(std::string_view t_id) const -> SymbolData;
 
   //! Handle type conversion for conditionals.

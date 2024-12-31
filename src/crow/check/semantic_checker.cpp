@@ -8,6 +8,9 @@
 #include <ranges>
 #include <sstream>
 
+// Library Includes:
+#include <libassert/assert.hpp>
+
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
 #include "crow/debug/log.hpp"
@@ -84,12 +87,7 @@ auto SemanticChecker::visit(Return* t_return) -> Any
 // Function:
 auto SemanticChecker::visit(Parameter* t_param) -> Any
 {
-  const auto id{t_param->identifier()};
   const auto type{str2nativetype(t_param->type())};
-
-  // Register parameter to environment.
-  const SymbolData data{symbol::make_variable(false, type)};
-  add_symbol(id, data);
 
   return SymbolData{type};
 }
@@ -99,7 +97,6 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
   const auto id{t_fn->identifier()};
   const auto ret_type{str2nativetype(t_fn->type())};
   const auto params{t_fn->params()};
-
 
   // Register function type signature to environment.
   const auto params_type_list{get_type_list(params)};
@@ -114,8 +111,19 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
 
   // Register parameters to environment.
   push_env();
-  for(const auto& param : *params) {
-    traverse(param);
+  for(const auto& node : *params) {
+    // Gain a raw ptr (non owning).
+    // If the AST changes the assertion will be triggered.
+    const auto* param{dynamic_cast<Parameter*>(node.get())};
+    DEBUG_ASSERT(param, "Was unable to cast to \"Parameter*\"!", param,
+                 node, params);
+
+    const auto id{param->identifier()};
+    const auto type{str2nativetype(param->type())};
+
+    const SymbolData data{symbol::make_variable(false, type)};
+
+    add_symbol(id, data);
   }
 
   // Run type checking on the function body.

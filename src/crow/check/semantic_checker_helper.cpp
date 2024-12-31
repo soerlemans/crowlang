@@ -14,10 +14,13 @@ using exception::type_error;
 // Methods:
 // Environment state related methods:
 auto SemanticCheckerHelper::add_symbol(const std::string_view t_id,
-                                       const SymbolData& t_data) -> void
+                                       const SymbolData& t_data) -> bool
 {
-  m_env.add_symbol({std::string{t_id}, t_data});
+  const auto [iterator, inserted] =
+    m_env.add_symbol({std::string{t_id}, t_data});
   // m_symbol_table.insert();
+
+  return inserted;
 }
 
 auto SemanticCheckerHelper::get_symbol(const std::string_view t_id) const
