@@ -42,12 +42,16 @@ class EnvState {
   auto pop_env() -> void;
 
   auto clear() -> void;
+  auto stack() const -> const EnvStack&;
 
   virtual ~EnvState() = default;
 };
 } // namespace check
 
+// Functions:
 auto operator<<(std::ostream& t_os, const check::EnvStack& t_envs)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os, const check::EnvState& t_env_state)
   -> std::ostream&;
 
 #endif // CROW_CROW_CHECK_ENV_STATE_HPP

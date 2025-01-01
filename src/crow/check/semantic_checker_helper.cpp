@@ -17,8 +17,17 @@ auto SemanticCheckerHelper::add_symbol(const std::string_view t_id,
                                        const SymbolData& t_data) -> bool
 {
   const auto [iterator, inserted] =
-    m_env.add_symbol({std::string{t_id}, t_data});
-  // m_symbol_table.insert();
+    m_env_state.add_symbol({std::string{t_id}, t_data});
+
+
+  DBG_VERBOSE("EnvState: ", m_env_state);
+
+  m_symbol_table.insert({
+    std::string{t_id},
+    {t_data, {}}
+  });
+
+  DBG_NOTICE("SymbolTable: ", m_symbol_table);
 
   return inserted;
 }
@@ -26,22 +35,22 @@ auto SemanticCheckerHelper::add_symbol(const std::string_view t_id,
 auto SemanticCheckerHelper::get_symbol(const std::string_view t_id) const
   -> SymbolData
 {
-  return m_env.get_symbol(t_id);
+  return m_env_state.get_symbol(t_id);
 }
 
 auto SemanticCheckerHelper::push_env() -> void
 {
-  m_env.push_env();
+  m_env_state.push_env();
 }
 
 auto SemanticCheckerHelper::pop_env() -> void
 {
-  m_env.pop_env();
+  m_env_state.pop_env();
 }
 
 auto SemanticCheckerHelper::clear_env() -> void
 {
-  m_env.clear();
+  m_env_state.clear();
 }
 
 // Type promotion related methods:

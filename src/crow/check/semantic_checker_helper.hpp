@@ -31,7 +31,7 @@ using symbol_table::SymbolTable;
  */
 class SemanticCheckerHelper : public NodeVisitor {
   private:
-  EnvState m_env;
+  EnvState m_env_state;
   SymbolTable m_symbol_table;
   TypePromoter m_type_promoter;
 

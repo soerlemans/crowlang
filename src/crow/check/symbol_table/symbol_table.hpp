@@ -18,8 +18,8 @@ using symbol::SymbolData;
 struct SymbolBlock;
 
 // Aliases:
-using SymbolMapVariant = std::variant<SymbolData, SymbolBlock>;
-using SymbolMap = std::unordered_map<std::string, SymbolMapVariant>;
+using SymbolMap = std::unordered_map<std::string, SymbolBlock>;
+using SymbolMapOpt = std::optional<SymbolMap>;
 using SymbolEntry = SymbolMap::value_type;
 
 // Structs:
@@ -30,7 +30,7 @@ using SymbolEntry = SymbolMap::value_type;
  */
 struct SymbolBlock {
   SymbolData m_data;
-  SymbolMap m_table;
+  SymbolMapOpt m_table;
 };
 
 // Classes:
@@ -57,5 +57,15 @@ class SymbolTable {
   virtual ~SymbolTable() = default;
 };
 } // namespace check::symbol_table
+
+// Functions:
+auto operator<<(std::ostream& t_os,
+                const check::symbol_table::SymbolBlock& t_block)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os, const check::symbol_table::SymbolMap& t_map)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os,
+                const check::symbol_table::SymbolTable& t_symbol_table)
+  -> std::ostream&;
 
 #endif // CROW_CROW_CHECK_SYMBOL_TABLE_SYMBOL_TABLE_HPP

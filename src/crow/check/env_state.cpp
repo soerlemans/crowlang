@@ -10,34 +10,6 @@
 // Absolute Includes:
 #include "crow/debug/log.hpp"
 
-// Internal:
-auto operator<<(std::ostream& t_os, const check::EnvStack& t_envs)
-  -> std::ostream&
-{
-  using namespace std::literals::string_view_literals;
-
-  auto sep{""sv};
-  auto env_index{0};
-  for(const auto& env : t_envs) {
-    t_os << sep << env_index << ":[";
-
-    auto sep_elem{""sv};
-    for(const auto& elem : env) {
-      const auto& [first, second] = elem;
-
-      t_os << sep_elem << '{' << first << ':' << second << '}';
-
-      sep_elem = ", "sv;
-    }
-    t_os << ']';
-
-    sep = ", "sv;
-    env_index++;
-  }
-
-  return t_os;
-}
-
 namespace check {
 // Using Statements:
 using exception::type_error;
@@ -55,8 +27,6 @@ auto EnvState::add_symbol(const EnvSymbol t_pair)
 {
   auto& current_scope{m_envs.back()};
   const auto result{current_scope.insert(t_pair)};
-
-  DBG_VERBOSE("m_envs: ", m_envs);
 
   return result;
 }
@@ -104,4 +74,45 @@ auto EnvState::clear() -> void
   // Always make sure the Global scope exists
   m_envs.emplace_back();
 }
+
+auto EnvState::stack() const -> const EnvStack&
+{
+  return m_envs;
+}
 } // namespace check
+
+// Functions:
+auto operator<<(std::ostream& t_os, const check::EnvStack& t_envs)
+  -> std::ostream&
+{
+  using namespace std::literals::string_view_literals;
+
+  auto sep{""sv};
+  auto env_index{0};
+  for(const auto& env : t_envs) {
+    t_os << sep << env_index << ":[";
+
+    auto sep_elem{""sv};
+    for(const auto& elem : env) {
+      const auto& [first, second] = elem;
+
+      t_os << sep_elem << '{' << first << ':' << second << '}';
+
+      sep_elem = ", "sv;
+    }
+    t_os << ']';
+
+    sep = ", "sv;
+    env_index++;
+  }
+
+  return t_os;
+}
+
+auto operator<<(std::ostream& t_os, const check::EnvState& t_env_state)
+  -> std::ostream&
+{
+  t_os << t_env_state.stack();
+
+  return t_os;
+}
