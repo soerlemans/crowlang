@@ -29,12 +29,12 @@ auto parse(const token::TokenStream& t_ts) -> ast::node::NodePtr;
 //! Print the AST, only available if @ref DEBUG is defined.
 auto print_ast(ast::node::NodePtr t_ast) -> void;
 
-//! Type check the AST.
-auto check_types(ast::node::NodePtr t_ast) -> void;
+//! Check the semantic validaty of the AST.
+auto check_semantics(ast::node::NodePtr t_ast) -> check::SemanticPack;
 
 //! Execute the codegeneration backend.
-auto backend(ast::node::NodePtr t_ast, const std::filesystem::path& t_path)
-  -> void;
+auto backend(const check::SemanticPack& t_pack,
+             const std::filesystem::path& t_path) -> void;
 
 //! Crow compiler regular compilation flow.
 auto run() -> void;

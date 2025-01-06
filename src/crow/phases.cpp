@@ -98,7 +98,7 @@ auto print_ast([[maybe_unused]] ast::node::NodePtr t_ast) -> void
 #endif // DEBUG
 }
 
-auto check_types(ast::node::NodePtr t_ast) -> void
+auto check_semantics(ast::node::NodePtr t_ast) -> check::SemanticPack
 {
   using check::SemanticChecker;
 
@@ -106,19 +106,21 @@ auto check_types(ast::node::NodePtr t_ast) -> void
 
   // Check the semantics of the written program.
   SemanticChecker checker;
-  checker.check(t_ast);
+  const auto pack{checker.check(t_ast)};
 
   DBG_PRINTLN("</semantic_checking>");
+
+  return pack;
 }
 
-auto backend(ast::node::NodePtr t_ast, const path& t_path) -> void
+auto backend(const check::SemanticPack& t_pack, const path& t_path) -> void
 {
   using codegen::cpp_backend::CppBackend;
 
   DBG_PRINTLN("<codegen>");
 
   CppBackend backend;
-  backend.compile(t_ast, t_path.stem());
+  backend.compile(t_pack.m_ast, t_path.stem());
 
   DBG_PRINTLN("</codegen>");
 }
@@ -132,9 +134,10 @@ auto run() -> void
     const auto ast{parse(ts)};
     print_ast(ast);
 
-    check_types(ast);
+    const auto pack{check_semantics(ast)};
     print_ast(ast);
 
-    backend(ast, path);
+    // TODO: Forward SemanticPack to this.
+    backend(pack, path);
   }
 }
