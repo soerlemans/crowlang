@@ -26,6 +26,11 @@ using symbol_table::SymbolTable;
 using symbol_table::SymbolTableFactory;
 using symbol_table::SymbolTablePtr;
 
+// TODO: Currently we have to manually clear_env() in order to reset the state.
+// Of @ref EnvState and @ref SymbolTableFactory().
+// It is better to use a shared interface which we use std::shared_ptr.
+// To create and destruct, this is more self contained and memory efficient.
+
 // Classes:
 /*!
  * Helper class for dealing with @ref SymbolData in a @ref NodeVisitor context.
