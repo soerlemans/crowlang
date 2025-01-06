@@ -12,6 +12,8 @@
  *
  * Contains class responsible for type checking the ast.
  * This class will also annotate the AST and perform type promotion.
+ * As well as generate a global @ref SymbolTable.
+ * Which can be used for symbol lookup.
  */
 
 namespace check {
@@ -23,6 +25,14 @@ using ast::node::NodePtr;
 using ast::node::node_traits::typing::NativeType;
 using ast::node::node_traits::typing::NativeTypeOpt;
 using ast::visitor::Any;
+using check::symbol_table::SymbolTablePtr;
+
+// Structs:
+//! Contains
+struct SemanticPack {
+  NodePtr m_ast;
+  SymbolTablePtr m_symbol_table;
+};
 
 // Classes:
 class SemanticChecker : public SemanticCheckerHelper {
@@ -84,7 +94,7 @@ class SemanticChecker : public SemanticCheckerHelper {
   auto visit(node::typing::Impl* t_impl) -> Any override;
   auto visit(node::typing::DotExpr* t_dot_expr) -> Any override;
 
-  auto check(NodePtr t_ast) -> void;
+  auto check(NodePtr t_ast) -> SemanticPack;
 
   virtual ~SemanticChecker() = default;
 };

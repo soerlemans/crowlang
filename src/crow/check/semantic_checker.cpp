@@ -103,7 +103,9 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
   const SymbolData data{symbol::make_function(params_type_list, ret_type)};
 
   // Add the function and ID to the environment.
-  add_symbol(id, data);
+  if(!add_symbol(id, data)) {
+    // TODO: Throw.
+  }
   DBG_INFO("Function: ", id, "(", params_type_list, ") -> ", ret_type);
 
   // Annotate AST.
@@ -123,7 +125,10 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
 
     const SymbolData data{symbol::make_variable(false, type)};
 
-    add_symbol(id, data);
+    // Add parameter to environment.
+    if(!add_symbol(id, data)) {
+      // TODO: Throw!
+    }
   }
 
   // Run type checking on the function body.
@@ -226,7 +231,9 @@ auto SemanticChecker::visit(Let* t_let) -> Any
 
   // Create the SymbolData for a variable.
   const SymbolData data{symbol::make_variable(true, expr_data)};
-  add_symbol(id, data);
+  if(!add_symbol(id, data)) {
+    // TODO: Throw!
+  }
 
   return {};
 }
@@ -238,7 +245,9 @@ auto SemanticChecker::visit(Var* t_var) -> Any
 
   // Create the SymbolData for a variable.
   const SymbolData data{symbol::make_variable(false, expr_data)};
-  add_symbol(id, data);
+  if(!add_symbol(id, data)) {
+    // TODO: Throw!
+  }
 
   return {};
 }
@@ -486,10 +495,18 @@ AST_VISITOR_STUB(SemanticChecker, Struct)
 AST_VISITOR_STUB(SemanticChecker, Impl)
 AST_VISITOR_STUB(SemanticChecker, DotExpr)
 
-auto SemanticChecker::check(NodePtr t_ast) -> void
+auto SemanticChecker::check(NodePtr t_ast) -> SemanticPack
 {
+  // Semantically check the AST for correctness.
+  // This also constructs the global symbol table.
   traverse(t_ast);
 
+  // Create the return value containing the AST and the global SymbolTable.
+  SemanticPack pack{t_ast, retrieve_symbol_table()};
+
+  // Clear EnvState and release old SymbolTable ptr.
   clear_env();
+
+  return pack;
 }
 } // namespace check

@@ -8,23 +8,38 @@ namespace check::symbol_table {
 SymbolTable::SymbolTable(): m_table{}
 {}
 
-auto SymbolTable::insert(const SymbolEntry t_pair)
-  -> std::pair<SymbolMap::iterator, bool>
+auto SymbolTable::insert(const SymbolMapEntry t_pair) -> SymbolMapInsertResult
 {
   return m_table.insert(t_pair);
 }
 
-auto SymbolTable::lookup(const std::string_view t_symbol_name) const
-  -> SymbolData
+auto SymbolTable::insert(SymbolMapIter t_parent, const SymbolMapEntry t_pair)
+  -> SymbolMapInsertResult
 {
-  // TODO: Implement.
+  auto& scope_ref{t_parent->second};
+  auto& opt{scope_ref.m_scope};
+
+  // If this is the first element, initialize the scope.
+  if(!opt) {
+    opt.emplace();
+  }
+
+  auto& map{opt.value()};
+
+  return map.insert(t_pair);
 }
 
-auto SymbolTable::lookup_toplevel(const std::string_view t_symbol_name) const
-  -> SymbolData
-{
-  // TODO: Implement.
-}
+// auto SymbolTable::lookup(const std::string_view t_symbol_name) const
+//   -> SymbolData
+// {
+//   // TODO: Implement.
+// }
+
+// auto SymbolTable::lookup_toplevel(const std::string_view t_symbol_name) const
+//   -> SymbolData
+// {
+//   // TODO: Implement.
+// }
 
 auto SymbolTable::table() const -> const SymbolMap&
 {
@@ -39,15 +54,17 @@ auto SymbolTable::clear() -> void
 
 // Functions:
 auto operator<<(std::ostream& t_os,
-                const check::symbol_table::SymbolBlock& t_block)
+                const check::symbol_table::SymbolTableScope& t_scope)
   -> std::ostream&
 {
-  const auto& [data, table] = t_block;
+  const auto& [data, opt] = t_scope;
 
-  t_os << '{' << data;
-  if(table)
-    t_os << ", " << table.value();
-  t_os << '}';
+  t_os << data;
+
+  // Only show scope if it exists.
+  if(opt) {
+    t_os << ", scope: {" << opt.value() << '}';
+  }
 
   return t_os;
 }
@@ -59,9 +76,9 @@ auto operator<<(std::ostream& t_os, const check::symbol_table::SymbolMap& t_map)
 
   auto sep{""sv};
   for(const auto& elem : t_map) {
-    const auto& [id, block] = elem;
+    const auto& [id, scope] = elem;
 
-    t_os << sep << std::quoted(id) << ':' << block;
+    t_os << sep << std::quoted(id) << ':' << scope;
     sep = ", ";
   }
 

@@ -9,7 +9,7 @@
 #include "env_state.hpp"
 #include "symbol/symbol.hpp"
 #include "symbol/symbol_data.hpp"
-#include "symbol_table/symbol_table.hpp"
+#include "symbol_table/symbol_table_factory.hpp"
 #include "type_promoter.hpp"
 
 namespace check {
@@ -23,6 +23,8 @@ using container::TextPosition;
 using symbol::SymbolData;
 using symbol::SymbolDataList;
 using symbol_table::SymbolTable;
+using symbol_table::SymbolTableFactory;
+using symbol_table::SymbolTablePtr;
 
 // Classes:
 /*!
@@ -32,7 +34,7 @@ using symbol_table::SymbolTable;
 class SemanticCheckerHelper : public NodeVisitor {
   private:
   EnvState m_env_state;
-  SymbolTable m_symbol_table;
+  SymbolTableFactory m_symbol_table_factory;
   TypePromoter m_type_promoter;
 
   protected:
@@ -45,9 +47,13 @@ class SemanticCheckerHelper : public NodeVisitor {
    * Add symbol to current @ref EnvSate.
    * Also add the symbol to the global @ref SymbolTable.
    */
+  [[nodiscard("Returned boolean indicates error value, must be checked.")]]
   auto add_symbol(std::string_view t_id, const SymbolData& t_data) -> bool;
   auto get_symbol(std::string_view t_id) const -> SymbolData;
 
+  auto retrieve_symbol_table() const -> SymbolTablePtr;
+
+  // Helper methods for type promotion:
   //! Handle type conversion for conditionals.
   auto handle_condition(const SymbolData& t_data,
                         const TextPosition& t_pos) const -> void;
@@ -56,6 +62,7 @@ class SemanticCheckerHelper : public NodeVisitor {
   auto promote(const SymbolData& t_lhs, const SymbolData& rhs,
                bool enforce_lhs = false) const -> NativeTypeOpt;
 
+  // Helper methods for dealing with SymbolData:
   // NodeVisitor visitation is not marked const so these methods cant be const.
   auto get_symbol_data(NodePtr t_ptr) -> SymbolData;
   auto get_resolved_type(NodePtr t_ptr) -> SymbolData;

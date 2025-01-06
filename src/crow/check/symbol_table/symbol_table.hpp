@@ -2,10 +2,10 @@
 #define CROW_CROW_CHECK_SYMBOL_TABLE_SYMBOL_TABLE_HPP
 
 // STL Include:
+#include <map>
 #include <optional>
 #include <stack>
 #include <string>
-#include <unordered_map>
 
 // Absolute includes:
 #include "crow/check/symbol/symbol_data.hpp"
@@ -15,22 +15,26 @@ namespace check::symbol_table {
 using symbol::SymbolData;
 
 // Forward Declarations:
-struct SymbolBlock;
+struct SymbolTableScope;
 
 // Aliases:
-using SymbolMap = std::unordered_map<std::string, SymbolBlock>;
+using SymbolMap = std::map<std::string, SymbolTableScope>;
 using SymbolMapOpt = std::optional<SymbolMap>;
-using SymbolEntry = SymbolMap::value_type;
+using SymbolMapEntry = SymbolMap::value_type;
+using SymbolMapIter = SymbolMap::iterator;
+using SymbolMapInsertResult = std::pair<SymbolMap::iterator, bool>;
 
 // Structs:
 /*!
- * Helper struct meant to add a nested functionality.
+ * Helper struct to add nested scope functionality.
  * On top of the @ref SymbolData class.
  * This way we can nest the @ref SymbolTable.
+ * Without needing to change @ref SymbolData.
+ * This way functions can optionaly
  */
-struct SymbolBlock {
+struct SymbolTableScope {
   SymbolData m_data;
-  SymbolMapOpt m_table;
+  SymbolMapOpt m_scope;
 };
 
 // Classes:
@@ -45,11 +49,13 @@ class SymbolTable {
   public:
   SymbolTable();
 
-  // TODO: Add toplevel lookup, toplevel symbols should be order independent.
   // TODO: Implement.
-  auto insert(SymbolEntry t_pair) -> std::pair<SymbolMap::iterator, bool>;
-  auto lookup(std::string_view t_symbol_name) const -> SymbolData;
-  auto lookup_toplevel(std::string_view t_symbol_name) const -> SymbolData;
+  auto insert(SymbolMapEntry t_pair) -> SymbolMapInsertResult;
+  auto insert(SymbolMapIter t_parent, SymbolMapEntry t_pair)
+    -> SymbolMapInsertResult;
+
+  // auto lookup(std::string_view t_symbol_name) const -> SymbolData;
+  // auto lookup_toplevel(std::string_view t_symbol_name) const -> SymbolData;
   auto table() const -> const SymbolMap&;
 
   auto clear() -> void;
@@ -60,7 +66,7 @@ class SymbolTable {
 
 // Functions:
 auto operator<<(std::ostream& t_os,
-                const check::symbol_table::SymbolBlock& t_block)
+                const check::symbol_table::SymbolTableScope& t_scope)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const check::symbol_table::SymbolMap& t_map)
   -> std::ostream&;
