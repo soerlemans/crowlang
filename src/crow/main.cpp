@@ -1,8 +1,13 @@
 // STL Includes:
 #include <fstream>
 
+// Library Includes:
+#include <cpptrace/cpptrace.hpp>
+
 // Local Includes:
-#include "phases.hpp"
+#include "cli.hpp"
+#include "debug/log.hpp"
+#include "state/translation_unit.hpp"
 
 // Enums:
 enum ExitCode {
@@ -20,6 +25,18 @@ static auto disable_absorb_exceptions() -> void
   // Do not absorb cpptrace errors on debug build.
   cpptrace::absorb_trace_exceptions(false);
 #endif
+}
+
+auto run() -> void
+{
+  using state::TranslationUnit;
+
+  // For now just compile all translation units, sequentially.
+  for(const auto& path : settings.m_paths) {
+    TranslationUnit unit{path};
+
+    unit.execute();
+  }
 }
 
 // Main:

@@ -140,8 +140,10 @@ auto TranslationUnit::execute() -> void
 
   m_text_stream = std::make_shared<TextBuffer>(read_file(m_source_file));
 
-  m_token_stream = lex(m_text_stream);
-  m_ast = parse(m_token_stream);
+  // TODO: Fix operator= for Stream..
+  // m_token_stream = lex(m_text_stream);
+  const auto ts{lex(m_text_stream)};
+  m_ast = parse(ts);
   print_ast(m_ast);
 
   m_symbol_table = semantic(m_ast);
