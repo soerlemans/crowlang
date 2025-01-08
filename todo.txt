@@ -33,6 +33,4 @@
      * As not all of the data structures are relevant for the entire compilation pipeline.
  * Create an AST heuristics visitor, which counts the occurences of nodes and their memory footprint.
    * Use tabulate for the result printing.
- * Create a SymbolTable from the EnvStack, it basically is a SymbolTable.
-   * But create a better construct for it.
- * Rename check module to semantic as we verify not the syntax but the semantics of the program/source code.
+ * Run source compilation in parallel.
