@@ -27,13 +27,6 @@ using ast::node::node_traits::typing::NativeTypeOpt;
 using ast::visitor::Any;
 using semantic::symbol_table::SymbolTablePtr;
 
-// Structs:
-//! Contains
-struct SemanticPack {
-  NodePtr m_ast;
-  SymbolTablePtr m_symbol_table;
-};
-
 // Classes:
 class SemanticChecker : public SemanticCheckerHelper {
   public:
@@ -94,7 +87,7 @@ class SemanticChecker : public SemanticCheckerHelper {
   auto visit(node::typing::Impl* t_impl) -> Any override;
   auto visit(node::typing::DotExpr* t_dot_expr) -> Any override;
 
-  auto check(NodePtr t_ast) -> SemanticPack;
+  auto check(NodePtr t_ast) -> SymbolTablePtr;
 
   virtual ~SemanticChecker() = default;
 };

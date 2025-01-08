@@ -4,12 +4,22 @@
 #include <fstream>
 #include <iostream>
 
+// Absolute Includes:
+#include "crow/ast/node/fdecl.hpp"
+#include "crow/ast/visitor/ast_printer.hpp"
+#include "crow/lexer/lexer.hpp"
+#include "crow/parser/crow/crow_parser.hpp"
+#include "crow/semantic/semantic_checker.hpp"
+
 // Internal Functions:
 namespace {
+// Using Statements:
+using container::TextBuffer;
+using std::filesystem::path;
+
 // TODO: Move to /lib with crow/container.
-auto read_file(const path t_path) -> container::TextBuffer
+auto read_file(const path t_path) -> TextBuffer
 {
-  using container::TextBuffer;
   using std::filesystem::exists;
 
   if(!exists(t_path)) {
@@ -36,37 +46,44 @@ auto read_file(const path t_path) -> container::TextBuffer
 
 namespace state {
 // Methods:
-auto TranslationUnit::lex() -> void
+TranslationUnit::TranslationUnit(const path t_source_file)
+  : m_source_file{t_source_file}
+{}
+
+auto TranslationUnit::lex(const TextStreamPtr& t_text_stream) -> TokenStream
 {
   using lexer::Lexer;
 
-  m_phase = Phase::LEXING;
+  m_phase = TranslationUnitPhase::LEXING;
 
   DBG_PRINTLN("<lexing>");
 
-  Lexer lexer{t_state.m_text_stream};
-  m_token_stream = lexer.tokenize();
+  Lexer lexer{t_text_stream};
+  const auto token_stream{lexer.tokenize()};
 
   DBG_PRINTLN("</lexing>");
+
+  return token_stream;
 }
 
-auto parse(State& t_state) -> void
+auto TranslationUnit::parse(const TokenStream& t_token_stream) -> NodePtr
 {
   using parser::crow::CrowParser;
 
-  m_phase = Phase::PARSING;
+  m_phase = TranslationUnitPhase::PARSING;
 
   DBG_PRINTLN("<parsing>");
 
-  CrowParser parser{m_token_stream};
-  m_ast = parser.parse();
+  CrowParser parser{t_token_stream};
+  const auto ast{parser.parse()};
 
   DBG_PRINTLN("</parsing>");
 
   return ast;
 }
 
-auto print_ast() -> void
+auto TranslationUnit::print_ast([[maybe_unused]] const NodePtr t_ast) const
+  -> void
 {
   using ast::visitor::AstPrinter;
 
@@ -77,7 +94,7 @@ auto print_ast() -> void
   ss << "\nAST:\n";
 
   AstPrinter printer{ss};
-  printer.print(m_ast);
+  printer.print(t_ast);
 
   DBG_INFO(ss.str());
 
@@ -85,45 +102,51 @@ auto print_ast() -> void
 #endif // DEBUG
 }
 
-auto semantic() -> void
+auto TranslationUnit::semantic(NodePtr t_ast) -> SymbolTablePtr
 {
   using semantic::SemanticChecker;
+
+  m_phase = TranslationUnitPhase::SEMANTIC_ANALYSIS;
 
   DBG_PRINTLN("<semantic>");
 
   // Check the semantics of the written program.
   SemanticChecker checker;
-  const auto pack{checker.check(m_ast)};
+  const auto symbol_table{checker.check(t_ast)};
 
   DBG_PRINTLN("</semantic>");
+
+  return symbol_table;
 }
 
-auto backend() -> void
+auto TranslationUnit::backend(const AstPack t_pack) -> void
 {
   using codegen::cpp_backend::CppBackend;
+
+  m_phase = TranslationUnitPhase::CODE_GENERATION;
+  const auto stem{m_source_file.stem()};
 
   DBG_PRINTLN("<codegen>");
 
   CppBackend backend;
-  backend.compile(m_ast, t_path.stem());
+  backend.compile(t_pack, stem);
 
   DBG_PRINTLN("</codegen>");
 }
 
-auto run() -> void
+auto TranslationUnit::execute() -> void
 {
-  for(const auto& path : settings.m_paths) {
-    const auto ts{lex(path)};
-    DBG_PRINTLN("TokenStream: ", ts);
+  using container::TextBuffer;
 
-    const auto ast{parse(ts)};
-    print_ast(ast);
+  m_text_stream = std::make_shared<TextBuffer>(read_file(m_source_file));
 
-    const auto pack{check_semantics(ast)};
-    print_ast(ast);
+  m_token_stream = lex(m_text_stream);
+  m_ast = parse(m_token_stream);
+  print_ast(m_ast);
 
-    // TODO: Forward SemanticPack to this.
-    backend(pack, path);
-  }
+  m_symbol_table = semantic(m_ast);
+  print_ast(m_ast);
+
+  backend({m_ast, m_symbol_table});
 }
 } // namespace state

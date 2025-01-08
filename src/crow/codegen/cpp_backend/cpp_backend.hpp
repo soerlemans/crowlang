@@ -6,6 +6,7 @@
 
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
+#include "crow/semantic/symbol_table/symbol_table.hpp"
 #include "lib/filesystem.hpp"
 #include "lib/types.hpp"
 
@@ -19,8 +20,19 @@ using namespace ast;
 // Using Declarations:
 using interop_backends::InteropBackendPtr;
 using node::NodePtr;
+using semantic::symbol_table::SymbolTablePtr;
 using std::filesystem::path;
 using visitor::Any;
+
+// Structures:
+/*!
+ * Utility structure packing all AST functionality together,
+ * With the @ref SymbolTable.
+ */
+struct AstPack {
+  NodePtr m_ast;
+  SymbolTablePtr m_symbol_table;
+};
 
 // Classes:
 /*!
@@ -31,7 +43,9 @@ using visitor::Any;
  */
 class CppBackend : public ast::visitor::NodeVisitor {
   private:
-  // TODO: Register backends to this.
+  SymbolTablePtr m_symbol_table;
+
+  // TODO: Register interop backends to this.
   std::vector<InteropBackendPtr> m_interop_backends;
 
   // TODO: Move terminate functionality in its own class to separate concerns.
@@ -143,7 +157,7 @@ class CppBackend : public ast::visitor::NodeVisitor {
    * Transpile the @ref t_ast to valid C++ code and write it to @ref t_out.
    */
   auto codegen(NodePtr t_ast, const path& t_out) -> void;
-  auto compile(NodePtr t_ast, path t_stem = "main") -> void;
+  auto compile(AstPack t_pack, path t_stem = "main") -> void;
 
   virtual ~CppBackend() = default;
 };

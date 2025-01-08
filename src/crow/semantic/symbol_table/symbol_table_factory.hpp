@@ -32,12 +32,6 @@ namespace semantic::symbol_table {
  */
 using SymbolMapStack = std::stack<SymbolMap::iterator>;
 
-/*!
- * The global @ref SymbolTable can get quite large, better to copy a ptr.
- * When returning the result.
- */
-using SymbolTablePtr = std::shared_ptr<SymbolTable>;
-
 // Classes:
 /*!
  */

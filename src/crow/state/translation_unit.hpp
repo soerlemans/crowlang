@@ -2,17 +2,20 @@
 #define STATE_HPP
 
 // STL Includes:
+#include <filesystem>
 #include <iosfwd>
 
 // Absolute Includes:
-#include "container/text_buffer.hpp"
 #include "crow/ast/node/fdecl.hpp"
-#include "crow/check/symbol_table/symbol_table.hpp"
+#include "crow/codegen/cpp_backend/cpp_backend.hpp"
+#include "crow/container/text_buffer.hpp"
+#include "crow/semantic/symbol_table/symbol_table.hpp"
 #include "crow/token/token_stream.hpp"
 
 namespace state {
 // Using Statements:
 using ast::node::NodePtr;
+using codegen::cpp_backend::AstPack;
 using container::TextStreamPtr;
 using semantic::symbol_table::SymbolTablePtr;
 using std::filesystem::path;
@@ -24,10 +27,13 @@ using token::TokenStream;
  * The @ref TranslationUnit is in.
  */
 enum class TranslationUnitPhase {
+  IDLE,
   LEXING,
   PARSING,
   SEMANTIC_ANALYSIS,
-  CODE_GENERATION
+  CODE_GENERATION,
+  COMPLETED,
+  FAILED
 };
 
 // Classes:
@@ -35,7 +41,9 @@ enum class TranslationUnitPhase {
 // We could possibly also have ModuleUnit or ConfigurationUnit?
 // And these would need to be processed.
 /*!
- *
+ * Keeps track of all relevant data within a single translation unit.
+ * Invokes all the steps needed to go from source code to a compiled binary.
+ * For now each @ref TranslationUnit references on source file.
  */
 class TranslationUnit {
   private:
@@ -48,26 +56,25 @@ class TranslationUnit {
   SymbolTablePtr m_symbol_table;
 
   public:
-  TranslationUnit() = default;
+  TranslationUnit(path t_source_file);
 
-  // Functions:
   //! Tokenize the text buffer.
-  auto lex() -> void;
+  virtual auto lex(const TextStreamPtr& t_text_stream) -> TokenStream;
 
   //! Parse  the tokenized stream.
-  auto parse() -> void;
+  virtual auto parse(const TokenStream& t_token_stream) -> NodePtr;
 
   //! Print the AST, only available if @ref DEBUG is defined.
-  auto print_ast() -> void;
+  virtual auto print_ast(NodePtr t_ast) const -> void;
 
   //! Analyse the semantic validaty of the AST.
-  auto semantic() -> void;
+  virtual auto semantic(NodePtr t_ast) -> SymbolTablePtr;
 
   //! Execute the codegeneration backend.
-  auto backend() -> void;
+  virtual auto backend(AstPack t_pack) -> void;
 
   //! Crow compiler regular compilation flow.
-  auto compile() -> void;
+  virtual auto execute() -> void;
 
   virtual ~TranslationUnit() = default;
 };

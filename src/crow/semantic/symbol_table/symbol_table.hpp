@@ -8,7 +8,7 @@
 #include <string>
 
 // Absolute includes:
-#include "crow/check/symbol/symbol_data.hpp"
+#include "crow/semantic/symbol/symbol_data.hpp"
 
 namespace semantic::symbol_table {
 // Using Declarations:
@@ -16,6 +16,7 @@ using symbol::SymbolData;
 
 // Forward Declarations:
 struct SymbolTableScope;
+class SymbolTable;
 
 // Aliases:
 using SymbolMap = std::map<std::string, SymbolTableScope>;
@@ -23,6 +24,12 @@ using SymbolMapOpt = std::optional<SymbolMap>;
 using SymbolMapEntry = SymbolMap::value_type;
 using SymbolMapIter = SymbolMap::iterator;
 using SymbolMapInsertResult = std::pair<SymbolMap::iterator, bool>;
+
+/*!
+ * The global @ref SymbolTable can get quite large, better to copy a ptr.
+ * When returning the result.
+ */
+using SymbolTablePtr = std::shared_ptr<SymbolTable>;
 
 // Structs:
 /*!

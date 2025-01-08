@@ -104,7 +104,8 @@ auto CppBackend::resolve(NodePtr t_ptr, const bool t_terminate) -> std::string
 }
 
 // Public:
-CppBackend::CppBackend(): m_terminate{}, m_id_defer_count{0}
+CppBackend::CppBackend()
+  : m_symbol_table{}, m_interop_backends{}, m_terminate{}, m_id_defer_count{0}
 {}
 
 // Control:
@@ -467,20 +468,29 @@ auto CppBackend::codegen(NodePtr t_ast, const path& t_out) -> void
   ofs << resolve(t_ast);
 }
 
-auto CppBackend::compile(NodePtr t_ast, path t_stem) -> void
+auto CppBackend::compile(AstPack t_pack, path t_stem) -> void
 {
   const auto tmp_dir{lib::temporary_directory()};
   const path tmp_src{tmp_dir / t_stem.concat(".cpp")};
+
+  const auto& [ast, symbol_table] = t_pack;
+  m_symbol_table = symbol_table;
 
   // Log filepath's:
   DBG_INFO("tmp_dir: ", tmp_dir);
   DBG_INFO("tmp_src: ", tmp_src);
 
   // Generate C++ source file.
-  codegen(t_ast, tmp_src);
+  codegen(ast, tmp_src);
 
   // Invoke clang frontend to generate a binary.
   ClangFrontendInvoker inv{};
   inv.compile(tmp_src);
+
+  // Clear members, for next compilation.
+  m_symbol_table.reset();
+  m_interop_backends.clear();
+  m_terminate = {};
+  m_id_defer_count = 0;
 }
 } // namespace codegen::cpp_backend

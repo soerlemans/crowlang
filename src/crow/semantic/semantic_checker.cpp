@@ -495,18 +495,18 @@ AST_VISITOR_STUB(SemanticChecker, Struct)
 AST_VISITOR_STUB(SemanticChecker, Impl)
 AST_VISITOR_STUB(SemanticChecker, DotExpr)
 
-auto SemanticChecker::check(NodePtr t_ast) -> SemanticPack
+auto SemanticChecker::check(NodePtr t_ast) -> SymbolTablePtr
 {
   // Semantically check the AST for correctness.
   // This also constructs the global symbol table.
   traverse(t_ast);
 
   // Create the return value containing the AST and the global SymbolTable.
-  SemanticPack pack{t_ast, retrieve_symbol_table()};
+  const auto ptr{retrieve_symbol_table()};
 
   // Clear EnvState and release old SymbolTable ptr.
   clear_env();
 
-  return pack;
+  return ptr;
 }
 } // namespace semantic

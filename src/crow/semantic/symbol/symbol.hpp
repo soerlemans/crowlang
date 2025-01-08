@@ -2,7 +2,7 @@
 #define CROW_CROW_CHECK_SYMBOL_SYMBOL_HPP
 
 // STL Includes:
-#include <iostream>
+#include <iosfwd>
 #include <list>
 #include <memory>
 #include <optional>
