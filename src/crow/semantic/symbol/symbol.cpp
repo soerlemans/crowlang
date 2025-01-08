@@ -8,7 +8,7 @@
 
 
 // Using Statements:
-using namespace check::symbol;
+using namespace semantic::symbol;
 using namespace std::literals::string_view_literals;
 
 // Functions:
@@ -62,7 +62,8 @@ auto operator<<(std::ostream& t_os, VarTypePtr t_var) -> std::ostream&
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const SymbolDataList& t_list) -> std::ostream&
+auto operator<<(std::ostream& t_os, const SymbolDataList& t_list)
+  -> std::ostream&
 {
   using namespace std::literals::string_view_literals;
 

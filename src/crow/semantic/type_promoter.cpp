@@ -7,7 +7,7 @@
 #include "crow/debug/log.hpp"
 #include "crow/exception/error.hpp"
 
-namespace check {
+namespace semantic {
 // Methods:
 auto TypePromoter::get_priority(const TypeLadder& t_ladder,
                                 const NativeType t_type) const
@@ -47,7 +47,7 @@ TypePromoter::TypePromoter(): m_float{2}, m_int{10}, m_uint{10}
   m_int.insert({NativeType::ISIZE, 5});
 
   // Unsigned Integer:
-  m_int.insert({NativeType::UINT, 0});
+  m_uint.insert({NativeType::UINT, 0});
   m_uint.insert({NativeType::U8, 1});
   m_uint.insert({NativeType::U16, 2});
   m_uint.insert({NativeType::U32, 3});
@@ -147,4 +147,4 @@ auto TypePromoter::promote(const NativeType t_lhs, const NativeType t_rhs,
 
   return opt;
 }
-} // namespace check
+} // namespace semantic

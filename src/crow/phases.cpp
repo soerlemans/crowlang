@@ -98,9 +98,9 @@ auto print_ast([[maybe_unused]] ast::node::NodePtr t_ast) -> void
 #endif // DEBUG
 }
 
-auto check_semantics(ast::node::NodePtr t_ast) -> check::SemanticPack
+auto check_semantics(ast::node::NodePtr t_ast) -> semantic::SemanticPack
 {
-  using check::SemanticChecker;
+  using semantic::SemanticChecker;
 
   DBG_PRINTLN("<semantic_checking>");
 
@@ -113,7 +113,7 @@ auto check_semantics(ast::node::NodePtr t_ast) -> check::SemanticPack
   return pack;
 }
 
-auto backend(const check::SemanticPack& t_pack, const path& t_path) -> void
+auto backend(const semantic::SemanticPack& t_pack, const path& t_path) -> void
 {
   using codegen::cpp_backend::CppBackend;
 

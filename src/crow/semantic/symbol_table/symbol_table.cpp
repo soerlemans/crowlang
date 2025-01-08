@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <string_view>
 
-namespace check::symbol_table {
+namespace semantic::symbol_table {
 SymbolTable::SymbolTable(): m_table{}
 {}
 
@@ -50,11 +50,11 @@ auto SymbolTable::clear() -> void
 {
   m_table.clear();
 }
-} // namespace check::symbol_table
+} // namespace semantic::symbol_table
 
 // Functions:
 auto operator<<(std::ostream& t_os,
-                const check::symbol_table::SymbolTableScope& t_scope)
+                const semantic::symbol_table::SymbolTableScope& t_scope)
   -> std::ostream&
 {
   const auto& [data, opt] = t_scope;
@@ -69,8 +69,8 @@ auto operator<<(std::ostream& t_os,
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const check::symbol_table::SymbolMap& t_map)
-  -> std::ostream&
+auto operator<<(std::ostream& t_os,
+                const semantic::symbol_table::SymbolMap& t_map) -> std::ostream&
 {
   using namespace std::literals::string_view_literals;
 
@@ -86,7 +86,7 @@ auto operator<<(std::ostream& t_os, const check::symbol_table::SymbolMap& t_map)
 }
 
 auto operator<<(std::ostream& t_os,
-                const check::symbol_table::SymbolTable& t_symbol_table)
+                const semantic::symbol_table::SymbolTable& t_symbol_table)
   -> std::ostream&
 {
   const auto table{t_symbol_table.table()};

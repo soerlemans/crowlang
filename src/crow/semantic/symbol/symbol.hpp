@@ -7,7 +7,7 @@
 #include <memory>
 #include <optional>
 
-namespace check::symbol {
+namespace semantic::symbol {
 // Forward Declarations:
 class SymbolData;
 
@@ -21,17 +21,18 @@ using FnTypePtr = std ::shared_ptr<FnType>;
 using VarTypePtr = std::shared_ptr<VarType>;
 
 using SymbolDataList = std::list<SymbolData>;
-} // namespace check::symbol
+} // namespace semantic::symbol
 
 // Functions:
-auto operator<<(std::ostream& t_os, check::symbol::StructTypePtr t_struct)
+auto operator<<(std::ostream& t_os, semantic::symbol::StructTypePtr t_struct)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, check::symbol::FnTypePtr t_fn)
+auto operator<<(std::ostream& t_os, semantic::symbol::FnTypePtr t_fn)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, check::symbol::VarTypePtr t_var)
+auto operator<<(std::ostream& t_os, semantic::symbol::VarTypePtr t_var)
   -> std::ostream&;
 
-auto operator<<(std::ostream& t_os, const check::symbol::SymbolDataList& t_list)
+auto operator<<(std::ostream& t_os,
+                const semantic::symbol::SymbolDataList& t_list)
   -> std::ostream&;
 
 #endif // CROW_CROW_CHECK_SYMBOL_SYMBOL_HPP

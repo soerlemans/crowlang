@@ -10,7 +10,7 @@
  * TODO: Describe TypeVariant usage and why it is a good idea.
  */
 
-namespace check::symbol {
+namespace semantic::symbol {
 // Structs:
 // TODO: use VarTypePtr and FnTypePtr in combination with a map?
 // This way we will be able to couple id's to type info.
@@ -57,6 +57,6 @@ auto make_variable(Args&&... t_args) -> SymbolData
 {
   return {std::make_shared<VarType>(std::forward<Args>(t_args)...)};
 }
-} // namespace check::symbol
+} // namespace semantic::symbol
 
 #endif // CROW_CROW_CHECK_SYMBOL_SYMBOL_TYPES_HPP

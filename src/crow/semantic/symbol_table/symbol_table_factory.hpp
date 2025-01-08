@@ -22,7 +22,7 @@
  * Which keeps track of the current ID nesting.
  */
 
-namespace check::symbol_table {
+namespace semantic::symbol_table {
 // Aliases:
 /*!
  * Used to construct the nested structure of the @ref SymbolTable.
@@ -64,7 +64,7 @@ class SymbolTableFactory {
   virtual ~SymbolTableFactory() = default;
 };
 
-} // namespace check::symbol_table
+} // namespace semantic::symbol_table
 
 
 #endif // SYMBOL_TABLE_FACTORY_HPP

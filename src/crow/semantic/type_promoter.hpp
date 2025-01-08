@@ -13,7 +13,7 @@
  * Contains the classes and methods dedicated to type promotion.
  */
 
-namespace check {
+namespace semantic {
 // Using statements:
 using ast::node::node_traits::typing::NativeType;
 using ast::node::node_traits::typing::NativeTypeOpt;
@@ -61,6 +61,6 @@ class TypePromoter {
 
   virtual ~TypePromoter() = default;
 };
-} // namespace check
+} // namespace semantic
 
 #endif // CROW_CROW_CHECK_TYPE_PROMOTER_HPP

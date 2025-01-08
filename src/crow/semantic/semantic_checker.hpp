@@ -16,7 +16,7 @@
  * Which can be used for symbol lookup.
  */
 
-namespace check {
+namespace semantic {
 // Using Statements:
 using namespace ast;
 
@@ -25,7 +25,7 @@ using ast::node::NodePtr;
 using ast::node::node_traits::typing::NativeType;
 using ast::node::node_traits::typing::NativeTypeOpt;
 using ast::visitor::Any;
-using check::symbol_table::SymbolTablePtr;
+using semantic::symbol_table::SymbolTablePtr;
 
 // Structs:
 //! Contains
@@ -98,6 +98,6 @@ class SemanticChecker : public SemanticCheckerHelper {
 
   virtual ~SemanticChecker() = default;
 };
-} // namespace check
+} // namespace semantic
 
 #endif // CROW_CROW_CHECK_SEMANTIC_CHECKER_HPP

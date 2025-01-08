@@ -12,7 +12,7 @@
 // Local Includes:
 #include "symbol/symbol_types.hpp"
 
-namespace check {
+namespace semantic {
 // Using Declarations:
 using symbol::SymbolData;
 
@@ -46,12 +46,12 @@ class EnvState {
 
   virtual ~EnvState() = default;
 };
-} // namespace check
+} // namespace semantic
 
 // Functions:
-auto operator<<(std::ostream& t_os, const check::EnvStack& t_envs)
+auto operator<<(std::ostream& t_os, const semantic::EnvStack& t_envs)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, const check::EnvState& t_env_state)
+auto operator<<(std::ostream& t_os, const semantic::EnvState& t_env_state)
   -> std::ostream&;
 
 #endif // CROW_CROW_CHECK_ENV_STATE_HPP

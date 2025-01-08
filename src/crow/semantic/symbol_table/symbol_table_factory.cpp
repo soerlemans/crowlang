@@ -3,7 +3,7 @@
 // Absolute Includes:
 #include "crow/debug/log.hpp"
 
-namespace check::symbol_table {
+namespace semantic::symbol_table {
 auto SymbolTableFactory::add_symbol(const std::string_view t_id,
                                     const SymbolData& t_data) -> bool
 {
@@ -60,4 +60,4 @@ auto SymbolTableFactory::retrieve() const -> SymbolTablePtr
 {
   return m_symbol_table_ptr;
 }
-} // namespace check::symbol_table
+} // namespace semantic::symbol_table

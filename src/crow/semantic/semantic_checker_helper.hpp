@@ -12,7 +12,7 @@
 #include "symbol_table/symbol_table_factory.hpp"
 #include "type_promoter.hpp"
 
-namespace check {
+namespace semantic {
 // Using Declarations:
 using ast::node::NodeListPtr;
 using ast::node::NodePtr;
@@ -80,6 +80,6 @@ class SemanticCheckerHelper : public NodeVisitor {
 
   virtual ~SemanticCheckerHelper() = default;
 };
-} // namespace check
+} // namespace semantic
 
 #endif // CROW_CROW_CHECK_SEMANTIC_CHECKER_HELPER_HPP

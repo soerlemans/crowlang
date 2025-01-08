@@ -1,6 +1,9 @@
 #ifndef STATE_HPP
 #define STATE_HPP
 
+// STL Includes:
+#include <iosfwd>
+
 // Absolute Includes:
 #include "container/text_buffer.hpp"
 #include "crow/ast/node/fdecl.hpp"
@@ -10,8 +13,8 @@
 namespace state {
 // Using Statements:
 using ast::node::NodePtr;
-using check::symbol_table::SymbolTablePtr;
 using container::TextStreamPtr;
+using semantic::symbol_table::SymbolTablePtr;
 using std::filesystem::path;
 using token::TokenStream;
 
@@ -57,8 +60,8 @@ class TranslationUnit {
   //! Print the AST, only available if @ref DEBUG is defined.
   auto print_ast() -> void;
 
-  //! Check the semantic validaty of the AST.
-  auto check_semantics() -> void;
+  //! Analyse the semantic validaty of the AST.
+  auto semantic() -> void;
 
   //! Execute the codegeneration backend.
   auto backend() -> void;
@@ -69,5 +72,10 @@ class TranslationUnit {
   virtual ~TranslationUnit() = default;
 };
 } // namespace state
+
+auto operator<<(std::ostream& t_os, state::TranslationUnitPhase t_phase)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os, state::TranslationUnit t_unit)
+  -> std::ostream&;
 
 #endif // STATE_HPP

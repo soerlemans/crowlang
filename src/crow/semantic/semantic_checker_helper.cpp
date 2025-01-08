@@ -7,7 +7,7 @@
 #include "crow/ast/node/include_nodes.hpp"
 #include "crow/debug/log.hpp"
 
-namespace check {
+namespace semantic {
 // Using Statements:
 using exception::type_error;
 
@@ -158,4 +158,4 @@ auto SemanticCheckerHelper::get_resolved_type_list(NodeListPtr t_list)
 
   return list;
 }
-} // namespace check
+} // namespace semantic

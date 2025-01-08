@@ -30,10 +30,10 @@ auto parse(const token::TokenStream& t_ts) -> ast::node::NodePtr;
 auto print_ast(ast::node::NodePtr t_ast) -> void;
 
 //! Check the semantic validaty of the AST.
-auto check_semantics(ast::node::NodePtr t_ast) -> check::SemanticPack;
+auto check_semantics(ast::node::NodePtr t_ast) -> semantic::SemanticPack;
 
 //! Execute the codegeneration backend.
-auto backend(const check::SemanticPack& t_pack,
+auto backend(const semantic::SemanticPack& t_pack,
              const std::filesystem::path& t_path) -> void;
 
 //! Crow compiler regular compilation flow.

@@ -1,6 +1,8 @@
 #include "translation_unit.hpp"
 
-namespace state {
+// STL Includes:
+#include <fstream>
+#include <iostream>
 
 // Internal Functions:
 namespace {
@@ -32,7 +34,8 @@ auto read_file(const path t_path) -> container::TextBuffer
 }
 } // namespace
 
-// Functions:
+namespace state {
+// Methods:
 auto TranslationUnit::lex() -> void
 {
   using lexer::Lexer;
@@ -82,17 +85,17 @@ auto print_ast() -> void
 #endif // DEBUG
 }
 
-auto check_semantics() -> void
+auto semantic() -> void
 {
-  using check::SemanticChecker;
+  using semantic::SemanticChecker;
 
-  DBG_PRINTLN("<semantic_checking>");
+  DBG_PRINTLN("<semantic>");
 
   // Check the semantics of the written program.
   SemanticChecker checker;
   const auto pack{checker.check(m_ast)};
 
-  DBG_PRINTLN("</semantic_checking>");
+  DBG_PRINTLN("</semantic>");
 }
 
 auto backend() -> void

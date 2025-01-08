@@ -10,7 +10,7 @@
 // Absolute Includes:
 #include "crow/debug/log.hpp"
 
-namespace check {
+namespace semantic {
 // Using Statements:
 using exception::type_error;
 
@@ -79,10 +79,10 @@ auto EnvState::stack() const -> const EnvStack&
 {
   return m_envs;
 }
-} // namespace check
+} // namespace semantic
 
 // Functions:
-auto operator<<(std::ostream& t_os, const check::EnvStack& t_envs)
+auto operator<<(std::ostream& t_os, const semantic::EnvStack& t_envs)
   -> std::ostream&
 {
   using namespace std::literals::string_view_literals;
@@ -109,7 +109,7 @@ auto operator<<(std::ostream& t_os, const check::EnvStack& t_envs)
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const check::EnvState& t_env_state)
+auto operator<<(std::ostream& t_os, const semantic::EnvState& t_env_state)
   -> std::ostream&
 {
   t_os << t_env_state.stack();

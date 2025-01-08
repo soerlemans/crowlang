@@ -13,7 +13,7 @@
 #define assert_msg(t_msg, t_expr) assert(((void)t_msg, t_expr))
 
 #define STUB(t_type)                                              \
-  auto NodeVisitor::visit([[maybe_unused]] t_type* t_ptr)->Any    \
+  auto NodeVisitor::visit([[maybe_unused]] t_type* t_ptr) -> Any  \
   {                                                               \
     DBG_CRITICAL("Method for type ", #t_type, " not overriden!"); \
                                                                   \

@@ -18,7 +18,7 @@
 // Local Includes:
 #include "symbol/symbol_data.hpp"
 
-namespace check {
+namespace semantic {
 // Using Statements:
 using ast::node::node_traits::typing::NativeType;
 using exception::type_error;
@@ -509,4 +509,4 @@ auto SemanticChecker::check(NodePtr t_ast) -> SemanticPack
 
   return pack;
 }
-} // namespace check
+} // namespace semantic
