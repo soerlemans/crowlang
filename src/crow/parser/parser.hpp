@@ -7,7 +7,7 @@
 // Absolute Includes:
 #include "crow/ast/node/fdecl.hpp"
 #include "crow/debug/trace.hpp"
-#include "crow/token/tokenstream.hpp"
+#include "crow/token/token_stream.hpp"
 #include "crow/token/tokentype2str.hpp"
 
 
@@ -40,12 +40,12 @@ using ParseFn = std::function<ast::node::NodePtr()>;
  */
 class Parser {
   private:
-  TokenStream m_tokenstream;
+  TokenStream m_token_stream;
 
   protected:
   DBG_TRACE_INIT();
 
-  auto get_tokenstream() -> TokenStream&;
+  auto get_token_stream() -> TokenStream&;
 
   /*!
    * Wrapper method for std::make_shared() makes it easy to change smart
@@ -116,7 +116,7 @@ class Parser {
   auto list_of(ParseFn t_fn) -> ast::node::NodeListPtr;
 
   public:
-  Parser(TokenStream&& t_tokenstream);
+  Parser(TokenStream&& t_token_stream);
 
   virtual auto parse() -> NodePtr = 0;
 

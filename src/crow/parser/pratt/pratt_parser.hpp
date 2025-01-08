@@ -28,7 +28,7 @@ class PrattParser : public Parser {
   InfixMap m_infix;
 
   public:
-  PrattParser(TokenStream&& t_tokenstream);
+  PrattParser(TokenStream&& t_token_stream);
 
   // Grammar:
   virtual auto newline_opt() -> void = 0;

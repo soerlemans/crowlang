@@ -11,9 +11,9 @@ using ast::node::List;
 using ast::node::NodeListPtr;
 
 // Protected Methods:
-auto Parser::get_tokenstream() -> TokenStream&
+auto Parser::get_token_stream() -> TokenStream&
 {
-  return m_tokenstream;
+  return m_token_stream;
 }
 
 auto Parser::syntax_error(const std::string_view t_msg) const -> void
@@ -28,7 +28,7 @@ auto Parser::syntax_error(const std::string_view t_msg) const -> void
 // FIXME: This function should be replaced with the printing of a stacktrace
 auto Parser::eos_error(const std::string_view t_msg) const -> void
 {
-  if(m_tokenstream.eos()) {
+  if(m_token_stream.eos()) {
     std::stringstream ss;
     ss << "EOS reached!\n";
     ss << " - ";
@@ -40,14 +40,14 @@ auto Parser::eos_error(const std::string_view t_msg) const -> void
 
 auto Parser::eos() const -> bool
 {
-  return m_tokenstream.eos();
+  return m_token_stream.eos();
 }
 
 auto Parser::check(const TokenType t_type) -> bool
 {
   eos_error("Tried to check for token at EOS!");
 
-  const auto token{m_tokenstream.current()};
+  const auto token{m_token_stream.current()};
 
   return token.type() == t_type;
 }
@@ -56,7 +56,7 @@ auto Parser::next() -> Token&
 {
   eos_error("Tried to move to next Token at EOS!");
 
-  return m_tokenstream.next();
+  return m_token_stream.next();
 }
 
 auto Parser::expect(const TokenType t_type) -> Token&
@@ -78,14 +78,14 @@ auto Parser::expect(const TokenType t_type) -> Token&
 
 auto Parser::prev() -> Token&
 {
-  return m_tokenstream.prev();
+  return m_token_stream.prev();
 }
 
 auto Parser::get_token() const -> Token&
 {
   eos_error("Tried to return get token at EOS!");
 
-  return m_tokenstream.current();
+  return m_token_stream.current();
 }
 
 auto Parser::get_position() const -> const TextPosition&
@@ -100,7 +100,7 @@ auto Parser::after_newlines(const TokenType t_type) -> bool
 
   bool found{false};
 
-  for(auto iter{m_tokenstream.iter()}; iter != m_tokenstream.end(); iter++) {
+  for(auto iter{m_token_stream.iter()}; iter != m_token_stream.end(); iter++) {
     if(iter->type() != TokenType::NEWLINE) {
       if(iter->type() == t_type) {
         found = true;
@@ -109,7 +109,7 @@ auto Parser::after_newlines(const TokenType t_type) -> bool
                         "Found: ", std::quoted(tokentype2str(t_type), '\''));
 
         // Update iterator
-        m_tokenstream.set(iter);
+        m_token_stream.set(iter);
       }
 
       break;
@@ -137,7 +137,7 @@ auto Parser::list_of(const ParseFn t_fn) -> NodeListPtr
 }
 
 // Methods:
-Parser::Parser(TokenStream&& t_tokenstream)
-  : m_tokenstream{std::forward<TokenStream>(t_tokenstream)}
+Parser::Parser(TokenStream&& t_token_stream)
+  : m_token_stream{std::forward<TokenStream>(t_token_stream)}
 {}
 } // namespace parser

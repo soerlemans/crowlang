@@ -1,7 +1,7 @@
 #ifndef CROW_CROW_PHASES_HPP
 #define CROW_CROW_PHASES_HPP
 
-// Absolute Includes:
+// Local Includes:
 #include "ast/node/fdecl.hpp"
 #include "ast/visitor/ast_printer.hpp"
 #include "check/semantic_checker.hpp"

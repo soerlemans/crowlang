@@ -1,4 +1,4 @@
-#include "tokenstream.hpp"
+#include "token_stream.hpp"
 
 #include <sstream>
 
@@ -6,7 +6,7 @@
 namespace {
 // FIXME: Place somewhere more appropiate, like in src/lib somewhere.
 /*!
- * str) << ", "Escape all special characters and backslashes.
+ * Escape all special characters and backslashes.
  *
  * @warn We do not escape the NULL terminator.
  */
