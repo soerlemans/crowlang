@@ -1,5 +1,5 @@
-#ifndef STATE_HPP
-#define STATE_HPP
+#ifndef CROW_CROW_STATE_TRANSLATION_UNIT_HPP
+#define CROW_CROW_STATE_TRANSLATION_UNIT_HPP
 
 // STL Includes:
 #include <filesystem>
@@ -85,4 +85,4 @@ auto operator<<(std::ostream& t_os, state::TranslationUnitPhase t_phase)
 auto operator<<(std::ostream& t_os, state::TranslationUnit t_unit)
   -> std::ostream&;
 
-#endif // STATE_HPP
+#endif // CROW_CROW_STATE_TRANSLATION_UNIT_HPP

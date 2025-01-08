@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CHECK_SYMBOL_TABLE_SYMBOL_TABLE_HPP
-#define CROW_CROW_CHECK_SYMBOL_TABLE_SYMBOL_TABLE_HPP
+#ifndef CROW_CROW_SEMANTIC_SYMBOL_TABLE_SYMBOL_TABLE_HPP
+#define CROW_CROW_SEMANTIC_SYMBOL_TABLE_SYMBOL_TABLE_HPP
 
 // STL Include:
 #include <map>
@@ -82,4 +82,4 @@ auto operator<<(std::ostream& t_os,
                 const semantic::symbol_table::SymbolTable& t_symbol_table)
   -> std::ostream&;
 
-#endif // CROW_CROW_CHECK_SYMBOL_TABLE_SYMBOL_TABLE_HPP
+#endif // CROW_CROW_SEMANTIC_SYMBOL_TABLE_SYMBOL_TABLE_HPP

@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CHECK_ENV_STATE_HPP
-#define CROW_CROW_CHECK_ENV_STATE_HPP
+#ifndef CROW_CROW_SEMANTIC_ENV_STATE_HPP
+#define CROW_CROW_SEMANTIC_ENV_STATE_HPP
 
 // STL Includes:
 #include <string>
@@ -54,4 +54,4 @@ auto operator<<(std::ostream& t_os, const semantic::EnvStack& t_envs)
 auto operator<<(std::ostream& t_os, const semantic::EnvState& t_env_state)
   -> std::ostream&;
 
-#endif // CROW_CROW_CHECK_ENV_STATE_HPP
+#endif // CROW_CROW_SEMANTIC_ENV_STATE_HPP

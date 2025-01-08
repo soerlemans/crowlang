@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CHECK_SEMANTIC_CHECKER_HELPER_HPP
-#define CROW_CROW_CHECK_SEMANTIC_CHECKER_HELPER_HPP
+#ifndef CROW_CROW_SEMANTIC_SEMANTIC_CHECKER_HELPER_HPP
+#define CROW_CROW_SEMANTIC_SEMANTIC_CHECKER_HELPER_HPP
 
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
@@ -82,4 +82,4 @@ class SemanticCheckerHelper : public NodeVisitor {
 };
 } // namespace semantic
 
-#endif // CROW_CROW_CHECK_SEMANTIC_CHECKER_HELPER_HPP
+#endif // CROW_CROW_SEMANTIC_SEMANTIC_CHECKER_HELPER_HPP

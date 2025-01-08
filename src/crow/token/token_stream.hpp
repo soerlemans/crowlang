@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_TOKEN_TOKENSTREAM_HPP
-#define CROW_CROW_TOKEN_TOKENSTREAM_HPP
+#ifndef CROW_CROW_TOKEN_TOKEN_STREAM_HPP
+#define CROW_CROW_TOKEN_TOKEN_STREAM_HPP
 
 /*!
  * @file
@@ -31,4 +31,4 @@ using TokenStream = Stream<TokenVec>;
 auto operator<<(std::ostream& t_os, const token::TokenStream& t_ts)
   -> std::ostream&;
 
-#endif // CROW_CROW_TOKEN_TOKENSTREAM_HPP
+#endif // CROW_CROW_TOKEN_TOKEN_STREAM_HPP

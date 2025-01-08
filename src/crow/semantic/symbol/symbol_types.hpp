@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CHECK_SYMBOL_SYMBOL_TYPES_HPP
-#define CROW_CROW_CHECK_SYMBOL_SYMBOL_TYPES_HPP
+#ifndef CROW_CROW_SEMANTIC_SYMBOL_SYMBOL_TYPES_HPP
+#define CROW_CROW_SEMANTIC_SYMBOL_SYMBOL_TYPES_HPP
 
 // Local Includes:
 #include "symbol_data.hpp"
@@ -59,4 +59,4 @@ auto make_variable(Args&&... t_args) -> SymbolData
 }
 } // namespace semantic::symbol
 
-#endif // CROW_CROW_CHECK_SYMBOL_SYMBOL_TYPES_HPP
+#endif // CROW_CROW_SEMANTIC_SYMBOL_SYMBOL_TYPES_HPP

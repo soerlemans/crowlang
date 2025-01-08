@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CHECK_SYMBOL_SYMBOL_HPP
-#define CROW_CROW_CHECK_SYMBOL_SYMBOL_HPP
+#ifndef CROW_CROW_SEMANTIC_SYMBOL_SYMBOL_HPP
+#define CROW_CROW_SEMANTIC_SYMBOL_SYMBOL_HPP
 
 // STL Includes:
 #include <iosfwd>
@@ -35,4 +35,4 @@ auto operator<<(std::ostream& t_os,
                 const semantic::symbol::SymbolDataList& t_list)
   -> std::ostream&;
 
-#endif // CROW_CROW_CHECK_SYMBOL_SYMBOL_HPP
+#endif // CROW_CROW_SEMANTIC_SYMBOL_SYMBOL_HPP

@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CHECK_TYPE_PROMOTER_HPP
-#define CROW_CROW_CHECK_TYPE_PROMOTER_HPP
+#ifndef CROW_CROW_SEMANTIC_TYPE_PROMOTER_HPP
+#define CROW_CROW_SEMANTIC_TYPE_PROMOTER_HPP
 
 // STL Includes:
 #include <array>
@@ -63,4 +63,4 @@ class TypePromoter {
 };
 } // namespace semantic
 
-#endif // CROW_CROW_CHECK_TYPE_PROMOTER_HPP
+#endif // CROW_CROW_SEMANTIC_TYPE_PROMOTER_HPP

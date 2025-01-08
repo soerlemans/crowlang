@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CHECK_SEMANTIC_CHECKER_HPP
-#define CROW_CROW_CHECK_SEMANTIC_CHECKER_HPP
+#ifndef CROW_CROW_SEMANTIC_SEMANTIC_CHECKER_HPP
+#define CROW_CROW_SEMANTIC_SEMANTIC_CHECKER_HPP
 
 // STL Includes:
 #include <string_view>
@@ -93,4 +93,4 @@ class SemanticChecker : public SemanticCheckerHelper {
 };
 } // namespace semantic
 
-#endif // CROW_CROW_CHECK_SEMANTIC_CHECKER_HPP
+#endif // CROW_CROW_SEMANTIC_SEMANTIC_CHECKER_HPP
