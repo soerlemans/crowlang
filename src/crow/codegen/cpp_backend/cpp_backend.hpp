@@ -6,6 +6,7 @@
 
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
+#include "crow/codegen/backend_interface.hpp"
 #include "crow/semantic/symbol_table/symbol_table.hpp"
 #include "lib/filesystem.hpp"
 #include "lib/types.hpp"
@@ -24,16 +25,6 @@ using semantic::symbol_table::SymbolTablePtr;
 using std::filesystem::path;
 using visitor::Any;
 
-// Structures:
-/*!
- * Utility structure packing all AST functionality together,
- * With the @ref SymbolTable.
- */
-struct AstPack {
-  NodePtr m_ast;
-  SymbolTablePtr m_symbol_table;
-};
-
 // Classes:
 /*!
  * @brief Tree walk codegenerator generating safe C++ code.
@@ -41,7 +32,7 @@ struct AstPack {
  * This generated C++ code could later be compiled with libclang.
  * Or any compiler of choice.
  */
-class CppBackend : public ast::visitor::NodeVisitor {
+class CppBackend : public BackendInterface {
   private:
   SymbolTablePtr m_symbol_table;
 
@@ -157,7 +148,7 @@ class CppBackend : public ast::visitor::NodeVisitor {
    * Transpile the @ref t_ast to valid C++ code and write it to @ref t_out.
    */
   auto codegen(NodePtr t_ast, const path& t_out) -> void;
-  auto compile(AstPack t_pack, path t_stem = "main") -> void;
+  auto compile(AstPack t_pack, path t_stem) -> void override;
 
   virtual ~CppBackend() = default;
 };

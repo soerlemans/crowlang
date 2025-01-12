@@ -21,7 +21,6 @@ class PythonBackend : public InteropBackendInterface {
 
   auto prologue() -> std::string override;
   auto epilogue() -> std::string override;
-  auto generate(NodePtr t_ast) -> std::string override;
 
   virtual ~PythonBackend() = default;
 };

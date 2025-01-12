@@ -31,7 +31,6 @@ class InteropBackendInterface {
 
   virtual auto prologue() -> std::string = 0;
   virtual auto epilogue() -> std::string = 0;
-  virtual auto generate(NodePtr t_ast) -> std::string = 0;
 
   virtual ~InteropBackendInterface() = default;
 };

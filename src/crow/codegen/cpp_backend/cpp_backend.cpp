@@ -489,7 +489,6 @@ auto CppBackend::compile(AstPack t_pack, path t_stem) -> void
 
   // Clear members, for next compilation.
   m_symbol_table.reset();
-  m_interop_backends.clear();
   m_terminate = {};
   m_id_defer_count = 0;
 }
