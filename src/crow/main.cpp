@@ -27,7 +27,7 @@ static auto disable_absorb_exceptions() -> void
 #endif
 }
 
-auto run() -> void
+static auto run() -> void
 {
   using state::TranslationUnit;
 

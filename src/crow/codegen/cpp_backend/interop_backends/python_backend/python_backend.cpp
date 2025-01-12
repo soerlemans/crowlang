@@ -18,7 +18,7 @@ auto PythonBackend::epilogue() -> std::string
   return ss.str();
 }
 
-auto PythonBackend::generate(NodePtr t_ast) -> std::string
+auto PythonBackend::generate([[maybe_unused]] NodePtr t_ast) -> std::string
 {
   std::stringstream ss;
 

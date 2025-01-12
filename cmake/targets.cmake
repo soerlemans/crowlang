@@ -9,9 +9,9 @@ set(TARGET_CROW_STDLIBCROW "stdlibcrow") # Standard library for generated C++.
 set(TARGET_CROW_TESTS "crow_tests") # Unit test binary
 
 # Conditionally set the main target:
-# Change the main target if we are building tests:
 set(TARGET_CROW "crow")
 
+# Change the main target if we are building tests:
 if(DEFINED CROW_BUILD_TESTS)
 set(TARGET_CROW ${TARGET_CROW_TESTS})
 endif()
