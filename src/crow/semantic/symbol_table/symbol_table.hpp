@@ -63,7 +63,11 @@ class SymbolTable {
 
   // auto lookup(std::string_view t_symbol_name) const -> SymbolData;
   // auto lookup_toplevel(std::string_view t_symbol_name) const -> SymbolData;
+
   auto table() const -> const SymbolMap&;
+
+  auto begin() -> SymbolMapIter;
+  auto end() -> SymbolMapIter;
 
   auto clear() -> void;
 

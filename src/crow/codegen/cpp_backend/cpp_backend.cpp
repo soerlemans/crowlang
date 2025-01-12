@@ -89,6 +89,7 @@ auto CppBackend::resolve(NodePtr t_ptr, const bool t_terminate) -> std::string
   std::stringstream ss;
 
   if(t_ptr) {
+    // Keep track of if the current node we are traversing should be terminated.
     m_terminate.push(t_terminate);
     const auto any{traverse(t_ptr)};
     m_terminate.pop();

@@ -46,6 +46,16 @@ auto SymbolTable::table() const -> const SymbolMap&
   return m_table;
 }
 
+auto SymbolTable::begin() -> SymbolMapIter
+{
+  return m_table.begin();
+}
+
+auto SymbolTable::end() -> SymbolMapIter
+{
+  return m_table.end();
+}
+
 auto SymbolTable::clear() -> void
 {
   m_table.clear();

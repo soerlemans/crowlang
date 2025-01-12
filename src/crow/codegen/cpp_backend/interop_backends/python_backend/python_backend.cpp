@@ -17,11 +17,4 @@ auto PythonBackend::epilogue() -> std::string
 
   return ss.str();
 }
-
-auto PythonBackend::generate([[maybe_unused]] NodePtr t_ast) -> std::string
-{
-  std::stringstream ss;
-
-  return ss.str();
-}
 } // namespace codegen::cpp_backend::interop_backends

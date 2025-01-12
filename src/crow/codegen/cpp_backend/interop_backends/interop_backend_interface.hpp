@@ -23,7 +23,7 @@ class InteropBackendInterface;
 using InteropBackendPtr = std::shared_ptr<InteropBackendInterface>;
 
 /*!
- * Interface used for
+ * Interface used for creating interop between
  */
 class InteropBackendInterface {
   public:
@@ -31,6 +31,8 @@ class InteropBackendInterface {
 
   virtual auto prologue() -> std::string = 0;
   virtual auto epilogue() -> std::string = 0;
+
+  virtual auto register_function() -> void = 0;
 
   virtual ~InteropBackendInterface() = default;
 };
