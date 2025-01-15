@@ -346,6 +346,13 @@ auto LlvmBackend::compile(AstPack t_pack, path t_stem) -> void
   DBG_INFO("tmp_dir: ", tmp_dir);
   DBG_INFO("tmp_src: ", tmp_src);
 
+  // Initialize all target stuff:
+  InitializeAllTargetInfos();
+  InitializeAllTargets();
+  InitializeAllTargetMCs();
+  InitializeAllAsmParsers();
+  InitializeAllAsmPrinters();
+
   // Obtain filehandle to destination file
   const auto filename{tmp_src.c_str()};
   std::error_code err_code{};
@@ -354,13 +361,6 @@ auto LlvmBackend::compile(AstPack t_pack, path t_stem) -> void
   if(err_code) {
     errs() << "Could not open file: " << err_code.message();
   }
-
-  // Initialize all target stuff:
-  // InitializeAllTargetInfos();
-  // InitializeAllTargets();
-  // InitializeAllTargetMCs();
-  // InitializeAllAsmParsers();
-  // InitializeAllAsmPrinters();
 
   // Resolve target:
   const auto target_str{m_module->getTargetTriple()};
@@ -376,22 +376,29 @@ auto LlvmBackend::compile(AstPack t_pack, path t_stem) -> void
   const auto cpu{"generic"};
   const auto features{""};
 
-  TargetOptions opt;
-  std::optional<Reloc::Model> reloc_model;
+  TargetOptions opt{};
+  std::optional<Reloc::Model> reloc_model{};
   auto target_machine{
     target->createTargetMachine(target_str, cpu, features, opt, reloc_model)};
 
   // Write object file:
-  legacy::PassManager pass;
+  legacy::PassManager pass{};
   const auto fype{CGFT_ObjectFile};
-
   if(target_machine->addPassesToEmitFile(pass, dest, nullptr, fype)) {
     errs() << "target_machine can't emit a file of this type";
     return; // TODO: Fix
   }
 
+  // Traverse ast to generate LLVM IR:
   traverse(ast);
+  dump_ir(std::cout);
 
+  if(llvm::verifyModule(*m_module, &llvm::errs())) {
+    llvm::errs() << "Error: The module is invalid!\n";
+    return; // Exit or handle the error appropriately
+  }
+
+  //
   pass.run(*m_module);
   dest.flush();
 
