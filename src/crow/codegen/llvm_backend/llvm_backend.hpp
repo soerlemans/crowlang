@@ -14,6 +14,14 @@
 #include "crow/ast/visitor/node_visitor.hpp"
 #include "crow/codegen/backend_interface.hpp"
 
+/*!
+ * @file
+ *
+ * FIXME: As of now the @ref LlvmBackend is in a half broken state.
+ * It should be properly implemented and fixed one day.
+ */
+
+
 namespace codegen::llvm_backend {
 // Using statements:
 using namespace ast;
@@ -99,9 +107,8 @@ class LlvmBackend : public BackendInterface {
 
   // Util:
   auto configure_target() -> void;
-  auto codegen(NodePtr t_ast) -> void;
   auto dump_ir(std::ostream& t_os) -> void;
-  auto compile(path t_path) -> void;
+  auto compile(AstPack t_pack, path t_stem) -> void override;
 
   virtual ~LlvmBackend() = default;
 };

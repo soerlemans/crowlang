@@ -7,7 +7,7 @@
 // Absolute Includes:
 #include "crow/ast/node/fdecl.hpp"
 #include "crow/ast/visitor/ast_printer.hpp"
-#include "crow/codegen/cpp_backend/cpp_backend.hpp"
+#include "crow/codegen/backend_interface.hpp"
 #include "crow/lexer/lexer.hpp"
 #include "crow/parser/crow/crow_parser.hpp"
 #include "crow/semantic/semantic_checker.hpp"
@@ -122,15 +122,19 @@ auto TranslationUnit::semantic(NodePtr t_ast) -> SymbolTablePtr
 
 auto TranslationUnit::backend(const AstPack t_pack) -> void
 {
-  using codegen::cpp_backend::CppBackend;
+  using codegen::BackendPtr;
+  using codegen::BackendType;
 
   m_phase = TranslationUnitPhase::CODE_GENERATION;
   const auto stem{m_source_file.stem()};
 
   DBG_PRINTLN("<codegen>");
 
-  CppBackend backend;
-  backend.compile(t_pack, stem);
+  // FIXME: Someday the backend should be able to be chosen.
+  // By the project.toml and CLI options.
+  const auto backend_type{BackendType::CPP_BACKEND};
+  const auto backend_ptr{codegen::select_backend(backend_type)};
+  backend_ptr->compile(t_pack, stem);
 
   DBG_PRINTLN("</codegen>");
 }
