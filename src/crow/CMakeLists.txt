@@ -1,5 +1,6 @@
 # Add source files:
 if(TARGET ${TARGET_CROW_BIN})
+# Do not add main.cpp to build tree if we are building tests.
 target_sources(${TARGET_CROW_BIN} PRIVATE
 	main.cpp
 )

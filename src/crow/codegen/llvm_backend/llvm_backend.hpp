@@ -12,6 +12,7 @@
 
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
+#include "crow/codegen/backend_interface.hpp"
 
 namespace codegen::llvm_backend {
 // Using statements:
@@ -31,7 +32,7 @@ using ModulePtr = std::shared_ptr<llvm::Module>;
 namespace fs = std::filesystem;
 
 // Classes:
-class LlvmBackend : public ast::visitor::NodeVisitor {
+class LlvmBackend : public BackendInterface {
   private:
   ContextPtr m_context;
   IrBuilderPtr m_builder;

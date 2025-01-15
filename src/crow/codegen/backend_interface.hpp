@@ -1,6 +1,9 @@
 #ifndef BACKEND_INTERFACE_HPP
 #define BACKEND_INTERFACE_HPP
 
+// STL Includes:
+#include <memory>
+
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
 #include "crow/semantic/symbol_table/symbol_table.hpp"
@@ -14,6 +17,12 @@ using namespace ast;
 using node::NodePtr;
 using semantic::symbol_table::SymbolTablePtr;
 using std::filesystem::path;
+
+// Forward Declarations:
+class BackendInterface;
+
+// Aliases:
+using BackendPtr = std::unique_ptr<BackendInterface>;
 
 // Enums:
 enum class BackendType {
@@ -46,7 +55,8 @@ class BackendInterface : public ast::visitor::NodeVisitor {
 
 // Functions:
 // TODO: Implement with a unique_ptr or something similar.
-// auto select_backend(BackendType t_selector) -> BackendInterface*;
+[[nodiscard("Pure method must use results.")]]
+auto select_backend(BackendType t_selector) -> BackendPtr;
 } // namespace codegen
 
 #endif // BACKEND_INTERFACE_HPP
