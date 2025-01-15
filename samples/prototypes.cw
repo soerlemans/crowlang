@@ -7,7 +7,7 @@ fn test2() -> int {
 }
 
 fn main() -> int {
-    let sum = 10 + 10
+  let sum = 10 + 10
 
-    return sum
+  return sum
 }
