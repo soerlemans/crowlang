@@ -32,8 +32,11 @@ class InteropBackendInterface {
   virtual auto prologue() -> std::string = 0;
   virtual auto epilogue() -> std::string = 0;
 
-  virtual auto register_function(std::string_view t_str) -> void = 0;
-  virtual auto register_variable() -> void = 0;
+  // TODO: Need to consider how a type should be registered.
+  // We probably should use some kind of combination of either std::any.
+  // Or some kind of enum telling how a function should be registered.
+  virtual auto register_function(std::string_view t_id) -> void = 0;
+  virtual auto register_variable(std::string_view t_id) -> void = 0;
 
   virtual ~InteropBackendInterface() = default;
 };
