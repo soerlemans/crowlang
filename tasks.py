@@ -217,7 +217,7 @@ def setup(ctx):
     'Setup dependencies.'
     match sys.platform:
         case 'linux':
-            ctx.run('bash tools/setup.sh')
+            ctx.run('bash tools/setup/setup.sh')
             pass
 
         case 'win32':

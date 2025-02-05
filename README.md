@@ -39,33 +39,30 @@ In order to compile the project you will need to following dependencies:
 - [pybind11]() (Used to generate C++ to Python bindings.)
 
 ### Buildsystem
-In order to compile the project you will need `invoke`, `clang` and `cmake`.
-You can install most of the dependencies with the following aptitude command:
-
+In order to compile the project you will need a couple of dependencies.
+First we use invoke to invoke different python scripts, to orchestrate building the project.
+In order to install invoke it is best to use pipx.
+Which is installed using:
 ```shell
-apt install -y pipx clang cmake extra-cmake-modules
+apt install -y pipx
 ```
 
 In order to make use of invoke you should install it through `pipx`.
-Also you should install `pybind11` to your system as to automatically generate Python bindings for your code:
-
 ```shell
-pipx install invoke pybind11
+pipx install invoke
 ```
 
-#### Build
+The you can invoke the appropriate setup script for your OS by running:
+```shell
+inv setup
+```
+
+If your OS is not supported it is best to checkout `tools/setup` and figure out what dependencies you require.
+
+### Build
 After installing the necessary dependencies you can build the compiler by running:
 ```
 inv build --parallel
-```
-
-### Dynamic libraries
-Rang and tabulate are downloaded using CMake and statically linked.
-CLI11, Boost, LLVM and libclang are dynamically linked (CMake searches for it on your system).
-You can install the dependencies with the following aptitude command:
-
-```shell
-apt install -y libcurl4 libcli11-dev llvm-17-dev libclang-17-dev liblld-17-dev libboost-all-dev libzstd-dev
 ```
 
 ## Project documentation

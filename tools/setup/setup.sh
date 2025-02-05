@@ -48,7 +48,11 @@ function debian_install
     log 'Installing interoperability dependencies'
     pipx install pybind11
 
+
     log 'Installing dynamically linked dependencies:'
+
+    # CLI11, Boost, LLVM and libclang  are dynamically linked.
+    # And must be installed.
     sudo apt install -y \
 	 libcurl4 \
 	 libcli11-dev \
@@ -75,3 +79,8 @@ case "$ID" in
 	err "Unsupported distro '$ID'."
 	;;
 esac
+
+cat << EOF
+
+Setup completed!
+EOF
