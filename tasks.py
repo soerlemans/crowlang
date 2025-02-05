@@ -10,6 +10,7 @@ TODO: Document.
 from invoke import task
 
 # Standard Imports:
+import sys
 import json
 import multiprocessing
 from enum import StrEnum
@@ -209,4 +210,25 @@ def docs(ctx, pdf=False):
     if pdf:
         ctx.run('cd doxygen/latex && make')
         pass
+    pass
+
+@task
+def setup(ctx):
+    'Setup dependencies.'
+    match sys.platform:
+        case 'linux':
+            ctx.run('bash tools/setup.sh')
+            pass
+
+        case 'win32':
+            print('Currently the setup script does not support Windows.')
+            pass
+
+        case 'darwin':
+            print('Currently the setup script does not support MacOS.')
+            pass
+
+        case _:
+            print(f'Unsupported platform: {sys.platform}')
+            pass
     pass

@@ -36,7 +36,6 @@ In order to compile the project you will need to following dependencies:
 - [libclang](https://clang.llvm.org/doxygen/group__CINDEX.html) (libclang for compiling C++ sources (part of the LLVM project.))
 - [cereal](https://uscilab.github.io/cereal/) (Serialization library used for the AST)
 - [libassert](https://github.com/jeremy-rifkin/libassert) (Modern assertion library for compile and runtime assertion checking)
-
 - [pybind11]() (Used to generate C++ to Python bindings.)
 
 ### Buildsystem
