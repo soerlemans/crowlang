@@ -13,8 +13,13 @@ using std::filesystem::path;
 
 // Classes:
 class ClangFrontendInvoker {
+  private:
+  std::stringstream m_compiler_flags;
+
   public:
-  ClangFrontendInvoker() = default;
+  ClangFrontendInvoker();
+
+  auto add_flags(std::string_view t_str) -> void;
 
   auto compile(const path& t_filepath) -> void;
 

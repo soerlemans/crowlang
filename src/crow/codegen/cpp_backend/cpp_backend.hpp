@@ -34,9 +34,10 @@ using visitor::Any;
  */
 class CppBackend : public BackendInterface {
   private:
+  // Global symbol table used for quick symbol lookup.
+  // Currently unused as the idea was to use it for interop.
   SymbolTablePtr m_symbol_table;
 
-  // TODO: Register interop backends to this.
   std::vector<InteropBackendPtr> m_interop_backends;
 
   // TODO: Move terminate functionality in its own class to separate concerns.
@@ -144,6 +145,8 @@ class CppBackend : public BackendInterface {
   auto visit(node::List* t_list) -> Any override;
 
   // Util:
+  auto add_interop_backend(InteropBackendPtr t_ptr) -> void;
+
   /*!
    * Transpile the @ref t_ast to valid C++ code and write it to @ref t_out.
    */

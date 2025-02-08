@@ -2,6 +2,7 @@
 
 // STL Includes:
 #include <cstdlib>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <string_view>
@@ -13,6 +14,24 @@
 namespace codegen::cpp_backend {
 // Using Statements:
 using namespace std::literals::string_view_literals;
+
+// Methods:
+ClangFrontendInvoker::ClangFrontendInvoker(): m_compiler_flags{}
+{
+  // Add debug flags.
+  add_flags("-g -ggdb"sv);
+
+  // Add C++23 standard flag.
+  add_flags("-std=c++23"sv);
+}
+
+auto ClangFrontendInvoker::add_flags(const std::string_view t_str) -> void
+{
+  // Add spaces passed around the passed flags, automatically.
+
+  // TODO: Sanitize this one day as to prevent command injection.
+  m_compiler_flags << std::quoted(t_str, ' ');
+}
 
 // Public Methods:
 auto ClangFrontendInvoker::compile(const path &t_filepath) -> void
@@ -52,10 +71,8 @@ auto ClangFrontendInvoker::compile(const path &t_filepath) -> void
   // List version of compiler used.
   // We use G++ at the moment as it supports more of C++23.
   const auto cpp_compiler{"g++"sv};
-  // const auto cmd_version{std::format("{} -v", cpp_compiler)};
-  // std::system(cmd_version.c_str());
 
-  const auto flags{"-g -ggdb -std=c++23"sv};
+  const auto flags{m_compiler_flags.view()};
   const auto cmd{
     std::format("{} {} {} -o {}", cpp_compiler, source_str, flags, binary_str)};
 

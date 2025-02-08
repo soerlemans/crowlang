@@ -42,11 +42,15 @@ function debian_install
 
     log 'Installing build-system dependencies:'
     sudo apt install -y \
+	 build-essential \
 	 clang \
 	 cmake extra-cmake-modules
 
     log 'Installing interoperability dependencies'
-    pipx install pybind11
+    # pipx install pybind11
+
+    # We need the headers on the system.
+    sudo apt install -y pybind11-dev
 
 
     log 'Installing dynamically linked dependencies:'

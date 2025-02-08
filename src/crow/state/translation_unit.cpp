@@ -132,8 +132,7 @@ auto TranslationUnit::backend(const AstPack t_pack) -> void
 
   // FIXME: Someday the backend should be able to be chosen.
   // By the project.toml and CLI options.
-  // const auto backend_type{BackendType::CPP_BACKEND};
-  const auto backend_type{BackendType::LLVM_BACKEND};
+  const auto backend_type{BackendType::CPP_BACKEND};
   const auto backend_ptr{codegen::select_backend(backend_type)};
   backend_ptr->compile(t_pack, stem);
 

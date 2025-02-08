@@ -41,6 +41,12 @@ auto CppBackend::prologue() -> std::string
   ss << "// Stdlibcrow Includes:\n";
   ss << R"(#include "stdlibcrow/io.hpp")" << '\n';
   ss << R"(#include "stdlibcrow/internal/defer.hpp")" << '\n';
+
+  // Loop through the interop backends and add the prologue from each backend.
+  for(auto& ptr : m_interop_backends) {
+    ss << ptr->prologue();
+  }
+
   ss << "\n\n";
 
   ss << "// Aliases:\n";
@@ -52,6 +58,11 @@ auto CppBackend::prologue() -> std::string
 auto CppBackend::epilogue() -> std::string
 {
   std::stringstream ss;
+
+  // Loop through the interop backends and add the epilogue.
+  for(auto& ptr : m_interop_backends) {
+    ss << ptr->epilogue();
+  }
 
   return ss.str();
 }
@@ -218,6 +229,13 @@ auto CppBackend::visit(Function* t_fn) -> Any
      << resolve(t_fn->body())
      << "}\n";
   // clang-format on
+
+  // FIXME: We should do this by looping through the toplevel.
+  // Of the SymbolTable instead.
+  // Register function to interop backend.
+  for(auto& ptr : m_interop_backends) {
+    ptr->register_function(identifier);
+  }
 
   return ss.str();
 }
@@ -452,6 +470,11 @@ auto CppBackend::visit(List* t_list) -> Any
 }
 
 // Util:
+auto CppBackend::add_interop_backend(InteropBackendPtr t_ptr) -> void
+{
+  m_interop_backends.emplace_back(t_ptr);
+}
+
 auto CppBackend::codegen(NodePtr t_ast, const path& t_out) -> void
 {
   std::ofstream ofs{t_out};
