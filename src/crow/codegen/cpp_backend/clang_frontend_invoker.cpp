@@ -30,7 +30,8 @@ auto ClangFrontendInvoker::add_flags(const std::string_view t_str) -> void
   // Add spaces passed around the passed flags, automatically.
 
   // TODO: Sanitize this one day as to prevent command injection.
-  m_compiler_flags << std::quoted(t_str, ' ');
+  // TODO: Maybe also change the escape char for std::quoted()?
+  m_compiler_flags << ' ' << t_str << ' ';
 }
 
 // Public Methods:

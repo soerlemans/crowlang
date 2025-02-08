@@ -50,8 +50,7 @@ function debian_install
     # pipx install pybind11
 
     # We need the headers on the system.
-    sudo apt install -y pybind11-dev
-
+    sudo apt install -y python3-pybind11 python3-dev
 
     log 'Installing dynamically linked dependencies:'
 

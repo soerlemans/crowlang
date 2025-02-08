@@ -509,6 +509,11 @@ auto CppBackend::compile(AstPack t_pack, path t_stem) -> void
 
   // Invoke clang frontend to generate a binary.
   ClangFrontendInvoker inv{};
+
+  // FIXME: Temporarily add the flags needed for Python interop.
+  // This assumes that we have python3 and the pybind11 installed.
+  inv.add_flags("-shared -fPIC $(python3 -m pybind11 --includes)");
+
   inv.compile(tmp_src);
 
   // Clear members, for next compilation.
