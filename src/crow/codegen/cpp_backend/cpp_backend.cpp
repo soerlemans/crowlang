@@ -490,6 +490,9 @@ auto CppBackend::codegen(NodePtr t_ast, const path& t_out) -> void
   // Generate C++ code.
   ofs << "// C++ code:\n";
   ofs << resolve(t_ast);
+
+  ofs << "// Epilogue:\n";
+  ofs << epilogue() << '\n';
 }
 
 auto CppBackend::compile(AstPack t_pack, path t_stem) -> void
