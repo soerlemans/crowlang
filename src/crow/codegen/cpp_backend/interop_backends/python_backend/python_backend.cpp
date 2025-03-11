@@ -51,7 +51,7 @@ auto PythonBackend::epilogue() -> std::string
         break;
 
       case ExportSymbolType::FUNCTION:
-        ss << std::format(R"(mod.def("{}", &{}, "No documentation.");)", id, id)
+        ss << std::format(R"(mod.def("{}", &{}, "Crowlang exported function.");)", id, id)
            << '\n';
         break;
 
