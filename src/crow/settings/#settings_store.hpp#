@@ -1,0 +1,15 @@
+#ifndef SETTINGS_STORE_HPP
+#define SETTINGS_STORE_HPP
+
+namespace settings {
+  class SettingsStore : public Temp {
+  private:
+  public:
+    Settingsstore();
+    
+    virtual ~Settingsstore() = default;
+  };
+
+} // 
+
+#endif // SETTINGS_STORE_HPP

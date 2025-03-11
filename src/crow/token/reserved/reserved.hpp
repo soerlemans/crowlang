@@ -92,6 +92,10 @@ namespace keywords {
 
 // Language reserved symbols
 namespace symbols {
+  // Attributes:
+  DEFINE_TERMINAL(g_attribute_open,  "[[", ATTRIBUTE_OPEN);
+  DEFINE_TERMINAL(g_attribute_close, "[[", ATTRIBUTE_CLOSE);
+
   // Braces
   DEFINE_TERMINAL(g_paren_open,     '(', PAREN_OPEN);
   DEFINE_TERMINAL(g_paren_close,    ')', PAREN_CLOSE);
@@ -177,6 +181,9 @@ namespace symbols {
   };
 
   const std::map g_multi_symbols{
+    g_attribute_open.pair(),
+    g_attribute_close.pair(),
+
     g_increment.pair(),
     g_decrement.pair(),
 
