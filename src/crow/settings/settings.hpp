@@ -19,7 +19,9 @@ struct Settings {
   {}
 };
 
-
+// Functions:
+  //! Read compiler settings from CLI options or project.toml.
+auto get_settings() -> Settings;
 } // namespace settings
 
 #endif // CONFIG_HPP

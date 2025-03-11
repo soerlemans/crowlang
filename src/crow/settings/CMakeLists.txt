@@ -1,4 +1,6 @@
+# Add sources:
 target_sources(${TARGET_CROW} PRIVATE
-	cli.cpp
-	toml.cpp
+  settings.cpp
+  cli.cpp
+  toml.cpp
 )
