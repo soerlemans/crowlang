@@ -1,5 +1,5 @@
-#ifndef CONFIGURATION_UNIT_HPP
-#define CONFIGURATION_UNIT_HPP
+#ifndef CROW_CROW_STATE_CONFIGURATION_UNIT_HPP
+#define CROW_CROW_STATE_CONFIGURATION_UNIT_HPP
 
 // STL Includes:
 #include <memory>
@@ -29,4 +29,4 @@ class ConfigurationUnit {
 auto make_configuration_unit() -> ConfigurationUnitPtr;
 } // namespace state
 
-#endif // CONFIGURATION_UNIT_HPP
+#endif // CROW_CROW_STATE_CONFIGURATION_UNIT_HPP

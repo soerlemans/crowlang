@@ -7,12 +7,14 @@
 // Library Includes:
 #include <rang.hpp>
 
-// External Globals:
-Settings settings;
-
 // Internal:
 namespace {
-auto add_loglevel_flag([[maybe_unused]] CLI::App& t_app) -> void
+// Using Statements:
+using settings::Settings;
+
+// Functions:
+auto add_loglevel_flag([[maybe_unused]] CLI::App& t_app, Settings& t_settings)
+  -> void
 {
 #ifdef DEBUG
   using debug::LogLevel;
@@ -27,15 +29,15 @@ auto add_loglevel_flag([[maybe_unused]] CLI::App& t_app) -> void
   map.insert({"info", LogLevel::INFO});
   map.insert({"verbose", LogLevel::VERBOSE});
 
-  t_app.add_option("-l,--log-level", settings.m_level, "Set the LogLevel.")
+  t_app.add_option("-l,--log-level", t_settings.m_level, "Set the LogLevel.")
     ->transform(CLI::CheckedTransformer(map, CLI::ignore_case));
 #endif // DEBUG
 }
 
-auto add_positional_flags(CLI::App& t_app) -> void
+auto add_positional_flags(CLI::App& t_app, Settings& t_settings) -> void
 {
   // Program source files:
-  t_app.add_option("{}", settings.m_paths, "Files to compile.")
+  t_app.add_option("{}", t_settings.m_paths, "Files to compile.")
     ->check(CLI::ExistingFile)
     ->required();
 }
@@ -62,18 +64,24 @@ auto add_version_flag(CLI::App& t_app) -> void
 }
 } // namespace
 
+namespace settings {
 // Functions:
-auto cli_args(CLI::App& t_app, const int t_argc, char* t_argv[]) -> void
+auto cli_args(CLI::App& t_app, const int t_argc, char* t_argv[]) -> Settings
 {
+  Settings settings{};
+
   // Set the formatter.
   auto fmt{std::make_shared<BannerFormatter>()};
   t_app.formatter(fmt);
 
   // Add flags:
-  add_positional_flags(t_app);
-  add_loglevel_flag(t_app);
+  add_positional_flags(t_app, settings);
+  add_loglevel_flag(t_app, settings);
   add_nocolor_flag(t_app);
   add_version_flag(t_app);
 
   t_app.parse(t_argc, t_argv);
+
+  return settings;
 }
+} // namespace settings

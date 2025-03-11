@@ -7,7 +7,6 @@ target_sources(${TARGET_CROW_BIN} PRIVATE
 endif(TARGET ${TARGET_CROW_BIN})
 
 target_sources(${TARGET_CROW} PRIVATE
-	cli.cpp
 	banner.cpp
 )
 
@@ -17,6 +16,9 @@ add_subdirectory(container)
 
 # Error handling:
 add_subdirectory(exception)
+
+# Handles compiler settings.
+add_subdirectory(settings)
 
 # Invokes all the phases:
 add_subdirectory(state)

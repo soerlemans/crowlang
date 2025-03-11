@@ -1,10 +1,5 @@
-#ifndef CROW_CROW_CLI_HPP
-#define CROW_CROW_CLI_HPP
-
-// STL Includes:
-#include <filesystem>
-#include <sstream>
-#include <vector>
+#ifndef CROW_CROW_CONFIG_CLI_HPP
+#define CROW_CROW_CONFIG_CLI_HPP
 
 // Library Includes:
 #include <CLI/App.hpp>
@@ -13,24 +8,13 @@
 #include <CLI/Validators.hpp>
 
 // Absolute Includes:
-#include "debug/loglevel.hpp"
+#include "crow/banner.hpp"
+#include "crow/definitions.hpp"
 
 // Local Includes:
-#include "banner.hpp"
-#include "definitions.hpp"
+#include "settings.hpp"
 
-// Globals:
-struct Settings {
-  std::vector<std::filesystem::path> m_paths;
-  debug::LogLevel m_level;
-
-  Settings(): m_paths{}, m_level{debug::LogLevel::VERBOSE}
-  {}
-};
-
-// External globals:
-extern Settings settings;
-
+namespace settings {
 // Classes:
 class BannerFormatter : public CLI::Formatter {
   public:
@@ -51,6 +35,7 @@ class BannerFormatter : public CLI::Formatter {
 
 // Functions:
 //! Set the CLI arguments to include.
-auto cli_args(CLI::App& t_app, const int t_argc, char* t_argv[]) -> void;
+auto cli_args(CLI::App& t_app, const int t_argc, char* t_argv[]) -> Settings;
+} // namespace config
 
-#endif // CROW_CROW_CLI_HPP
+#endif // CROW_CROW_CONFIG_CLI_HPP

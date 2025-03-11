@@ -1,5 +1,5 @@
-#ifndef BACKEND_INTERFACE_HPP
-#define BACKEND_INTERFACE_HPP
+#ifndef CROW_CROW_CODEGEN_BACKEND_INTERFACE_HPP
+#define CROW_CROW_CODEGEN_BACKEND_INTERFACE_HPP
 
 // STL Includes:
 #include <memory>
@@ -59,4 +59,4 @@ class BackendInterface : public ast::visitor::NodeVisitor {
 auto select_backend(BackendType t_selector) -> BackendPtr;
 } // namespace codegen
 
-#endif // BACKEND_INTERFACE_HPP
+#endif // CROW_CROW_CODEGEN_BACKEND_INTERFACE_HPP

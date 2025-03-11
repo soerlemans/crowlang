@@ -5,8 +5,8 @@
 #include <cpptrace/cpptrace.hpp>
 
 // Local Includes:
-#include "cli.hpp"
 #include "debug/log.hpp"
+#include "settings/cli.hpp"
 #include "state/translation_unit.hpp"
 
 // Enums:
@@ -44,12 +44,14 @@ auto main(const int t_argc, char* t_argv[]) -> int
 {
   using rang::fg;
   using rang::style;
+  using settings::cli_args;
 
   // Initialize command line argument parser.
   CLI::App app{"Compiler for Crow(lang)"};
   try {
     disable_absorb_exceptions();
-    cli_args(app, t_argc, t_argv);
+    auto settings{cli_args(app, t_argc, t_argv)};
+
     // Set loglevel.
     debug::set_loglevel(settings.m_level);
   } catch(const CLI::ParseError& e) {
