@@ -6,15 +6,22 @@
 
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
+#include "crow/codegen/backend_interface.hpp"
+#include "crow/semantic/symbol_table/symbol_table.hpp"
 #include "lib/filesystem.hpp"
 #include "lib/types.hpp"
+
+// Local Includes:
+#include "interop_backends/interop_backend_interface.hpp"
 
 namespace codegen::cpp_backend {
 // Using Statements:
 using namespace ast;
 
 // Using Declarations:
+using interop_backends::InteropBackendPtr;
 using node::NodePtr;
+using semantic::symbol_table::SymbolTablePtr;
 using std::filesystem::path;
 using visitor::Any;
 
@@ -25,8 +32,14 @@ using visitor::Any;
  * This generated C++ code could later be compiled with libclang.
  * Or any compiler of choice.
  */
-class CppBackend : public ast::visitor::NodeVisitor {
+class CppBackend : public BackendInterface {
   private:
+  // Global symbol table used for quick symbol lookup.
+  // Currently unused as the idea was to use it for interop.
+  SymbolTablePtr m_symbol_table;
+
+  std::vector<InteropBackendPtr> m_interop_backends;
+
   // TODO: Move terminate functionality in its own class to separate concerns.
   std::stack<bool> m_terminate;
 
@@ -132,11 +145,13 @@ class CppBackend : public ast::visitor::NodeVisitor {
   auto visit(node::List* t_list) -> Any override;
 
   // Util:
+  auto add_interop_backend(InteropBackendPtr t_ptr) -> void;
+
   /*!
    * Transpile the @ref t_ast to valid C++ code and write it to @ref t_out.
    */
   auto codegen(NodePtr t_ast, const path& t_out) -> void;
-  auto compile(NodePtr t_ast) -> void;
+  auto compile(AstPack t_pack, path t_stem) -> void override;
 
   virtual ~CppBackend() = default;
 };

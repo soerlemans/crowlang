@@ -4,9 +4,6 @@
 // STL Includes:
 #include <filesystem>
 
-// Library Includes:
-// #include <clang/Basic/TargetOptions.h>
-
 // Absolute Includes:
 #include "lib/filesystem.hpp"
 
@@ -17,13 +14,12 @@ using std::filesystem::path;
 // Classes:
 class ClangFrontendInvoker {
   private:
-  // std::shared_ptr<clang::> m_target_options;
-
-  protected:
-  auto init_llvm_targets() -> void;
+  std::stringstream m_compiler_flags;
 
   public:
-  ClangFrontendInvoker() = default;
+  ClangFrontendInvoker();
+
+  auto add_flags(std::string_view t_str) -> void;
 
   auto compile(const path& t_filepath) -> void;
 

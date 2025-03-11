@@ -39,7 +39,7 @@ class CrowParser : public pratt::PrattParser {
   auto context_check(Context t_context) -> void;
 
   public:
-  CrowParser(TokenStream t_tokenstream);
+  CrowParser(TokenStream t_token_stream);
 
   // Grammar:
   auto newline_opt() -> void override;

@@ -13,8 +13,8 @@ namespace parser::pratt {
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-PrattParser::PrattParser(TokenStream&& t_tokenstream)
-  : Parser{std::move(t_tokenstream)}
+PrattParser::PrattParser(TokenStream&& t_token_stream)
+  : Parser{std::move(t_token_stream)}
 {}
 
 // Prefix parsing:

@@ -9,7 +9,7 @@
 // Absolute Includes:
 #include "crow/container/text_stream.hpp"
 #include "crow/token/reserved/reserved.hpp"
-#include "crow/token/tokenstream.hpp"
+#include "crow/token/token_stream.hpp"
 
 namespace lexer {
 // Using Statements:

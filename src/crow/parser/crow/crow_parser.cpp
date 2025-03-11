@@ -30,8 +30,8 @@ auto CrowParser::context_check(const Context t_context) -> void
 }
 
 // Public Methods:
-CrowParser::CrowParser(TokenStream t_tokenstream)
-  : PrattParser{std::move(t_tokenstream)}, m_store{}
+CrowParser::CrowParser(TokenStream t_token_stream)
+  : PrattParser{std::move(t_token_stream)}, m_store{}
 {}
 
 auto CrowParser::newline_opt() -> void

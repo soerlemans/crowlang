@@ -1,0 +1,36 @@
+ * Create bindings automatically for the cpp_backend.
+   * For languages:
+     * Create bindings for Python.
+     * Create bindings for Lua.
+     * Create bindings for Javascript.
+     * Create bindings for C.
+   * Create an interface for the bindings generators:
+     * Named InteropBackendInterface.
+     * With methods:
+	   * prologue()
+	   * epilogue()
+	   * generate(NodePtr ast)
+	   * Now must be considered how we register a source to a backend as this can differ per interop backend.
+	   * Also registering a source might require a custom registration handles.
+ * Create a cmake_backend for compiling the projects using CMake.
+   * This backend should have an interface containing the following:
+     * register_source()
+     * register_header()
+     * generate(NodePtr ast)
+     * project(std::string_view t_project_name)
+ * Create a generator_interface.hpp interface in codegen/ (consider)
+   * Give it the method generate(NodePtr ast)
+ * From now on the compiler should always expect a project.toml in the root or subdirectories.
+ * Multiple project.toml's might would have to be supported one day.
+ * Create more elaborate Settings handling.
+ * Move crow/container to lib/container.
+   * The  container are general enough so they should be in lib/container, its just more clean/logical.
+ * Create a subcommand for the compiler that allows you to only compile a single source.
+ * As there might be multiple project.toml, we need to find a way to deal with multiple at the same time.
+   * Maybe create a ProjectConfigurationStore where each source has a reference/pointer to the project configuration.
+   * Then we can ship the pointer with the ast tokenstream and whatever.
+   * This would require some kind of pipeline structure with pluggable elements
+     * As not all of the data structures are relevant for the entire compilation pipeline.
+ * Create an AST heuristics visitor, which counts the occurences of nodes and their memory footprint.
+   * Use tabulate for the result printing.
+ * Run source compilation in parallel.

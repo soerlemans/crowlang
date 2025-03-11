@@ -10,6 +10,7 @@ TODO: Document.
 from invoke import task
 
 # Standard Imports:
+import sys
 import json
 import multiprocessing
 from enum import StrEnum
@@ -119,13 +120,13 @@ def all(ctx, parallel=True, lint=False):
 
 
 @task
-def install(ctx, mode='', parallel=True):
+def install(ctx, mode='', parallel=True, lint=False):
     log('Building project.')
-    log_args(mode=mode, parallel=parallel)
+    log_args(mode=mode, parallel=parallel, lint=lint)
 
     enum_values = [ item.value for item in BuildMode ]
     mode = mode if mode in enum_values else 'build'
-    cmake(ctx, mode, parallel, False)
+    cmake(ctx, mode, parallel, lint)
 
     # TODO: Check if the build made it or not.
     # TODO: Copy transpiler from Mode install location to /usr/local/bin/
@@ -181,6 +182,9 @@ def clean(ctx, objects=False):
         print(f'@Invoke: Removing: {path}')
         ctx.run(f'rm -rf {path}/*')
         pass
+
+    # Remove any generated binaries.
+    ctx.run(f'rm -rf *.out')
     pass
 
 
@@ -206,4 +210,25 @@ def docs(ctx, pdf=False):
     if pdf:
         ctx.run('cd doxygen/latex && make')
         pass
+    pass
+
+@task
+def setup(ctx):
+    'Setup dependencies.'
+    match sys.platform:
+        case 'linux':
+            ctx.run('bash tools/setup/setup.sh')
+            pass
+
+        case 'win32':
+            print('Currently the setup script does not support Windows.')
+            pass
+
+        case 'darwin':
+            print('Currently the setup script does not support MacOS.')
+            pass
+
+        case _:
+            print(f'Unsupported platform: {sys.platform}')
+            pass
     pass

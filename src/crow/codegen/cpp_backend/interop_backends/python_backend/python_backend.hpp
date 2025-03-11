@@ -1,0 +1,65 @@
+#ifndef CROW_CROW_CODEGEN_CPP_BACKEND_INTEROP_BACKENDS_PYTHON_BACKEND_PYTHON_BACKEND_HPP
+#define CROW_CROW_CODEGEN_CPP_BACKEND_INTEROP_BACKENDS_PYTHON_BACKEND_PYTHON_BACKEND_HPP
+
+// STL Includes:
+#include <sstream>
+#include <vector>
+
+// Relative Includes:
+#include "../interop_backend_interface.hpp"
+
+namespace codegen::cpp_backend::interop_backends::python_backend {
+// Forward Declarations:
+struct ExportSymbol;
+
+// Aliases:
+//! Symbols that should be exported.
+using ExportSymbols = std::vector<ExportSymbol>;
+
+// Enums:
+/*!
+ * Symbol type that is being exported.
+ */
+enum class ExportSymbolType {
+  FUNCTION,
+  CONSTANT,
+  VARIABLE
+};
+
+// Structs:
+/*!
+ * Struct keeping track of exported symbols regarding interoperability.
+ * The identifier is a 
+ */
+struct ExportSymbol {
+  std::string m_id;
+  ExportSymbolType m_type;
+};
+
+// Classes:
+/*!
+ * Generate pythong bindings for use with pybind11.
+ * TODO: Describe usage generate(), dont run on whole ast.
+ */
+class PythonBackend : public InteropBackendInterface {
+  private:
+  std::stringstream m_ss;
+
+  ExportSymbols m_symbols;
+
+  public:
+  PythonBackend();
+
+  auto prologue() -> std::string override;
+
+  auto register_constant(std::string_view t_id) -> void override;
+  auto register_variable(std::string_view t_id) -> void override;
+  auto register_function(std::string_view t_id) -> void override;
+
+  auto epilogue() -> std::string override;
+
+  virtual ~PythonBackend() = default;
+};
+} // namespace codegen::cpp_backend::interop_backends
+
+#endif // CROW_CROW_CODEGEN_CPP_BACKEND_INTEROP_BACKENDS_PYTHON_BACKEND_PYTHON_BACKEND_HPP

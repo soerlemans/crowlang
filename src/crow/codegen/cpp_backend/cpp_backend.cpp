@@ -40,8 +40,17 @@ auto CppBackend::prologue() -> std::string
   // FIXME: Temporary input for printing purposes.
   ss << "// Stdlibcrow Includes:\n";
   ss << R"(#include "stdlibcrow/io.hpp")" << '\n';
-  ss << R"(#include "stdlibcrow/internal/defer.hpp")" << '\n';
+  ss << R"(#include "stdlibcrow/internal/defer.hpp")" << "\n\n";
+
+  // Loop through the interop backends and add the prologue from each backend.
+  for(auto& ptr : m_interop_backends) {
+    ss << ptr->prologue();
+  }
+
   ss << "\n\n";
+
+  ss << "// Aliases:\n";
+  ss << "namespace stdinternal = stdlibcrow::internal;\n";
 
   return ss.str();
 }
@@ -49,6 +58,11 @@ auto CppBackend::prologue() -> std::string
 auto CppBackend::epilogue() -> std::string
 {
   std::stringstream ss;
+
+  // Loop through the interop backends and add the epilogue.
+  for(auto& ptr : m_interop_backends) {
+    ss << ptr->epilogue();
+  }
 
   return ss.str();
 }
@@ -86,6 +100,7 @@ auto CppBackend::resolve(NodePtr t_ptr, const bool t_terminate) -> std::string
   std::stringstream ss;
 
   if(t_ptr) {
+    // Keep track of if the current node we are traversing should be terminated.
     m_terminate.push(t_terminate);
     const auto any{traverse(t_ptr)};
     m_terminate.pop();
@@ -101,7 +116,8 @@ auto CppBackend::resolve(NodePtr t_ptr, const bool t_terminate) -> std::string
 }
 
 // Public:
-CppBackend::CppBackend(): m_terminate{}, m_id_defer_count{0}
+CppBackend::CppBackend()
+  : m_symbol_table{}, m_interop_backends{}, m_terminate{}, m_id_defer_count{0}
 {}
 
 // Control:
@@ -163,8 +179,9 @@ auto CppBackend::visit(Defer* t_defer) -> Any
 
   const auto body{resolve(t_defer->body())};
 
-  ss << std::format("const Defer defer_object{}{{ [&](){{ {} }} }};\n",
-                    m_id_defer_count, body);
+  ss << std::format(
+    "const stdinternal::Defer defer_object{}{{ [&](){{ {} }} }};\n",
+    m_id_defer_count, body);
 
   m_id_defer_count++;
 
@@ -212,6 +229,13 @@ auto CppBackend::visit(Function* t_fn) -> Any
      << resolve(t_fn->body())
      << "}\n";
   // clang-format on
+
+  // FIXME: We should do this by looping through the toplevel.
+  // Of the SymbolTable instead.
+  // Register function to interop backend.
+  for(auto& ptr : m_interop_backends) {
+    ptr->register_function(identifier);
+  }
 
   return ss.str();
 }
@@ -446,6 +470,11 @@ auto CppBackend::visit(List* t_list) -> Any
 }
 
 // Util:
+auto CppBackend::add_interop_backend(InteropBackendPtr t_ptr) -> void
+{
+  m_interop_backends.emplace_back(t_ptr);
+}
+
 auto CppBackend::codegen(NodePtr t_ast, const path& t_out) -> void
 {
   std::ofstream ofs{t_out};
@@ -461,22 +490,38 @@ auto CppBackend::codegen(NodePtr t_ast, const path& t_out) -> void
   // Generate C++ code.
   ofs << "// C++ code:\n";
   ofs << resolve(t_ast);
+
+  ofs << "// Epilogue:\n";
+  ofs << epilogue() << '\n';
 }
 
-auto CppBackend::compile(NodePtr t_ast) -> void
+auto CppBackend::compile(AstPack t_pack, path t_stem) -> void
 {
   const auto tmp_dir{lib::temporary_directory()};
-  const path tmp_src{tmp_dir / "main.cpp"};
+  const path tmp_src{tmp_dir / t_stem.concat(".cpp")};
 
-  // Log stuff:
+  const auto& [ast, symbol_table] = t_pack;
+  m_symbol_table = symbol_table;
+
+  // Log filepath's:
   DBG_INFO("tmp_dir: ", tmp_dir);
   DBG_INFO("tmp_src: ", tmp_src);
 
   // Generate C++ source file.
-  codegen(t_ast, tmp_src);
+  codegen(ast, tmp_src);
 
   // Invoke clang frontend to generate a binary.
   ClangFrontendInvoker inv{};
+
+  // FIXME: Temporarily add the flags needed for Python interop.
+  // This assumes that we have python3 and the pybind11 installed.
+  inv.add_flags("-shared -fPIC $(python3 -m pybind11 --includes)");
+
   inv.compile(tmp_src);
+
+  // Clear members, for next compilation.
+  m_symbol_table.reset();
+  m_terminate = {};
+  m_id_defer_count = 0;
 }
 } // namespace codegen::cpp_backend

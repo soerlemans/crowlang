@@ -29,7 +29,7 @@ using TerminalMap = boost::bimap<Key, TokenType>;
 // clang-format off
 // Language reserved keywords
 namespace keywords {
-	// Variables:
+  // Variables:
   DEFINE_TERMINAL(g_let, "let", LET);
   DEFINE_TERMINAL(g_var, "var", VAR);
 

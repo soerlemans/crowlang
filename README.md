@@ -25,7 +25,7 @@ fn main() -> int {
 ## Dependencies
 In order to compile the project you will need to following dependencies:
 
-- C++ compiler with support for C++23
+- C++ compiler with support for C++23.
 - [Invoke](https://www.pyinvoke.org/) (Used to invoke CMake and scripts)
 - [Cmake](https://cmake.org/)  (Main buildsysstem)
 - [CLI11](https://github.com/CLIUtils/CLI11) (CLI option parsing library)
@@ -36,34 +36,33 @@ In order to compile the project you will need to following dependencies:
 - [libclang](https://clang.llvm.org/doxygen/group__CINDEX.html) (libclang for compiling C++ sources (part of the LLVM project.))
 - [cereal](https://uscilab.github.io/cereal/) (Serialization library used for the AST)
 - [libassert](https://github.com/jeremy-rifkin/libassert) (Modern assertion library for compile and runtime assertion checking)
+- [pybind11]() (Used to generate C++ to Python bindings.)
 
 ### Buildsystem
-In order to compile the project you will need `invoke`, `clang` and `cmake`.
-You can install most of the dependencies with the following aptitude command:
-
+In order to compile the project you will need a couple of dependencies.
+First we use invoke to invoke different python scripts, to orchestrate building the project.
+In order to install invoke it is best to use pipx.
+Which is installed using:
 ```shell
-apt install -y pipx clang cmake extra-cmake-modules
+apt install -y pipx
 ```
 
-In order to make use of invoke you should install it through `pipx`:
-
+In order to make use of invoke you should install it through `pipx`.
 ```shell
 pipx install invoke
 ```
 
-#### Build
+The you can invoke the appropriate setup script for your OS by running:
+```shell
+inv setup
+```
+
+If your OS is not supported it is best to checkout `tools/setup` and figure out what dependencies you require.
+
+### Build
 After installing the necessary dependencies you can build the compiler by running:
 ```
 inv build --parallel
-```
-
-### Dynamic libraries
-Rang and tabulate are downloaded using CMake and statically linked.
-CLI11, Boost, LLVM and libclang are dynamically linked (CMake searches for it on your system).
-You can install the dependencies with the following aptitude command:
-
-```shell
-apt install -y libcurl4 libcli11-dev llvm-17-dev libclang-17-dev liblld-17-dev libboost-all-dev libzstd-dev
 ```
 
 ## Project documentation

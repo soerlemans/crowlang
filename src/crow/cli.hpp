@@ -11,7 +11,6 @@
 #include <CLI/CLI.hpp>
 #include <CLI/Error.hpp>
 #include <CLI/Validators.hpp>
-#include <rang.hpp>
 
 // Absolute Includes:
 #include "debug/loglevel.hpp"

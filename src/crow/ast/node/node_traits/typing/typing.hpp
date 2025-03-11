@@ -8,7 +8,7 @@
  */
 
 // STL Includes:
-#include <iostream>
+#include <iosfwd>
 #include <list>
 #include <memory>
 #include <optional>

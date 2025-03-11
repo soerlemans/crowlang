@@ -1,0 +1,8 @@
+[package]
+name = "example-project"
+version = "0.0.1"
+authors = ["soerlemans"]
+
+[bindings]
+python = true
+c_lang = true

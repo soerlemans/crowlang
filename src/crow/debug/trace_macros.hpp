@@ -7,11 +7,7 @@
 
 // Macros:
 #ifdef DEBUG
-#define DBG_TRACE_INIT() \
-  int m_counter__        \
-  {                      \
-    0                    \
-  }
+#define DBG_TRACE_INIT() int m_counter__{0}
 
 // TRACE is intended for showing which functions call which in a tree like
 // manner

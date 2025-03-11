@@ -20,6 +20,7 @@
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
 #include "crow/debug/log.hpp"
+#include "lib/filesystem.hpp"
 #include "lib/types.hpp"
 
 namespace codegen::llvm_backend {
@@ -94,7 +95,8 @@ auto LlvmBackend::visit(If* t_if) -> Any
 
   fn->insert(fn->end(), merge);
   m_builder->SetInsertPoint(merge);
-  [[maybe_unused]] auto* pn{
+  [[maybe_unused]]
+  auto* pn{
     m_builder->CreatePHI(llvm::Type::getDoubleTy(*m_context), 2, "iftmp")};
 
   // Figure this out?
@@ -317,13 +319,6 @@ auto LlvmBackend::configure_target() -> void
   m_module->setTargetTriple(target);
 }
 
-auto LlvmBackend::codegen(NodePtr t_ast) -> void
-{
-  configure_target();
-
-  traverse(t_ast);
-}
-
 auto LlvmBackend::dump_ir(std::ostream& t_os) -> void
 {
   std::string str;
@@ -334,28 +329,38 @@ auto LlvmBackend::dump_ir(std::ostream& t_os) -> void
   t_os << str;
 }
 
-auto LlvmBackend::compile(const path t_path) -> void
+//! FIXME: For now we do nothing with the @ref SymbolTable
+auto LlvmBackend::compile(AstPack t_pack, path t_stem) -> void
 {
   using namespace llvm;
   using namespace llvm::sys::fs;
 
   configure_target();
 
+  const auto tmp_dir{lib::temporary_directory()};
+  const path tmp_src{tmp_dir / t_stem.concat(".ll")};
+
+  const auto& [ast, symbol_table] = t_pack;
+
+  // Log filepath's:
+  DBG_INFO("tmp_dir: ", tmp_dir);
+  DBG_INFO("tmp_src: ", tmp_src);
+
+  // Initialize all target stuff:
+  InitializeAllTargetInfos();
+  InitializeAllTargets();
+  InitializeAllTargetMCs();
+  InitializeAllAsmParsers();
+  InitializeAllAsmPrinters();
+
   // Obtain filehandle to destination file
-  const auto filename{t_path.c_str()};
+  const auto filename{tmp_src.c_str()};
   std::error_code err_code{};
   raw_fd_ostream dest{filename, err_code, sys::fs::OF_None};
 
   if(err_code) {
     errs() << "Could not open file: " << err_code.message();
   }
-
-  // Initialize all target stuff:
-  // InitializeAllTargetInfos();
-  // InitializeAllTargets();
-  // InitializeAllTargetMCs();
-  // InitializeAllAsmParsers();
-  // InitializeAllAsmPrinters();
 
   // Resolve target:
   const auto target_str{m_module->getTargetTriple()};
@@ -371,20 +376,29 @@ auto LlvmBackend::compile(const path t_path) -> void
   const auto cpu{"generic"};
   const auto features{""};
 
-  TargetOptions opt;
-  std::optional<Reloc::Model> reloc_model;
+  TargetOptions opt{};
+  std::optional<Reloc::Model> reloc_model{};
   auto target_machine{
     target->createTargetMachine(target_str, cpu, features, opt, reloc_model)};
 
   // Write object file:
-  legacy::PassManager pass;
+  legacy::PassManager pass{};
   const auto fype{CGFT_ObjectFile};
-
   if(target_machine->addPassesToEmitFile(pass, dest, nullptr, fype)) {
     errs() << "target_machine can't emit a file of this type";
     return; // TODO: Fix
   }
 
+  // Traverse ast to generate LLVM IR:
+  traverse(ast);
+  dump_ir(std::cout);
+
+  if(llvm::verifyModule(*m_module, &llvm::errs())) {
+    llvm::errs() << "Error: The module is invalid!\n";
+    return; // Exit or handle the error appropriately
+  }
+
+  //
   pass.run(*m_module);
   dest.flush();
 
@@ -393,7 +407,7 @@ auto LlvmBackend::compile(const path t_path) -> void
 
   // Make object file executable:
   const perms permissions{others_write | all_read | all_exe};
-  err_code = setPermissions(t_path.c_str(), permissions);
+  err_code = setPermissions(tmp_src.c_str(), permissions);
 
   errs() << err_code.message() << " Done...\n";
 

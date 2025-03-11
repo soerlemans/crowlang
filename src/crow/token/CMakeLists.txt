@@ -1,6 +1,6 @@
 # Add source files
 target_sources(${TARGET_CROW_LIB} PRIVATE
   token.cpp
-  tokenstream.cpp
+  token_stream.cpp
   tokentype2str.cpp
 )

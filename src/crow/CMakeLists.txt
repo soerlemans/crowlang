@@ -1,5 +1,6 @@
 # Add source files:
 if(TARGET ${TARGET_CROW_BIN})
+# Do not add main.cpp to build tree if we are building tests.
 target_sources(${TARGET_CROW_BIN} PRIVATE
 	main.cpp
 )
@@ -8,7 +9,6 @@ endif(TARGET ${TARGET_CROW_BIN})
 target_sources(${TARGET_CROW} PRIVATE
 	cli.cpp
 	banner.cpp
-	phases.cpp
 )
 
 # Utilities:
@@ -18,6 +18,9 @@ add_subdirectory(container)
 # Error handling:
 add_subdirectory(exception)
 
+# Invokes all the phases:
+add_subdirectory(state)
+
 # Lexing phase:
 add_subdirectory(token)
 add_subdirectory(lexer)
@@ -26,8 +29,8 @@ add_subdirectory(lexer)
 add_subdirectory(ast)
 add_subdirectory(parser)
 
-# Program verification phase:
-add_subdirectory(check)
+# Semantic analysis:
+add_subdirectory(semantic)
 
 # Code generation phase:
 add_subdirectory(codegen)
