@@ -1,9 +1,31 @@
 #ifndef CROW_CROW_CONFIG_TOML_HPP
 #define CROW_CROW_CONFIG_TOML_HPP
 
-// Library Includes:
-#include <toml++/toml.hpp>
+// STL Includes:
+#include <filesystem>
+#include <optional>
+#include <string_view>
 
-namespace settings {} // namespace settings
+// Local Includes:
+#include "settings.hpp"
+
+namespace settings {
+// Using Statements:
+using namespace std::literals::string_view_literals;
+
+// Aliases:
+namespace fs = std::filesystem;
+
+using PathOpt = std::optional<fs::path>;
+
+// Globals:
+//! Name of the TOML file.
+constexpr auto settings_toml{"crow.toml"sv};
+
+// Functions:
+auto find_settings_toml(const std::string_view t_filename = settings_toml)
+  -> PathOpt;
+auto read_settings_toml(const fs::path t_filepath) -> Settings;
+} // namespace settings
 
 #endif // CROW_CROW_CONFIG_TOML_HPP

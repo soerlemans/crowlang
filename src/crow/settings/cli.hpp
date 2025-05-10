@@ -35,7 +35,8 @@ class BannerFormatter : public CLI::Formatter {
 
 // Functions:
 //! Set the CLI arguments to include.
-auto cli_args(CLI::App& t_app, const int t_argc, char* t_argv[]) -> Settings;
-} // namespace config
+auto read_cli_settings(CLI::App& t_app, const int t_argc, char* t_argv[])
+  -> Settings;
+} // namespace settings
 
 #endif // CROW_CROW_CONFIG_CLI_HPP

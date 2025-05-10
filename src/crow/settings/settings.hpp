@@ -10,18 +10,35 @@
 #include "crow/debug/loglevel.hpp"
 
 namespace settings {
+// Aliases:
+namespace fs = std::filesystem;
+using SourceFiles = std::vector<fs::path>;
+
 // Structs:
 struct Settings {
-  std::vector<std::filesystem::path> m_paths;
+  SourceFiles m_paths;
   debug::LogLevel m_level;
 
+  // Methods:
   Settings(): m_paths{}, m_level{debug::LogLevel::VERBOSE}
   {}
+
+  Settings(const Settings&) = default;
+
+
+  // Operators:
+  auto operator=(Settings&&) noexcept -> Settings& = default;
+
+  virtual ~Settings() = default;
 };
 
 // Functions:
-  //! Read compiler settings from CLI options or project.toml.
+//! Read compiler settings from CLI options or project.toml.
 auto get_settings() -> Settings;
 } // namespace settings
+
+// Functions:
+auto operator<<(std::ostream& t_os, const settings::Settings& t_settings)
+  -> std::ostream&;
 
 #endif // CONFIG_HPP

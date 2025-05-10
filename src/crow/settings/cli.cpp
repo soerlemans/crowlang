@@ -66,7 +66,7 @@ auto add_version_flag(CLI::App& t_app) -> void
 
 namespace settings {
 // Functions:
-auto cli_args(CLI::App& t_app, const int t_argc, char* t_argv[]) -> Settings
+auto read_cli_settings(CLI::App& t_app, const int t_argc, char* t_argv[]) -> Settings
 {
   Settings settings{};
 

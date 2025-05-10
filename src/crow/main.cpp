@@ -44,13 +44,13 @@ auto main(const int t_argc, char* t_argv[]) -> int
 {
   using rang::fg;
   using rang::style;
-  using settings::cli_args;
+  using settings::read_cli_settings;
 
   // Initialize command line argument parser.
   CLI::App app{"Compiler for Crow(lang)"};
   try {
     disable_absorb_exceptions();
-    auto settings{cli_args(app, t_argc, t_argv)};
+    auto settings{read_cli_settings(app, t_argc, t_argv)};
 
     // Set loglevel.
     debug::set_loglevel(settings.m_level);
