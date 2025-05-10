@@ -9,6 +9,10 @@
 // Absolute Includes:
 #include "crow/debug/loglevel.hpp"
 
+// Local Includes:
+#include "cli.hpp"
+#include "toml.hpp"
+
 namespace settings {
 // Aliases:
 namespace fs = std::filesystem;
@@ -34,7 +38,7 @@ struct Settings {
 
 // Functions:
 //! Read compiler settings from CLI options or project.toml.
-auto get_settings() -> Settings;
+auto get_settings(CLI::App& t_app, int t_argc, char* t_argv[]) -> Settings;
 } // namespace settings
 
 // Functions:

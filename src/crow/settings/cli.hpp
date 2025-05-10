@@ -11,10 +11,10 @@
 #include "crow/banner.hpp"
 #include "crow/definitions.hpp"
 
-// Local Includes:
-#include "settings.hpp"
-
 namespace settings {
+// Forward Declarations:
+struct Settings;
+
 // Classes:
 class BannerFormatter : public CLI::Formatter {
   public:
@@ -35,8 +35,7 @@ class BannerFormatter : public CLI::Formatter {
 
 // Functions:
 //! Set the CLI arguments to include.
-auto read_cli_settings(CLI::App& t_app, const int t_argc, char* t_argv[])
-  -> Settings;
+auto read_cli_settings(CLI::App& t_app, int t_argc, char* t_argv[]) -> Settings;
 } // namespace settings
 
 #endif // CROW_CROW_CONFIG_CLI_HPP

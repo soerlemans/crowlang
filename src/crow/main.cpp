@@ -6,7 +6,7 @@
 
 // Local Includes:
 #include "debug/log.hpp"
-#include "settings/cli.hpp"
+#include "settings/settings.hpp"
 #include "state/translation_unit.hpp"
 
 // Enums:
@@ -27,12 +27,12 @@ static auto disable_absorb_exceptions() -> void
 #endif
 }
 
-static auto run() -> void
+static auto run(settings::Settings t_settings) -> void
 {
   using state::TranslationUnit;
 
   // For now just compile all translation units, sequentially.
-  for(const auto& path : settings.m_paths) {
+  for(const auto& path : t_settings.m_paths) {
     TranslationUnit unit{path};
 
     unit.execute();
@@ -44,24 +44,21 @@ auto main(const int t_argc, char* t_argv[]) -> int
 {
   using rang::fg;
   using rang::style;
-  using settings::read_cli_settings;
+  using settings::get_settings;
 
-  // Initialize command line argument parser.
   CLI::App app{"Compiler for Crow(lang)"};
   try {
     disable_absorb_exceptions();
-    auto settings{read_cli_settings(app, t_argc, t_argv)};
 
-    // Set loglevel.
+    // Retrieve settings (CLI/TOML).
+    auto settings{get_settings(app, t_argc, t_argv)};
     debug::set_loglevel(settings.m_level);
+
+    run(settings);
   } catch(const CLI::ParseError& e) {
     const auto exit_code{CLI11_EXCEPTION + app.exit(e)};
 
     return exit_code;
-  }
-
-  try {
-    run();
   } catch(std::exception& e) {
     std::cerr << style::bold << " - ";
     std::cerr << fg::red << "EXCEPTION";

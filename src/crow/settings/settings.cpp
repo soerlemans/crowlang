@@ -8,9 +8,8 @@
 #include "crow/settings/toml.hpp"
 
 namespace settings {
-auto get_settings(const int t_argc, char* t_argv[]) -> Settings
+	auto get_settings(CLI::App& t_app, const int t_argc, char* t_argv[]) -> Settings
 {
-  CLI::App app{"Compiler for Crow(lang)"};
   Settings settings{};
 
   try {
@@ -23,7 +22,7 @@ auto get_settings(const int t_argc, char* t_argv[]) -> Settings
     }
 
     // CLI settings overwrite TOML settings.
-    settings = read_cli_settings(app, t_argc, t_argv);
+    settings = read_cli_settings(t_app, t_argc, t_argv);
   } catch(std::exception& e) {
     // TODO: Will I use this?
   }

@@ -1,10 +1,10 @@
 #include "toml.hpp"
 
-// Library Includes:
-#include <toml++/toml.hpp>
-
 // Absolute Includes:
 #include "crow/debug/log.hpp"
+
+// Local Includes:
+#include "settings.hpp"
 
 namespace settings {
 // Functions:

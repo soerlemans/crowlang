@@ -6,10 +6,13 @@
 #include <optional>
 #include <string_view>
 
-// Local Includes:
-#include "settings.hpp"
+// Library Includes:
+#include <toml++/toml.hpp>
 
 namespace settings {
+// Forward Declarations:
+struct Settings;
+
 // Using Statements:
 using namespace std::literals::string_view_literals;
 
