@@ -23,7 +23,7 @@ jobs:
       run: |
         sudo apt update && sudo apt install clang-format-19
 
-        echo "Clang-format version:"
+        echo -n "Clang-format version:"
         clang-format-19 --version
 
     - name: Check formatting.
