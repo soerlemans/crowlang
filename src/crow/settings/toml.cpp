@@ -42,13 +42,14 @@ auto find_settings_toml(const std::string_view t_filename) -> PathOpt
 auto read_settings_toml(const fs::path t_filepath) -> Settings
 {
   using toml::parse_error;
+  using namespace std::literals;
 
   Settings settings{};
 
   try {
     auto config{toml::parse_file(t_filepath.native())};
 
-
+    // std::cout << config["debug"]["loglevel"].value_or("empty"sv);
   } catch(const toml::parse_error& err) {
 
     const auto filepath_quoted{std::quoted(t_filepath.native())};

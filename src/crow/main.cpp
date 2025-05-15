@@ -41,7 +41,7 @@ static auto run(settings::Settings t_settings) -> void
 
 //! Log something as an exception.
 template<typename T>
-auto exception(const T t_msg) -> void
+inline auto exception(const T t_msg) -> void
 {
   using rang::fg;
   using rang::style;
@@ -53,7 +53,7 @@ auto exception(const T t_msg) -> void
   std::cerr << t_msg << std::endl;
 }
 
-auto uncaught_object() -> void
+inline auto uncaught_object() -> void
 {
   using rang::fg;
   using rang::style;
