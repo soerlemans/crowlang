@@ -1,10 +1,55 @@
 #include "toml.hpp"
 
+// STL Includes:
+#include <filesystem>
+
 // Absolute Includes:
 #include "crow/debug/log.hpp"
 
 // Local Includes:
 #include "settings.hpp"
+
+// Internal:
+namespace {
+// Using Statements:
+using namespace settings;
+
+// Aliases:
+namespace fs = std::filesystem;
+
+// Functions:
+auto toml_project_section(toml::table& t_table, Settings& t_settings) -> void
+{
+  using toml::is_string;
+
+  auto project{t_table["project"]};
+  auto* sources{project["sources"].as_array()};
+
+  if(sources) {
+    const auto lambda{[&](auto&& t_elem) noexcept {
+      if constexpr(is_string<decltype(t_elem)>) {
+        // Insert paths to source files.
+        auto& paths{t_settings.m_paths};
+        auto path{t_elem.get()};
+
+        DBG_INFO("Compilation path added: ", path);
+        paths.push_back(path);
+      } else {
+        DBG_WARNING("Non string value in array.");
+      }
+    }};
+
+    sources->for_each(lambda);
+  } else {
+    DBG_INFO("TOML path project.sources non existent.");
+  }
+}
+
+auto toml_debug_section(toml::table& t_table, Settings& t_settings) -> void
+{
+  auto debug{t_table["debug"]};
+}
+} // namespace
 
 namespace settings {
 // Functions:
@@ -47,9 +92,13 @@ auto read_settings_toml(const fs::path t_filepath) -> Settings
   Settings settings{};
 
   try {
-    auto config{toml::parse_file(t_filepath.native())};
+    auto table{toml::parse_file(t_filepath.native())};
 
-    // std::cout << config["debug"]["loglevel"].value_or("empty"sv);
+    toml_project_section(table, settings);
+    toml_debug_section(table, settings);
+
+    // config["project"]["sources"]
+    //  std::cout << config["debug"]["loglevel"].value_or("empty"sv);
   } catch(const toml::parse_error& err) {
 
     const auto filepath_quoted{std::quoted(t_filepath.native())};
