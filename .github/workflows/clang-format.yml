@@ -18,10 +18,10 @@ jobs:
       with:
         fetch-depth: 2
 
-    - name: Install Clang format version 16.
+    - name: Install Clang format version 19.
       id: install-clang-format
       run: |
-        apt update && apt install clang-format-19
+        sudo apt update && sudo apt install clang-format-19
 
         echo "Clang-format version:"
         clang-format-19 --version
