@@ -1,8 +1,9 @@
+# Add sources:
 target_sources(${TARGET_CROW_LIB} PRIVATE
   list.cpp
 )
 
-# Add subdirectories
+# Add subdirectories:
 add_subdirectory(control)
 add_subdirectory(function)
 add_subdirectory(lvalue)

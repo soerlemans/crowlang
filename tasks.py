@@ -232,3 +232,9 @@ def setup(ctx):
             print(f'Unsupported platform: {sys.platform}')
             pass
     pass
+
+@task
+def profile(ctx):
+    'Profile application using valgrind and perf.'
+    print('TODO: Implement.')
+    pass
