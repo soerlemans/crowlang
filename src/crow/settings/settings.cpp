@@ -8,7 +8,7 @@
 #include "crow/settings/toml.hpp"
 
 namespace settings {
-	auto get_settings(CLI::App& t_app, const int t_argc, char* t_argv[]) -> Settings
+auto get_settings(CLI::App& t_app, const int t_argc, char* t_argv[]) -> Settings
 {
   Settings settings{};
 
@@ -36,6 +36,9 @@ auto operator<<(std::ostream& t_os, const settings::Settings& t_settings)
   -> std::ostream&
 {
   t_os << "TODO: Logging settings::Settings.";
+
+  t_os << "Settings{";
+	t_os << '}';
 
   return t_os;
 }
