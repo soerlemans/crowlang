@@ -39,11 +39,23 @@ static auto run(settings::Settings t_settings) -> void
   }
 }
 
-// Main:
-auto main(const int t_argc, char* t_argv[]) -> int
+//! Log something as an exception.
+template<typename T>
+auto exception(const T t_msg) -> void
 {
   using rang::fg;
   using rang::style;
+
+  // Print lovely header.
+  std::cerr << style::bold << fg::red << "EXCEPTION:\n" << style::reset;
+
+  // Print error message.
+  std::cerr << t_msg << std::endl;
+}
+
+// Main:
+auto main(const int t_argc, char* t_argv[]) -> int
+{
   using settings::get_settings;
 
   CLI::App app{"Compiler for Crow(lang)"};
@@ -55,19 +67,17 @@ auto main(const int t_argc, char* t_argv[]) -> int
     debug::set_loglevel(settings.m_level);
 
     run(settings);
-  } catch(const CLI::ParseError& e) {
-    const auto exit_code{CLI11_EXCEPTION + app.exit(e)};
+  } catch(CLI::ParseError& e) {
+    const auto exit_code{app.exit(e)};
+    std::cerr << std::format("CLI11 exit code: {}\n", exit_code);
 
-    return exit_code;
+		return ExitCode::CLI11_EXCEPTION;
   } catch(std::exception& e) {
-    std::cerr << style::bold << " - ";
-    std::cerr << fg::red << "EXCEPTION";
-    std::cerr << fg::reset << " - \n" << style::reset;
-
-    // Print error message:
-    std::cerr << e.what() << std::endl;
+    exception(e.what());
 
     return ExitCode::EXCEPTION;
+  } catch(...) {
+    std::cerr << "Uncaught object.\n";
   }
 
   return ExitCode::OK;
