@@ -47,10 +47,24 @@ auto exception(const T t_msg) -> void
   using rang::style;
 
   // Print lovely header.
-  std::cerr << style::bold << fg::red << "EXCEPTION:\n" << style::reset;
+  std::cerr << style::bold << fg::red << "Exception:\n" << style::reset;
 
   // Print error message.
   std::cerr << t_msg << std::endl;
+}
+
+auto uncaught_object() -> void
+{
+  using rang::fg;
+  using rang::style;
+
+  // clang-format off
+  std::cerr << style::bold
+						<< fg::red
+						<< "Uncaught object."
+            << style::reset
+						<< std::endl;
+  // clang-format on
 }
 
 // Main:
@@ -71,13 +85,15 @@ auto main(const int t_argc, char* t_argv[]) -> int
     const auto exit_code{app.exit(e)};
     std::cerr << std::format("CLI11 exit code: {}\n", exit_code);
 
-		return ExitCode::CLI11_EXCEPTION;
+    return ExitCode::CLI11_EXCEPTION;
   } catch(std::exception& e) {
     exception(e.what());
 
     return ExitCode::EXCEPTION;
   } catch(...) {
-    std::cerr << "Uncaught object.\n";
+    uncaught_object();
+
+    return ExitCode::EXCEPTION;
   }
 
   return ExitCode::OK;
