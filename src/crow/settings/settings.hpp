@@ -41,7 +41,7 @@ struct Settings {
 
 // Functions:
 //! Read compiler settings from CLI options or project.toml.
-auto get_settings(CLI::App& t_app, int t_argc, char* t_argv[]) -> Settings;
+auto get_settings(CliParams& t_params) -> Settings;
 } // namespace settings
 
 // Functions:

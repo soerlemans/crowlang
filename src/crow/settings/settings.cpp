@@ -10,16 +10,9 @@
 #include "lib/stdprint.hpp"
 
 namespace settings {
-auto get_settings(CLI::App& t_app, const int t_argc, char* t_argv[]) -> Settings
+auto get_settings(CliParams& t_params) -> Settings
 {
-  using debug::LogLevel;
-  using debug::set_loglevel;
-
   Settings settings{};
-
-  // Reading of settings happens before setting the loglevel.
-  // So for now we should set it, to log config reading.
-  set_loglevel(LogLevel::VERBOSE);
 
   // try {
   //  If a project settings file was found we should use it.
@@ -31,7 +24,7 @@ auto get_settings(CLI::App& t_app, const int t_argc, char* t_argv[]) -> Settings
   }
 
   // CLI settings overwrite TOML settings.
-  read_cli_settings(t_app, t_argc, t_argv, settings);
+  read_cli_settings(t_params, settings);
   //} catch(std::exception& e) {
   // TODO: Will I use this?
   // }

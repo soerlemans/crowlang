@@ -68,19 +68,20 @@ auto add_version_flag(CLI::App& t_app) -> void
 
 namespace settings {
 // Functions:
-auto read_cli_settings(CLI::App& t_app, const int t_argc, char* t_argv[],
-                       Settings& t_settings) -> void
+auto read_cli_settings(CliParams& t_params, Settings& t_settings) -> void
 {
+  auto& [app, argc, argv] = t_params;
+
   // Set the formatter.
   auto fmt{std::make_shared<BannerFormatter>()};
-  t_app.formatter(fmt);
+  app.formatter(fmt);
 
   // Add flags:
-  add_positional_flags(t_app, t_settings);
-  add_loglevel_flag(t_app, t_settings);
-  add_nocolor_flag(t_app);
-  add_version_flag(t_app);
+  add_positional_flags(app, t_settings);
+  add_loglevel_flag(app, t_settings);
+  add_nocolor_flag(app);
+  add_version_flag(app);
 
-  t_app.parse(t_argc, t_argv);
+  app.parse(argc, argv);
 }
 } // namespace settings
