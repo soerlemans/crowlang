@@ -18,7 +18,7 @@ enum ExitCode {
   CLI11_EXCEPTION = 300,
 };
 
-// TODO: Relocate.
+//! Do not absorb cpptrace errors on debug builds.
 static auto disable_absorb_exceptions() -> void
 {
 #ifdef DEBUG
@@ -74,11 +74,13 @@ auto main(const int t_argc, char* t_argv[]) -> int
 
   CLI::App app{"Compiler for Crow(lang)"};
   try {
+    using debug::set_loglevel;
+
     disable_absorb_exceptions();
 
     // Retrieve settings (CLI/TOML).
     auto settings{get_settings(app, t_argc, t_argv)};
-    debug::set_loglevel(settings.m_level);
+    set_loglevel(settings.m_level);
 
     run(settings);
   } catch(CLI::ParseError& e) {

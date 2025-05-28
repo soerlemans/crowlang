@@ -41,8 +41,7 @@ auto add_positional_flags(CLI::App& t_app, Settings& t_settings) -> void
 {
   // Program source files:
   t_app.add_option("{}", t_settings.m_paths, "Files to compile.")
-    ->check(CLI::ExistingFile)
-    ->required();
+    ->check(CLI::ExistingFile);
 }
 
 auto add_nocolor_flag(CLI::App& t_app) -> void
@@ -69,23 +68,19 @@ auto add_version_flag(CLI::App& t_app) -> void
 
 namespace settings {
 // Functions:
-auto read_cli_settings(CLI::App& t_app, const int t_argc, char* t_argv[])
-  -> Settings
+auto read_cli_settings(CLI::App& t_app, const int t_argc, char* t_argv[],
+                       Settings& t_settings) -> void
 {
-  Settings settings{};
-
   // Set the formatter.
   auto fmt{std::make_shared<BannerFormatter>()};
   t_app.formatter(fmt);
 
   // Add flags:
-  add_positional_flags(t_app, settings);
-  add_loglevel_flag(t_app, settings);
+  add_positional_flags(t_app, t_settings);
+  add_loglevel_flag(t_app, t_settings);
   add_nocolor_flag(t_app);
   add_version_flag(t_app);
 
   t_app.parse(t_argc, t_argv);
-
-  return settings;
 }
 } // namespace settings

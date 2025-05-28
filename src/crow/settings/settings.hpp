@@ -4,6 +4,7 @@
 // STL Includes:
 #include <filesystem>
 #include <sstream>
+#include <string>
 #include <vector>
 
 // Absolute Includes:
@@ -16,11 +17,13 @@
 namespace settings {
 // Aliases:
 namespace fs = std::filesystem;
-using SourceFiles = std::vector<fs::path>;
+using FileVec = std::vector<fs::path>;
+using StringVec = std::vector<std::string>;
 
 // Structs:
 struct Settings {
-  SourceFiles m_paths;
+  FileVec m_paths;
+  StringVec m_bindings;
   debug::LogLevel m_level;
 
   // Methods:
