@@ -7,8 +7,10 @@
 // Library Includes:
 #include <rang.hpp>
 
-// Local Includes:
-#include "settings.hpp"
+// Absolute Includes:
+#include "crow/codegen/backend_interface.hpp"
+#include "crow/settings/enum_convert.hpp"
+#include "crow/settings/settings.hpp"
 
 // Internal:
 namespace {
@@ -16,32 +18,46 @@ namespace {
 using settings::Settings;
 
 // Functions:
+auto add_positional_flags(CLI::App& t_app, Settings& t_settings) -> void
+{
+  // Program source files:
+  t_app.add_option("{}", t_settings.m_paths, "Files to compile.")
+    ->check(CLI::ExistingFile);
+}
+
 auto add_loglevel_flag([[maybe_unused]] CLI::App& t_app, Settings& t_settings)
   -> void
 {
 #ifdef DEBUG
-  using debug::LogLevel;
+  using settings::loglevel_map;
+  using settings::LogLevelMap;
 
-  std::map<std::string, LogLevel> map{};
-
-  // TODO: Write a more elegant implementation later (I was lazy).
-  map.insert({"critical", LogLevel::CRITICAL});
-  map.insert({"error", LogLevel::ERROR});
-  map.insert({"warning", LogLevel::WARNING});
-  map.insert({"notice", LogLevel::NOTICE});
-  map.insert({"info", LogLevel::INFO});
-  map.insert({"verbose", LogLevel::VERBOSE});
+  const LogLevelMap& map{loglevel_map()};
 
   t_app.add_option("-l,--log-level", t_settings.m_level, "Set the LogLevel.")
     ->transform(CLI::CheckedTransformer(map, CLI::ignore_case));
 #endif // DEBUG
 }
 
-auto add_positional_flags(CLI::App& t_app, Settings& t_settings) -> void
+auto add_backend_flag(CLI::App& t_app, Settings& t_settings) -> void
 {
-  // Program source files:
-  t_app.add_option("{}", t_settings.m_paths, "Files to compile.")
-    ->check(CLI::ExistingFile);
+  using settings::backendtype_map;
+  using settings::BackendTypeMap;
+
+  const BackendTypeMap& map{backendtype_map()};
+
+  t_app
+    .add_option("-b,--backend", t_settings.m_backend,
+                "Backend to use for code generation.")
+    ->transform(CLI::CheckedTransformer(map, CLI::ignore_case));
+}
+
+auto add_bindings_flag(CLI::App& t_app, Settings& t_settings) -> void
+{
+
+  // TODO: Add map with options.
+  t_app.add_option("--bindings", t_settings.m_bindings,
+                   "For which languages bindings should be generated for.");
 }
 
 auto add_nocolor_flag(CLI::App& t_app) -> void
@@ -78,6 +94,10 @@ auto read_cli_settings(CliParams& t_params, Settings& t_settings) -> void
 
   // Add flags:
   add_positional_flags(app, t_settings);
+
+  add_backend_flag(app, t_settings);
+  add_bindings_flag(app, t_settings);
+
   add_loglevel_flag(app, t_settings);
   add_nocolor_flag(app);
   add_version_flag(app);

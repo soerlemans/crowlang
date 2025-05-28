@@ -22,7 +22,7 @@ using std::filesystem::path;
 class BackendInterface;
 
 // Aliases:
-using BackendPtr = std::unique_ptr<BackendInterface>;
+using BackendPtr = std::shared_ptr<BackendInterface>;
 
 // Enums:
 enum class BackendType {
@@ -57,6 +57,13 @@ class BackendInterface : public ast::visitor::NodeVisitor {
 // TODO: Implement with a unique_ptr or something similar.
 [[nodiscard("Pure method must use results.")]]
 auto select_backend(BackendType t_selector) -> BackendPtr;
+
+[[nodiscard("Pure method must use results.")]]
+auto backendtype2str(BackendType t_type) -> std::string_view;
 } // namespace codegen
+
+auto operator<<(std::ostream& t_os, codegen::BackendType t_type)
+  -> std::ostream&;
+
 
 #endif // CROW_CROW_CODEGEN_BACKEND_INTERFACE_HPP

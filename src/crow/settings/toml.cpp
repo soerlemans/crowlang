@@ -2,6 +2,7 @@
 
 // STL Includes:
 #include <filesystem>
+#include <string_view>
 
 // Absolute Includes:
 #include "crow/debug/log.hpp"
@@ -29,8 +30,7 @@ namespace {
  */
 template<typename NodeType, typename VecType>
 auto toml_extract_array(toml::node_view<NodeType>&& t_node,
-                        std::vector<VecType>& t_vector,
-                        const bool t_required = false) -> void
+                        std::vector<VecType>& t_vector) -> void
 {
   if(toml::array* arr = t_node.as_array(); arr) {
     const auto lambda{[&](auto&& t_elem) noexcept {
@@ -54,12 +54,15 @@ auto toml_extract_array(toml::node_view<NodeType>&& t_node,
 // Functions:
 auto toml_project_section(toml::table& t_table, Settings& t_settings) -> void
 {
+  using namespace std::literals;
   using toml::is_string;
 
   auto project{t_table["project"]};
 
   toml_extract_array(project["sources"], t_settings.m_paths);
-  toml_extract_array(project["bindings"], t_settings.m_bindings);
+
+  // t_settings.m_backend = project["backend"].value_or("cpp"sv);
+  toml_extract_array(project["backend_bindings"], t_settings.m_bindings);
 }
 
 auto toml_debug_section(toml::table& t_table, Settings& t_settings) -> void

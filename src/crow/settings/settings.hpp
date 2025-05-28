@@ -8,6 +8,7 @@
 #include <vector>
 
 // Absolute Includes:
+#include "crow/codegen/backend_interface.hpp"
 #include "crow/debug/loglevel.hpp"
 
 // Local Includes:
@@ -22,12 +23,22 @@ using StringVec = std::vector<std::string>;
 
 // Structs:
 struct Settings {
+  using BackendType = codegen::BackendType;
+  using LogLevel = debug::LogLevel;
+
   FileVec m_paths;
+
+  codegen::BackendType m_backend;
   StringVec m_bindings;
+
   debug::LogLevel m_level;
 
   // Methods:
-  Settings(): m_paths{}, m_level{debug::LogLevel::VERBOSE}
+  Settings()
+    : m_paths{},
+      m_backend{BackendType::CPP_BACKEND},
+      m_bindings{},
+      m_level{LogLevel::VERBOSE}
   {}
 
   Settings(const Settings&) = default;

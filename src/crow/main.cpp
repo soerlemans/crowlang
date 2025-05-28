@@ -73,6 +73,7 @@ auto main(const int t_argc, char* t_argv[]) -> int
   using settings::CliParams;
   using settings::get_settings;
 
+  // Cli parameters clumped together for later CLI11 parsing.
   CliParams cli_params{
     CLI::App{"Compiler for Crow(lang)", "crow"},
     t_argc, t_argv

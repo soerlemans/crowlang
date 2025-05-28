@@ -20,7 +20,7 @@ auto select_backend(const BackendType t_selector) -> BackendPtr
 
   switch(t_selector) {
     case BackendType::LLVM_BACKEND: {
-      ptr = std::make_unique<LlvmBackend>();
+      ptr = std::make_shared<LlvmBackend>();
       break;
     }
 
@@ -29,7 +29,7 @@ auto select_backend(const BackendType t_selector) -> BackendPtr
       // With all interop backends enabled.
       // Someday we should setup a more robust way that considers project.toml.
       // And CLI option settings, but for now just do it quick and dirty.
-      auto cpp_backend{std::make_unique<CppBackend>()};
+      auto cpp_backend{std::make_shared<CppBackend>()};
 
       cpp_backend->add_interop_backend(
         std::make_shared<cpp2py_interop::PythonBackend>());
@@ -45,4 +45,32 @@ auto select_backend(const BackendType t_selector) -> BackendPtr
 
   return ptr;
 }
+
+auto backendtype2str(BackendType t_type) -> std::string_view
+{
+  switch(t_type) {
+    case BackendType::CPP_BACKEND:
+      return "cpp";
+
+    case BackendType::LLVM_BACKEND:
+      return "llvm";
+
+    default:
+      throw std::invalid_argument{
+        "backendtype2str() could not convert BackendType to string."};
+      break;
+  }
+
+  return {};
+}
 } // namespace codegen
+
+auto operator<<(std::ostream& t_os, codegen::BackendType t_type)
+  -> std::ostream&
+{
+  using codegen::backendtype2str;
+
+  t_os << backendtype2str(t_type);
+
+  return t_os;
+}
