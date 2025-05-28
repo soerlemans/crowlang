@@ -6,6 +6,7 @@
 
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
+#include "crow/codegen/interop_backend_interface.hpp"
 #include "crow/semantic/symbol_table/symbol_table.hpp"
 #include "lib/filesystem.hpp"
 

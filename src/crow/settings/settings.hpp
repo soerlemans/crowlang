@@ -21,6 +21,8 @@ namespace fs = std::filesystem;
 using FileVec = std::vector<fs::path>;
 using StringVec = std::vector<std::string>;
 
+// using InteropBackendVec = std::vector<>;
+
 // Structs:
 struct Settings {
   using BackendType = codegen::BackendType;
@@ -29,7 +31,7 @@ struct Settings {
   FileVec m_paths;
 
   codegen::BackendType m_backend;
-  StringVec m_bindings;
+  StringVec m_interop_backends;
 
   debug::LogLevel m_level;
 
@@ -37,12 +39,11 @@ struct Settings {
   Settings()
     : m_paths{},
       m_backend{BackendType::CPP_BACKEND},
-      m_bindings{},
+      m_interop_backends{},
       m_level{LogLevel::VERBOSE}
   {}
 
   Settings(const Settings&) = default;
-
 
   // Operators:
   auto operator=(Settings&&) noexcept -> Settings& = default;

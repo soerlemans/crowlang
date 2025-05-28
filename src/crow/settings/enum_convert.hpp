@@ -18,22 +18,28 @@ namespace settings {
 // Aliases:
 using LogLevelMap = std::unordered_map<std::string, debug::LogLevel>;
 using BackendTypeMap = std::unordered_map<std::string, codegen::BackendType>;
-// using BindingBackendTypeMap = std::map<std::string_view,
-// codegen::BackendType>;
+using InteropBackendTypeMap =
+  std::map<std::string_view, codegen::InteropBackendType>;
 
 // Functions:
 [[nodiscard("Pure function must use result.")]]
 auto loglevel_map() -> const LogLevelMap&;
 
 [[nodiscard("Pure function must use result.")]]
-auto str2loglevel(std::string_view t_key) -> debug::LogLevel;
-
-
-[[nodiscard("Pure function must use result.")]]
 auto backendtype_map() -> const BackendTypeMap&;
 
 [[nodiscard("Pure function must use result.")]]
+auto interopbackendtype_map() -> const InteropBackendTypeMap&;
+
+[[nodiscard("Pure function must use result.")]]
+auto str2loglevel(std::string_view t_key) -> debug::LogLevel;
+
+[[nodiscard("Pure function must use result.")]]
 auto str2backendtype(std::string_view t_key) -> codegen::BackendType;
+
+[[nodiscard("Pure function must use result.")]]
+auto str2interopbackendtype(std::string_view t_key)
+  -> codegen::InteropBackendType;
 } // namespace settings
 
 #endif // ENUM_CONVERT_HPP

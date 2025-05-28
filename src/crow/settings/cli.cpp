@@ -56,7 +56,7 @@ auto add_bindings_flag(CLI::App& t_app, Settings& t_settings) -> void
 {
 
   // TODO: Add map with options.
-  t_app.add_option("--bindings", t_settings.m_bindings,
+  t_app.add_option("-i,--interop", t_settings.m_interop_backends,
                    "For which languages bindings should be generated for.");
 }
 

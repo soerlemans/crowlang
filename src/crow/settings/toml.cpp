@@ -6,22 +6,13 @@
 
 // Absolute Includes:
 #include "crow/debug/log.hpp"
-
-// Local Includes:
-#include "settings.hpp"
-
-// Internal:
-namespace {
-// Using Statements:
-using namespace settings;
-
-// Aliases:
-namespace fs = std::filesystem;
+#include "crow/settings/enum_convert.hpp"
+#include "crow/settings/settings.hpp"
 
 // Internal:
 namespace {
 // TODO:
-// Helper function for converting a typename to the right comparison.
+// Helper function for converting any toml value to string.
 // constexpr auto
 
 /*!
@@ -51,6 +42,10 @@ auto toml_extract_array(toml::node_view<NodeType>&& t_node,
 }
 } // namespace
 
+namespace settings {
+// Aliases:
+namespace fs = std::filesystem;
+
 // Functions:
 auto toml_project_section(toml::table& t_table, Settings& t_settings) -> void
 {
@@ -62,14 +57,19 @@ auto toml_project_section(toml::table& t_table, Settings& t_settings) -> void
   toml_extract_array(project["sources"], t_settings.m_paths);
 
   // t_settings.m_backend = project["backend"].value_or("cpp"sv);
-  toml_extract_array(project["backend_bindings"], t_settings.m_bindings);
+  if(auto backend{t_table["backend"].value<std::string>()}; backend) {
+    t_settings.m_backend = str2backendtype(backend.value());
+  }
+
+  toml_extract_array(project["interop_backends"],
+                     t_settings.m_interop_backends);
 }
 
 auto toml_debug_section(toml::table& t_table, Settings& t_settings) -> void
 {
   auto debug{t_table["debug"]};
 }
-} // namespace
+} // namespace settings
 
 namespace settings {
 // Functions:

@@ -1,0 +1,54 @@
+#ifndef INTEROP_BACKEND_INTERFACE_HPP
+#define INTEROP_BACKEND_INTERFACE_HPP
+
+// STL Includes:
+#include <memory>
+#include <string>
+
+// Absolute Includes:
+#include "crow/ast/node/fdecl.hpp"
+#include "lib/types.hpp"
+
+namespace codegen {
+// Using Statements:
+using namespace ast;
+
+// Using Declarations:
+using node::NodePtr;
+
+// Forward Declarations:
+class InteropBackendInterface;
+
+// Aliases:
+using InteropBackendPtr = std::shared_ptr<InteropBackendInterface>;
+
+// Enums:
+/*!
+ * Keeps track of which interop backends exist.
+ * Not all interop backends enums need to be supported.
+ * By every codegeneration backend.
+ */
+enum class InteropBackendType {
+  C_INTEROP_BACKEND,
+  PYTHON_INTEROP_BACKEND,
+  LUA_INTEROP_BACKEND,
+  JS_INTEROP_BACKEND,
+};
+
+// Classes:
+/*!
+ * Interface used for creating interop between different programming languages.
+ */
+class InteropBackendInterface {
+  public:
+  InteropBackendInterface() = default;
+
+  virtual auto prologue() -> std::string = 0;
+
+  virtual auto epilogue() -> std::string = 0;
+
+  virtual ~InteropBackendInterface() = default;
+};
+} // namespace codegen
+
+#endif // INTEROP_BACKEND_INTERFACE_HPP

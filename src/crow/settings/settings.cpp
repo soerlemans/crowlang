@@ -45,7 +45,7 @@ auto operator<<(std::ostream& t_os, const settings::Settings& t_settings)
   t_os << "Settings{ ";
   t_os << "paths: " << t_settings.m_paths << ", ";
   t_os << "backend: " << t_settings.m_backend << ", ";
-  t_os << "bindings: " << t_settings.m_bindings << ", ";
+  t_os << "bindings: " << t_settings.m_interop_backends << ", ";
   t_os << "loglevel: " << t_settings.m_level << ", ";
   t_os << '}';
 
