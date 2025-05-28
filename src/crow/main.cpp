@@ -18,7 +18,7 @@ enum ExitCode {
   CLI11_EXCEPTION = 300,
 };
 
-// TODO: Relocate.
+//! Do not absorb cpptrace errors on debug builds.
 static auto disable_absorb_exceptions() -> void
 {
 #ifdef DEBUG
@@ -70,19 +70,33 @@ inline auto uncaught_object() -> void
 // Main:
 auto main(const int t_argc, char* t_argv[]) -> int
 {
+  using settings::CliParams;
   using settings::get_settings;
 
-  CLI::App app{"Compiler for Crow(lang)"};
+  // Cli parameters clumped together for later CLI11 parsing.
+  CliParams cli_params{
+    CLI::App{"Compiler for Crow(lang)", "crow"},
+    t_argc, t_argv
+  };
+
   try {
+    using debug::LogLevel;
+    using debug::set_loglevel;
+
     disable_absorb_exceptions();
 
+    // Reading of settings happens before setting the loglevel.
+    // So for now we should set it to verbose so we can log config reading.
+    set_loglevel(LogLevel::VERBOSE);
+
     // Retrieve settings (CLI/TOML).
-    auto settings{get_settings(app, t_argc, t_argv)};
-    debug::set_loglevel(settings.m_level);
+    // CliParams cli_params{&app, t_argc, t_argv};
+    auto settings{get_settings(cli_params)};
+    set_loglevel(settings.m_level);
 
     run(settings);
   } catch(CLI::ParseError& e) {
-    const auto exit_code{app.exit(e)};
+    const auto exit_code{cli_params.m_app.exit(e)};
     std::cerr << std::format("CLI11 exit code: {}\n", exit_code);
 
     return ExitCode::CLI11_EXCEPTION;

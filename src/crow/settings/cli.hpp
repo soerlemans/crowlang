@@ -15,6 +15,19 @@ namespace settings {
 // Forward Declarations:
 struct Settings;
 
+// Structs:
+/*!
+ * Utility struct for passing around the parameters needed.
+ * To get the CLI parameters.
+ *
+ * @note
+ */
+struct CliParams {
+  CLI::App m_app;
+  int m_argc;
+  char** m_argv;
+};
+
 // Classes:
 class BannerFormatter : public CLI::Formatter {
   public:
@@ -35,7 +48,7 @@ class BannerFormatter : public CLI::Formatter {
 
 // Functions:
 //! Set the CLI arguments to include.
-auto read_cli_settings(CLI::App& t_app, int t_argc, char* t_argv[]) -> Settings;
+auto read_cli_settings(CliParams& t_params, Settings& t_settings) -> void;
 } // namespace settings
 
 #endif // CROW_CROW_CONFIG_CLI_HPP

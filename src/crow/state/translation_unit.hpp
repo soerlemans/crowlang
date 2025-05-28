@@ -10,6 +10,7 @@
 #include "crow/codegen/backend_interface.hpp"
 #include "crow/container/text_buffer.hpp"
 #include "crow/semantic/symbol_table/symbol_table.hpp"
+#include "crow/state/configuration_unit.hpp"
 #include "crow/token/token_stream.hpp"
 
 namespace state {
@@ -49,6 +50,10 @@ class TranslationUnit {
   private:
   TranslationUnitPhase m_phase;
 
+  // Config:
+  ConfigurationUnitPtr m_config;
+
+  // Data:
   path m_source_file;
   TextStreamPtr m_text_stream;
   TokenStream m_token_stream;
@@ -67,7 +72,7 @@ class TranslationUnit {
   //! Print the AST, only available if @ref DEBUG is defined.
   virtual auto print_ast(NodePtr t_ast) const -> void;
 
-  //! Analyse the semantic validaty of the AST.
+  //! Analyse the semantics of the AST.
   virtual auto semantic(NodePtr t_ast) -> SymbolTablePtr;
 
   //! Execute the codegeneration backend.

@@ -4,11 +4,13 @@
 #include <exception>
 
 // Absolute Includes:
+#include "crow/debug/log.hpp"
 #include "crow/settings/cli.hpp"
 #include "crow/settings/toml.hpp"
+#include "lib/stdprint.hpp"
 
 namespace settings {
-auto get_settings(CLI::App& t_app, const int t_argc, char* t_argv[]) -> Settings
+auto get_settings(CliParams& t_params) -> Settings
 {
   Settings settings{};
 
@@ -18,14 +20,16 @@ auto get_settings(CLI::App& t_app, const int t_argc, char* t_argv[]) -> Settings
   if(opt) {
     const auto path{opt.value()};
 
-    settings = read_settings_toml(path);
+    read_settings_toml(path, settings);
   }
 
   // CLI settings overwrite TOML settings.
-  settings = read_cli_settings(t_app, t_argc, t_argv);
+  read_cli_settings(t_params, settings);
   //} catch(std::exception& e) {
   // TODO: Will I use this?
   // }
+
+  DBG_PRINTLN("Settings: ", settings);
 
   return settings;
 }
@@ -35,9 +39,14 @@ auto get_settings(CLI::App& t_app, const int t_argc, char* t_argv[]) -> Settings
 auto operator<<(std::ostream& t_os, const settings::Settings& t_settings)
   -> std::ostream&
 {
-  t_os << "TODO: Logging settings::Settings.";
+  // Needed for std print.
+  using namespace lib::stdprint::vector;
 
-  t_os << "Settings{";
+  t_os << "Settings{ ";
+  t_os << "paths: " << t_settings.m_paths << ", ";
+  t_os << "backend: " << t_settings.m_backend << ", ";
+  t_os << "bindings: " << t_settings.m_interop_backends << ", ";
+  t_os << "loglevel: " << t_settings.m_level << ", ";
   t_os << '}';
 
   return t_os;

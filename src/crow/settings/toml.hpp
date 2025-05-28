@@ -28,7 +28,8 @@ constexpr auto settings_toml{"crow.toml"sv};
 // Functions:
 auto find_settings_toml(const std::string_view t_filename = settings_toml)
   -> PathOpt;
-auto read_settings_toml(const fs::path t_filepath) -> Settings;
+auto read_settings_toml(const fs::path t_filepath, Settings& t_settings)
+  -> void;
 } // namespace settings
 
 #endif // CROW_CROW_CONFIG_TOML_HPP

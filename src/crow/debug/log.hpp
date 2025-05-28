@@ -31,7 +31,6 @@ auto print(Args &&...t_args) -> void
 template<typename... Args>
 auto println(Args &&...t_args) -> void
 {
-  // Fold expression
   print(std::forward<Args>(t_args)..., '\n');
 }
 
