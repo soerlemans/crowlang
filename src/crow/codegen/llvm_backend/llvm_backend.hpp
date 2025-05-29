@@ -108,6 +108,10 @@ class LlvmBackend : public BackendInterface {
   // Util:
   auto configure_target() -> void;
   auto dump_ir(std::ostream& t_os) -> void;
+
+  //! LLVM backend as of writing supports no interop.
+  auto register_interop_backend([[maybe_unused]] InteropBackendType t_type)
+    -> void override {};
   auto compile(AstPack t_pack, path t_stem) -> void override;
 
   virtual ~LlvmBackend() = default;

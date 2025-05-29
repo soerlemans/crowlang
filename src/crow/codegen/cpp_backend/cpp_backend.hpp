@@ -22,8 +22,9 @@ using namespace ast;
 using interop_backends::InteropBackendPtr;
 using node::NodePtr;
 using semantic::symbol_table::SymbolTablePtr;
-using std::filesystem::path;
 using visitor::Any;
+
+namespace fs = std::filesystem;
 
 // Classes:
 /*!
@@ -150,8 +151,12 @@ class CppBackend : public BackendInterface {
   /*!
    * Transpile the @ref t_ast to valid C++ code and write it to @ref t_out.
    */
-  auto codegen(NodePtr t_ast, const path& t_out) -> void;
-  auto compile(AstPack t_pack, path t_stem) -> void override;
+  auto codegen(NodePtr t_ast, const fs::path& t_out) -> void;
+
+  //! CPP backend as of writing needs to refactor interop.
+  auto register_interop_backend([[maybe_unused]] InteropBackendType t_type)
+    -> void override {};
+  auto compile(AstPack t_pack, fs::path t_stem) -> void override;
 
   virtual ~CppBackend() = default;
 };

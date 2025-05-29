@@ -17,7 +17,8 @@ using namespace ast;
 // Using Declarations:
 using node::NodePtr;
 using semantic::symbol_table::SymbolTablePtr;
-using std::filesystem::path;
+
+namespace fs = std::filesystem;
 
 // Forward Declarations:
 class BackendInterface;
@@ -49,7 +50,14 @@ class BackendInterface : public ast::visitor::NodeVisitor {
   public:
   BackendInterface() = default;
 
-  virtual auto compile(AstPack t_pack, path t_stem) -> void = 0;
+  /*!
+   * How an interop backend is added is backend specific.
+	 * So this is a shared factory method for nested interop backends.
+	 */
+  virtual auto register_interop_backend(InteropBackendType t_type) -> void = 0;
+
+  //! Compile the AST for the selected backend.
+  virtual auto compile(AstPack t_pack, fs::path t_stem) -> void = 0;
 
   virtual ~BackendInterface() = default;
 };
