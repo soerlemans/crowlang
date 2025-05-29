@@ -13,7 +13,7 @@
 #include "crow/unit/build_unit.hpp"
 #include "crow/token/token_stream.hpp"
 
-namespace state {
+namespace unit {
 // Using Statements:
 using ast::node::NodePtr;
 using codegen::AstPack;
@@ -51,7 +51,7 @@ class TranslationUnit {
   TranslationUnitPhase m_phase;
 
   // Config:
-  ConfigurationUnitPtr m_config;
+  BuildUnitPtr m_config;
 
   // Data:
   path m_source_file;
@@ -85,9 +85,9 @@ class TranslationUnit {
 };
 } // namespace state
 
-auto operator<<(std::ostream& t_os, state::TranslationUnitPhase t_phase)
+auto operator<<(std::ostream& t_os, unit::TranslationUnitPhase t_phase)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, state::TranslationUnit t_unit)
+auto operator<<(std::ostream& t_os, unit::TranslationUnit t_unit)
   -> std::ostream&;
 
 #endif // CROW_CROW_STATE_TRANSLATION_UNIT_HPP

@@ -18,9 +18,7 @@ struct Settings;
 // Structs:
 /*!
  * Utility struct for passing around the parameters needed.
- * To get the CLI parameters.
- *
- * @note
+ * For the CLI11 App and the parsing of CLI options.
  */
 struct CliParams {
   CLI::App m_app;

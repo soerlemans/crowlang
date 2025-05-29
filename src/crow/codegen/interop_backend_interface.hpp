@@ -22,7 +22,7 @@ class InteropBackendInterface;
 enum class InteropBackendType;
 
 // Aliases:
-using InteropSelectionVec = std::vector<InteropBackendType>;
+using InteropSelectors = std::vector<InteropBackendType>;
 using InteropBackendPtr = std::shared_ptr<InteropBackendInterface>;
 
 // Enums:
