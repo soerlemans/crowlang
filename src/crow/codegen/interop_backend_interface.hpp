@@ -49,6 +49,12 @@ class InteropBackendInterface {
 
   virtual ~InteropBackendInterface() = default;
 };
+
+auto interopbackendtype2str(InteropBackendType t_type) -> std::string_view;
 } // namespace codegen
+
+// Functions:
+auto operator<<(std::ostream& t_os, codegen::InteropBackendType t_type)
+  -> std::ostream&;
 
 #endif // INTEROP_BACKEND_INTERFACE_HPP

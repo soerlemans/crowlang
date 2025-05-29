@@ -2,7 +2,11 @@
 
 // STL Includes:
 #include <filesystem>
+#include <functional>
 #include <string_view>
+
+// Library Includes:
+#include <toml++/toml.hpp>
 
 // Absolute Includes:
 #include "crow/debug/log.hpp"
@@ -11,9 +15,84 @@
 
 // Internal:
 namespace {
-// TODO:
-// Helper function for converting any toml value to string.
-// constexpr auto
+// Aliases:
+template<typename T>
+using NodeView = toml::node_view<T>;
+
+template<typename T>
+using Vec = std::vector<T>;
+
+// /*!
+//  * Quite a complex construction but basically extract any values
+//  */
+// template<typename NodeType, typename ElemType,
+//          typename FnType = std::function<ElemType(std::string&)>>
+// inline auto toml_extract(NodeView<NodeType>&& t_node,
+//                          FnType t_transform = std::identity{}) -> ElemType
+// {
+//   using toml::array;
+
+//   // Closure to extract values from an array.
+//   // Reused for single values as well.
+//   const auto closure{[&](auto&& t_elem) noexcept {
+//     using toml::is_string;
+
+//     if constexpr(is_string<decltype(t_elem)>) {
+//       auto str{t_elem.get()};
+//       auto elem{t_transform(str)};
+
+//       t_vector.push_back(elem);
+//     }
+//   }};
+
+//   // Type checking:
+//   if(const auto opt{t_node.template value<std::string>()}; opt) {
+//     auto str{opt.value()};
+//     auto elem{t_transform(str)};
+
+//     t_vector.push_back(elem);
+//   } else {
+//     DBG_WARNING("Toml invalid value for field.");
+//   }
+// }
+
+// FIXME: Only supports strings now.
+/*!
+ * Quite a complex construction but basically extract any values from a field.
+ * And throw them into a vector.
+ */
+template<typename NodeType, typename ElemType,
+         typename FnType = std::function<ElemType(std::string&)>>
+inline auto toml_extract(NodeView<NodeType>&& t_node, Vec<ElemType>& t_vector,
+                         FnType t_transform = std::identity{}) -> void
+{
+  using toml::array;
+
+  // Closure to extract values from an array.
+  // Reused for single values as well.
+  const auto closure{[&](auto&& t_elem) noexcept {
+    using toml::is_string;
+
+    if constexpr(is_string<decltype(t_elem)>) {
+      auto str{t_elem.get()};
+      auto elem{t_transform(str)};
+
+      t_vector.push_back(elem);
+    }
+  }};
+
+  // Type checking:
+  if(const auto opt{t_node.template value<std::string>()}; opt) {
+    auto str{opt.value()};
+    auto elem{t_transform(str)};
+
+    t_vector.push_back(elem);
+  } else if(array * arr{t_node.as_array()}; arr) {
+    arr->for_each(closure);
+  } else {
+    DBG_WARNING("Toml invalid value for field.");
+  }
+}
 
 /*!
  * Helper function for extracting a TOML array that is the same type.
@@ -54,15 +133,20 @@ auto toml_project_section(toml::table& t_table, Settings& t_settings) -> void
 
   auto project{t_table["project"]};
 
-  toml_extract_array(project["sources"], t_settings.m_paths);
+  auto to_path{[](std::string& t_elem) {
+    return fs::path{t_elem};
+  }};
+
+  toml_extract(project["sources"], t_settings.m_source_paths, to_path);
 
   // t_settings.m_backend = project["backend"].value_or("cpp"sv);
   if(auto backend{t_table["backend"].value<std::string>()}; backend) {
     t_settings.m_backend = str2backendtype(backend.value());
   }
 
-  toml_extract_array(project["interop_backends"],
-                     t_settings.m_interop_backends);
+  // Extract interop backend, by enum.
+  toml_extract(project["interop_backends"], t_settings.m_interop_backends,
+               str2interopbackendtype);
 }
 
 auto toml_debug_section(toml::table& t_table, Settings& t_settings) -> void
@@ -79,7 +163,6 @@ auto find_settings_toml(const std::string_view t_filename) -> PathOpt
   using fs::is_regular_file;
 
   PathOpt path{};
-
   const auto filename_quoted{std::quoted(t_filename)};
 
   fs::path current{fs::current_path()};
@@ -87,6 +170,7 @@ auto find_settings_toml(const std::string_view t_filename) -> PathOpt
     auto candidate{current / t_filename};
     if(exists(candidate) && is_regular_file(candidate)) {
       DBG_INFO("Found ", filename_quoted, " at ", candidate);
+
       path = candidate;
       break;
     }

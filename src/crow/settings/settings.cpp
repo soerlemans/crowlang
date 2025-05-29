@@ -43,9 +43,9 @@ auto operator<<(std::ostream& t_os, const settings::Settings& t_settings)
   using namespace lib::stdprint::vector;
 
   t_os << "Settings{ ";
-  t_os << "paths: " << t_settings.m_paths << ", ";
+  t_os << "source_paths: " << t_settings.m_source_paths << ", ";
   t_os << "backend: " << t_settings.m_backend << ", ";
-  t_os << "bindings: " << t_settings.m_interop_backends << ", ";
+  t_os << "interop_backends: " << t_settings.m_interop_backends << ", ";
   t_os << "loglevel: " << t_settings.m_level << ", ";
   t_os << '}';
 

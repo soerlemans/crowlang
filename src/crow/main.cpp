@@ -32,7 +32,7 @@ static auto run(settings::Settings t_settings) -> void
   using state::TranslationUnit;
 
   // For now just compile all translation units, sequentially.
-  for(const auto& path : t_settings.m_paths) {
+  for(const auto& path : t_settings.m_source_paths) {
     TranslationUnit unit{path};
 
     unit.execute();

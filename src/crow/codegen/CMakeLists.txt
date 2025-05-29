@@ -1,6 +1,7 @@
 # Add source files:
 target_sources(${TARGET_CROW_LIB} PRIVATE
   backend_interface.cpp
+  interop_backend_interface.cpp
 )
 
 # Add subdirectories:
