@@ -47,8 +47,9 @@ auto read_file(const path t_path) -> TextBuffer
 
 namespace unit {
 // Methods:
-TranslationUnit::TranslationUnit(const path t_source_file)
-  : m_source_file{t_source_file}
+TranslationUnit::TranslationUnit(BuildUnitPtr t_build_unit,
+                                 const path t_source_file)
+  : m_build_unit{std::move(t_build_unit)}, m_source_file{t_source_file}
 {}
 
 auto TranslationUnit::lex(const TextStreamPtr& t_text_stream) -> TokenStream

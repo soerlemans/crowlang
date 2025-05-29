@@ -30,11 +30,18 @@ static auto disable_absorb_exceptions() -> void
 static auto run(settings::Settings t_settings) -> void
 {
   using unit::BuildUnit;
+  using unit::BuildUnitParams;
+  using unit::make_build_unit;
   using unit::TranslationUnit;
+
+  // Init build unit.
+  BuildUnitParams params{
+    t_settings.m_backend, t_settings.m_interop_backends, {}};
+  auto build_unit_ptr{make_build_unit(params)};
 
   // For now just compile all translation units, sequentially.
   for(const auto& path : t_settings.m_source_paths) {
-    TranslationUnit unit{path};
+    TranslationUnit unit{build_unit_ptr, path};
 
     unit.execute();
   }

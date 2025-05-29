@@ -51,7 +51,7 @@ class TranslationUnit {
   TranslationUnitPhase m_phase;
 
   // Config:
-  BuildUnitPtr m_config;
+  BuildUnitPtr m_build_unit;
 
   // Data:
   path m_source_file;
@@ -61,7 +61,7 @@ class TranslationUnit {
   SymbolTablePtr m_symbol_table;
 
   public:
-  TranslationUnit(path t_source_file);
+  TranslationUnit(BuildUnitPtr t_build_unit, path t_source_file);
 
   //! Tokenize the text buffer.
   virtual auto lex(const TextStreamPtr& t_text_stream) -> TokenStream;
