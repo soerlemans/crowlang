@@ -3,7 +3,7 @@
 namespace state {
 
 // Functions:
-auto make_configuration_unit() -> ConfigurationUnitPtr
+auto make_configuration_unit() -> BuildUnitPtr
 {
   return {};
 }

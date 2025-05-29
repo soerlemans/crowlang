@@ -45,7 +45,7 @@ auto read_file(const path t_path) -> TextBuffer
 }
 } // namespace
 
-namespace state {
+namespace unit {
 // Methods:
 TranslationUnit::TranslationUnit(const path t_source_file)
   : m_source_file{t_source_file}
@@ -156,4 +156,4 @@ auto TranslationUnit::execute() -> void
 
   backend({m_ast, m_symbol_table});
 }
-} // namespace state
+} // namespace unit

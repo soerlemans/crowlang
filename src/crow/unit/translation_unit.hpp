@@ -10,7 +10,7 @@
 #include "crow/codegen/backend_interface.hpp"
 #include "crow/container/text_buffer.hpp"
 #include "crow/semantic/symbol_table/symbol_table.hpp"
-#include "crow/state/configuration_unit.hpp"
+#include "crow/unit/build_unit.hpp"
 #include "crow/token/token_stream.hpp"
 
 namespace state {

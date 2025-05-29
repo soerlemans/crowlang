@@ -8,11 +8,11 @@
 
 namespace state {
 // Forward Declarations:
-class ConfigurationUnit;
+class BuildUnit;
 
 // Aliases:
 using BackendNameVec = std::vector<std::string>;
-using ConfigurationUnitPtr = std::shared_ptr<ConfigurationUnit>;
+using BuildUnitPtr = std::shared_ptr<BuildUnit>;
 
 // Structs:
 struct Config {
@@ -24,19 +24,19 @@ struct Config {
  * Stores the configuration for each @ref TranslationUnit.
  * This includes which backends to use.
  */
-class ConfigurationUnit {
+class BuildUnit {
   private:
   Config m_config;
 
   public:
-  ConfigurationUnit();
+  BuildUnit();
 
-  virtual ~ConfigurationUnit() = default;
+  virtual ~BuildUnit() = default;
 };
 
 // Functions:
 //! Resolve CLI settings and configuration from project.toml.
-auto make_configuration_unit() -> ConfigurationUnitPtr;
+auto make_build_unit() -> BuildUnitPtr;
 } // namespace state
 
 #endif // CROW_CROW_STATE_CONFIGURATION_UNIT_HPP

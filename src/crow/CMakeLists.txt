@@ -21,7 +21,7 @@ add_subdirectory(exception)
 add_subdirectory(settings)
 
 # Invokes all the phases:
-add_subdirectory(state)
+add_subdirectory(unit)
 
 # Lexing phase:
 add_subdirectory(token)
