@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CONFIG_TOML_HPP
-#define CROW_CROW_CONFIG_TOML_HPP
+#ifndef CROW_CROW_SETTINGS_TOML_HPP
+#define CROW_CROW_SETTINGS_TOML_HPP
 
 // STL Includes:
 #include <filesystem>
@@ -29,4 +29,4 @@ auto read_settings_toml(const fs::path t_filepath, Settings& t_settings)
   -> void;
 } // namespace settings
 
-#endif // CROW_CROW_CONFIG_TOML_HPP
+#endif // CROW_CROW_SETTINGS_TOML_HPP

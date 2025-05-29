@@ -1,5 +1,5 @@
-#ifndef CONFIG_HPP
-#define CONFIG_HPP
+#ifndef CROW_CROW_SETTINGS_SETTINGS_HPP
+#define CROW_CROW_SETTINGS_SETTINGS_HPP
 
 // STL Includes:
 #include <filesystem>
@@ -61,4 +61,4 @@ auto get_settings(CliParams& t_params) -> Settings;
 auto operator<<(std::ostream& t_os, const settings::Settings& t_settings)
   -> std::ostream&;
 
-#endif // CONFIG_HPP
+#endif // CROW_CROW_SETTINGS_SETTINGS_HPP

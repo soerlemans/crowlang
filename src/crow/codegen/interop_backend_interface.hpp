@@ -1,5 +1,5 @@
-#ifndef INTEROP_BACKEND_INTERFACE_HPP
-#define INTEROP_BACKEND_INTERFACE_HPP
+#ifndef CROW_CROW_CODEGEN_INTEROP_BACKEND_INTERFACE_HPP
+#define CROW_CROW_CODEGEN_INTEROP_BACKEND_INTERFACE_HPP
 
 // STL Includes:
 #include <memory>
@@ -60,4 +60,4 @@ auto interopbackendtype2str(InteropBackendType t_type) -> std::string_view;
 auto operator<<(std::ostream& t_os, codegen::InteropBackendType t_type)
   -> std::ostream&;
 
-#endif // INTEROP_BACKEND_INTERFACE_HPP
+#endif // CROW_CROW_CODEGEN_INTEROP_BACKEND_INTERFACE_HPP
