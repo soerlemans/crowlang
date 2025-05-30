@@ -3,6 +3,8 @@
 
 /*!
  * @file CLIR is short for CrowLang Intermediate Representation.
+ * We implement the IR as a series of structs that closely mimic the AST.
+ * And its layout.
  */
 
 // STL Includes:
