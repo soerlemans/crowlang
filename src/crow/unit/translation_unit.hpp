@@ -16,7 +16,7 @@
 namespace unit {
 // Using Statements:
 using ast::node::NodePtr;
-using codegen::AstPack;
+using codegen::CompileParams;
 using container::TextStreamPtr;
 using semantic::symbol_table::SymbolTablePtr;
 using std::filesystem::path;
@@ -76,7 +76,7 @@ class TranslationUnit {
   virtual auto semantic(NodePtr t_ast) -> SymbolTablePtr;
 
   //! Execute the codegeneration backend.
-  virtual auto backend(AstPack t_pack) -> void;
+  virtual auto backend(CompileParams& t_params) -> void;
 
   //! Crow compiler regular compilation flow.
   virtual auto execute() -> void;

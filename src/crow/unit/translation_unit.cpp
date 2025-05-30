@@ -121,7 +121,7 @@ auto TranslationUnit::semantic(NodePtr t_ast) -> SymbolTablePtr
   return symbol_table;
 }
 
-auto TranslationUnit::backend(const AstPack t_pack) -> void
+auto TranslationUnit::backend(CompileParams& t_params) -> void
 {
   using codegen::BackendPtr;
   using codegen::BackendType;
@@ -131,11 +131,8 @@ auto TranslationUnit::backend(const AstPack t_pack) -> void
 
   DBG_PRINTLN("<codegen>");
 
-  // FIXME: Someday the backend should be able to be chosen.
-  // By the project.toml and CLI options.
-  const auto backend_type{BackendType::CPP_BACKEND};
-  const auto backend_ptr{codegen::select_backend(backend_type)};
-  backend_ptr->compile(t_pack, stem);
+  // Invoke build unit to build.
+  m_build_unit->compile(t_params);
 
   DBG_PRINTLN("</codegen>");
 }
@@ -155,6 +152,9 @@ auto TranslationUnit::execute() -> void
   m_symbol_table = semantic(m_ast);
   print_ast(m_ast);
 
-  backend({m_ast, m_symbol_table});
+	// Perform compilcation:
+  CompileParams params{m_ast, m_symbol_table, m_build_unit->build_dir(),
+                       m_source_file};
+  backend(params);
 }
 } // namespace unit

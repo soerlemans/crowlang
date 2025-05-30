@@ -9,6 +9,16 @@ BuildUnit::BuildUnit(BackendPtr&& t_backend, fs::path t_build_dir)
   : m_backend{std::move(t_backend)}, m_build_dir{t_build_dir}
 {}
 
+auto BuildUnit::compile(codegen::CompileParams& t_params) -> void
+{
+  m_backend->compile(t_params);
+}
+
+auto BuildUnit::build_dir() -> const fs::path&
+{
+  return m_build_dir;
+}
+
 // Functions:
 auto make_build_unit(BuildUnitParams& t_params) -> BuildUnitPtr
 {

@@ -330,20 +330,20 @@ auto LlvmBackend::dump_ir(std::ostream& t_os) -> void
 }
 
 //! FIXME: For now we do nothing with the @ref SymbolTable
-auto LlvmBackend::compile(AstPack t_pack, path t_stem) -> void
+auto LlvmBackend::compile(CompileParams& t_params) -> void
 {
   using namespace llvm;
   using namespace llvm::sys::fs;
 
+  const auto& [ast, symbol_table, build_dir, source_path] = t_params;
+
   configure_target();
 
-  const auto tmp_dir{lib::temporary_directory()};
-  const path tmp_src{tmp_dir / t_stem.concat(".ll")};
-
-  const auto& [ast, symbol_table] = t_pack;
+  fs::path stem{source_path.stem()};
+  const fs::path tmp_src{build_dir / stem.concat(".ll")};
 
   // Log filepath's:
-  DBG_INFO("tmp_dir: ", tmp_dir);
+  DBG_INFO("build_dir: ", build_dir);
   DBG_INFO("tmp_src: ", tmp_src);
 
   // Initialize all target stuff:

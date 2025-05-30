@@ -52,7 +52,7 @@ class BuildUnit {
   public:
   BuildUnit(BackendPtr&& t_backend, fs::path t_build_dir);
 
-  // auto compile(AstPack t_pack) -> void;
+  auto compile(codegen::CompileParams& t_params) -> void;
   auto build_dir() -> const fs::path&;
 
   virtual ~BuildUnit() = default;

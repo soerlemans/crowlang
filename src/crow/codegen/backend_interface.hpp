@@ -34,12 +34,13 @@ enum class BackendType {
 
 // Structs:
 /*!
- * Utility structure packing all AST functionality together,
- * With the @ref SymbolTable.
+ * Utility structure packing all required parameters for compiling.
  */
-struct AstPack {
+struct CompileParams {
   NodePtr m_ast;
   SymbolTablePtr m_symbol_table;
+  fs::path m_build_dir;
+  fs::path m_source_path;
 };
 
 // Classes:
@@ -52,12 +53,12 @@ class BackendInterface : public ast::visitor::NodeVisitor {
 
   /*!
    * How an interop backend is added is backend specific.
-	 * So this is a shared factory method for nested interop backends.
-	 */
+   * So this is a shared factory method for nested interop backends.
+   */
   virtual auto register_interop_backend(InteropBackendType t_type) -> void = 0;
 
   //! Compile the AST for the selected backend.
-  virtual auto compile(AstPack t_pack, fs::path t_stem) -> void = 0;
+  virtual auto compile(CompileParams& t_params) -> void = 0;
 
   virtual ~BackendInterface() = default;
 };
