@@ -152,7 +152,7 @@ auto TranslationUnit::execute() -> void
   m_symbol_table = semantic(m_ast);
   print_ast(m_ast);
 
-  // Perform compilcation:
+  // Perform compilation:
   CompileParams params{m_ast, m_symbol_table, m_build_unit->build_dir(),
                        m_source_file};
   backend(params);

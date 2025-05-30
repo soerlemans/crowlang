@@ -7,6 +7,4 @@ target_sources(${TARGET_CROW_LIB} PRIVATE
 )
 
 # Add subdirectories
-add_subdirectory(interop_backends)
-#add_subdirectory(cmake_backend) # Maybe support multiple backends?
-#add_subdirectory(build_backends) # Maybe support multiple backends?
+add_subdirectory(interop)
