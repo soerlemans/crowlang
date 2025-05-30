@@ -76,8 +76,8 @@ auto ClangFrontendInvoker::compile(const path &t_filepath) -> void
   const auto binary_str{"crowlang_export$(python3-config --extension-suffix)"};
 
   const auto flags{m_compiler_flags.view()};
-  const auto cmd{std::format("{} {} {} -o {}", cpp_compiler, source_str,
-                             flags, binary_str)};
+  const auto cmd{
+    std::format("{} {} {} -o {}", cpp_compiler, source_str, flags, binary_str)};
 
   DBG_NOTICE("Compiler command: ", cmd);
   const auto status_code{std::system(cmd.c_str())};

@@ -29,12 +29,13 @@ auto select_backend(const BackendType t_selector) -> BackendPtr
       // With all interop backends enabled.
       // Someday we should setup a more robust way that considers project.toml.
       // And CLI option settings, but for now just do it quick and dirty.
-      auto cpp_backend{std::make_shared<CppBackend>()};
+      // auto cpp_backend{std::make_shared<CppBackend>()};
+      ptr = std::make_shared<CppBackend>();
 
-      cpp_backend->add_interop_backend(
-        std::make_shared<cpp2py_interop::PythonBackend>());
+      // cpp_backend->add_interop_backend(
+      //   std::make_shared<cpp2py_interop::PythonBackend>());
 
-      ptr = std::move(cpp_backend);
+      // ptr = std::move(cpp_backend);
       break;
     }
 

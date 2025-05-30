@@ -29,7 +29,7 @@ enum class ExportSymbolType {
 // Structs:
 /*!
  * Struct keeping track of exported symbols regarding interoperability.
- * The identifier is a 
+ * The identifier is a
  */
 struct ExportSymbol {
   std::string m_id;
@@ -60,6 +60,6 @@ class PythonBackend : public InteropBackendInterface {
 
   virtual ~PythonBackend() = default;
 };
-} // namespace codegen::cpp_backend::interop_backends
+} // namespace codegen::cpp_backend::interop_backends::python_backend
 
 #endif // CROW_CROW_CODEGEN_CPP_BACKEND_INTEROP_BACKENDS_PYTHON_BACKEND_PYTHON_BACKEND_HPP

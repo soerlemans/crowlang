@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CONFIG_CLI_HPP
-#define CROW_CROW_CONFIG_CLI_HPP
+#ifndef CROW_CROW_SETTINGS_CLI_HPP
+#define CROW_CROW_SETTINGS_CLI_HPP
 
 // Library Includes:
 #include <CLI/App.hpp>
@@ -18,9 +18,7 @@ struct Settings;
 // Structs:
 /*!
  * Utility struct for passing around the parameters needed.
- * To get the CLI parameters.
- *
- * @note
+ * For the CLI11 App and the parsing of CLI options.
  */
 struct CliParams {
   CLI::App m_app;
@@ -51,4 +49,4 @@ class BannerFormatter : public CLI::Formatter {
 auto read_cli_settings(CliParams& t_params, Settings& t_settings) -> void;
 } // namespace settings
 
-#endif // CROW_CROW_CONFIG_CLI_HPP
+#endif // CROW_CROW_SETTINGS_CLI_HPP

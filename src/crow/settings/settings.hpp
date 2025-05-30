@@ -1,5 +1,5 @@
-#ifndef CONFIG_HPP
-#define CONFIG_HPP
+#ifndef CROW_CROW_SETTINGS_SETTINGS_HPP
+#define CROW_CROW_SETTINGS_SETTINGS_HPP
 
 // STL Includes:
 #include <filesystem>
@@ -20,6 +20,7 @@ namespace settings {
 namespace fs = std::filesystem;
 using FileVec = std::vector<fs::path>;
 using StringVec = std::vector<std::string>;
+using InteropBackendTypeVec = std::vector<codegen::InteropBackendType>;
 
 // using InteropBackendVec = std::vector<>;
 
@@ -28,16 +29,16 @@ struct Settings {
   using BackendType = codegen::BackendType;
   using LogLevel = debug::LogLevel;
 
-  FileVec m_paths;
+  FileVec m_source_paths;
 
   codegen::BackendType m_backend;
-  StringVec m_interop_backends;
+  InteropBackendTypeVec m_interop_backends;
 
   debug::LogLevel m_level;
 
   // Methods:
   Settings()
-    : m_paths{},
+    : m_source_paths{},
       m_backend{BackendType::CPP_BACKEND},
       m_interop_backends{},
       m_level{LogLevel::VERBOSE}
@@ -60,4 +61,4 @@ auto get_settings(CliParams& t_params) -> Settings;
 auto operator<<(std::ostream& t_os, const settings::Settings& t_settings)
   -> std::ostream&;
 
-#endif // CONFIG_HPP
+#endif // CROW_CROW_SETTINGS_SETTINGS_HPP

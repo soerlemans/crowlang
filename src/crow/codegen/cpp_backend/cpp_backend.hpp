@@ -15,15 +15,18 @@
 #include "interop_backends/interop_backend_interface.hpp"
 
 namespace codegen::cpp_backend {
-// Using Statements:
+// Aliases:
 using namespace ast;
 
-// Using Declarations:
+namespace fs = std::filesystem;
+
 using interop_backends::InteropBackendPtr;
 using node::NodePtr;
 using semantic::symbol_table::SymbolTablePtr;
-using std::filesystem::path;
 using visitor::Any;
+
+using InteropBackends = std::vector<InteropBackendPtr>;
+using TerminateStack = std::stack<bool>;
 
 // Classes:
 /*!
@@ -38,10 +41,10 @@ class CppBackend : public BackendInterface {
   // Currently unused as the idea was to use it for interop.
   SymbolTablePtr m_symbol_table;
 
-  std::vector<InteropBackendPtr> m_interop_backends;
+  InteropBackends m_interop_backends;
 
   // TODO: Move terminate functionality in its own class to separate concerns.
-  std::stack<bool> m_terminate;
+  TerminateStack m_terminate;
 
   // Counter that is used to create unique identifier names.
   // Is incremented after each usage to prevent collision.
@@ -150,8 +153,12 @@ class CppBackend : public BackendInterface {
   /*!
    * Transpile the @ref t_ast to valid C++ code and write it to @ref t_out.
    */
-  auto codegen(NodePtr t_ast, const path& t_out) -> void;
-  auto compile(AstPack t_pack, path t_stem) -> void override;
+  auto codegen(NodePtr t_ast, const fs::path& t_out) -> void;
+
+  //! CPP backend as of writing needs to refactor interop.
+  auto register_interop_backend([[maybe_unused]] InteropBackendType t_type)
+    -> void override {};
+  auto compile(CompileParams& t_params) -> void override;
 
   virtual ~CppBackend() = default;
 };

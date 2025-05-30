@@ -1,5 +1,5 @@
-#ifndef ENUM_CONVERT_HPP
-#define ENUM_CONVERT_HPP
+#ifndef CROW_CROW_SETTINGS_ENUM_CONVERT_HPP
+#define CROW_CROW_SETTINGS_ENUM_CONVERT_HPP
 
 /*!
  * @file Convert strings to enum types.
@@ -42,4 +42,4 @@ auto str2interopbackendtype(std::string_view t_key)
   -> codegen::InteropBackendType;
 } // namespace settings
 
-#endif // ENUM_CONVERT_HPP
+#endif // CROW_CROW_SETTINGS_ENUM_CONVERT_HPP

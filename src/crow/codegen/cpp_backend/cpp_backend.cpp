@@ -475,7 +475,7 @@ auto CppBackend::add_interop_backend(InteropBackendPtr t_ptr) -> void
   m_interop_backends.emplace_back(t_ptr);
 }
 
-auto CppBackend::codegen(NodePtr t_ast, const path& t_out) -> void
+auto CppBackend::codegen(NodePtr t_ast, const fs::path& t_out) -> void
 {
   std::ofstream ofs{t_out};
 
@@ -495,16 +495,17 @@ auto CppBackend::codegen(NodePtr t_ast, const path& t_out) -> void
   ofs << epilogue() << '\n';
 }
 
-auto CppBackend::compile(AstPack t_pack, path t_stem) -> void
+auto CppBackend::compile(CompileParams& t_params) -> void
 {
-  const auto tmp_dir{lib::temporary_directory()};
-  const path tmp_src{tmp_dir / t_stem.concat(".cpp")};
+  const auto& [ast, symbol_table, build_dir, source_path] = t_params;
 
-  const auto& [ast, symbol_table] = t_pack;
+  fs::path stem{source_path.stem()};
+  const fs::path tmp_src{build_dir / stem.concat(".cpp")};
+
   m_symbol_table = symbol_table;
 
   // Log filepath's:
-  DBG_INFO("tmp_dir: ", tmp_dir);
+  DBG_INFO("build_dir: ", build_dir);
   DBG_INFO("tmp_src: ", tmp_src);
 
   // Generate C++ source file.

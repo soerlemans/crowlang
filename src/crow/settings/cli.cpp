@@ -21,7 +21,7 @@ using settings::Settings;
 auto add_positional_flags(CLI::App& t_app, Settings& t_settings) -> void
 {
   // Program source files:
-  t_app.add_option("{}", t_settings.m_paths, "Files to compile.")
+  t_app.add_option("{}", t_settings.m_source_paths, "Files to compile.")
     ->check(CLI::ExistingFile);
 }
 
@@ -35,7 +35,7 @@ auto add_loglevel_flag([[maybe_unused]] CLI::App& t_app, Settings& t_settings)
   const LogLevelMap& map{loglevel_map()};
 
   t_app.add_option("-l,--log-level", t_settings.m_level, "Set the LogLevel.")
-    ->transform(CLI::CheckedTransformer(map, CLI::ignore_case));
+    ->transform(CLI::CheckedTransformer(map));
 #endif // DEBUG
 }
 
@@ -49,15 +49,20 @@ auto add_backend_flag(CLI::App& t_app, Settings& t_settings) -> void
   t_app
     .add_option("-b,--backend", t_settings.m_backend,
                 "Backend to use for code generation.")
-    ->transform(CLI::CheckedTransformer(map, CLI::ignore_case));
+    ->transform(CLI::CheckedTransformer(map));
 }
 
 auto add_bindings_flag(CLI::App& t_app, Settings& t_settings) -> void
 {
+  using settings::interopbackendtype_map;
+  using settings::InteropBackendTypeMap;
 
-  // TODO: Add map with options.
-  t_app.add_option("-i,--interop", t_settings.m_interop_backends,
-                   "For which languages bindings should be generated for.");
+  const InteropBackendTypeMap& map{interopbackendtype_map()};
+
+  t_app
+    .add_option("-i,--interop", t_settings.m_interop_backends,
+                "Which interop backends should be enabled.")
+    ->transform(CLI::CheckedTransformer(map));
 }
 
 auto add_nocolor_flag(CLI::App& t_app) -> void

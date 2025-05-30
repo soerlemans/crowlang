@@ -1,5 +1,5 @@
-#ifndef STDPRINT_HPP
-#define STDPRINT_HPP
+#ifndef CROW_LIB_STDPRINT_HPP
+#define CROW_LIB_STDPRINT_HPP
 
 /*!
  * @file Utilities for printing standard library containers.
@@ -90,4 +90,4 @@ using namespace lib::stdprint::array;
 } // namespace all
 } // namespace lib::stdprint
 
-#endif // STDPRINT_HPP
+#endif // CROW_LIB_STDPRINT_HPP

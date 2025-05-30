@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_STATE_TRANSLATION_UNIT_HPP
-#define CROW_CROW_STATE_TRANSLATION_UNIT_HPP
+#ifndef CROW_CROW_UNIT_TRANSLATION_UNIT_HPP
+#define CROW_CROW_UNIT_TRANSLATION_UNIT_HPP
 
 // STL Includes:
 #include <filesystem>
@@ -10,13 +10,13 @@
 #include "crow/codegen/backend_interface.hpp"
 #include "crow/container/text_buffer.hpp"
 #include "crow/semantic/symbol_table/symbol_table.hpp"
-#include "crow/state/configuration_unit.hpp"
 #include "crow/token/token_stream.hpp"
+#include "crow/unit/build_unit.hpp"
 
-namespace state {
+namespace unit {
 // Using Statements:
 using ast::node::NodePtr;
-using codegen::AstPack;
+using codegen::CompileParams;
 using container::TextStreamPtr;
 using semantic::symbol_table::SymbolTablePtr;
 using std::filesystem::path;
@@ -51,7 +51,7 @@ class TranslationUnit {
   TranslationUnitPhase m_phase;
 
   // Config:
-  ConfigurationUnitPtr m_config;
+  BuildUnitPtr m_build_unit;
 
   // Data:
   path m_source_file;
@@ -61,7 +61,7 @@ class TranslationUnit {
   SymbolTablePtr m_symbol_table;
 
   public:
-  TranslationUnit(path t_source_file);
+  TranslationUnit(BuildUnitPtr t_build_unit, path t_source_file);
 
   //! Tokenize the text buffer.
   virtual auto lex(const TextStreamPtr& t_text_stream) -> TokenStream;
@@ -76,18 +76,18 @@ class TranslationUnit {
   virtual auto semantic(NodePtr t_ast) -> SymbolTablePtr;
 
   //! Execute the codegeneration backend.
-  virtual auto backend(AstPack t_pack) -> void;
+  virtual auto backend(CompileParams& t_params) -> void;
 
   //! Crow compiler regular compilation flow.
   virtual auto execute() -> void;
 
   virtual ~TranslationUnit() = default;
 };
-} // namespace state
+} // namespace unit
 
-auto operator<<(std::ostream& t_os, state::TranslationUnitPhase t_phase)
+auto operator<<(std::ostream& t_os, unit::TranslationUnitPhase t_phase)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, state::TranslationUnit t_unit)
+auto operator<<(std::ostream& t_os, unit::TranslationUnit t_unit)
   -> std::ostream&;
 
-#endif // CROW_CROW_STATE_TRANSLATION_UNIT_HPP
+#endif // CROW_CROW_UNIT_TRANSLATION_UNIT_HPP

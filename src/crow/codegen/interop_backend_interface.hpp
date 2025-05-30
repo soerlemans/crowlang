@@ -1,9 +1,10 @@
-#ifndef INTEROP_BACKEND_INTERFACE_HPP
-#define INTEROP_BACKEND_INTERFACE_HPP
+#ifndef CROW_CROW_CODEGEN_INTEROP_BACKEND_INTERFACE_HPP
+#define CROW_CROW_CODEGEN_INTEROP_BACKEND_INTERFACE_HPP
 
 // STL Includes:
 #include <memory>
 #include <string>
+#include <vector>
 
 // Absolute Includes:
 #include "crow/ast/node/fdecl.hpp"
@@ -18,8 +19,10 @@ using node::NodePtr;
 
 // Forward Declarations:
 class InteropBackendInterface;
+enum class InteropBackendType;
 
 // Aliases:
+using InteropSelectors = std::vector<InteropBackendType>;
 using InteropBackendPtr = std::shared_ptr<InteropBackendInterface>;
 
 // Enums:
@@ -49,6 +52,12 @@ class InteropBackendInterface {
 
   virtual ~InteropBackendInterface() = default;
 };
+
+auto interopbackendtype2str(InteropBackendType t_type) -> std::string_view;
 } // namespace codegen
 
-#endif // INTEROP_BACKEND_INTERFACE_HPP
+// Functions:
+auto operator<<(std::ostream& t_os, codegen::InteropBackendType t_type)
+  -> std::ostream&;
+
+#endif // CROW_CROW_CODEGEN_INTEROP_BACKEND_INTERFACE_HPP
