@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_STATE_CONFIGURATION_UNIT_HPP
-#define CROW_CROW_STATE_CONFIGURATION_UNIT_HPP
+#ifndef CROW_CROW_UNIT_BUILD_UNIT_HPP
+#define CROW_CROW_UNIT_BUILD_UNIT_HPP
 
 // STL Includes:
 #include <filesystem>
@@ -63,4 +63,4 @@ class BuildUnit {
 auto make_build_unit(BuildUnitParams& t_params) -> BuildUnitPtr;
 } // namespace unit
 
-#endif // CROW_CROW_STATE_CONFIGURATION_UNIT_HPP
+#endif // CROW_CROW_UNIT_BUILD_UNIT_HPP

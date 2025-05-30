@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_STATE_TRANSLATION_UNIT_HPP
-#define CROW_CROW_STATE_TRANSLATION_UNIT_HPP
+#ifndef CROW_CROW_UNIT_TRANSLATION_UNIT_HPP
+#define CROW_CROW_UNIT_TRANSLATION_UNIT_HPP
 
 // STL Includes:
 #include <filesystem>
@@ -10,8 +10,8 @@
 #include "crow/codegen/backend_interface.hpp"
 #include "crow/container/text_buffer.hpp"
 #include "crow/semantic/symbol_table/symbol_table.hpp"
-#include "crow/unit/build_unit.hpp"
 #include "crow/token/token_stream.hpp"
+#include "crow/unit/build_unit.hpp"
 
 namespace unit {
 // Using Statements:
@@ -83,11 +83,11 @@ class TranslationUnit {
 
   virtual ~TranslationUnit() = default;
 };
-} // namespace state
+} // namespace unit
 
 auto operator<<(std::ostream& t_os, unit::TranslationUnitPhase t_phase)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, unit::TranslationUnit t_unit)
   -> std::ostream&;
 
-#endif // CROW_CROW_STATE_TRANSLATION_UNIT_HPP
+#endif // CROW_CROW_UNIT_TRANSLATION_UNIT_HPP
