@@ -502,16 +502,16 @@ auto CppBackend::register_interop_backend(const InteropBackendType t_type)
     case InteropBackendType::LUA_INTEROP_BACKEND:
       [[fallthrough]];
     case InteropBackendType::JS_INTEROP_BACKEND: {
-      const auto err_msg{
-        std::format("Unsupported C++ interopability backend \"{}\"",
-                    interopbackendtype2str(t_type))};
+      const auto err_msg{std::format(
+        "Unsupported interopability backend \"{}\" for C++ backend.",
+        interopbackendtype2str(t_type))};
       throw std::invalid_argument{err_msg};
       break;
     }
 
     default: {
       const auto err_msg{
-        std::format("Unknown C++ interopability backend \"{}\"",
+        std::format("Unknown interopability backend \"{}\" for C++ backend",
                     interopbackendtype2str(t_type))};
       throw std::invalid_argument{err_msg};
       break;
