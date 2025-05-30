@@ -60,6 +60,6 @@ class PythonBackend : public CppInteropBackendInterface {
 
   virtual ~PythonBackend() = default;
 };
-} // namespace codegen::cpp_backend::interop_backends::python_backend
+} // namespace codegen::cpp_backend::interop::python_backend
 
 #endif // CROW_CROW_CODEGEN_CPP_BACKEND_INTEROP_PYTHON_BACKEND_PYTHON_BACKEND_HPP

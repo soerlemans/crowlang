@@ -15,7 +15,7 @@ namespace fs = std::filesystem;
 class ClangFrontendInvoker {
   private:
   std::stringstream m_compiler_flags;
-	std::string m_out;
+  std::string m_out;
 
   public:
   ClangFrontendInvoker();

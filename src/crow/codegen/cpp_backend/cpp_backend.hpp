@@ -36,7 +36,7 @@ using TerminateStack = std::stack<bool>;
  */
 class CppBackend : public BackendInterface {
   private:
-	// CXX compiler front end.
+  // CXX compiler front end.
   ClangFrontendInvoker m_inv;
 
   // Global symbol table used for quick symbol lookup.
