@@ -1,6 +1,6 @@
 #include "python_backend.hpp"
 
-namespace codegen::cpp_backend::interop_backends::python_backend {
+namespace codegen::cpp_backend::interop::python_backend {
 PythonBackend::PythonBackend(): m_ss{}, m_symbols{}
 {
   // m_symbols.reserve();

@@ -5,10 +5,10 @@
 #include <sstream>
 #include <vector>
 
-// Relative Includes:
-#include "../interop_backend_interface.hpp"
+// Absolute Includes:
+#include "crow/codegen/cpp_backend/interop/cpp_interop_backend_interface.hpp"
 
-namespace codegen::cpp_backend::interop_backends::python_backend {
+namespace codegen::cpp_backend::interop::python_backend {
 // Forward Declarations:
 struct ExportSymbol;
 
@@ -41,7 +41,7 @@ struct ExportSymbol {
  * Generate pythong bindings for use with pybind11.
  * TODO: Describe usage generate(), dont run on whole ast.
  */
-class PythonBackend : public InteropBackendInterface {
+class PythonBackend : public CppInteropBackendInterface {
   private:
   std::stringstream m_ss;
 

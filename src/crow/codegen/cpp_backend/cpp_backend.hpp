@@ -7,12 +7,11 @@
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
 #include "crow/codegen/backend_interface.hpp"
+#include "crow/codegen/cpp_backend/clang_frontend_invoker.hpp"
+#include "crow/codegen/cpp_backend/interop/cpp_interop_backend_interface.hpp"
 #include "crow/semantic/symbol_table/symbol_table.hpp"
 #include "lib/filesystem.hpp"
 #include "lib/types.hpp"
-
-// Local Includes:
-#include "interop_backends/interop_backend_interface.hpp"
 
 namespace codegen::cpp_backend {
 // Aliases:
@@ -20,12 +19,12 @@ using namespace ast;
 
 namespace fs = std::filesystem;
 
-using interop_backends::InteropBackendPtr;
+using interop::CppInteropBackendPtr;
 using node::NodePtr;
 using semantic::symbol_table::SymbolTablePtr;
 using visitor::Any;
 
-using InteropBackends = std::vector<InteropBackendPtr>;
+using InteropBackends = std::vector<CppInteropBackendPtr>;
 using TerminateStack = std::stack<bool>;
 
 // Classes:
@@ -37,6 +36,9 @@ using TerminateStack = std::stack<bool>;
  */
 class CppBackend : public BackendInterface {
   private:
+	// CXX compiler front end.
+  ClangFrontendInvoker m_inv;
+
   // Global symbol table used for quick symbol lookup.
   // Currently unused as the idea was to use it for interop.
   SymbolTablePtr m_symbol_table;
@@ -148,16 +150,14 @@ class CppBackend : public BackendInterface {
   auto visit(node::List* t_list) -> Any override;
 
   // Util:
-  auto add_interop_backend(InteropBackendPtr t_ptr) -> void;
+  //! CPP backend as of writing needs to refactor interop.
+  auto register_interop_backend(InteropBackendType t_type) -> void override;
 
   /*!
    * Transpile the @ref t_ast to valid C++ code and write it to @ref t_out.
    */
   auto codegen(NodePtr t_ast, const fs::path& t_out) -> void;
 
-  //! CPP backend as of writing needs to refactor interop.
-  auto register_interop_backend([[maybe_unused]] InteropBackendType t_type)
-    -> void override {};
   auto compile(CompileParams& t_params) -> void override;
 
   virtual ~CppBackend() = default;

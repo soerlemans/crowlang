@@ -16,7 +16,7 @@
 #include "node_visitor.hpp"
 
 namespace ast::visitor {
-// Concept:
+// Concepts:
 template<typename Type, typename... Args>
 concept IsAnyOf = (std::same_as<Args, Type> || ...);
 

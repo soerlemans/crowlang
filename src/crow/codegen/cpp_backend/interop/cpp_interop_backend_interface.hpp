@@ -7,27 +7,27 @@
 
 // Absolute Includes:
 #include "crow/ast/node/fdecl.hpp"
+#include "crow/codegen/interop_backend_interface.hpp"
 #include "lib/types.hpp"
 
-namespace codegen::cpp_backend::interop_backends {
-// Using Statements:
-using namespace ast;
-
-// Using Declarations:
-using node::NodePtr;
-
+namespace codegen::cpp_backend::interop {
 // Forward Declarations:
-class InteropBackendInterface;
+class CppInteropBackendInterface;
 
 // Aliases:
-using InteropBackendPtr = std::shared_ptr<InteropBackendInterface>;
+using namespace ast;
 
+using node::NodePtr;
+
+using CppInteropBackendPtr = std::shared_ptr<CppInteropBackendInterface>;
+
+// Classes:
 /*!
  * Interface used for creating interop between
  */
-class InteropBackendInterface {
+class CppInteropBackendInterface : public InteropBackendInterface {
   public:
-  InteropBackendInterface() = default;
+  CppInteropBackendInterface() = default;
 
   virtual auto prologue() -> std::string = 0;
 
@@ -41,9 +41,8 @@ class InteropBackendInterface {
 
   virtual auto epilogue() -> std::string = 0;
 
-  virtual ~InteropBackendInterface() = default;
+  virtual ~CppInteropBackendInterface() = default;
 };
-
-} // namespace codegen::cpp_backend::interop_backends
+} // namespace codegen::cpp_backend::interop
 
 #endif // CROW_CROW_CODEGEN_CPP_BACKEND_INTEROP_BACKENDS_INTEROP_BACKEND_INTERFACE_HPP

@@ -2,6 +2,7 @@
 
 // STL Includes:
 #include <cstdlib>
+#include <format>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -16,7 +17,7 @@ namespace codegen::cpp_backend {
 using namespace std::literals::string_view_literals;
 
 // Methods:
-ClangFrontendInvoker::ClangFrontendInvoker(): m_compiler_flags{}
+ClangFrontendInvoker::ClangFrontendInvoker(): m_compiler_flags{}, m_out{}
 {
   // Add debug flags.
   add_flags("-g -ggdb"sv);
@@ -30,35 +31,43 @@ auto ClangFrontendInvoker::add_flags(const std::string_view t_str) -> void
   // Add spaces passed around the passed flags, automatically.
 
   // TODO: Sanitize this one day as to prevent command injection.
-  // TODO: Maybe also change the escape char for std::quoted()?
-  m_compiler_flags << ' ' << t_str << ' ';
+  m_compiler_flags << std::format(" {} ", t_str);
+}
+
+auto ClangFrontendInvoker::set_out(const std::string_view t_out) -> void
+{
+  // TODO: Sanitize this one day as to prevent command injection.
+  m_out = t_out;
 }
 
 // Public Methods:
-auto ClangFrontendInvoker::compile(const path &t_filepath) -> void
+auto ClangFrontendInvoker::compile(const fs::path &t_source) -> void
 {
-  const auto stem{t_filepath.stem()};
+  const auto stem{t_source.stem()};
 
-  const auto tmp_base{t_filepath.parent_path() / stem};
+  const auto tmp_base{t_source.parent_path() / stem};
+
   auto tmp_obj{tmp_base};
   tmp_obj += ".o";
 
-  auto binary{stem};
-  binary += ".out";
-
-  const auto source_str{t_filepath.native()};
-  // const auto binary_str{binary.native()};
+  std::string out{stem};
+  out += ".out";
+  if(!m_out.empty()) {
+    // If m_out is set override the default.
+    out = m_out;
+  }
 
   // Logging:
+  DBG_INFO("source: ", t_source);
   DBG_INFO("tmp_obj: ", tmp_obj);
-  DBG_INFO("binary: ", binary);
+  DBG_INFO("out: ", out);
 
   // Print generated code (lazy implementation).
 #ifdef DEBUG
   DBG_PRINTLN("# C++ codegeneration:");
 
   const auto cmd_cat{
-    std::format("clang-format --style=Google < {}", source_str)};
+    std::format("clang-format --style=Google < {}", t_source.native())};
   std::system(cmd_cat.c_str());
 
   DBG_PRINTLN();
@@ -73,17 +82,15 @@ auto ClangFrontendInvoker::compile(const path &t_filepath) -> void
   // We use G++ at the moment as it supports more of C++23.
   const auto cpp_compiler{"g++"sv};
 
-  const auto binary_str{"crowlang_export$(python3-config --extension-suffix)"};
-
   const auto flags{m_compiler_flags.view()};
   const auto cmd{
-    std::format("{} {} {} -o {}", cpp_compiler, source_str, flags, binary_str)};
+    std::format("{} {} {} -o {}", cpp_compiler, t_source.native(), flags, out)};
 
   DBG_NOTICE("Compiler command: ", cmd);
   const auto status_code{std::system(cmd.c_str())};
 
   if(status_code == 0) {
-    DBG_NOTICE("Binary was generated!: ", binary);
+    DBG_NOTICE("Out file was generated!: ", out);
   } else {
     DBG_CRITICAL(cpp_compiler, "Failed to compile.");
 

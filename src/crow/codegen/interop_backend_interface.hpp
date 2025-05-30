@@ -46,10 +46,6 @@ class InteropBackendInterface {
   public:
   InteropBackendInterface() = default;
 
-  virtual auto prologue() -> std::string = 0;
-
-  virtual auto epilogue() -> std::string = 0;
-
   virtual ~InteropBackendInterface() = default;
 };
 

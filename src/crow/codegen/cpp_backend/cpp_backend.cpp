@@ -8,6 +8,7 @@
 
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
+#include "crow/codegen/cpp_backend/interop/python_backend/python_backend.hpp"
 #include "crow/debug/log.hpp"
 #include "crow/exception/error.hpp"
 #include "lib/types.hpp"
@@ -117,7 +118,11 @@ auto CppBackend::resolve(NodePtr t_ptr, const bool t_terminate) -> std::string
 
 // Public:
 CppBackend::CppBackend()
-  : m_symbol_table{}, m_interop_backends{}, m_terminate{}, m_id_defer_count{0}
+  : m_inv{},
+    m_symbol_table{},
+    m_interop_backends{},
+    m_terminate{},
+    m_id_defer_count{0}
 {}
 
 // Control:
@@ -470,9 +475,45 @@ auto CppBackend::visit(List* t_list) -> Any
 }
 
 // Util:
-auto CppBackend::add_interop_backend(InteropBackendPtr t_ptr) -> void
+auto CppBackend::register_interop_backend(const InteropBackendType t_type)
+  -> void
 {
-  m_interop_backends.emplace_back(t_ptr);
+  namespace py_interop = cpp_backend::interop::python_backend;
+
+  CppInteropBackendPtr ptr{};
+
+  switch(t_type) {
+    case InteropBackendType::PYTHON_INTEROP_BACKEND:
+      ptr = std::make_shared<py_interop::PythonBackend>();
+
+      // Add compiler flags for compiling python3 support.
+      m_inv.add_flags("-shared -fPIC $(python3 -m pybind11 --includes)");
+
+      // Set the out file.
+      m_inv.set_out("crowlang_export$(python3-config --extension-suffix)");
+      break;
+
+      // case InteropBackendType::LUA_INTEROP_BACKEND:
+      //   break;
+
+      // Fallthrough all the way to default.
+    case InteropBackendType::LUA_INTEROP_BACKEND:
+      [[fallthrough]];
+    case InteropBackendType::C_INTEROP_BACKEND:
+      [[fallthrough]];
+    case InteropBackendType::JS_INTEROP_BACKEND:
+      [[fallthrough]];
+
+    default:
+      const auto err_msg{
+        std::format("Unsupported C++ interopability backend \"{}\"",
+                    interopbackendtype2str(t_type))};
+      throw std::invalid_argument{err_msg};
+      break;
+  }
+
+  // Add the backend at the end.
+  m_interop_backends.emplace_back(ptr);
 }
 
 auto CppBackend::codegen(NodePtr t_ast, const fs::path& t_out) -> void
@@ -512,13 +553,7 @@ auto CppBackend::compile(CompileParams& t_params) -> void
   codegen(ast, tmp_src);
 
   // Invoke clang frontend to generate a binary.
-  ClangFrontendInvoker inv{};
-
-  // FIXME: Temporarily add the flags needed for Python interop.
-  // This assumes that we have python3 and the pybind11 installed.
-  inv.add_flags("-shared -fPIC $(python3 -m pybind11 --includes)");
-
-  inv.compile(tmp_src);
+  m_inv.compile(tmp_src);
 
   // Clear members, for next compilation.
   m_symbol_table.reset();
