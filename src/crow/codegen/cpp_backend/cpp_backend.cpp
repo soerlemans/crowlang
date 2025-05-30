@@ -489,8 +489,15 @@ auto CppBackend::register_interop_backend(const InteropBackendType t_type)
       // Add compiler flags for compiling python3 support.
       m_inv.add_flags("-shared -fPIC $(python3 -m pybind11 --includes)");
 
-      // Set the out file.
-      m_inv.set_out("crowlang_export$(python3-config --extension-suffix)");
+      // TODO: Find a cleaner way to utilize environment variables.
+      // Maybe register environment variables for later usage.
+
+      // Set the out file (SRC_STEM is set in ClangFrontendInvoker).
+      // clang-format off
+      // m_inv.set_out("crowlang_${SRC_STEM:-cpython}_export$(python3-config --extension-suffix)");
+      // clang-format on
+      m_inv.set_out("crowlang_export$(python3-config "
+                    "--extension-suffix)");
       break;
 
       // case InteropBackendType::LUA_INTEROP_BACKEND:

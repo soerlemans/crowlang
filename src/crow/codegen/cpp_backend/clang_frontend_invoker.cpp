@@ -83,8 +83,9 @@ auto ClangFrontendInvoker::compile(const fs::path &t_source) -> void
   const auto cpp_compiler{"g++"sv};
 
   const auto flags{m_compiler_flags.view()};
-  const auto cmd{
-    std::format("{} {} {} -o {}", cpp_compiler, t_source.native(), flags, out)};
+  const auto cmd{std::format("export SRC_STEM=\"{}\"; {} {} {} -o {}",
+                             stem.native(), cpp_compiler, t_source.native(),
+                             flags, out)};
 
   DBG_NOTICE("Compiler command: ", cmd);
   const auto status_code{std::system(cmd.c_str())};

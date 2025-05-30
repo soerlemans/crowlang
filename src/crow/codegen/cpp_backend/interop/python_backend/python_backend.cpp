@@ -35,6 +35,7 @@ auto PythonBackend::epilogue() -> std::string
 {
   std::stringstream ss;
 
+  // TODO: Set the module name based on package/module name or macro value.
   ss << "PYBIND11_MODULE(crowlang_export, mod) {\n";
   ss << "namespace py = pybind11;\n";
   ss << R"(mod.doc() = "Crowlang program exported symbols.";)" << '\n';
@@ -66,4 +67,4 @@ auto PythonBackend::epilogue() -> std::string
 
   return ss.str();
 }
-} // namespace codegen::cpp_backend::interop_backends::python_backend
+} // namespace codegen::cpp_backend::interop::python_backend
