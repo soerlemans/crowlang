@@ -27,14 +27,34 @@ using CfgSeq = std::vector<BasicBlock*>;
 
 // Enums:
 enum class Opcode {
-  Add,
-  Sub,
-  Mul,
-  Div,
-  Ret
+  // Arithmetic
+  Addition,
+  Subtraction,
+  Multiplication,
+  Division,
+
+  // Comparison
+  LessThan,
+  LessThanEqual,
+  Equal,
+  NotEqual,
+  GreaterThan,
+  GReaterThanEqual,
+
+	// Logical
+
+	//
+  Load,
+  Store,
+
+	// Control Flow:
+  ConditionalBranch,
+  Goto,
+  Return
 };
 
-enum class LiteralType {
+enum class ValueType {
+
 };
 
 // Structs:
@@ -50,7 +70,7 @@ struct Instruction {
 };
 
 struct BasicBlock {
-  std::string m_name;
+  std::string m_label;
   InstructionSeq m_instructions;
 
   CfgSeq m_successors;

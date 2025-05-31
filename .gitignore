@@ -1,6 +1,9 @@
 # Do not include crow.toml files.
 crow.toml
 
+# Do not include emacs temp files.
+.#*
+
 # Prerequisites
 *.d
 
