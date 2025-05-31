@@ -6,6 +6,7 @@
  */
 
 // STL Includes:
+#include <list>
 #include <vector>
 
 // Absolute Includes:
@@ -21,7 +22,7 @@ struct BasicBlock;
 using ValueSeq = std::vector<Value>;
 using InstructionSeq = std::vector<Instruction>;
 using BasicBlockSeq = std::vector<BasicBlock>;
-using CfgSeq = std::vector<BasicBlock*>;
+using CfgSeq = std::list<BasicBlock*>;
 } // namespace clir
 
 #endif // FDECL_HPP

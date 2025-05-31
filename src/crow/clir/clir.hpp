@@ -27,13 +27,14 @@ using CfgSeq = std::vector<BasicBlock*>;
 
 // Enums:
 enum class Opcode {
-  // Arithmetic
+  // Arithmetic:
   Addition,
   Subtraction,
   Multiplication,
   Division,
 
-  // Comparison
+
+  // Comparison:
   LessThan,
   LessThanEqual,
   Equal,
@@ -41,20 +42,41 @@ enum class Opcode {
   GreaterThan,
   GReaterThanEqual,
 
-	// Logical
+  // Logical:
+  And,
+  Or,
+  Not,
 
-	//
+  // Memory handling:
   Load,
   Store,
+  Alloca,
+  AddressOf,
+  Deref,
 
-	// Control Flow:
+  // Control Flow:
   ConditionalBranch,
   Goto,
-  Return
+  Break,
+  Continue,
+  Return,
+
+  Switch, // Jump table.
+
+  // High level control flow:
+  If,
+  Loop,
+  Match,
+
+  Nop,
 };
 
 enum class ValueType {
-
+  STRING,
+  BOOLEAN,
+  INTEGER,
+  FLOAT,
+	VOID
 };
 
 // Structs:
@@ -64,6 +86,7 @@ struct Value {
 };
 
 struct Instruction {
+  u64 m_id;
   Opcode m_opcode;
   ValueSeq m_operands;
   Value m_result;

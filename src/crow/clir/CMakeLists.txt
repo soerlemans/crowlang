@@ -4,4 +4,4 @@
 #)
 
 # Add subdirectories:
-#add_subdirectory()
+add_subdirectory(clir_builder)

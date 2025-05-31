@@ -1,8 +1,8 @@
 #ifndef CROW_CROW_AST_VISITOR_NODE_VISITOR_HPP
 #define CROW_CROW_AST_VISITOR_NODE_VISITOR_HPP
 
-// Relative AST Includes:
-#include "../node/fdecl.hpp"
+// Absolute Includes::
+#include "crow/ast/node/fdecl.hpp"
 
 // Local Includes:
 #include "visitable.hpp"
@@ -18,7 +18,7 @@
 
 /* NOLINTBEGIN */
 namespace ast::visitor {
-// Using Declarations:
+// Using:
 using node::NodePtr;
 
 // Classes:
