@@ -1,5 +1,5 @@
-#ifndef FDECL_HPP
-#define FDECL_HPP
+#ifndef CROW_CROW_CLIR_FDECL_HPP
+#define CROW_CROW_CLIR_FDECL_HPP
 
 /*!
  * @file Forward declarations for any operations on CLIR.
@@ -25,4 +25,4 @@ using BasicBlockSeq = std::vector<BasicBlock>;
 using CfgSeq = std::list<BasicBlock*>;
 } // namespace clir
 
-#endif // FDECL_HPP
+#endif // CROW_CROW_CLIR_FDECL_HPP

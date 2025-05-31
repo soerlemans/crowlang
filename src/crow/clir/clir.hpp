@@ -1,5 +1,5 @@
-#ifndef CLIR_HPP
-#define CLIR_HPP
+#ifndef CROW_CROW_CLIR_CLIR_HPP
+#define CROW_CROW_CLIR_CLIR_HPP
 
 /*!
  * @file CLIR is short for CrowLang Intermediate Representation.
@@ -76,7 +76,7 @@ enum class ValueType {
   BOOLEAN,
   INTEGER,
   FLOAT,
-	VOID
+  VOID
 };
 
 // Structs:
@@ -106,4 +106,4 @@ struct Function {
 };
 } // namespace clir
 
-#endif // CLIR_HPP
+#endif // CROW_CROW_CLIR_CLIR_HPP

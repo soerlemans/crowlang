@@ -1,5 +1,5 @@
-#ifndef CLIR_BUILDER_HPP
-#define CLIR_BUILDER_HPP
+#ifndef CROW_CROW_CLIR_CLIR_BUILDER_CLIR_BUILDER_HPP
+#define CROW_CROW_CLIR_CLIR_BUILDER_CLIR_BUILDER_HPP
 
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
@@ -82,4 +82,4 @@ class ClirBuilder : public NodeVisitor {
 
 } // namespace clir::clir_builder
 
-#endif // CLIR_BUILDER_HPP
+#endif // CROW_CROW_CLIR_CLIR_BUILDER_CLIR_BUILDER_HPP
