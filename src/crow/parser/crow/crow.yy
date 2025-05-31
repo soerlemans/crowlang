@@ -192,7 +192,7 @@ loop_statement   : Loop body
                  ;
 
 // Match statement:
-match_case      :
+match_case      : '.'
                 ;
 
 match_case_list  : match_case
@@ -208,13 +208,13 @@ match_statement  : Match match_body
 
 // Branch statements:
 if_statement     : If eval_expr body
-		 | If eval_expr body Else body
-		 | If eval_expr body elif_statement
+		             | If eval_expr body Else body
+		             | If eval_expr body elif_statement
                  ;
 
 elif_statement   : ElIf eval_expr body
-		 | ElIf eval_expr body Else body
-		 | ElIf eval_expr body elif_statement
+		             | ElIf eval_expr body Else body
+		             | ElIf eval_expr body elif_statement
                  ;
 
 // Statements:

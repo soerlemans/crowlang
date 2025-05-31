@@ -1,12 +1,15 @@
 #ifndef CROW_CROW_AST_VISITOR_NODE_VISITOR_HPP
 #define CROW_CROW_AST_VISITOR_NODE_VISITOR_HPP
 
-// Relative AST Includes:
-#include "../node/fdecl.hpp"
+// Absolute Includes::
+#include "crow/ast/node/fdecl.hpp"
 
 // Local Includes:
 #include "visitable.hpp"
 
+// TODO: Rename NodeVisitor to AstVisitor.
+// Its more clear and the other visitor constructs as also named like this.
+// Renaming the visitor folder to ast_visitor could also be a good idea.
 
 // Macros:
 #define AST_VISITOR_STUB(t_class, t_type)                    \
@@ -18,7 +21,7 @@
 
 /* NOLINTBEGIN */
 namespace ast::visitor {
-// Using Declarations:
+// Using:
 using node::NodePtr;
 
 // Classes:
