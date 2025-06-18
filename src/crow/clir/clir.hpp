@@ -9,6 +9,7 @@
 
 // STL Includes:
 #include <vector>
+#include <ostream>
 
 // Absolute Includes:
 #include "lib/types.hpp"
@@ -32,6 +33,12 @@ enum class Opcode {
   Subtraction,
   Multiplication,
   Division,
+  Remainder,
+
+  // I have no clue what im doing with this IR, so I just need to write stuff.
+  // And figure everything out in hindsight.
+  Assign,
+  Trunc,
 
 
   // Comparison:
@@ -80,7 +87,7 @@ enum class ValueType {
 };
 
 // Structs:
-struct Value {
+struct Operand {
   u64 m_id; // SSA-style temp.
   std::string m_type;
 };
@@ -89,7 +96,7 @@ struct Instruction {
   u64 m_id;
   Opcode m_opcode;
   ValueSeq m_operands;
-  Value m_result;
+  Operand m_result;
 };
 
 struct BasicBlock {
@@ -104,6 +111,21 @@ struct Function {
   std::string name;
   BasicBlockSeq blocks;
 };
+
+// Functions:
+auto opcode2str(Opcode t_opcode) -> std::string_view;
+
 } // namespace clir
+
+// Functions:
+auto operator<<(std::ostream& t_os, const clir::Opcode& t_op) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const clir::Operand& t_operand)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os, const clir::BasicBlock& t_inst)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os, const clir::Function& t_inst)
+  -> std::ostream&;
 
 #endif // CROW_CROW_CLIR_CLIR_HPP
