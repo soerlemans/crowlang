@@ -1,5 +1,5 @@
-#ifndef STDEXCEPT_HPP
-#define STDEXCEPT_HPP
+#ifndef CROW_LIB_STDEXCEPT_HPP
+#define CROW_LIB_STDEXCEPT_HPP
 
 /*!
  * @file stdexcept.hpp
@@ -12,4 +12,4 @@ struct exception : public std::exception {};
 
 } // namespace lib::stdexcept
 
-#endif // STDEXCEPT_HPP
+#endif // CROW_LIB_STDEXCEPT_HPP
