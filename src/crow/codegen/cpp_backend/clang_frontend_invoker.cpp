@@ -75,6 +75,8 @@ auto ClangFrontendInvoker::compile(const fs::path &t_source) -> void
 
   DBG_PRINTLN("# Clang Compilation:");
 
+  // TODO: Have the O2 flag or Ofast flag be selected, in BackendInterface.
+  // From an enumeration.
   // TODO: Add -O2 flag on release and reldebug builds (not on debug).
   // FIXME: This is a temporary workaround till the programmatic approach works.
 
