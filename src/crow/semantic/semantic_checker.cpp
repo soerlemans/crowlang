@@ -117,7 +117,7 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
     // Gain a raw ptr (non owning).
     // If the AST changes the assertion will be triggered.
     const auto* param{dynamic_cast<Parameter*>(node.get())};
-    DEBUG_ASSERT(param, "Was unable to cast to \"Parameter*\"!", param, node,
+    DEBUG_ASSERT(param, R"(Was unable to cast to "Parameter*"!)", param, node,
                  params);
 
     const auto id{param->identifier()};

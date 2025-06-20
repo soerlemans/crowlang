@@ -332,11 +332,15 @@ import           : Import STRING
                  ;
 
 // Packaging:
-module           : Module IDENTIFIER
+module_decl      : Module IDENTIFIER
                  ;
 
+// TODO: Figure out, we want inline modules and namespaces.
+// inline_module_decl : Module IDENTIFIER '{' item_list '}
+//                    ;
+
 // Items:
-item             : module
+item             : module_decl
 				         | import
 				         | type_def
 				         | decl_expr
@@ -344,7 +348,7 @@ item             : module
                  | impl_block
                  ;
 
-item_list        : // empty
+item_list        : module_decl
                  | newline_opt item
                  | item_list newline_opt item
                  ;

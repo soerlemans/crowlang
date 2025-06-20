@@ -1,8 +1,10 @@
-fn func() -> i64 {
+module types
+
+func func() -> i64 {
     return 100
 }
 
-fn main() -> int {
+func main() -> int {
     let variable: i64 = 40
     return func()
 }

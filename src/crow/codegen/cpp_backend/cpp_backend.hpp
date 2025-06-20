@@ -130,7 +130,7 @@ class CppBackend : public BackendInterface {
 
   // Packaging:
   auto visit(node::packaging::Import* t_import) -> Any override;
-  auto visit(node::packaging::ModuleDecl* t_mod) -> Any override;
+  auto visit(node::packaging::ModuleDecl* t_module) -> Any override;
 
   // Rvalue:
   auto visit(node::rvalue::Float* t_float) -> Any override;

@@ -7,6 +7,7 @@
 
 // Absolute Includes:
 #include "crow/ast/node/fdecl.hpp"
+#include "crow/clir/clir.hpp"
 #include "crow/codegen/backend_interface.hpp"
 #include "crow/container/text_buffer.hpp"
 #include "crow/semantic/symbol_table/symbol_table.hpp"
@@ -16,6 +17,7 @@
 namespace unit {
 // Using Statements:
 using ast::node::NodePtr;
+using clir::ModulePtr;
 using codegen::CompileParams;
 using container::TextStreamPtr;
 using semantic::symbol_table::SymbolTablePtr;
@@ -32,6 +34,7 @@ enum class TranslationUnitPhase {
   LEXING,
   PARSING,
   SEMANTIC_ANALYSIS,
+  IR_GENERATION,
   CODE_GENERATION,
   COMPLETED,
   FAILED
@@ -74,6 +77,9 @@ class TranslationUnit {
 
   //! Analyse the semantics of the AST.
   virtual auto semantic(NodePtr t_ast) -> SymbolTablePtr;
+
+  //! Translate the AST to CLIR.
+  virtual auto ir(NodePtr t_ast) -> ModulePtr;
 
   //! Execute the codegeneration backend.
   virtual auto backend(CompileParams& t_params) -> void;

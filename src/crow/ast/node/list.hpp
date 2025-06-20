@@ -30,6 +30,7 @@ class List : public NodeInterface {
   auto begin() -> NodeList::iterator;
   auto end() -> NodeList::iterator;
 
+  auto push_front(NodePtr&& t_ptr) -> void;
   auto push_back(NodePtr&& t_ptr) -> void;
 
   auto empty() -> bool;

@@ -1,4 +1,6 @@
-fn main() -> int {
+module int
+
+func main() -> int {
   // FIXME: Unsigned integers do not work currently.
   // (type inference is not handling this properly).
   // let var_u8: u8 = 0

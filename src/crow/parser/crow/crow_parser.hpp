@@ -113,9 +113,10 @@ class CrowParser : public pratt::PrattParser {
   virtual auto import_list(Import& t_import) -> void;
   virtual auto import_() -> NodePtr;
 
-  // Package:
-  virtual auto module_() -> NodePtr;
+  // Module:
+  virtual auto module_decl() -> NodePtr;
 
+  // Items:
   virtual auto item() -> NodePtr;
   virtual auto item_list() -> NodeListPtr;
 

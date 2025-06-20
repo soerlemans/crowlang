@@ -45,7 +45,7 @@ namespace keywords {
   DEFINE_TERMINAL(g_impl,      "impl",      IMPL);
 
   // Control statements:
-  DEFINE_TERMINAL(g_fn,    "fn",    FUNCTION);
+  DEFINE_TERMINAL(g_fn,    "func",  FUNCTION);
   DEFINE_TERMINAL(g_match, "match", MATCH);
   DEFINE_TERMINAL(g_if,    "if",    IF);
   DEFINE_TERMINAL(g_else,  "else",  ELSE);

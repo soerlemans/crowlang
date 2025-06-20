@@ -16,6 +16,11 @@ auto List::empty() -> bool
   return m_list.empty();
 }
 
+auto List::push_front(NodePtr&& t_ptr) -> void
+{
+  m_list.push_front(std::move(t_ptr));
+}
+
 auto List::push_back(NodePtr&& t_ptr) -> void
 {
   m_list.push_back(std::move(t_ptr));
