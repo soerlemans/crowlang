@@ -34,5 +34,8 @@ add_subdirectory(parser)
 # Semantic analysis:
 add_subdirectory(semantic)
 
+# CrowLang Intermediate Representation generation:
+add_subdirectory(clir)
+
 # Code generation phase:
 add_subdirectory(codegen)

@@ -16,6 +16,11 @@
 // Internal:
 namespace {
 // Aliases:
+namespace fs = std::filesystem;
+using settings::Settings;
+using settings::str2backendtype;
+using settings::str2interopbackendtype;
+
 template<typename T>
 using NodeView = toml::node_view<T>;
 
@@ -119,13 +124,7 @@ auto toml_extract_array(toml::node_view<NodeType>&& t_node,
     DBG_WARNING("Toml array does not exist");
   }
 }
-} // namespace
 
-namespace settings {
-// Aliases:
-namespace fs = std::filesystem;
-
-// Functions:
 auto toml_project_section(toml::table& t_table, Settings& t_settings) -> void
 {
   using namespace std::literals;
@@ -153,7 +152,7 @@ auto toml_debug_section(toml::table& t_table, Settings& t_settings) -> void
 {
   auto debug{t_table["debug"]};
 }
-} // namespace settings
+} // namespace
 
 namespace settings {
 // Functions:
