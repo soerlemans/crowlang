@@ -1,10 +1,10 @@
 module types
 
-fn func() -> i64 {
+func func() -> i64 {
     return 100
 }
 
-fn main() -> int {
+func main() -> int {
     let variable: i64 = 40
     return func()
 }

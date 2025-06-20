@@ -1,6 +1,6 @@
 module main
 
-fn main() -> int {
+func main() -> int {
     println("Hello World!")
 
     return 0

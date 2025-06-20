@@ -1,6 +1,6 @@
 module loop
 
-fn main() -> int {
+func main() -> int {
    var sum = 10
    loop sum < 20; sum++ {
      println("Sum: {}", sum)

@@ -6,7 +6,7 @@ module defer
  * To the end of a function's lifetime.
  */
 
-fn main() -> int {
+func main() -> int {
     defer println("Defer 1")
     defer {
         println("Defer 2")
