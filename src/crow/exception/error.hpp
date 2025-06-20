@@ -11,7 +11,7 @@
 #include <cpptrace/cpptrace.hpp>
 
 namespace exception {
-	// using cpptrace::stacktrace
+// using cpptrace::stacktrace
 
 // Classes:
 /*!
