@@ -1,3 +1,5 @@
+module comment
+
 /*!
  * This is a documentation block.
  * Used to document the main function.

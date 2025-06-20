@@ -48,6 +48,8 @@ auto native_type2cpp_type(const NativeType t_type) -> std::string_view
     MATCH(U64, "std::uint64_t");
     MATCH(USIZE, "std::uintptr_t");
 
+    MATCH(BOOL, "bool");
+
     default:
       const auto msg{
         std::format("NativeType could not be converted to C++ type: ",

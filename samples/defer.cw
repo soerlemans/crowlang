@@ -1,3 +1,5 @@
+module defer
+
 /*
  * Sample meant to show of the defer keyword.
  * The defer keyword is used to delay the execution of a block.

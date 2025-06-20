@@ -420,10 +420,21 @@ auto CppBackend::visit([[maybe_unused]] Ternary* t_ternary) -> Any
   return {};
 }
 
-
 // Packaging:
 AST_VISITOR_STUB(CppBackend, Import)
-AST_VISITOR_STUB(CppBackend, ModuleDecl)
+
+auto CppBackend::visit([[maybe_unused]] ModuleDecl* t_module) -> Any
+{
+  // Have prototypegenerator handle this?
+
+  // TODO: Do something with this.
+  // Wrap everything in namespace?
+  // Also make main a special module?
+
+  // DBG_WARNING("CppBackend: ModuleDecl needs to be implemented.");
+
+  return {};
+}
 
 // RValue:
 auto CppBackend::visit([[maybe_unused]] Float* t_float) -> Any

@@ -1,3 +1,5 @@
+module countdown
+
 fn main() -> int {
     println("Starting countdown...")
 

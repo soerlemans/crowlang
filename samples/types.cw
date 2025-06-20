@@ -1,3 +1,5 @@
+module types
+
 fn func() -> i64 {
     return 100
 }

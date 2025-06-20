@@ -1,3 +1,5 @@
+module int
+
 fn main() -> int {
   // FIXME: Unsigned integers do not work currently.
   // (type inference is not handling this properly).

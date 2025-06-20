@@ -1,3 +1,5 @@
+module prototypes
+
 fn test() -> int {
     return 0
 }

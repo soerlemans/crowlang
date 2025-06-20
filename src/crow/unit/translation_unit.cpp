@@ -128,7 +128,7 @@ auto TranslationUnit::ir(NodePtr t_ast) -> ModulePtr
 
   m_phase = TranslationUnitPhase::IR_GENERATION;
 
-  DBG_PRINTLN("<ir generation>");
+  DBG_PRINTLN("<ir_generation>");
 
   // Check the semantics of the written program.
   ClirBuilder builder{};
@@ -141,7 +141,7 @@ auto TranslationUnit::ir(NodePtr t_ast) -> ModulePtr
     // TODO: Throw?
   }
 
-  DBG_PRINTLN("</ir generation>");
+  DBG_PRINTLN("</ir_generation>");
 
   return module_ptr;
 }
@@ -154,12 +154,12 @@ auto TranslationUnit::backend(CompileParams& t_params) -> void
   m_phase = TranslationUnitPhase::CODE_GENERATION;
   const auto stem{m_source_file.stem()};
 
-  DBG_PRINTLN("<code generation>");
+  DBG_PRINTLN("<code_generation>");
 
   // Invoke build unit to build.
   m_build_unit->compile(t_params);
 
-  DBG_PRINTLN("</code generation>");
+  DBG_PRINTLN("</code_generation>");
 }
 
 auto TranslationUnit::execute() -> void

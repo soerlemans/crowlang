@@ -814,7 +814,7 @@ auto CrowParser::import_() -> NodePtr
   return node;
 }
 
-auto CrowParser::module_() -> NodePtr
+auto CrowParser::module_decl() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
@@ -834,9 +834,7 @@ auto CrowParser::item() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  if(auto ptr{module_()}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{import_()}; ptr) {
+  if(auto ptr{import_()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{type_def()}; ptr) {
     node = std::move(ptr);
@@ -856,8 +854,17 @@ auto CrowParser::item() -> NodePtr
 auto CrowParser::item_list() -> NodeListPtr
 {
   DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
 
-  return list_of([this] -> NodePtr {
+  // Check for the
+  if(auto ptr{module_decl()}; ptr) {
+    node = std::move(ptr);
+  } else {
+    syntax_error("First statement in crowlang should be a module name.");
+  }
+
+  // Parsing of item_list.
+  const auto parse_lambda{[this] -> NodePtr {
     // Remove newlines before item.
     newline_opt();
     if(eos()) {
@@ -865,7 +872,16 @@ auto CrowParser::item_list() -> NodeListPtr
     }
 
     return item();
-  });
+  }};
+
+  // Get the item list.
+  auto list{list_of(parse_lambda)};
+  if(node) {
+    // Prepend the module declaration.
+    list->push_front(std::move(node));
+  }
+
+  return list;
 }
 
 // This is the grammars root node.
