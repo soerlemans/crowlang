@@ -33,12 +33,12 @@
                                                 \
   friend cereal::access
 
-//!
+//! Cut down on code duplication for a commonly reused method.
 #define AST_ARCHIVE_DEFINE_SERIALIZE_METHOD() \
   template<typename Archive>                  \
   auto serialize([[maybe_unused]] Archive& t_archive) -> void
 
-//!
+//! In the case the serializiation method is needed, but does nothing.
 #define AST_ARCHIVE_DEFINE_SERIALIZE_METHOD_NIL() \
   AST_ARCHIVE_DEFINE_SERIALIZE_METHOD()           \
   {}
@@ -57,7 +57,7 @@
     archive_traits<Archive, t_type, __VA_ARGS__>(t_archive, this); \
   }
 
-//!
+//! This is needed for listing the relationship of the base class.
 #define REGISTER_ARCHIVEABLE_TYPE(t_namespace, t_type)           \
   CEREAL_REGISTER_TYPE_WITH_NAME(t_namespace::t_type, #t_type)   \
   CEREAL_REGISTER_POLYMORPHIC_RELATION(ast::node::NodeInterface, \

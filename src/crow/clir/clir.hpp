@@ -22,7 +22,6 @@ struct BasicBlock;
 struct Function;
 struct Module;
 
-
 // Aliases:
 using ValueSeq = std::vector<Value>;
 using CfgSeq = std::vector<BasicBlock*>;
@@ -132,17 +131,20 @@ struct BasicBlock {
   std::string m_label;
   InstructionSeq m_instructions;
 
+  // TODO: The control flow graphs, should maybe be a map keyed by label?
   CfgSeq m_successors;
   CfgSeq m_predecessors;
 };
 
 struct Function {
-  std::string name;
+  std::string m_name;
   // TODO: Sequence of parameters.
-  BasicBlockSeq blocks;
+  // TODO: Include return type.
+  BasicBlockSeq m_blocks;
 };
 
 struct Module {
+  std::string m_name;
   FunctionSeq m_functions;
 };
 

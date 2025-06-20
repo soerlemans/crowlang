@@ -3,6 +3,7 @@
 
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
+#include "crow/clir/clir.hpp"
 
 namespace clir::clir_builder {
 // Using:
@@ -76,6 +77,10 @@ class ClirBuilder : public NodeVisitor {
   virtual auto visit(ast::node::Nil* t_nil) -> Any;
 
   virtual auto visit(ast::node::NodeInterface* t_ptr) -> Any;
+
+  // Implementation:
+  //! Translate the AST to a CLIR module.
+  auto translate(NodePtr t_ast) -> Module;
 
   virtual ~ClirBuilder() = default;
 };
