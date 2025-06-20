@@ -26,7 +26,7 @@ class Error : public std::exception {
   Error(std::string t_msg);
 
   auto what() const noexcept -> const char* override;
-  auto trace() const noexcept -> const stacktrace&;
+  // auto trace() const noexcept -> const stacktrace&;
 
   virtual ~Error() = default;
 };

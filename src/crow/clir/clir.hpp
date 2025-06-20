@@ -85,18 +85,17 @@ enum class Opcode {
   // SSA specific, select value based on the control path.
   PHI,
 
+  // High level control flow:
+  IF,
+  ELSE,
+  LOOP, // Maybe just call it a while? (for wont exist).
+  MATCH,
+  SWITCH, // Jump table.
+
   // Struct operations:
   CONSTRUCT,
   INSERT,
   EXTRACT,
-
-  SWITCH, // Jump table.
-
-  // High level control flow:
-  IF,
-  ELSE,
-  LOOP,
-  MATCH,
 
   // Call a function.
   CALL,
@@ -105,21 +104,16 @@ enum class Opcode {
 };
 
 enum class ValueType {
-  // TODO: Maybe use NativeType map?
-  // Also need to add support for structs.
-  // Also support for aliases.
-  // Also support for pointers.
-  STRING,
-  BOOLEAN,
-  INTEGER,
-  FLOAT,
-  VOID
+  SSA,      // Temporary SSA variable that is being referenced.
+  LITERAL,  // Literal like a number, string, etc.
+  GLOBAL,   // Global variable reference.
+  AGGREGATE // Struct or other high level data structure.
 };
 
 struct Value {
   u64 m_id;
-  // std::string m_name; // Name of a struct or alias.
   ValueType m_type;
+  std::string m_name; // Name of a struct or alias.
 };
 
 // Structs:
@@ -132,7 +126,6 @@ struct Instruction {
   u64 m_id;
   Opcode m_opcode;
   ValueSeq m_operands;
-  Operand m_result;
 };
 
 struct BasicBlock {
@@ -159,7 +152,8 @@ auto opcode2str(Opcode t_opcode) -> std::string_view;
 } // namespace clir
 
 // Functions:
-auto operator<<(std::ostream& t_os, const clir::Opcode& t_op) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const clir::Opcode t_op) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const clir::Value& t_val) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const clir::Operand& t_operand)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)
