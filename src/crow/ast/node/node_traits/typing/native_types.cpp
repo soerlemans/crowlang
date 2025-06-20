@@ -121,7 +121,7 @@ auto operator<<(std::ostream& t_os, const NativeTypeOpt& t_opt) -> std::ostream&
   if(t_opt) {
     t_os << t_opt.value();
   } else {
-    t_os << "<empty>";
+    t_os << "<NativeTypeOpt empty>";
   }
 
   return t_os;

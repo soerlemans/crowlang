@@ -18,6 +18,9 @@ namespace clir::clir_builder {
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
+ClirBuilder::ClirBuilder(): m_module{nullptr}
+{}
+
 auto ClirBuilder::visit(If* t_if) -> Any
 {}
 
@@ -41,7 +44,16 @@ auto ClirBuilder::visit(Parameter* t_param) -> Any
 {}
 
 auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
-{}
+{
+  Function fn{};
+
+  const auto name{t_fn->identifier()};
+
+  fn.m_name = name;
+
+  // TODO: Clean this mess up?
+  m_module->m_functions.push_back(std::move(fn));
+}
 
 auto ClirBuilder::visit(Call* t_call) -> Any
 {}
@@ -93,7 +105,15 @@ auto ClirBuilder::visit([[maybe_unused]] Ternary* t_ternary) -> Any
 
 // Packaging:
 STUB(Import)
-STUB(ModuleDecl)
+
+auto ClirBuilder::visit(ModuleDecl* t_module) -> Any
+{
+  // For now we just assume there is only one.
+  const auto module_name{t_module->identifier()};
+
+  // TODO: Check if the module name is already set and then error?
+  m_module->m_name = module_name;
+}
 
 // RValue:
 auto ClirBuilder::visit([[maybe_unused]] Float* t_float) -> Any
@@ -118,13 +138,31 @@ STUB(DotExpr)
 
 // Misc:
 auto ClirBuilder::visit(List* t_list) -> Any
-{}
+{
+  // TODO: Implement.
+
+	// Traverse all nodes.
+  for(NodePtr& node : *t_list) {
+    traverse(node);
+  }
+
+  // TODO: Return nothing?
+  return {};
+}
 
 // Implementation:
-auto translate(NodePtr t_ast) -> Module
+auto ClirBuilder::translate(NodePtr t_ast) -> ModulePtr
 {
-  // TODO: Implementate.
+  ModulePtr ptr{};
 
-  return {};
+  // TODO: Create a ModuleFactory for the CLIR.
+  m_module = std::make_shared<Module>();
+
+  traverse(t_ast);
+
+  ptr = m_module;
+  m_module = nullptr;
+
+  return ptr;
 }
 } // namespace clir::clir_builder

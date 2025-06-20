@@ -28,8 +28,9 @@ NODE_USING_ALL_NAMESPACES()
 //! Traverse all nodes neatly
 auto NodeVisitor::traverse(NodePtr t_ast) -> Any
 {
-  Any any;
+  Any any{};
 
+	// Kick off the traversal.
   if(t_ast) {
     any = t_ast->accept(this);
   }

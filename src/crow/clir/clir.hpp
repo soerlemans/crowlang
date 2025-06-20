@@ -8,6 +8,7 @@
  */
 
 // STL Includes:
+#include <memory>
 #include <ostream>
 #include <vector>
 
@@ -29,6 +30,7 @@ using InstructionSeq = std::vector<Instruction>;
 using BasicBlockSeq = std::vector<BasicBlock>;
 using FunctionSeq = std::vector<Function>;
 using ModuleSeq = std::vector<Module>;
+using ModulePtr = std::shared_ptr<Module>;
 
 // Enums:
 // I have no clue what im doing with this IR, so I just need to write stuff.
@@ -109,16 +111,11 @@ enum class ValueType {
   AGGREGATE // Struct or other high level data structure.
 };
 
+// Structs:
 struct Value {
   u64 m_id;
   ValueType m_type;
   std::string m_name; // Name of a struct or alias.
-};
-
-// Structs:
-struct Operand {
-  u64 m_id; // SSA-style temp.
-  Value m_value;
 };
 
 struct Instruction {
@@ -156,8 +153,6 @@ auto opcode2str(Opcode t_opcode) -> std::string_view;
 // Functions:
 auto operator<<(std::ostream& t_os, const clir::Opcode t_op) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const clir::Value& t_val) -> std::ostream&;
-auto operator<<(std::ostream& t_os, const clir::Operand& t_operand)
-  -> std::ostream&;
 auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const clir::BasicBlock& t_bblock)
@@ -165,5 +160,7 @@ auto operator<<(std::ostream& t_os, const clir::BasicBlock& t_bblock)
 auto operator<<(std::ostream& t_os, const clir::Function& t_fn)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const clir::Module& t_mod) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const clir::ModulePtr& t_mod)
+  -> std::ostream&;
 
 #endif // CROW_CROW_CLIR_CLIR_HPP

@@ -102,14 +102,6 @@ auto operator<<(std::ostream& t_os, const clir::Value& t_val) -> std::ostream&
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const clir::Operand& t_operand)
-  -> std::ostream&
-{
-  // TODO: Figure out what to do, with Operand?
-
-  return t_os;
-}
-
 auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)
   -> std::ostream&
 {
@@ -181,6 +173,18 @@ auto operator<<(std::ostream& t_os, const clir::Module& t_mod) -> std::ostream&
   // Print the functions part of the module.
   for(const Function& fn : functions) {
     t_os << fn;
+  }
+
+  return t_os;
+}
+
+auto operator<<(std::ostream& t_os, const clir::ModulePtr& t_ptr)
+  -> std::ostream&
+{
+  if(t_ptr) {
+    t_os << *t_ptr;
+  } else {
+    t_os << "<clir::ModulePtr nil>";
   }
 
   return t_os;
