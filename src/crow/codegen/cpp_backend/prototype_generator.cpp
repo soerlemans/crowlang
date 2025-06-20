@@ -72,14 +72,14 @@ auto PrototypeGenerator::visit([[maybe_unused]] ModuleDecl* t_module) -> Any
 {
   // TODO: Do something with this.
 
-  return {};
+  return std::string{};
 }
 
 // Typing:
 auto PrototypeGenerator::visit([[maybe_unused]] Struct* t_struct) -> Any
 {
 
-  return {};
+  return std::string{};
 }
 
 // Misc:

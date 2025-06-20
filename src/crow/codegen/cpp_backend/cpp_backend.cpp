@@ -417,7 +417,7 @@ auto CppBackend::visit([[maybe_unused]] Ternary* t_ternary) -> Any
 
   //  return std::format("({}) ? ({}) : ({})", left, right);
 
-  return {};
+  return std::string{};
 }
 
 // Packaging:
@@ -433,7 +433,7 @@ auto CppBackend::visit([[maybe_unused]] ModuleDecl* t_module) -> Any
 
   // DBG_WARNING("CppBackend: ModuleDecl needs to be implemented.");
 
-  return {};
+  return std::string{};
 }
 
 // RValue:
