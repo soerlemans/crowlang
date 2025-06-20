@@ -30,7 +30,7 @@ auto NodeVisitor::traverse(NodePtr t_ast) -> Any
 {
   Any any{};
 
-	// Kick off the traversal.
+  // Kick off the traversal.
   if(t_ast) {
     any = t_ast->accept(this);
   }

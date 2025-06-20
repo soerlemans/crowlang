@@ -40,7 +40,7 @@ class PrototypeGenerator : public NodeVisitor {
   auto visit(node::function::Parameter* t_param) -> Any override;
   auto visit(node::function::Function* t_fn) -> Any override;
 
-	// Module:
+  // Module:
   auto visit(node::packaging::ModuleDecl* t_module) -> Any override;
 
   // Typing:

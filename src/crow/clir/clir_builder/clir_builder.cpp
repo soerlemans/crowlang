@@ -54,7 +54,7 @@ auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
   // TODO: Clean this mess up?
   m_module->m_functions.push_back(std::move(fn));
 
-	return {};
+  return {};
 }
 
 auto ClirBuilder::visit(Call* t_call) -> Any
@@ -116,7 +116,7 @@ auto ClirBuilder::visit(ModuleDecl* t_module) -> Any
   // TODO: Check if the module name is already set and then error?
   m_module->m_name = module_name;
 
-	return {};
+  return {};
 }
 
 // RValue:
@@ -145,7 +145,7 @@ auto ClirBuilder::visit(List* t_list) -> Any
 {
   // TODO: Implement.
 
-	// Traverse all nodes.
+  // Traverse all nodes.
   for(NodePtr& node : *t_list) {
     traverse(node);
   }
