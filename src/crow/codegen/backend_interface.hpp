@@ -29,7 +29,9 @@ using BackendPtr = std::shared_ptr<BackendInterface>;
 // Enums:
 enum class BackendType {
   LLVM_BACKEND,
-  CPP_BACKEND
+  JS_BACKEND,
+  CPP_BACKEND,
+  C_BACKEND,
 };
 
 // Structs:

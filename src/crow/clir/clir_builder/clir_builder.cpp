@@ -48,6 +48,10 @@ auto ClirBuilder::visit(Defer* t_defer) -> Any
 
 auto ClirBuilder::visit(Return* t_ret) -> Any
 {
+  auto& bblock{m_factory->last_bblock()};
+
+  m_factory->create_ir(Opcode::RETURN);
+
   return {};
 }
 
@@ -62,12 +66,15 @@ auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
   Function fn{};
 
   const auto name{t_fn->identifier()};
+  const auto body{t_fn->identifier()};
 
   fn.m_name = name;
 
   m_factory->create_function(std::move(fn));
+  m_factory->create_bblock("main");
 
-  // TODO: Walk through body and add to current function.
+	// Traverse the body.
+  traverse(t_fn->body());
 
   return {};
 }

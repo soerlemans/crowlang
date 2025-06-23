@@ -23,14 +23,20 @@ class ModuleFactory {
   private:
   ModulePtr m_module;
 
+  u64 m_value_id;
+  u64 m_instr_id;
+
   public:
   ModuleFactory();
 
+  auto create_ir(Opcode t_opcode) -> void;
+
   auto create_bblock(std::string_view t_label) -> void;
-  auto current_bblock() -> BasicBlock&;
+  auto get_bblock(std::string_view t_label) -> BasicBlock&;
+  auto last_bblock() -> BasicBlock&;
 
   auto create_function(Function&& t_fn) -> void;
-  auto current_function() -> Function&;
+  auto last_function() -> Function&;
 
   auto set_module_name(std::string_view t_name) -> void;
 
