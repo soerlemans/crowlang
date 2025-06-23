@@ -8,6 +8,7 @@
  */
 
 // STL Includes:
+#include <list>
 #include <memory>
 #include <ostream>
 #include <vector>
@@ -31,6 +32,9 @@ using BasicBlockSeq = std::vector<BasicBlock>;
 using FunctionSeq = std::vector<Function>;
 using ModuleSeq = std::vector<Module>;
 using ModulePtr = std::shared_ptr<Module>;
+
+using BasicBlockIter = BasicBlockSeq::iterator;
+using FunctionIter = FunctionSeq::iterator;
 
 // Enums:
 // I have no clue what im doing with this IR, so I just need to write stuff.

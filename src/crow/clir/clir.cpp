@@ -5,6 +5,9 @@
 #include <stdexcept>
 #include <string_view>
 
+// Absolute Includes:
+#include "lib/stdprint.hpp"
+
 namespace clir {
 
 // Macros:
@@ -181,11 +184,7 @@ auto operator<<(std::ostream& t_os, const clir::Module& t_mod) -> std::ostream&
 auto operator<<(std::ostream& t_os, const clir::ModulePtr& t_ptr)
   -> std::ostream&
 {
-  if(t_ptr) {
-    t_os << *t_ptr;
-  } else {
-    t_os << "<clir::ModulePtr nil>";
-  }
+  using lib::stdprint::detail::print_smart_ptr;
 
-  return t_os;
+  return print_smart_ptr(t_os, t_ptr);
 }

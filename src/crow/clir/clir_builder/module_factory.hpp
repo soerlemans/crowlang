@@ -8,6 +8,7 @@
 #include "crow/clir/clir.hpp"
 
 namespace clir::clir_builder {
+// Forward Declarations:
 class ModuleFactory;
 
 // Aliases:

@@ -7,11 +7,24 @@ namespace clir::clir_builder {
 ModuleFactory::ModuleFactory(): m_module{std::make_shared<Module>()}
 {}
 
-auto ModuleFactory::create_bblock(std::string_view t_label) -> void
-{}
+auto ModuleFactory::create_bblock(const std::string_view t_label) -> void
+{
+  auto& fn{current_function()};
+  auto& blocks{fn.m_blocks};
+
+  BasicBlock bblock{};
+
+  bblock.m_label = t_label;
+
+  blocks.push_back(std::move(bblock));
+}
 
 auto ModuleFactory::current_bblock() -> BasicBlock&
-{}
+{
+  auto& fn{current_function()};
+
+  return fn.m_blocks.back();
+}
 
 auto ModuleFactory::create_function(Function&& t_fn) -> void
 {

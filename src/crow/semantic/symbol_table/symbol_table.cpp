@@ -4,6 +4,9 @@
 #include <iomanip>
 #include <string_view>
 
+// Absolute Includes:
+#include "lib/stdprint.hpp"
+
 namespace semantic::symbol_table {
 SymbolTable::SymbolTable(): m_table{}
 {}
@@ -104,4 +107,13 @@ auto operator<<(std::ostream& t_os,
   t_os << '{' << table << '}';
 
   return t_os;
+}
+
+auto operator<<(std::ostream& t_os,
+                const semantic::symbol_table::SymbolTablePtr& t_ptr)
+  -> std::ostream&
+{
+  using lib::stdprint::detail::print_smart_ptr;
+
+  return print_smart_ptr(t_os, t_ptr);
 }

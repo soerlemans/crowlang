@@ -117,6 +117,8 @@ auto TranslationUnit::semantic(NodePtr t_ast) -> SymbolTablePtr
   SemanticChecker checker{};
   const auto symbol_table{checker.check(t_ast)};
 
+  DBG_INFO(symbol_table);
+
   DBG_PRINTLN("</semantic>");
 
   return symbol_table;
@@ -133,6 +135,7 @@ auto TranslationUnit::ir(NodePtr t_ast) -> ModulePtr
   // Check the semantics of the written program.
   ClirBuilder builder{};
   const auto module_ptr{builder.translate(t_ast)};
+
 
   if(module_ptr) {
     DBG_INFO("CLIR Module: ", module_ptr->m_name);

@@ -85,5 +85,8 @@ auto operator<<(std::ostream& t_os,
 auto operator<<(std::ostream& t_os,
                 const semantic::symbol_table::SymbolTable& t_symbol_table)
   -> std::ostream&;
+auto operator<<(std::ostream& t_os,
+                const semantic::symbol_table::SymbolTablePtr& t_ptr)
+  -> std::ostream&;
 
 #endif // CROW_CROW_SEMANTIC_SYMBOL_TABLE_SYMBOL_TABLE_HPP
