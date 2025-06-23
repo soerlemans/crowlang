@@ -56,16 +56,16 @@ enum class Opcode {
   FADD,
   FSUB,
   FMUL,
-  FDIV,
-  FNEG,
+  FDIV, // %fdiv <dst> <src>
+  FNEG, // %fneg <dst> <src>
 
   // Float Comparison:
-  FCMP_LT,
-  FCMP_LTE,
-  FCMP_EQ,
-  FCMP_NQ,
-  FCMP_GT,
-  FCMP_GTE,
+  FCMP_LT,  // %fcmp_lt <lhs> <rhs>
+  FCMP_LTE, // %fcmp_lte <lhs> <rhs>
+  FCMP_EQ,  // %fcmp_eq <lhs> <rhs>
+  FCMP_NQ,  // %fcmp_nq <lhs> <rhs>
+  FCMP_GT,  // %fcmp_gt <lhs> <rhs>
+  FCMP_GTE, // %fcmp_gte <lhs> <rhs>
 
   // Trunc, // Trunc an integer, maybe use??
 
@@ -147,7 +147,6 @@ struct Module {
 
 // Functions:
 auto opcode2str(Opcode t_opcode) -> std::string_view;
-
 } // namespace clir
 
 // Functions:

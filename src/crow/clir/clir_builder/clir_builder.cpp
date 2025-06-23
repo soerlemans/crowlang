@@ -18,30 +18,44 @@ namespace clir::clir_builder {
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-ClirBuilder::ClirBuilder(): m_module{nullptr}
+ClirBuilder::ClirBuilder(): m_factory{nullptr}
 {}
 
 auto ClirBuilder::visit(If* t_if) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit(Loop* t_loop) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit(Continue* t_continue) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit(Break* t_break) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit(Defer* t_defer) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit(Return* t_ret) -> Any
-{}
+{
+  return {};
+}
 
 // Functions:
 auto ClirBuilder::visit(Parameter* t_param) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
 {
@@ -51,59 +65,90 @@ auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
 
   fn.m_name = name;
 
-  // TODO: Clean this mess up?
-  m_module->m_functions.push_back(std::move(fn));
+  m_factory->create_function(std::move(fn));
+
+  // TODO: Walk through body and add to current function.
 
   return {};
 }
 
 auto ClirBuilder::visit(Call* t_call) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit([[maybe_unused]] ReturnType* t_rt) -> Any
-{}
+{
+  return {};
+}
 
 // Lvalue:
 auto ClirBuilder::visit(Let* t_let) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit(Var* t_var) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit(Variable* t_var) -> Any
-{}
+{
+  return {};
+}
 
 // Operators:
 auto ClirBuilder::visit(Arithmetic* t_arith) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit(Assignment* t_assign) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit(Comparison* t_comp) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit(Increment* t_inc) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit(Decrement* t_dec) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit(UnaryPrefix* t_up) -> Any
-{}
+{
+  return {};
+}
 
 // Logical:
 auto ClirBuilder::visit(Not* t_not) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit(And* t_and) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit(Or* t_or) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit([[maybe_unused]] Ternary* t_ternary) -> Any
-{}
+{
+  return {};
+}
 
 // Packaging:
 STUB(Import)
@@ -113,8 +158,8 @@ auto ClirBuilder::visit(ModuleDecl* t_module) -> Any
   // For now we just assume there is only one.
   const auto module_name{t_module->identifier()};
 
-  // TODO: Check if the module name is already set and then error?
-  m_module->m_name = module_name;
+  // TODO: Add check to see if the module name has already been set.
+  m_factory->set_module_name(module_name);
 
   return {};
 }
@@ -157,15 +202,19 @@ auto ClirBuilder::visit(List* t_list) -> Any
 // Implementation:
 auto ClirBuilder::translate(NodePtr t_ast) -> ModulePtr
 {
-  ModulePtr ptr{};
+  ModulePtr ptr{nullptr};
 
-  // TODO: Create a ModuleFactory for the CLIR.
-  m_module = std::make_shared<Module>();
+  // Initialize the module factory.
+  m_factory = std::make_unique<ModuleFactory>();
 
+  // Traverse the AST using the module factory to create the CLIR module.
   traverse(t_ast);
 
-  ptr = m_module;
-  m_module = nullptr;
+  // Obtain the CLIR module created by the module factory.
+  ptr = m_factory->get_module();
+
+  // Free the factory.
+  m_factory.reset();
 
   return ptr;
 }

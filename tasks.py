@@ -52,8 +52,10 @@ def cmake_parallel_arg(t_parallel: bool) -> str:
     'Get the cmake arguments for building with multiple threads.'
     arg = ''
     if t_parallel:
-        max_jobs = multiprocessing.cpu_count() // 3
-        arg = f'--parallel {max_jobs}'
+        # max_jobs = multiprocessing.cpu_count() // 3
+        # arg = f'--parallel {max_jobs}'
+
+        arg = f'--parallel 8'
         pass
 
     return arg
