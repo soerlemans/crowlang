@@ -28,6 +28,21 @@ using ast::visitor::Any;
 using semantic::symbol_table::SymbolTablePtr;
 
 // Classes:
+// TODO: Add check for checking if the AST only has a single module declaration.
+// We should either way, have some kind of entity which merges multiple
+// translation units.
+// Into a single Module Unit.
+// Maybe force module declarations to be at the top of the file?
+// To be considered when enforcing modules.
+/*!
+ * The semantic checker validates the semantic validity of the AST.
+ * This performs type inference and type checking.
+ * This also checks that we are not assigning to any constant variables.
+ * We also check if arguments have the right types for any functions.
+ *
+ * We also create a symbol table after semantic analysis.
+ * As we need to create it anyway when looking up symbols.
+ */
 class SemanticChecker : public SemanticCheckerHelper {
   public:
   SemanticChecker();

@@ -3,6 +3,7 @@
 
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
+#include "crow/clir/clir_builder/module_factory.hpp"
 
 namespace clir::clir_builder {
 // Using:
@@ -12,10 +13,15 @@ using ast::visitor::NodeVisitor;
 
 // Classes:
 /*!
+ * So we convert the AST to the IR that we defined.
+ * Our strategy involves assuming that every given
  */
 class ClirBuilder : public NodeVisitor {
+  private:
+  ModuleFactoryPtr m_factory;
+
   public:
-  ClirBuilder() = default;
+  ClirBuilder();
 
   // Control:
   virtual auto visit(ast::node::control::If* t_if) -> Any;
@@ -73,9 +79,10 @@ class ClirBuilder : public NodeVisitor {
 
   // Misc:
   virtual auto visit(ast::node::List* t_list) -> Any;
-  virtual auto visit(ast::node::Nil* t_nil) -> Any;
 
-  virtual auto visit(ast::node::NodeInterface* t_ptr) -> Any;
+  // Implementation:
+  //! Translate the AST to a CLIR module.
+  auto translate(NodePtr t_ast) -> ModulePtr;
 
   virtual ~ClirBuilder() = default;
 };

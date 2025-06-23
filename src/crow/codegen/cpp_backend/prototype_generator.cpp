@@ -68,11 +68,18 @@ auto PrototypeGenerator::visit(Function* t_fn) -> Any
   return std::format("auto {}({}) -> {};\n", identifier, ss.str(), ret_type);
 }
 
+auto PrototypeGenerator::visit([[maybe_unused]] ModuleDecl* t_module) -> Any
+{
+  // TODO: Do something with this.
+
+  return std::string{};
+}
+
 // Typing:
 auto PrototypeGenerator::visit([[maybe_unused]] Struct* t_struct) -> Any
 {
 
-  return {};
+  return std::string{};
 }
 
 // Misc:

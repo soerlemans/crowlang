@@ -1,4 +1,6 @@
-fn main() -> int {
+module countdown
+
+func main() -> int {
     println("Starting countdown...")
 
     loop var index = 10; index > 0; index-- {

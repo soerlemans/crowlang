@@ -5,6 +5,9 @@
 #include <stdexcept>
 #include <string_view>
 
+// Absolute Includes:
+#include "lib/stdprint.hpp"
+
 namespace clir {
 
 // Macros:
@@ -102,12 +105,6 @@ auto operator<<(std::ostream& t_os, const clir::Value& t_val) -> std::ostream&
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const clir::Operand& t_operand)
-  -> std::ostream&
-{
-  return t_os;
-}
-
 auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)
   -> std::ostream&
 {
@@ -116,6 +113,7 @@ auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)
 
   const auto& [id, opcode, operands] = t_inst;
 
+  // Print instructions label, and the instruction name.
   const auto str{opcode2str(opcode)};
   t_os << std::format("{}: %{} ", id, str);
 
@@ -133,15 +131,60 @@ auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)
 auto operator<<(std::ostream& t_os, const clir::BasicBlock& t_bblock)
   -> std::ostream&
 {
+  using clir::Instruction;
+
+  const auto& [label, instructions, _1, _2] = t_bblock;
+
+  t_os << std::format("{}:\n", label);
+
+  for(const Instruction& inst : instructions) {
+    t_os << "\t" << inst;
+  }
+
   return t_os;
 }
 
 auto operator<<(std::ostream& t_os, const clir::Function& t_fn) -> std::ostream&
 {
+  using clir::BasicBlock;
+
+  const auto& [name, bblocks] = t_fn;
+
+  t_os << std::format("function {} {{\n", name);
+
+  // TODO: Print parameters.
+  // TODO: Print return type.
+
+  for(const BasicBlock& bblock : bblocks) {
+    t_os << bblock;
+  }
+
+  t_os << "}\n";
+
   return t_os;
 }
 
 auto operator<<(std::ostream& t_os, const clir::Module& t_mod) -> std::ostream&
 {
+  using clir::Function;
+
+  const auto& [name, functions] = t_mod;
+
+  // Module declaration header.
+  t_os << std::format("module {}\n\n", name);
+
+  // Print the functions part of the module.
+  for(const Function& fn : functions) {
+    t_os << fn;
+  }
+
   return t_os;
+}
+
+auto operator<<(std::ostream& t_os, const clir::ModulePtr& t_ptr)
+  -> std::ostream&
+{
+  using lib::stdprint::detail::print_smart_ptr;
+
+  return print_smart_ptr(t_os, t_ptr);
 }

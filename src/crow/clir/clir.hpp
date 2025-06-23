@@ -8,6 +8,8 @@
  */
 
 // STL Includes:
+#include <list>
+#include <memory>
 #include <ostream>
 #include <vector>
 
@@ -22,7 +24,6 @@ struct BasicBlock;
 struct Function;
 struct Module;
 
-
 // Aliases:
 using ValueSeq = std::vector<Value>;
 using CfgSeq = std::vector<BasicBlock*>;
@@ -30,6 +31,10 @@ using InstructionSeq = std::vector<Instruction>;
 using BasicBlockSeq = std::vector<BasicBlock>;
 using FunctionSeq = std::vector<Function>;
 using ModuleSeq = std::vector<Module>;
+using ModulePtr = std::shared_ptr<Module>;
+
+using BasicBlockIter = BasicBlockSeq::iterator;
+using FunctionIter = FunctionSeq::iterator;
 
 // Enums:
 // I have no clue what im doing with this IR, so I just need to write stuff.
@@ -55,16 +60,16 @@ enum class Opcode {
   FADD,
   FSUB,
   FMUL,
-  FDIV,
-  FNEG,
+  FDIV, // %fdiv <dst> <src>
+  FNEG, // %fneg <dst> <src>
 
   // Float Comparison:
-  FCMP_LT,
-  FCMP_LTE,
-  FCMP_EQ,
-  FCMP_NQ,
-  FCMP_GT,
-  FCMP_GTE,
+  FCMP_LT,  // %fcmp_lt <lhs> <rhs>
+  FCMP_LTE, // %fcmp_lte <lhs> <rhs>
+  FCMP_EQ,  // %fcmp_eq <lhs> <rhs>
+  FCMP_NQ,  // %fcmp_nq <lhs> <rhs>
+  FCMP_GT,  // %fcmp_gt <lhs> <rhs>
+  FCMP_GTE, // %fcmp_gte <lhs> <rhs>
 
   // Trunc, // Trunc an integer, maybe use??
 
@@ -110,16 +115,11 @@ enum class ValueType {
   AGGREGATE // Struct or other high level data structure.
 };
 
+// Structs:
 struct Value {
   u64 m_id;
   ValueType m_type;
   std::string m_name; // Name of a struct or alias.
-};
-
-// Structs:
-struct Operand {
-  u64 m_id; // SSA-style temp.
-  Value m_value;
 };
 
 struct Instruction {
@@ -132,30 +132,30 @@ struct BasicBlock {
   std::string m_label;
   InstructionSeq m_instructions;
 
+  // TODO: The control flow graphs, should maybe be a map keyed by label?
   CfgSeq m_successors;
   CfgSeq m_predecessors;
 };
 
 struct Function {
-  std::string name;
+  std::string m_name;
   // TODO: Sequence of parameters.
-  BasicBlockSeq blocks;
+  // TODO: Include return type.
+  BasicBlockSeq m_blocks;
 };
 
 struct Module {
+  std::string m_name;
   FunctionSeq m_functions;
 };
 
 // Functions:
 auto opcode2str(Opcode t_opcode) -> std::string_view;
-
 } // namespace clir
 
 // Functions:
 auto operator<<(std::ostream& t_os, const clir::Opcode t_op) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const clir::Value& t_val) -> std::ostream&;
-auto operator<<(std::ostream& t_os, const clir::Operand& t_operand)
-  -> std::ostream&;
 auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const clir::BasicBlock& t_bblock)
@@ -163,5 +163,7 @@ auto operator<<(std::ostream& t_os, const clir::BasicBlock& t_bblock)
 auto operator<<(std::ostream& t_os, const clir::Function& t_fn)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const clir::Module& t_mod) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const clir::ModulePtr& t_mod)
+  -> std::ostream&;
 
 #endif // CROW_CROW_CLIR_CLIR_HPP

@@ -9,9 +9,37 @@
 // STL Includes:
 #include <array>
 #include <concepts>
+#include <format>
 #include <list>
+#include <memory>
 #include <string_view>
 #include <vector>
+
+/*
+ * TODO: Implement a conditional newline iomanipulator.
+ * The logger should also depend on this.
+ * Have a static bool which keeps track of if we allow multiline output.
+ * From the logger.
+
+clang-format off
+#include <iostream>
+
+struct ConditionalNewline {
+    bool m_cond;
+
+    ConditionalNewline() : m_cond{false} {}
+};
+
+auto  operator<<(std::ostream& os, const ConditionalNewline& t_cn)
+  -> std::ostream& {
+    if (t_cn.m_cond) {
+        os << '\n';
+    }
+
+    return os;
+}
+clang-format on
+ */
 
 // TODO: Relocate, to stdprint directory.
 namespace lib::stdprint {
@@ -28,10 +56,17 @@ concept Container = requires(T t) {
   { t.size() } -> std::same_as<typename T::size_type>;
 };
 
+template<typename T>
+concept SmartPointer = requires(T ptr) {
+  typename T::element_type;
+  { ptr.get() } -> std::convertible_to<typename T::element_type*>;
+  { *ptr } -> std::same_as<typename T::element_type&>;
+};
+
 //! Helper function which prints all sequential containers.
 template<typename T>
   requires Container<T>
-auto print_seq(std::ostream& t_os, const T& t_container) -> std::ostream&
+inline auto print_seq(std::ostream& t_os, const T& t_container) -> std::ostream&
 {
   using namespace std::literals;
 
@@ -46,6 +81,23 @@ auto print_seq(std::ostream& t_os, const T& t_container) -> std::ostream&
 
   return t_os;
 }
+
+template<typename T>
+  requires SmartPointer<T>
+inline auto print_smart_ptr(std::ostream& t_os, const T& t_ptr) -> std::ostream&
+{
+  // TODO: For GCC and Clang demangle the PtrElementType and include it.
+  // In the information.
+  using PtrElementType [[maybe_unused]] = T::element_type;
+
+  if(t_ptr) {
+    t_os << *t_ptr;
+  } else {
+    t_os << "<*nil>";
+  }
+
+  return t_os;
+}
 } // namespace detail
 
 namespace vector {
@@ -54,9 +106,7 @@ template<typename T>
 auto operator<<(std::ostream& t_os, const std::vector<T>& t_vector)
   -> std::ostream&
 {
-  detail::print_seq(t_os, t_vector);
-
-  return t_os;
+  return detail::print_seq(t_os, t_vector);
 }
 } // namespace vector
 
@@ -66,9 +116,7 @@ template<typename T, size_t S>
 auto operator<<(std::ostream& t_os, const std::array<T, S>& t_array)
   -> std::ostream&
 {
-  detail::print_seq(t_os, t_array);
-
-  return t_os;
+  return detail::print_seq(t_os, t_array);
 }
 } // namespace array
 
@@ -76,17 +124,39 @@ namespace list {
 template<typename T>
 auto operator<<(std::ostream& t_os, const std::list<T>& t_list) -> std::ostream&
 {
-  detail::print_seq(t_os, t_list);
-
-  return t_os;
+  return detail::print_seq(t_os, t_list);
 }
 } // namespace list
+
+namespace smart_ptr {
+template<typename T>
+auto operator<<(std::ostream& t_os, const std::unique_ptr<T>& t_ptr)
+  -> std::ostream&
+{
+  return detail::print_smart_ptr(t_os, t_ptr);
+}
+
+template<typename T>
+auto operator<<(std::ostream& t_os, const std::shared_ptr<T>& t_ptr)
+  -> std::ostream&
+{
+  return detail::print_smart_ptr(t_os, t_ptr);
+}
+
+template<typename T>
+auto operator<<(std::ostream& t_os, const std::weak_ptr<T>& t_ptr)
+  -> std::ostream&
+{
+  return detail::print_smart_ptr(t_os, t_ptr);
+}
+} // namespace smart_ptr
 
 //! Namespace that when included allows you to use all the ostream functions.
 namespace all {
 using namespace lib::stdprint::vector;
 using namespace lib::stdprint::list;
 using namespace lib::stdprint::array;
+using namespace lib::stdprint::smart_ptr;
 } // namespace all
 } // namespace lib::stdprint
 

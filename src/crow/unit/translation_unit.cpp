@@ -7,6 +7,7 @@
 // Absolute Includes:
 #include "crow/ast/node/fdecl.hpp"
 #include "crow/ast/visitor/ast_printer.hpp"
+#include "crow/clir/clir_builder/clir_builder.hpp"
 #include "crow/codegen/backend_interface.hpp"
 #include "crow/lexer/lexer.hpp"
 #include "crow/parser/crow/crow_parser.hpp"
@@ -113,12 +114,39 @@ auto TranslationUnit::semantic(NodePtr t_ast) -> SymbolTablePtr
   DBG_PRINTLN("<semantic>");
 
   // Check the semantics of the written program.
-  SemanticChecker checker;
+  SemanticChecker checker{};
   const auto symbol_table{checker.check(t_ast)};
+
+  DBG_INFO(symbol_table);
 
   DBG_PRINTLN("</semantic>");
 
   return symbol_table;
+}
+
+auto TranslationUnit::ir(NodePtr t_ast) -> ModulePtr
+{
+  using clir::clir_builder::ClirBuilder;
+
+  m_phase = TranslationUnitPhase::IR_GENERATION;
+
+  DBG_PRINTLN("<ir_generation>");
+
+  // Check the semantics of the written program.
+  ClirBuilder builder{};
+  const auto module_ptr{builder.translate(t_ast)};
+
+
+  if(module_ptr) {
+    DBG_INFO("CLIR Module: ", module_ptr->m_name);
+    DBG_PRINTLN(module_ptr);
+  } else {
+    // TODO: Throw?
+  }
+
+  DBG_PRINTLN("</ir_generation>");
+
+  return module_ptr;
 }
 
 auto TranslationUnit::backend(CompileParams& t_params) -> void
@@ -129,12 +157,12 @@ auto TranslationUnit::backend(CompileParams& t_params) -> void
   m_phase = TranslationUnitPhase::CODE_GENERATION;
   const auto stem{m_source_file.stem()};
 
-  DBG_PRINTLN("<codegen>");
+  DBG_PRINTLN("<code_generation>");
 
   // Invoke build unit to build.
   m_build_unit->compile(t_params);
 
-  DBG_PRINTLN("</codegen>");
+  DBG_PRINTLN("</code_generation>");
 }
 
 auto TranslationUnit::execute() -> void
@@ -151,6 +179,10 @@ auto TranslationUnit::execute() -> void
 
   m_symbol_table = semantic(m_ast);
   print_ast(m_ast);
+
+  // Perform Ir generation:
+  ir(m_ast);
+  // m_ir = ir(m_ast); // TODO: Add m_ir field.
 
   // Perform compilation:
   CompileParams params{m_ast, m_symbol_table, m_build_unit->build_dir(),
