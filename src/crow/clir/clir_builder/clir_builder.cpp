@@ -73,7 +73,7 @@ auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
   m_factory->create_function(std::move(fn));
   m_factory->create_bblock("main");
 
-	// Traverse the body.
+  // Traverse the body.
   traverse(t_fn->body());
 
   return {};

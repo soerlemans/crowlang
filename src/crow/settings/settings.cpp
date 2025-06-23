@@ -41,7 +41,7 @@ auto operator<<(std::ostream& t_os, const settings::Settings& t_settings)
 {
   // Needed for std print.
   using namespace lib::stdprint::vector;
-	
+
   t_os << "Settings{ ";
   t_os << "source_paths: " << t_settings.m_source_paths << ", ";
   t_os << "backend: " << t_settings.m_backend << ", ";
