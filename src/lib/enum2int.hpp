@@ -7,7 +7,7 @@
 namespace lib {
 // Functions
 template<typename T>
-constexpr auto enum2int(const T t_value) -> std::underlying_type_t<T>
+constexpr inline auto enum2int(const T t_value) -> std::underlying_type_t<T>
 {
   return static_cast<std::underlying_type_t<T>>(t_value);
 }
