@@ -39,7 +39,12 @@ using FunctionIter = FunctionSeq::iterator;
 // Enums:
 // I have no clue what im doing with this IR, so I just need to write stuff.
 // And figure everything out in hindsight.
-enum class Opcode {
+/*!
+ * The opcodes which are supported for IR.
+ * An instruction starts with '%'.
+ * Anda value adressed in an operand is prefixed with '!'.
+ */
+enum class Opcode : u32 {
   // Integer arithmetic:
   IADD,
   ISUB,
