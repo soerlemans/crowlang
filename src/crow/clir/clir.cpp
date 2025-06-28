@@ -138,7 +138,7 @@ auto operator<<(std::ostream& t_os, const clir::BasicBlock& t_bblock)
   t_os << std::format("{}:\n", label);
 
   for(const Instruction& inst : instructions) {
-    t_os << "\t" << inst;
+    t_os << "\t" << inst << '\n';
   }
 
   return t_os;
@@ -159,7 +159,7 @@ auto operator<<(std::ostream& t_os, const clir::Function& t_fn) -> std::ostream&
     t_os << bblock;
   }
 
-  t_os << "}\n";
+  t_os << "\n}\n";
 
   return t_os;
 }

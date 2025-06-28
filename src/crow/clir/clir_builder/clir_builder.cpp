@@ -23,6 +23,9 @@ ClirBuilder::ClirBuilder(): m_factory{nullptr}
 
 auto ClirBuilder::visit(If* t_if) -> Any
 {
+  // We need to create two new blocks an if and else branch.
+  auto& bblock{m_factory->last_bblock()};
+
   return {};
 }
 
@@ -33,22 +36,36 @@ auto ClirBuilder::visit(Loop* t_loop) -> Any
 
 auto ClirBuilder::visit(Continue* t_continue) -> Any
 {
+  auto& bblock{m_factory->last_bblock()};
+
+  m_factory->create_ir(Opcode::CONTINUE);
+
   return {};
 }
 
 auto ClirBuilder::visit(Break* t_break) -> Any
 {
+  auto& bblock{m_factory->last_bblock()};
+
+  m_factory->create_ir(Opcode::BREAK);
+
   return {};
 }
 
 auto ClirBuilder::visit(Defer* t_defer) -> Any
 {
+  // Defer statements are inserted at the end.
+  // Of a return statement or any other break in return.
+
   return {};
 }
 
 auto ClirBuilder::visit(Return* t_ret) -> Any
 {
   auto& bblock{m_factory->last_bblock()};
+
+  auto expr{t_ret->expr()};
+  traverse(expr);
 
   m_factory->create_ir(Opcode::RETURN);
 
@@ -118,6 +135,11 @@ auto ClirBuilder::visit(Assignment* t_assign) -> Any
 
 auto ClirBuilder::visit(Comparison* t_comp) -> Any
 {
+  auto& bblock{m_factory->last_bblock()};
+
+  // Dummy harcoded value for now.
+  m_factory->create_ir(Opcode::ICMP_LT);
+
   return {};
 }
 

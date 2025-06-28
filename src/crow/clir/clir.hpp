@@ -85,6 +85,8 @@ enum class Opcode {
   // Control Flow:
   COND_JUMP, // %cond_jmp <condition> <label_true> <label_false>
   JUMP,      // %jmp <label>
+  CONTINUE,  // %continue
+  BREAK,     // %break
   RETURN,    // %ret
 
   // SSA specific, select value based on the control path.
