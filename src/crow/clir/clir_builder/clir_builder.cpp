@@ -26,6 +26,20 @@ auto ClirBuilder::visit(If* t_if) -> Any
   // We need to create two new blocks an if and else branch.
   auto& bblock{m_factory->last_bblock()};
 
+  // These will be processed after each block is created.
+	// TODO: InitExpr.
+	const auto cond{t_if->condition()};
+	const auto then{t_if->then()};
+  const auto alt{t_if->then()};
+
+	// Then block:
+  m_factory->create_bblock("then_block");
+  traverse(then);
+
+	// Alt block:
+  m_factory->create_bblock("alt_block");
+	traverse(alt);
+
   return {};
 }
 
