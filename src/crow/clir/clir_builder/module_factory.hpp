@@ -23,7 +23,8 @@ class ModuleFactory {
   private:
   ModulePtr m_module;
 
-  u64 m_value_id;
+  // We need to increment these to prevent collisions.
+  u64 m_var_id;
   u64 m_instr_id;
 
   public:

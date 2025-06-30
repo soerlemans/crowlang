@@ -11,38 +11,43 @@
 #include <list>
 #include <memory>
 #include <ostream>
+#include <variant>
 #include <vector>
 
 // Absolute Includes:
+#include "crow/ast/node/node_traits/typing/typing.hpp"
 #include "lib/types.hpp"
 
 namespace clir {
 // Forward Declarations:
-struct Value;
+struct Literal;
+struct SsaVar;
 struct Instruction;
 struct BasicBlock;
 struct Function;
 struct Module;
 
 // Aliases:
-using ValueSeq = std::vector<Value>;
+using ast::node::node_traits::typing::NativeType;
+
 using CfgSeq = std::vector<BasicBlock*>;
 using InstructionSeq = std::vector<Instruction>;
 using BasicBlockSeq = std::vector<BasicBlock>;
 using FunctionSeq = std::vector<Function>;
 using ModuleSeq = std::vector<Module>;
 using ModulePtr = std::shared_ptr<Module>;
+using Operand = std::variant<Literal, SsaVar>;
+using OperandSeq = std::vector<Operand>;
 
 using BasicBlockIter = BasicBlockSeq::iterator;
 using FunctionIter = FunctionSeq::iterator;
+
 
 // Enums:
 // I have no clue what im doing with this IR, so I just need to write stuff.
 // And figure everything out in hindsight.
 /*!
  * The opcodes which are supported for IR.
- * An instruction starts with '%'.
- * Anda value adressed in an operand is prefixed with '!'.
  */
 enum class Opcode : u32 {
   // Integer arithmetic:
@@ -65,40 +70,40 @@ enum class Opcode : u32 {
   FADD,
   FSUB,
   FMUL,
-  FDIV, // %fdiv <dst> <src>
-  FNEG, // %fneg <dst> <src>
+  FDIV, // %<dest> = fdiv <src> <div>
+  FNEG, // %<dest> = fneg <src>
 
   // Float Comparison:
-  FCMP_LT,  // %fcmp_lt <lhs> <rhs>
-  FCMP_LTE, // %fcmp_lte <lhs> <rhs>
-  FCMP_EQ,  // %fcmp_eq <lhs> <rhs>
-  FCMP_NQ,  // %fcmp_nq <lhs> <rhs>
-  FCMP_GT,  // %fcmp_gt <lhs> <rhs>
-  FCMP_GTE, // %fcmp_gte <lhs> <rhs>
+  FCMP_LT,  // %<dest> = fcmp_lt <lhs> <rhs>
+  FCMP_LTE, // %<dest> = fcmp_lte <lhs> <rhs>
+  FCMP_EQ,  // %<dest> = fcmp_eq <lhs> <rhs>
+  FCMP_NQ,  // %<dest> = fcmp_nq <lhs> <rhs>
+  FCMP_GT,  // %<dest> = fcmp_gt <lhs> <rhs>
+  FCMP_GTE, // %<dest> = fcmp_gte <lhs> <rhs>
 
   // Trunc, // Trunc an integer, maybe use??
 
   // Memory handling:
   // clang-format off
-  ASSIGN,    // %assign <dest> <src> ; dest = src.
-  LOAD,      // %load <dest> <src> ; dest = *src.
-  STORE,     // %store <dest> <src> ; *dest = src.
-  ALLOCA,    // %alloca ; Allocate memory on the heap.
-  LEA,       // %lea <dest> <src> ; dest = &src Load a calculated address, like load effective address.
+  ASSIGN,    // %<dest> = assign <src> ; dest = src.
+  LOAD,      // %<dest> = load <src> ; dest = *src.
+  STORE,     // %<dest> = store <src> ; *dest = src.
+  ALLOCA,    // %<dest> = alloca <count>; Allocate memory on the heap.
+  LEA,       // %<dest> = lea <src> ; dest = &src Load a calculated address, like load effective address.
   // clang-format on
 
   // Control Flow:
-  COND_JUMP, // %cond_jmp <condition> <label_true> <label_false>
-  JUMP,      // %jmp <label>
-  CONTINUE,  // %continue
-  BREAK,     // %break
-  RETURN,    // %ret
+  COND_JUMP, // cond_jmp <condition> <label_true> <label_false>
+  JUMP,      // jmp <label>
+  CONTINUE,  // continue
+  BREAK,     // break
+  RETURN,    // ret %<var>
 
-  // SSA specific, select value based on the control path.
+  // SSA specific, select Literal based on the control path.
   PHI,
 
   // High level control flow:
-  IF,
+  IF, // if <condition> <label_true> <label_false>
   ELSE,
   LOOP, // Maybe just call it a while? (for wont exist).
   MATCH,
@@ -115,24 +120,27 @@ enum class Opcode : u32 {
   NOP,
 };
 
-enum class ValueType {
+enum class SsaVarType {
   SSA,      // Temporary SSA variable that is being referenced.
-  LITERAL,  // Literal like a number, string, etc.
   GLOBAL,   // Global variable reference.
   AGGREGATE // Struct or other high level data structure.
 };
 
 // Structs:
-struct Value {
+struct Literal {
   u64 m_id;
-  ValueType m_type;
+  NativeType m_type;
+};
+
+struct SsaVar {
+  u64 m_id;
   std::string m_name; // Name of a struct or alias.
 };
 
 struct Instruction {
   u64 m_id;
   Opcode m_opcode;
-  ValueSeq m_operands;
+  OperandSeq m_operands;
 };
 
 struct BasicBlock {
@@ -162,7 +170,11 @@ auto opcode2str(Opcode t_opcode) -> std::string_view;
 
 // Functions:
 auto operator<<(std::ostream& t_os, const clir::Opcode t_op) -> std::ostream&;
-auto operator<<(std::ostream& t_os, const clir::Value& t_val) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const clir::Literal& t_lit)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os, const clir::SsaVar& t_var) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const clir::Operand& t_operand)
+  -> std::ostream&;
 auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const clir::BasicBlock& t_bblock)

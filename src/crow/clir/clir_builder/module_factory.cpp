@@ -5,7 +5,7 @@
 
 namespace clir::clir_builder {
 ModuleFactory::ModuleFactory()
-  : m_module{std::make_shared<Module>()}, m_value_id{0}, m_instr_id{0}
+  : m_module{std::make_shared<Module>()}, m_var_id{0}, m_instr_id{0}
 {}
 
 auto ModuleFactory::create_ir(const Opcode t_opcode) -> void
