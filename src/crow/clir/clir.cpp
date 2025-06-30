@@ -98,9 +98,29 @@ auto operator<<(std::ostream& t_os, const clir::Opcode t_op) -> std::ostream&
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const clir::Value& t_val) -> std::ostream&
+auto operator<<(std::ostream& t_os, const clir::Literal& t_val) -> std::ostream&
 {
-  t_os << std::format("v{}", t_val.m_id);
+  // t_os << std::format("{}", t_val.m_id);
+  t_os << "<TODO: Implement Literals>";
+
+  return t_os;
+}
+
+auto operator<<(std::ostream& t_os, const clir::SsaVar& t_var) -> std::ostream&
+{
+  t_os << std::format("%{}", t_var.m_id);
+
+  return t_os;
+}
+
+auto operator<<(std::ostream& t_os, const clir::Operand& t_operand)
+  -> std::ostream&
+{
+  auto print{[&](auto&& t_elem) {
+    t_os << t_elem;
+  }};
+
+  std::visit(print, t_operand);
 
   return t_os;
 }
@@ -109,7 +129,7 @@ auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)
   -> std::ostream&
 {
   using clir::opcode2str;
-  using clir::Value;
+  using clir::Operand;
 
   const auto& [id, opcode, operands] = t_inst;
 
@@ -119,8 +139,8 @@ auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)
 
   // Loop over operands and print them.
   std::string_view sep{};
-  for(const Value& val : operands) {
-    t_os << sep << val;
+  for(const Operand& operand : operands) {
+    t_os << sep << operand;
 
     sep = ", ";
   }
@@ -156,10 +176,10 @@ auto operator<<(std::ostream& t_os, const clir::Function& t_fn) -> std::ostream&
   // TODO: Print return type.
 
   for(const BasicBlock& bblock : bblocks) {
-    t_os << bblock;
+    t_os << bblock << "\n";
   }
 
-  t_os << "\n}\n";
+  t_os << "}\n";
 
   return t_os;
 }

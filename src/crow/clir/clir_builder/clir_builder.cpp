@@ -27,18 +27,26 @@ auto ClirBuilder::visit(If* t_if) -> Any
   auto& bblock{m_factory->last_bblock()};
 
   // These will be processed after each block is created.
-	// TODO: InitExpr.
-	const auto cond{t_if->condition()};
-	const auto then{t_if->then()};
+  // TODO: InitExpr.
+  const auto cond{t_if->condition()};
+  const auto then{t_if->then()};
   const auto alt{t_if->then()};
 
-	// Then block:
+	// Resolve condition.
+	traverse(cond);
+
+  // Then block:
   m_factory->create_bblock("then_block");
   traverse(then);
 
-	// Alt block:
+  // Alt block:
   m_factory->create_bblock("alt_block");
-	traverse(alt);
+  traverse(alt);
+
+	// Final block after the if statement.
+  m_factory->create_bblock("final_block");
+	// TODO: Add jump to final block from then block.
+	// TODO: Add jump to final block from alt block.
 
   return {};
 }
@@ -209,16 +217,24 @@ auto ClirBuilder::visit(ModuleDecl* t_module) -> Any
 
 // RValue:
 auto ClirBuilder::visit([[maybe_unused]] Float* t_float) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit(Integer* t_int) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit([[maybe_unused]] String* t_str) -> Any
-{}
+{
+  return {};
+}
 
 auto ClirBuilder::visit([[maybe_unused]] Boolean* t_bool) -> Any
-{}
+{
+  return {};
+}
 
 // Typing:
 STUB(MethodDecl)

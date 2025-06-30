@@ -15,6 +15,7 @@
 
 // Local Includes:
 #include "fdecl.hpp"
+#include "native_types.hpp"
 
 namespace ast::node::node_traits::typing {
 // Aliases:
