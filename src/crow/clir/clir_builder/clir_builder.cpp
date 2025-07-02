@@ -32,8 +32,8 @@ auto ClirBuilder::visit(If* t_if) -> Any
   const auto then{t_if->then()};
   const auto alt{t_if->then()};
 
-	// Resolve condition.
-	traverse(cond);
+  // Resolve condition.
+  traverse(cond);
 
   // Then block:
   m_factory->create_bblock("then_block");
@@ -43,10 +43,10 @@ auto ClirBuilder::visit(If* t_if) -> Any
   m_factory->create_bblock("alt_block");
   traverse(alt);
 
-	// Final block after the if statement.
+  // Final block after the if statement.
   m_factory->create_bblock("final_block");
-	// TODO: Add jump to final block from then block.
-	// TODO: Add jump to final block from alt block.
+  // TODO: Add jump to final block from then block.
+  // TODO: Add jump to final block from alt block.
 
   return {};
 }
