@@ -36,6 +36,7 @@ auto ClirBuilder::visit(If* t_if) -> Any
   // Resolve condition.
   traverse(cond);
 
+
   // Then block:
   auto& then_block{m_factory->add_block("then_block")};
   traverse(then);

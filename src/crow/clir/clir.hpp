@@ -31,9 +31,12 @@ struct Module;
 // Aliases:
 using ast::node::node_traits::typing::NativeType;
 
-using CfgSeq = std::vector<BasicBlock*>;
-using InstructionSeq = std::vector<Instruction>;
-using BasicBlockSeq = std::vector<BasicBlock>;
+// We use lists for instructions and basic blocks.
+// This is to prevent any iterator or reference invalidation.
+// During CLIR construction.
+using CfgSeq = std::list<BasicBlock*>;
+using InstructionSeq = std::list<Instruction>;
+using BasicBlockSeq = std::list<BasicBlock>;
 using FunctionSeq = std::vector<Function>;
 using ModuleSeq = std::vector<Module>;
 using ModulePtr = std::shared_ptr<Module>;
