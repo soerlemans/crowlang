@@ -42,9 +42,9 @@ function debian_install
 
     log 'Installing build-system dependencies:'
     sudo apt install -y \
-	 build-essential \
-	 clang \
-	 cmake extra-cmake-modules
+				 build-essential \
+				 clang \
+				 cmake extra-cmake-modules
 
     log 'Installing interoperability dependencies'
     # pipx install pybind11
@@ -57,11 +57,11 @@ function debian_install
     # CLI11, Boost, LLVM and libclang  are dynamically linked.
     # And must be installed.
     sudo apt install -y \
-	 libcurl4 \
-	 libcli11-dev \
-	 llvm-17-dev libclang-17-dev liblld-17-dev \
-	 libboost-all-dev \
-	 libzstd-dev
+				 libcurl4 \
+				 libcli11-dev \
+				 llvm-17-dev \
+				 libboost-all-dev \
+				 libzstd-dev
 }
 
 # Script:
