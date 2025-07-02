@@ -32,7 +32,7 @@ class ModuleFactory {
   public:
   ModuleFactory();
 
-	// Instruction operations:
+  // Instruction operations:
   [[nodiscard("Must use created instruction.")]]
   auto create_instruction(Opcode t_opcode) -> Instruction;
   auto add_instruction(Opcode t_opcode) -> Instruction&;
@@ -41,7 +41,7 @@ class ModuleFactory {
 
   auto last_instruction() -> Instruction&;
 
-	// Block operations:
+  // Block operations:
   auto add_block(std::string_view t_label) -> BasicBlock&;
 
   /*!
@@ -50,11 +50,11 @@ class ModuleFactory {
   auto find_block(std::string_view t_label) -> BasicBlock*;
   auto last_block() -> BasicBlock&;
 
-	// Function operations:
+  // Function operations:
   auto add_function(Function&& t_fn) -> void;
   auto last_function() -> Function&;
 
-	// Module operations:
+  // Module operations:
   auto set_module_name(std::string_view t_name) -> void;
 
   auto get_module() -> ModulePtr;

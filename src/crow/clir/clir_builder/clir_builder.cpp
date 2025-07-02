@@ -37,6 +37,8 @@ auto ClirBuilder::visit(If* t_if) -> Any
   traverse(cond);
 
 
+  // FIXME: Current implementation messes up the instruction numbering.
+
   // Then block:
   auto& then_block{m_factory->add_block("then_block")};
   traverse(then);
