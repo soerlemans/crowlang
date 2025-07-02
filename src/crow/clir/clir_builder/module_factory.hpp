@@ -18,6 +18,8 @@ using ModuleFactoryPtr = std::unique_ptr<ModuleFactory>;
 /*!
  * Utility class to aid building a CLIR module.
  * When walking the AST.
+ * In the @ref ClirBuilder.
+ * Here we handle all the boilerplate operations for constructing the CLIR.
  */
 class ModuleFactory {
   private:
@@ -30,20 +32,29 @@ class ModuleFactory {
   public:
   ModuleFactory();
 
-  auto create_ir(Opcode t_opcode) -> void;
+	// Instruction operations:
+  [[nodiscard("Must use created instruction.")]]
+  auto create_instruction(Opcode t_opcode) -> Instruction;
+  auto add_instruction(Opcode t_opcode) -> Instruction&;
 
-  auto create_bblock(std::string_view t_label) -> BasicBlock&;
-  //! Return nullptr if there is no basicblock associated with the given label.
-  auto get_bblock_ref(std::string_view t_label) -> BasicBlock*;
+  auto insert_jump(BasicBlock& t_src, BasicBlock& t_target) -> void;
 
-  // TODO: Account for if there is no basic block (maybe throw).
-  auto last_bblock() -> BasicBlock&;
+  auto last_instruction() -> Instruction&;
 
-  auto create_function(Function&& t_fn) -> void;
+	// Block operations:
+  auto add_block(std::string_view t_label) -> BasicBlock&;
 
-  // TODO: Account for if there is no function yet (maybe throw).
+  /*!
+   * @return nullptr if there is no basicblock associated with the given label.
+   */
+  auto find_block(std::string_view t_label) -> BasicBlock*;
+  auto last_block() -> BasicBlock&;
+
+	// Function operations:
+  auto add_function(Function&& t_fn) -> void;
   auto last_function() -> Function&;
 
+	// Module operations:
   auto set_module_name(std::string_view t_name) -> void;
 
   auto get_module() -> ModulePtr;

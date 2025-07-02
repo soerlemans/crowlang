@@ -24,10 +24,11 @@ ClirBuilder::ClirBuilder(): m_factory{nullptr}
 auto ClirBuilder::visit(If* t_if) -> Any
 {
   // We need to create two new blocks an if and else branch.
-  auto& bblock{m_factory->last_bblock()};
+  auto& main_block{m_factory->last_block()};
 
   // These will be processed after each block is created.
   // TODO: InitExpr.
+  // TODO: Add condition for if to main_block
   const auto cond{t_if->condition()};
   const auto then{t_if->then()};
   const auto alt{t_if->then()};
@@ -36,17 +37,19 @@ auto ClirBuilder::visit(If* t_if) -> Any
   traverse(cond);
 
   // Then block:
-  m_factory->create_bblock("then_block");
+  auto& then_block{m_factory->add_block("then_block")};
   traverse(then);
 
   // Alt block:
-  m_factory->create_bblock("alt_block");
+  auto& alt_block{m_factory->add_block("alt_block")};
   traverse(alt);
 
   // Final block after the if statement.
-  m_factory->create_bblock("final_block");
-  // TODO: Add jump to final block from then block.
-  // TODO: Add jump to final block from alt block.
+  auto& final_block{m_factory->add_block("final_block")};
+
+  // Insert jumps at the end of the blocks.
+  m_factory->insert_jump(then_block, final_block);
+  m_factory->insert_jump(alt_block, final_block);
 
   return {};
 }
@@ -58,18 +61,18 @@ auto ClirBuilder::visit(Loop* t_loop) -> Any
 
 auto ClirBuilder::visit(Continue* t_continue) -> Any
 {
-  auto& bblock{m_factory->last_bblock()};
+  auto& block{m_factory->last_block()};
 
-  m_factory->create_ir(Opcode::CONTINUE);
+  m_factory->add_instruction(Opcode::CONTINUE);
 
   return {};
 }
 
 auto ClirBuilder::visit(Break* t_break) -> Any
 {
-  auto& bblock{m_factory->last_bblock()};
+  auto& block{m_factory->last_block()};
 
-  m_factory->create_ir(Opcode::BREAK);
+  m_factory->add_instruction(Opcode::BREAK);
 
   return {};
 }
@@ -84,12 +87,12 @@ auto ClirBuilder::visit(Defer* t_defer) -> Any
 
 auto ClirBuilder::visit(Return* t_ret) -> Any
 {
-  auto& bblock{m_factory->last_bblock()};
+  auto& block{m_factory->last_block()};
 
   auto expr{t_ret->expr()};
   traverse(expr);
 
-  m_factory->create_ir(Opcode::RETURN);
+  m_factory->add_instruction(Opcode::RETURN);
 
   return {};
 }
@@ -109,8 +112,9 @@ auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
 
   fn.m_name = name;
 
-  m_factory->create_function(std::move(fn));
-  m_factory->create_bblock("main");
+  // Add the function to the current module.
+  m_factory->add_function(std::move(fn));
+  m_factory->add_block("main");
 
   // Traverse the body.
   traverse(t_fn->body());
@@ -157,10 +161,10 @@ auto ClirBuilder::visit(Assignment* t_assign) -> Any
 
 auto ClirBuilder::visit(Comparison* t_comp) -> Any
 {
-  auto& bblock{m_factory->last_bblock()};
+  auto& block{m_factory->last_block()};
 
   // Dummy harcoded value for now.
-  m_factory->create_ir(Opcode::ICMP_LT);
+  m_factory->add_instruction(Opcode::ICMP_LT);
 
   return {};
 }

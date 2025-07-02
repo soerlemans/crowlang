@@ -16,6 +16,17 @@ namespace clir {
     str = t_value;            \
     break
 
+// Methods:
+// TODO: Move somewhere else.
+auto Label::label() const -> std::string_view
+{
+  if(!m_target) {
+    throw std::runtime_error{"Label points to nullptr"};
+  }
+
+  return m_target->m_label;
+}
+
 // Functions:
 auto opcode2str(const Opcode t_opcode) -> std::string_view
 {
@@ -109,6 +120,13 @@ auto operator<<(std::ostream& t_os, const clir::Literal& t_val) -> std::ostream&
 auto operator<<(std::ostream& t_os, const clir::SsaVar& t_var) -> std::ostream&
 {
   t_os << std::format("%{}", t_var.m_id);
+
+  return t_os;
+}
+
+auto operator<<(std::ostream& t_os, const clir::Label& t_label) -> std::ostream&
+{
+  t_os << std::format("{}", t_label.label());
 
   return t_os;
 }

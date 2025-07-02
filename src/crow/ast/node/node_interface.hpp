@@ -28,6 +28,11 @@ class NodeInterface : public Visitable<visitor::NodeVisitor> {
     t_archive(cereal::base_class<Args>(t_derived)...);
   }
 
+  // TODO: Add the node position trait as a must for node init.
+  // This will be usefull later down the line for tracibility purposes.
+
+
+  //! This is the pure virtual method that the visitor pattern relies on.
   virtual auto accept(visitor::NodeVisitor* t_visitor) -> Any = 0;
 
   virtual ~NodeInterface() = default;
