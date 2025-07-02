@@ -23,22 +23,37 @@ auto ModuleFactory::create_ir(const Opcode t_opcode) -> void
   instructions.push_back(std::move(instr));
 }
 
-auto ModuleFactory::create_bblock(const std::string_view t_label) -> void
+auto ModuleFactory::create_bblock(const std::string_view t_label) -> BasicBlock&
 {
   auto& fn{last_function()};
   auto& blocks{fn.m_blocks};
 
+  // Create basic block and set its label.
   BasicBlock bblock{};
-
   bblock.m_label = t_label;
 
   blocks.push_back(std::move(bblock));
+
+  // Return the just added basic block.
+  return last_bblock();
 }
 
-auto ModuleFactory::get_bblock(const std::string_view t_label) -> BasicBlock&
+auto ModuleFactory::find_bblock(const std::string_view t_label)
+  -> BasicBlock*
 {
-  // TODO: Implement
-  return last_bblock();
+  BasicBlock* ptr{nullptr};
+
+  auto& fn{last_function()};
+  auto& blocks{fn.m_blocks};
+
+  for(BasicBlock& block : blocks) {
+    if(block.m_label == t_label) {
+      ptr = &block;
+      break;
+    }
+  }
+
+  return ptr;
 }
 
 auto ModuleFactory::last_bblock() -> BasicBlock&

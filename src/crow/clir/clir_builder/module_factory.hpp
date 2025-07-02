@@ -32,11 +32,16 @@ class ModuleFactory {
 
   auto create_ir(Opcode t_opcode) -> void;
 
-  auto create_bblock(std::string_view t_label) -> void;
-  auto get_bblock(std::string_view t_label) -> BasicBlock&;
+  auto create_bblock(std::string_view t_label) -> BasicBlock&;
+  //! Return nullptr if there is no basicblock associated with the given label.
+  auto get_bblock_ref(std::string_view t_label) -> BasicBlock*;
+
+  // TODO: Account for if there is no basic block (maybe throw).
   auto last_bblock() -> BasicBlock&;
 
   auto create_function(Function&& t_fn) -> void;
+
+  // TODO: Account for if there is no function yet (maybe throw).
   auto last_function() -> Function&;
 
   auto set_module_name(std::string_view t_name) -> void;
