@@ -31,7 +31,7 @@ using TerminateStack = std::stack<bool>;
 /*!
  * @brief Tree walk codegenerator generating safe C++ code.
  * The generated C++ is stored in a cross platform temporary location.
- * This generated C++ code could later be compiled with libclang.
+ * This generated C++ code is lated compiled using clang.
  * Or any compiler of choice.
  */
 class CppBackend : public BackendInterface {
