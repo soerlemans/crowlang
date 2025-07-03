@@ -39,12 +39,12 @@ auto ClirBuilder::visit(If* t_if) -> Any
   // Then block:
   auto& then_block{m_factory->add_block("then_block")};
   traverse(then);
-  auto then_jump{m_factory->create_instruction(Opcode::JUMP)};
+  const auto then_jump{m_factory->create_instruction(Opcode::JUMP)};
 
   // Alt block:
   auto& alt_block{m_factory->add_block("alt_block")};
   traverse(alt);
-  auto alt_jump{m_factory->create_instruction(Opcode::JUMP)};
+  const auto alt_jump{m_factory->create_instruction(Opcode::JUMP)};
 
   // Final block after the if statement.
   auto& final_block{m_factory->add_block("final_block")};
