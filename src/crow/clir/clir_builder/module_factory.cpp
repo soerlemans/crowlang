@@ -32,6 +32,23 @@ auto ModuleFactory::add_instruction(const Opcode t_opcode) -> Instruction&
   return last_instruction();
 }
 
+auto ModuleFactory::insert_jump(Instruction t_instr, BasicBlock& t_block,
+                                BasicBlock& t_target) -> void
+{
+  auto& instructions{t_block.m_instructions};
+
+  // Create label operand.
+  Label label{};
+  label.m_target = &t_target;
+
+  // Add label to operands.
+  auto& operands{t_instr.m_operands};
+  operands.push_back({label});
+
+  // Push back instruction to source block.
+  instructions.push_back(t_instr);
+}
+
 auto ModuleFactory::insert_jump(BasicBlock& t_src, BasicBlock& t_target) -> void
 {
   auto& instructions{t_src.m_instructions};

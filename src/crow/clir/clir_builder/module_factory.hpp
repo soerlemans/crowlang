@@ -37,6 +37,9 @@ class ModuleFactory {
   auto create_instruction(Opcode t_opcode) -> Instruction;
   auto add_instruction(Opcode t_opcode) -> Instruction&;
 
+  //! Need for when we want to preserve the instruction order.
+  auto insert_jump(Instruction t_instr, BasicBlock& t_block,
+                   BasicBlock& t_target) -> void;
   auto insert_jump(BasicBlock& t_src, BasicBlock& t_target) -> void;
 
   auto last_instruction() -> Instruction&;
