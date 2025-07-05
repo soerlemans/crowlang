@@ -22,6 +22,7 @@ namespace clir {
 // Forward Declarations:
 struct Literal;
 struct SsaVar;
+struct Label;
 struct Instruction;
 struct BasicBlock;
 struct Function;
@@ -30,13 +31,16 @@ struct Module;
 // Aliases:
 using ast::node::node_traits::typing::NativeType;
 
-using CfgSeq = std::vector<BasicBlock*>;
-using InstructionSeq = std::vector<Instruction>;
-using BasicBlockSeq = std::vector<BasicBlock>;
+// We use lists for instructions and basic blocks.
+// This is to prevent any iterator or reference invalidation.
+// During CLIR construction.
+using CfgSeq = std::list<BasicBlock*>;
+using InstructionSeq = std::list<Instruction>;
+using BasicBlockSeq = std::list<BasicBlock>;
 using FunctionSeq = std::vector<Function>;
 using ModuleSeq = std::vector<Module>;
 using ModulePtr = std::shared_ptr<Module>;
-using Operand = std::variant<Literal, SsaVar>;
+using Operand = std::variant<Literal, SsaVar, Label>;
 using OperandSeq = std::vector<Operand>;
 
 using BasicBlockIter = BasicBlockSeq::iterator;
@@ -137,6 +141,13 @@ struct SsaVar {
   std::string m_name; // Name of a struct or alias.
 };
 
+//! Used for jump operations.
+struct Label {
+  BasicBlock* m_target;
+
+  auto label() const -> std::string_view;
+};
+
 struct Instruction {
   u64 m_id;
   Opcode m_opcode;
@@ -173,6 +184,8 @@ auto operator<<(std::ostream& t_os, const clir::Opcode t_op) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const clir::Literal& t_lit)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const clir::SsaVar& t_var) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const clir::Label& t_label)
+  -> std::ostream&;
 auto operator<<(std::ostream& t_os, const clir::Operand& t_operand)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)

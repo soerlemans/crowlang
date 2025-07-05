@@ -8,11 +8,9 @@ ModuleFactory::ModuleFactory()
   : m_module{std::make_shared<Module>()}, m_var_id{0}, m_instr_id{0}
 {}
 
-auto ModuleFactory::create_ir(const Opcode t_opcode) -> void
+auto ModuleFactory::create_instruction(const Opcode t_opcode) -> Instruction
 {
-  auto& block{last_bblock()};
-  auto& instructions{block.m_instructions};
-
+  // Cookie cutter the creation of an instruction.
   Instruction instr{};
 
   instr.m_id = m_instr_id;
@@ -20,46 +18,126 @@ auto ModuleFactory::create_ir(const Opcode t_opcode) -> void
 
   m_instr_id++;
 
-  instructions.push_back(std::move(instr));
+  return instr;
 }
 
-auto ModuleFactory::create_bblock(const std::string_view t_label) -> void
+auto ModuleFactory::add_instruction(const Opcode t_opcode) -> Instruction&
+{
+  auto& block{last_block()};
+  auto& instructions{block.m_instructions};
+
+  auto instr{create_instruction(t_opcode)};
+  instructions.push_back(instr);
+
+  return last_instruction();
+}
+
+auto ModuleFactory::insert_jump(Instruction t_instr, BasicBlock& t_block,
+                                BasicBlock& t_target) -> void
+{
+  auto& instructions{t_block.m_instructions};
+
+  // Create label operand.
+  Label label{};
+  label.m_target = &t_target;
+
+  // Add label to operands.
+  auto& operands{t_instr.m_operands};
+  operands.push_back({label});
+
+  // Push back instruction to source block.
+  instructions.push_back(t_instr);
+}
+
+auto ModuleFactory::insert_jump(BasicBlock& t_src, BasicBlock& t_target) -> void
+{
+  auto& instructions{t_src.m_instructions};
+
+  auto jmp_instr{create_instruction(Opcode::JUMP)};
+  auto& operands{jmp_instr.m_operands};
+
+  // Create label operand.
+  Label label{};
+  label.m_target = &t_target;
+
+  operands.push_back({label});
+
+  instructions.push_back(jmp_instr);
+}
+
+auto ModuleFactory::last_instruction() -> Instruction&
+{
+  auto& block{last_block()};
+  auto& instructions{block.m_instructions};
+
+  if(instructions.empty()) {
+    throw std::runtime_error{
+      "There are no instructions in the current basic block"
+      ", cant retrieve last one."};
+  }
+
+  return instructions.back();
+}
+
+auto ModuleFactory::add_block(const std::string_view t_label) -> BasicBlock&
 {
   auto& fn{last_function()};
   auto& blocks{fn.m_blocks};
 
-  BasicBlock bblock{};
+  // Create basic block and set its label.
+  BasicBlock block{};
+  block.m_label = t_label;
 
-  bblock.m_label = t_label;
+  blocks.push_back(block);
 
-  blocks.push_back(std::move(bblock));
+  // Return the just added basic block.
+  return last_block();
 }
 
-auto ModuleFactory::get_bblock(const std::string_view t_label) -> BasicBlock&
+auto ModuleFactory::find_block(const std::string_view t_label) -> BasicBlock*
 {
-  // TODO: Implement
-  return last_bblock();
+  BasicBlock* ptr{nullptr};
+
+  auto& fn{last_function()};
+  auto& blocks{fn.m_blocks};
+
+  for(BasicBlock& block : blocks) {
+    if(block.m_label == t_label) {
+      ptr = &block;
+      break;
+    }
+  }
+
+  return ptr;
 }
 
-auto ModuleFactory::last_bblock() -> BasicBlock&
+auto ModuleFactory::last_block() -> BasicBlock&
 {
   auto& fn{last_function()};
+
+  if(fn.m_blocks.empty()) {
+    throw std::runtime_error{"There are no basic blocks in current function"
+                             ", cant retrieve last one."};
+  }
 
   return fn.m_blocks.back();
 }
 
-auto ModuleFactory::create_function(Function&& t_fn) -> void
+auto ModuleFactory::add_function(Function&& t_fn) -> void
 {
   auto& functions{m_module->m_functions};
 
-  functions.push_back(std::move(t_fn));
+  functions.push_back(t_fn);
 }
 
 auto ModuleFactory::last_function() -> Function&
 {
   auto& functions{m_module->m_functions};
 
-  // TODO: Error if fucntions.empty() is true?
+  if(functions.empty()) {
+    throw std::runtime_error{"There are no functions in current CLIR module, "
+                             "can retrieve last one."};
+  }
 
   return functions.back();
 }
