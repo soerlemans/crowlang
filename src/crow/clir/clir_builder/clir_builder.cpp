@@ -63,8 +63,6 @@ auto ClirBuilder::visit(Loop* t_loop) -> Any
 
 auto ClirBuilder::visit(Continue* t_continue) -> Any
 {
-  auto& block{m_factory->last_block()};
-
   m_factory->add_instruction(Opcode::CONTINUE);
 
   return {};
@@ -72,8 +70,6 @@ auto ClirBuilder::visit(Continue* t_continue) -> Any
 
 auto ClirBuilder::visit(Break* t_break) -> Any
 {
-  auto& block{m_factory->last_block()};
-
   m_factory->add_instruction(Opcode::BREAK);
 
   return {};
@@ -95,6 +91,8 @@ auto ClirBuilder::visit(Return* t_ret) -> Any
   traverse(expr);
 
   m_factory->add_instruction(Opcode::RETURN);
+	// TODO: Add last result.
+
 
   return {};
 }
