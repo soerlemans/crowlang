@@ -31,6 +31,8 @@ auto TypeVariant::var() const -> VarTypePtr
 //! Resolves the @ref TypeVariant to a @ref NativeType if possible.
 auto TypeVariant::native_type() const -> NativeTypeOpt
 {
+  using lib::Overload;
+
   NativeTypeOpt opt;
 
   const auto native{[&](const NativeType t_type) -> NativeTypeOpt {

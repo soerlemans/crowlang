@@ -11,7 +11,7 @@
 #include "crow/codegen/cpp_backend/interop/cpp_interop_backend_interface.hpp"
 #include "crow/semantic/symbol_table/symbol_table.hpp"
 #include "lib/filesystem.hpp"
-#include "lib/types.hpp"
+#include "lib/stdtypes.hpp"
 
 namespace codegen::cpp_backend {
 // Aliases:

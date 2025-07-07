@@ -16,7 +16,7 @@
 
 // Absolute Includes:
 #include "crow/ast/node/node_traits/typing/typing.hpp"
-#include "lib/types.hpp"
+#include "lib/stdtypes.hpp"
 
 namespace clir {
 // Forward Declarations:

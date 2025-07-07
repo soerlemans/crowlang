@@ -1,9 +1,14 @@
-#ifndef CROW_LIB_TYPES_HPP
-#define CROW_LIB_TYPES_HPP
+#ifndef CROW_LIB_STDTYPES_HPP
+#define CROW_LIB_STDTYPES_HPP
 
 // STL Includes:
 #include <cstdint>
 
+/*!
+ * @file
+ *
+ * No namespace for these required, we use these as a default.
+ */
 
 // Aliases:
 // Integer type aliases:
@@ -18,4 +23,4 @@ using i16 = std::int16_t;
 using i32 = std::int32_t;
 using i64 = std::int64_t;
 
-#endif // CROW_LIB_TYPES_HPP
+#endif // CROW_LIB_STDTYPES_HPP

@@ -52,6 +52,8 @@ auto SymbolData::var() const -> VarTypePtr
 
 auto SymbolData::is_const() const -> bool
 {
+  using lib::Overload;
+
   bool result{false};
 
   const auto var_type{[&](const VarTypePtr& t_data) {
@@ -87,6 +89,8 @@ auto SymbolData::resolve_type() const -> SymbolData
 
 auto SymbolData::native_type() const -> NativeTypeOpt
 {
+  using lib::Overload;
+
   NativeTypeOpt opt;
 
   const auto native{[&](const NativeType t_type) -> NativeTypeOpt {
@@ -106,6 +110,8 @@ auto SymbolData::native_type() const -> NativeTypeOpt
 
 auto SymbolData::type_variant() const -> TypeVariant
 {
+  using lib::Overload;
+
   TypeVariant variant;
 
   const auto native{[&](const NativeType t_type) -> TypeVariant {

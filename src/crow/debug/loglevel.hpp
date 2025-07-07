@@ -9,7 +9,7 @@
 #include <rang.hpp>
 
 // Absolute Includes:
-#include "lib/types.hpp"
+#include "lib/stdtypes.hpp"
 
 // Macros:
 //! Helper macro for converting @ref LogLevel to string representation.
