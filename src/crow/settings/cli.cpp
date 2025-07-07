@@ -11,6 +11,7 @@
 #include "crow/codegen/backend_interface.hpp"
 #include "crow/settings/enum_convert.hpp"
 #include "crow/settings/settings.hpp"
+#include "lib/iomanip/cond_nl.hpp"
 
 // Internal:
 namespace {
@@ -36,6 +37,20 @@ auto add_loglevel_flag([[maybe_unused]] CLI::App& t_app, Settings& t_settings)
 
   t_app.add_option("-l,--log-level", t_settings.m_level, "Set the LogLevel.")
     ->transform(CLI::CheckedTransformer(map));
+#endif // DEBUG
+}
+
+auto add_log_multiline_flag([[maybe_unused]] CLI::App& t_app,
+                            Settings& t_settings) -> void
+{
+#ifdef DEBUG
+
+  using namespace lib;
+
+  t_app.add_flag_callback(
+    "--log-multiline", iomanip::CondNl::enable,
+    "Enable printing objects over multiple lines, when logging.");
+
 #endif // DEBUG
 }
 

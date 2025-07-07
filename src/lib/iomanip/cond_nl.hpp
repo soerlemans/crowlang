@@ -27,9 +27,4 @@ class CondNl {
 };
 } // namespace lib::iomanip
 
-// Functions:
-auto operator<<(std::ostream& t_os, lib::iomanip::CondNl t_cond_nl)
-  -> std::ostream&;
-
-
 #endif // COND_NL_HPP
