@@ -22,6 +22,7 @@ auto ModuleFactory::create_instruction(const Opcode t_opcode) -> Instruction
 
   instr.m_id = m_instr_id;
   instr.m_opcode = t_opcode;
+  instr.m_result = nullptr;
 
   m_instr_id++;
 
