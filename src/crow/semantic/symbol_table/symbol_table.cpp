@@ -96,7 +96,8 @@ auto operator<<(std::ostream& t_os,
   for(const auto& elem : t_map) {
     const auto& [id, scope] = elem;
 
-    t_os << sep << std::quoted(id) << ':' << scope;
+    t_os << sep << cond_nl;
+    t_os << std::quoted(id) << ':' << scope;
     sep = ", ";
   }
 
