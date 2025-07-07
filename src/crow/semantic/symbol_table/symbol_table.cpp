@@ -98,8 +98,6 @@ auto operator<<(std::ostream& t_os,
 
     t_os << sep << std::quoted(id) << ':' << scope;
     sep = ", ";
-
-    t_os << cond_nl;
   }
 
   return t_os;
@@ -109,9 +107,13 @@ auto operator<<(std::ostream& t_os,
                 const semantic::symbol_table::SymbolTable& t_symbol_table)
   -> std::ostream&
 {
+  using lib::iomanip::cond_nl;
+
   const auto table{t_symbol_table.table()};
 
-  t_os << '{' << table << '}';
+  t_os << '{' << cond_nl;
+  t_os << table;
+  t_os << cond_nl << '}';
 
   return t_os;
 }

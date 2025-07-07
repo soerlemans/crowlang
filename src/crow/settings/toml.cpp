@@ -168,7 +168,7 @@ auto find_settings_toml(const std::string_view t_filename) -> PathOpt
   while(true) {
     auto candidate{current / t_filename};
     if(exists(candidate) && is_regular_file(candidate)) {
-      DBG_INFO("Found ", filename_quoted, " at ", candidate);
+      DBG_INFO("Found ", filename_quoted, " at ", candidate, ".");
 
       path = candidate;
       break;

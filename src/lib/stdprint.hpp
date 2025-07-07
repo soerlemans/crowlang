@@ -79,7 +79,6 @@ inline auto print_seq(std::ostream& t_os, const T& t_container) -> std::ostream&
     t_os << sep << elem;
 
     sep = ", "sv;
-		t_os << iomanip::cond_nl;
   }
   t_os << ']';
 
