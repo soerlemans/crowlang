@@ -1,5 +1,5 @@
-#ifndef COND_NL_HPP
-#define COND_NL_HPP
+#ifndef CROW_LIB_IOMANIP_COND_NL_HPP
+#define CROW_LIB_IOMANIP_COND_NL_HPP
 
 // STL Includes:
 #include <iosfwd>
@@ -30,4 +30,4 @@ auto cond_nl(std::ostream& t_os) -> std::ostream&;
 } // namespace lib::iomanip
 
 
-#endif // COND_NL_HPP
+#endif // CROW_LIB_IOMANIP_COND_NL_HPP

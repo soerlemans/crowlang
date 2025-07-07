@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_TYPING_HPP
-#define CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_TYPING_HPP
+#ifndef CROW_CROW_TYPES_CORE_TYPING_HPP
+#define CROW_CROW_TYPES_CORE_TYPING_HPP
 
 /*!
  * @file
@@ -41,4 +41,4 @@ auto operator<<(std::ostream& t_os,
                 const ast::node::node_traits::typing::TypeList& t_list)
   -> std::ostream&;
 
-#endif // CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_TYPING_HPP
+#endif // CROW_CROW_TYPES_CORE_TYPING_HPP

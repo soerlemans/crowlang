@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_TYPES_HPP
-#define CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_TYPES_HPP
+#ifndef CROW_CROW_TYPES_CORE_TYPES_HPP
+#define CROW_CROW_TYPES_CORE_TYPES_HPP
 
 // Local Includes:
 #include "type_variant.hpp"
@@ -46,4 +46,4 @@ inline auto make_variable(Args&&... t_args) -> TypeVariant
 }
 } // namespace ast::node::node_traits::typing
 
-#endif // CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_TYPES_HPP
+#endif // CROW_CROW_TYPES_CORE_TYPES_HPP

@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_TYPE_VARIANT_HPP
-#define CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_TYPE_VARIANT_HPP
+#ifndef CROW_CROW_TYPES_CORE_TYPE_VARIANT_HPP
+#define CROW_CROW_TYPES_CORE_TYPE_VARIANT_HPP
 
 // STL Includes:
 #include <variant>
@@ -43,4 +43,4 @@ auto operator<<(std::ostream& t_os,
                 const ast::node::node_traits::typing::TypeVariant& t_data)
   -> std::ostream&;
 
-#endif // CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_TYPE_VARIANT_HPP
+#endif // CROW_CROW_TYPES_CORE_TYPE_VARIANT_HPP

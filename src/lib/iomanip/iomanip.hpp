@@ -1,7 +1,7 @@
-#ifndef IOMANIP_HPP
-#define IOMANIP_HPP
+#ifndef CROW_LIB_IOMANIP_IOMANIP_HPP
+#define CROW_LIB_IOMANIP_IOMANIP_HPP
 
 // Local Includes:
 #include "cond_nl.hpp"
 
-#endif // IOMANIP_HPP
+#endif // CROW_LIB_IOMANIP_IOMANIP_HPP

@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_NATIVE_TYPES_HPP
-#define CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_NATIVE_TYPES_HPP
+#ifndef CROW_CROW_TYPES_CORE_NATIVE_TYPES_HPP
+#define CROW_CROW_TYPES_CORE_NATIVE_TYPES_HPP
 
 // STL Includes:
 #include <algorithm>
@@ -116,4 +116,4 @@ auto operator<<(std::ostream& t_os,
                 const ast::node::node_traits::typing::NativeTypeOpt& t_opt)
   -> std::ostream&;
 
-#endif // CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_NATIVE_TYPES_HPP
+#endif // CROW_CROW_TYPES_CORE_NATIVE_TYPES_HPP

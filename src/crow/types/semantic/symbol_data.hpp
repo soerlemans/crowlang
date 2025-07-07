@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_SEMANTIC_SYMBOL_SYMBOL_DATA_HPP
-#define CROW_CROW_SEMANTIC_SYMBOL_SYMBOL_DATA_HPP
+#ifndef CROW_CROW_TYPES_SEMANTIC_SYMBOL_DATA_HPP
+#define CROW_CROW_TYPES_SEMANTIC_SYMBOL_DATA_HPP
 
 // Absolute Includes:
 #include "crow/ast/node/node_traits/typing/types.hpp"
@@ -77,4 +77,4 @@ class SymbolData : public Variant {
 auto operator<<(std::ostream& t_os, const semantic::symbol::SymbolData& t_data)
   -> std::ostream&;
 
-#endif // CROW_CROW_SEMANTIC_SYMBOL_SYMBOL_DATA_HPP
+#endif // CROW_CROW_TYPES_SEMANTIC_SYMBOL_DATA_HPP
