@@ -144,7 +144,7 @@ struct Literal {
 struct SsaVar {
   u64 m_id;
 
-	// TODO: Embed typing information from 
+  // TODO: Embed typing information from
   std::string m_name; // Name of a struct or alias.
 };
 

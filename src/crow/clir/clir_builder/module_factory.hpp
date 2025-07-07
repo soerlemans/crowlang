@@ -34,8 +34,8 @@ class ModuleFactory {
 
   /*!
    * Every instruction has a result.
-	 * Can be a nullptr (indicating the operation has no result).
-	 */
+   * Can be a nullptr (indicating the operation has no result).
+   */
   auto last_result() -> SsaVarPtr;
 
   // Instruction operations:
@@ -46,8 +46,8 @@ class ModuleFactory {
   /*!
    * We usually add a jump statement in retrospect between two blocks.
    * So we need to supply everything manually to fix instruction numbering.
-	 * (in some cases).
-	 */
+   * (in some cases).
+   */
   auto insert_jump(Instruction t_instr, BasicBlock& t_block,
                    BasicBlock& t_target) -> void;
   auto insert_jump(BasicBlock& t_block, BasicBlock& t_target) -> void;
