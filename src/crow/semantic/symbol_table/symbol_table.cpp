@@ -72,7 +72,8 @@ auto operator<<(std::ostream& t_os,
 {
   const auto& [data, opt] = t_scope;
 
-  t_os << data;
+	// Add
+  t_os << '"' << data << '"';
 
   // Only show scope if it exists.
   if(opt) {
@@ -95,7 +96,7 @@ auto operator<<(std::ostream& t_os,
     const auto& [id, scope] = elem;
 
     t_os << sep << cond_nl;
-    t_os << std::quoted(id) << ':' << scope;
+    t_os << std::quoted(id) << ": " << scope;
     sep = ", ";
   }
 

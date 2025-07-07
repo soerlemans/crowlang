@@ -1,3 +1,5 @@
+module functions
+
 /*
  * Sample meant to show order independent function calling.
  * Function calling and usage of return values.
