@@ -70,13 +70,17 @@ auto operator<<(std::ostream& t_os,
                 const semantic::symbol_table::SymbolTableScope& t_scope)
   -> std::ostream&
 {
+  using lib::iomanip::cond_nl;
+
   const auto& [data, opt] = t_scope;
 
   t_os << data;
 
   // Only show scope if it exists.
   if(opt) {
-    t_os << ", scope: {" << opt.value() << '}';
+    t_os << ", scope: {" << cond_nl;
+    t_os << opt.value();
+    t_os << '}' << cond_nl;
   }
 
   return t_os;
@@ -86,6 +90,7 @@ auto operator<<(std::ostream& t_os,
                 const semantic::symbol_table::SymbolMap& t_map) -> std::ostream&
 {
   using namespace std::literals::string_view_literals;
+  using lib::iomanip::cond_nl;
 
   auto sep{""sv};
   for(const auto& elem : t_map) {
@@ -93,6 +98,8 @@ auto operator<<(std::ostream& t_os,
 
     t_os << sep << std::quoted(id) << ':' << scope;
     sep = ", ";
+
+    t_os << cond_nl;
   }
 
   return t_os;

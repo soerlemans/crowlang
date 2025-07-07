@@ -22,8 +22,16 @@ auto operator<<(std::ostream& t_os, lib::iomanip::CondNl t_cond_nl)
   -> std::ostream&
 {
   if(t_cond_nl.m_insert_nl) {
-    t_os << '\n';
+    t_os.put('\n');
   }
+
+  return t_os;
+}
+
+// Functions:
+auto cond_nl(std::ostream& t_os) -> std::ostream&
+{
+  t_os << lib::iomanip::CondNl{};
 
   return t_os;
 }

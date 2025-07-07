@@ -20,11 +20,14 @@ class CondNl {
   static auto disable() -> void;
 
   // Friend functions:
-  friend auto operator<<(std::ostream& t_os, CondNl t_cond_nl)
-    -> std::ostream&;
+  friend auto operator<<(std::ostream& t_os, CondNl t_cond_nl) -> std::ostream&;
 
   virtual ~CondNl() = default;
 };
+
+// Functions:
+auto cond_nl(std::ostream& t_os) -> std::ostream&;
 } // namespace lib::iomanip
+
 
 #endif // COND_NL_HPP
