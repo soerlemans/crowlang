@@ -33,15 +33,20 @@ using ast::node::node_traits::typing::NativeType;
 
 // We use lists for instructions and basic blocks.
 // This is to prevent any iterator or reference invalidation.
-// During CLIR construction.
+// During the building of the IR.
+// Or the modifying of it afterwards.
 using CfgSeq = std::list<BasicBlock*>;
 using InstructionSeq = std::list<Instruction>;
 using BasicBlockSeq = std::list<BasicBlock>;
-using FunctionSeq = std::vector<Function>;
-using ModuleSeq = std::vector<Module>;
+using FunctionSeq = std::list<Function>;
+using ModuleSeq = std::list<Module>;
+
 using ModulePtr = std::shared_ptr<Module>;
+
 using Operand = std::variant<Literal, SsaVar, Label>;
 using OperandSeq = std::vector<Operand>;
+
+using SsaVarPtr = std::shared_ptr<SsaVar>;
 
 using BasicBlockIter = BasicBlockSeq::iterator;
 using FunctionIter = FunctionSeq::iterator;
@@ -138,6 +143,8 @@ struct Literal {
 
 struct SsaVar {
   u64 m_id;
+
+  // TODO: Embed typing information from
   std::string m_name; // Name of a struct or alias.
 };
 
@@ -152,6 +159,8 @@ struct Instruction {
   u64 m_id;
   Opcode m_opcode;
   OperandSeq m_operands;
+
+  SsaVarPtr m_result;
 };
 
 struct BasicBlock {

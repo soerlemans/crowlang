@@ -149,11 +149,16 @@ auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)
   using clir::opcode2str;
   using clir::Operand;
 
-  const auto& [id, opcode, operands] = t_inst;
+  const auto& [id, opcode, operands, result] = t_inst;
 
-  // Print instructions label, and the instruction name.
-  const auto str{opcode2str(opcode)};
-  t_os << std::format("{}: %{} ", id, str);
+  // If the result is present, prepend it to the opcode.
+  std::stringstream assign_ss{};
+  if(result) {
+    assign_ss << *result << " = ";
+  }
+
+  const auto opcode_str{opcode2str(opcode)};
+  t_os << std::format("{}: {}{} ", id, assign_ss.str(), opcode_str);
 
   // Loop over operands and print them.
   std::string_view sep{};
