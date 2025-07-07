@@ -49,20 +49,12 @@ auto ModuleFactory::insert_jump(Instruction t_instr, BasicBlock& t_block,
   instructions.push_back(t_instr);
 }
 
-auto ModuleFactory::insert_jump(BasicBlock& t_src, BasicBlock& t_target) -> void
+auto ModuleFactory::insert_jump(BasicBlock& t_block, BasicBlock& t_target)
+  -> void
 {
-  auto& instructions{t_src.m_instructions};
-
   auto jmp_instr{create_instruction(Opcode::JUMP)};
-  auto& operands{jmp_instr.m_operands};
 
-  // Create label operand.
-  Label label{};
-  label.m_target = &t_target;
-
-  operands.push_back({label});
-
-  instructions.push_back(jmp_instr);
+  insert_jump(jmp_instr, t_block, t_target);
 }
 
 auto ModuleFactory::last_instruction() -> Instruction&
