@@ -40,7 +40,7 @@ auto operator<<(std::ostream& t_os, const settings::Settings& t_settings)
   -> std::ostream&
 {
   using namespace lib::stdprint::vector;
-  using lib::iomanip::Cond_nl;
+  using lib::iomanip::cond_nl;
 
   // clang-format off
   t_os << "Settings{" << cond_nl;
