@@ -70,8 +70,6 @@ auto operator<<(std::ostream& t_os,
                 const semantic::symbol_table::SymbolTableScope& t_scope)
   -> std::ostream&
 {
-  using lib::iomanip::cond_nl;
-
   const auto& [data, opt] = t_scope;
 
   t_os << data;
@@ -112,8 +110,7 @@ auto operator<<(std::ostream& t_os,
 
   const auto table{t_symbol_table.table()};
 
-  t_os << '{' << cond_nl;
-  t_os << table;
+  t_os << '{' << table;
   t_os << cond_nl << '}';
 
   return t_os;
