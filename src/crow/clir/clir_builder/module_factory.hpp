@@ -32,6 +32,12 @@ class ModuleFactory {
   public:
   ModuleFactory();
 
+  /*!
+   * Every instruction has a result.
+	 * Can be a nullptr (indicating the operation has no result).
+	 */
+  auto last_result() -> SsaVarPtr;
+
   // Instruction operations:
   [[nodiscard("Must use created instruction.")]]
   auto create_instruction(Opcode t_opcode) -> Instruction;

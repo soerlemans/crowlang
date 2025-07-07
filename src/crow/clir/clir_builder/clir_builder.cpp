@@ -91,7 +91,7 @@ auto ClirBuilder::visit(Return* t_ret) -> Any
   traverse(expr);
 
   m_factory->add_instruction(Opcode::RETURN);
-	// TODO: Add last result.
+  // TODO: Add last result.
 
 
   return {};
@@ -161,8 +161,6 @@ auto ClirBuilder::visit(Assignment* t_assign) -> Any
 
 auto ClirBuilder::visit(Comparison* t_comp) -> Any
 {
-  auto& block{m_factory->last_block()};
-
   // Dummy harcoded value for now.
   m_factory->add_instruction(Opcode::ICMP_LT);
 
@@ -171,16 +169,44 @@ auto ClirBuilder::visit(Comparison* t_comp) -> Any
 
 auto ClirBuilder::visit(Increment* t_inc) -> Any
 {
+  m_factory->add_instruction(Opcode::IADD);
+
+  // TODO: Pass parameters.
+
   return {};
 }
 
 auto ClirBuilder::visit(Decrement* t_dec) -> Any
 {
+  m_factory->add_instruction(Opcode::ISUB);
+
+  // TODO: Pass parameters.
+
   return {};
 }
 
 auto ClirBuilder::visit(UnaryPrefix* t_up) -> Any
 {
+  using ast::node::operators::UnaryPrefixOp;
+
+  const auto op{t_up->op()};
+  const auto left{t_up->left()};
+
+  switch(op) {
+    case UnaryPrefixOp::PLUS:
+      // TODO: No op.
+      break;
+
+    case UnaryPrefixOp::MINUS:
+      m_factory->add_instruction(Opcode::ISUB);
+      // TODO: Traverse left.
+      break;
+
+    default:
+      // TODO: THROW!
+      break;
+  }
+
   return {};
 }
 
@@ -230,12 +256,12 @@ auto ClirBuilder::visit(Integer* t_int) -> Any
   return {};
 }
 
-auto ClirBuilder::visit([[maybe_unused]] String* t_str) -> Any
+auto ClirBuilder::visit(String* t_str) -> Any
 {
   return {};
 }
 
-auto ClirBuilder::visit([[maybe_unused]] Boolean* t_bool) -> Any
+auto ClirBuilder::visit(Boolean* t_bool) -> Any
 {
   return {};
 }

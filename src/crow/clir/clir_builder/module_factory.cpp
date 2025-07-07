@@ -8,6 +8,13 @@ ModuleFactory::ModuleFactory()
   : m_module{std::make_shared<Module>()}, m_var_id{0}, m_instr_id{0}
 {}
 
+auto ModuleFactory::last_result() -> SsaVarPtr
+{
+  auto& instr{last_instruction()};
+
+  return instr.m_result;
+}
+
 auto ModuleFactory::create_instruction(const Opcode t_opcode) -> Instruction
 {
   // Cookie cutter the creation of an instruction.
