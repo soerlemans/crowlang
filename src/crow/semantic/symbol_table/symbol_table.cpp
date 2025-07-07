@@ -78,9 +78,9 @@ auto operator<<(std::ostream& t_os,
 
   // Only show scope if it exists.
   if(opt) {
-    t_os << ", scope: {" << cond_nl;
+    t_os << ", scope: {";
     t_os << opt.value();
-    t_os << '}' << cond_nl;
+    t_os << '}';
   }
 
   return t_os;
