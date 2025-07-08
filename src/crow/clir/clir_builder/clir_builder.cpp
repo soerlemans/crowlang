@@ -110,7 +110,7 @@ auto ClirBuilder::visit(Return* t_ret) -> Any
   }
 
   auto& ret{m_factory->add_instruction(Opcode::RETURN)};
-  add_operand({last_var});
+  ret.add_operand({last_var});
 
   return {};
 }

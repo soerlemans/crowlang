@@ -32,7 +32,7 @@ class ModuleFactory {
   public:
   ModuleFactory();
 
-	// SsaVar operations:
+  // SsaVar operations:
   auto create_var(types::core::TypeVariant t_type) -> SsaVarPtr;
 
   /*!
