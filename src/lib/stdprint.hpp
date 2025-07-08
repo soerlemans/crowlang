@@ -154,12 +154,23 @@ auto operator<<(std::ostream& t_os, const std::weak_ptr<T>& t_ptr)
 }
 } // namespace smart_ptr
 
+namespace optional {
+// TODO: Implement.
+}
+
+namespace variant {
+// TODO: Implement.
+}
+
+
 //! Namespace that when included allows you to use all the ostream functions.
 namespace all {
 using namespace lib::stdprint::vector;
 using namespace lib::stdprint::list;
 using namespace lib::stdprint::array;
 using namespace lib::stdprint::smart_ptr;
+using namespace lib::stdprint::optional;
+using namespace lib::stdprint::variant;
 } // namespace all
 } // namespace lib::stdprint
 

@@ -2,11 +2,11 @@
 #define CROW_CROW_TYPES_CORE_TYPE_VARIANT_HPP
 
 // STL Includes:
+#include <iosfwd>
 #include <variant>
 
 // Local Includes:
 #include "fdecl.hpp"
-#include "native_types.hpp"
 
 namespace types::core {
 // Using Statements:

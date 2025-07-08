@@ -95,7 +95,7 @@ auto SemanticCheckerHelper::promote(const SymbolData& t_lhs,
                                     const bool enforce_lhs) const
   -> NativeTypeOpt
 {
-  NativeTypeOpt opt;
+  NativeTypeOpt opt{};
 
   const auto lhs{t_lhs.native_type()};
   const auto rhs{t_rhs.native_type()};

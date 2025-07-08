@@ -30,6 +30,7 @@ struct Module;
 
 // Aliases:
 using types::core::NativeType;
+using types::core::TypeVariant;
 
 // We use lists for instructions and basic blocks.
 // This is to prevent any iterator or reference invalidation.
@@ -129,12 +130,6 @@ enum class Opcode : u32 {
   NOP,
 };
 
-enum class SsaVarType {
-  SSA,      // Temporary SSA variable that is being referenced.
-  GLOBAL,   // Global variable reference.
-  AGGREGATE // Struct or other high level data structure.
-};
-
 // Structs:
 struct Literal {
   u64 m_id;
@@ -143,6 +138,7 @@ struct Literal {
 
 struct SsaVar {
   u64 m_id;
+  TypeVariant m_type;
 
   // TODO: Embed typing information from
   std::string m_name; // Name of a struct or alias.

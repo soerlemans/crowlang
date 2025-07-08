@@ -3,6 +3,7 @@
 
 // STL Includes:
 #include <array>
+#include <unordered_map>
 
 // Absolute Includes:
 #include "crow/types/core/core.hpp"

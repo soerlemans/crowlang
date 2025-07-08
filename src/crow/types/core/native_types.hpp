@@ -6,11 +6,15 @@
 #include <cctype>
 #include <optional>
 #include <string_view>
+#include <iosfwd>
 
 // Library Includes:
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap.hpp>
+
+// Absolute Includes:
+#include "crow/types/core/fdecl.hpp"
 
 
 // Macros:
@@ -25,8 +29,7 @@ namespace types::core {
 // Forward Declarations:
 enum class NativeType;
 
-// Aliases:
-using NativeTypeOpt = std::optional<NativeType>;
+// Using:
 using NativeTypeMap = boost::bimap<std::string, NativeType>;
 
 // Enums:
