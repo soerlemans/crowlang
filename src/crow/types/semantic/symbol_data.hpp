@@ -2,7 +2,7 @@
 #define CROW_CROW_TYPES_SEMANTIC_SYMBOL_DATA_HPP
 
 // Absolute Includes:
-#include "crow/ast/node/types/core/types.hpp"
+#include "crow/types/core/core_types.hpp"
 
 // Local Includes:
 #include "symbol.hpp"
