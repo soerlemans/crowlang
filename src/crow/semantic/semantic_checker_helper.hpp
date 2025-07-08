@@ -4,11 +4,11 @@
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
 #include "crow/container/text_position.hpp"
+#include "crow/types/semantic/symbol.hpp"
+#include "crow/types/semantic/symbol_data.hpp"
 
 // Local Includes:
 #include "env_state.hpp"
-#include "symbol/symbol.hpp"
-#include "symbol/symbol_data.hpp"
 #include "symbol_table/symbol_table_factory.hpp"
 #include "type_promoter.hpp"
 
@@ -16,7 +16,6 @@ namespace semantic {
 // Using Declarations:
 using ast::node::NodeListPtr;
 using ast::node::NodePtr;
-using ast::node::node_traits::typing::NativeTypeOpt;
 using ast::visitor::Any;
 using ast::visitor::NodeVisitor;
 using container::TextPosition;
@@ -25,6 +24,7 @@ using symbol::SymbolDataList;
 using symbol_table::SymbolTable;
 using symbol_table::SymbolTableFactory;
 using symbol_table::SymbolTablePtr;
+using types::core::NativeTypeOpt;
 
 // TODO: Currently we have to manually clear_env() in order to reset the state.
 // Of @ref EnvState and @ref SymbolTableFactory().

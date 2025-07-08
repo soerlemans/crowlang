@@ -1,8 +1,8 @@
-#ifndef CROW_CROW_SEMANTIC_SYMBOL_SYMBOL_DATA_HPP
-#define CROW_CROW_SEMANTIC_SYMBOL_SYMBOL_DATA_HPP
+#ifndef CROW_CROW_TYPES_SEMANTIC_SYMBOL_DATA_HPP
+#define CROW_CROW_TYPES_SEMANTIC_SYMBOL_DATA_HPP
 
 // Absolute Includes:
-#include "crow/ast/node/node_traits/typing/types.hpp"
+#include "crow/types/core/core.hpp"
 
 // Local Includes:
 #include "symbol.hpp"
@@ -16,9 +16,9 @@
 
 namespace semantic::symbol {
 // Using Statements:
-using ast::node::node_traits::typing::NativeType;
-using ast::node::node_traits::typing::NativeTypeOpt;
-using ast::node::node_traits::typing::TypeVariant;
+using types::core::NativeType;
+using types::core::NativeTypeOpt;
+using types::core::TypeVariant;
 
 // Aliases:
 using Variant = std::variant<StructTypePtr, FnTypePtr, VarTypePtr, NativeType>;
@@ -61,7 +61,7 @@ class SymbolData : public Variant {
   auto native_type() const -> NativeTypeOpt;
 
   /*!
-   * Used to convert @ref SymbolData to a  @ref typing::TypeVariant.
+   * Used to convert @ref SymbolData to a  @ref core::TypeVariant.
    * The type tree for @ref SymbolData contains extra information.
    * Like if a symbol is const or pure.
    * When we annotate the AST we dont want to include this information.
@@ -77,4 +77,4 @@ class SymbolData : public Variant {
 auto operator<<(std::ostream& t_os, const semantic::symbol::SymbolData& t_data)
   -> std::ostream&;
 
-#endif // CROW_CROW_SEMANTIC_SYMBOL_SYMBOL_DATA_HPP
+#endif // CROW_CROW_TYPES_SEMANTIC_SYMBOL_DATA_HPP

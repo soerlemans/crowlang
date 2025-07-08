@@ -39,15 +39,17 @@ auto get_settings(CliParams& t_params) -> Settings
 auto operator<<(std::ostream& t_os, const settings::Settings& t_settings)
   -> std::ostream&
 {
-  // Needed for std print.
   using namespace lib::stdprint::vector;
+  using lib::iomanip::cond_nl;
 
-  t_os << "Settings{ ";
-  t_os << "source_paths: " << t_settings.m_source_paths << ", ";
-  t_os << "backend: " << t_settings.m_backend << ", ";
-  t_os << "interop_backends: " << t_settings.m_interop_backends << ", ";
-  t_os << "loglevel: " << t_settings.m_level << ", ";
-  t_os << '}';
+  // clang-format off
+  t_os << "Settings{" << cond_nl;
+  t_os << "source_paths: " << t_settings.m_source_paths << ", " << cond_nl;
+  t_os << "backend: " << t_settings.m_backend << ", " << cond_nl;
+  t_os << "interop_backends: " << t_settings.m_interop_backends << ", " << cond_nl;
+  t_os << "loglevel: " << t_settings.m_level << ", " << cond_nl;
+  t_os << "}";
+  // clang-format on
 
   return t_os;
 }

@@ -1,29 +1,32 @@
-#ifndef CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_TYPES_HPP
-#define CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_TYPES_HPP
+#ifndef CROW_CROW_TYPES_CORE_CORE_TYPES_HPP
+#define CROW_CROW_TYPES_CORE_CORE_TYPES_HPP
+
+// STL Includes:
+#include <iosfwd>
 
 // Local Includes:
 #include "type_variant.hpp"
 
-namespace ast::node::node_traits::typing {
+namespace types::core {
 // Structs:
 // TODO: use VarTypePtr and FnTypePtr in combination with a map?
 struct StructType {
   std::string m_identifier;
 
-  auto native_type() const -> typing::NativeTypeOpt;
+  auto native_type() const -> core::NativeTypeOpt;
 };
 
 struct FnType {
   TypeList m_params;
   TypeVariant m_return_type;
 
-  auto native_type() const -> typing::NativeTypeOpt;
+  auto native_type() const -> core::NativeTypeOpt;
 };
 
 struct VarType {
   TypeVariant m_type;
 
-  auto native_type() const -> typing::NativeTypeOpt;
+  auto native_type() const -> core::NativeTypeOpt;
 };
 
 // Functions:
@@ -44,6 +47,18 @@ inline auto make_variable(Args&&... t_args) -> TypeVariant
 {
   return std::make_shared<VarType>(std::forward<Args>(t_args)...);
 }
-} // namespace ast::node::node_traits::typing
+} // namespace types::core
 
-#endif // CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_TYPES_HPP
+// Functions:
+auto operator<<(std::ostream& t_os, types::core::StructTypePtr t_struct)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os, types::core::FnTypePtr t_fn)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os, types::core::VarTypePtr t_var)
+  -> std::ostream&;
+
+auto operator<<(std::ostream& t_os, const types::core::TypeList& t_list)
+  -> std::ostream&;
+
+
+#endif // CROW_CROW_TYPES_CORE_CORE_TYPES_HPP

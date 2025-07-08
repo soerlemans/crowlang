@@ -1,16 +1,17 @@
-#ifndef CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_TYPE_DATA_HPP
-#define CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_TYPE_DATA_HPP
+#ifndef CROW_CROW_AST_NODE_NODE_TRAITS_TYPE_DATA_HPP
+#define CROW_CROW_AST_NODE_NODE_TRAITS_TYPE_DATA_HPP
 
-// Includes:
-#include "../../node_interface.hpp"
-
-// Local Includes:
-#include "types.hpp"
+// Absolute Includes:
+#include "crow/ast/node/node_interface.hpp"
+#include "crow/types/core/core.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"
 
-namespace ast::node::node_traits::typing {
+namespace ast::node::node_traits {
+// Using:
+using types::core::TypeVariant;
+
 /*!
  * Class for annotating the AST with type information.
  * This information is then later used during code generation.
@@ -29,6 +30,6 @@ class TypeData : virtual public NodeInterface {
 
   virtual ~TypeData() = default;
 };
-} // namespace ast::node::node_traits::typing
+} // namespace ast::node::node_traits
 
-#endif // CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_TYPE_DATA_HPP
+#endif // CROW_CROW_AST_NODE_NODE_TRAITS_TYPE_DATA_HPP

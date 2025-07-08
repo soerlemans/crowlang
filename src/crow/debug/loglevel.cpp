@@ -11,7 +11,6 @@ debug::LogLevel g_loglevel{debug::LogLevel::NOTICE};
 
 // Namespace Debug:
 namespace debug {
-[[nodiscard("Returned boolean result must be used.")]]
 auto is_lower_loglevel(const LogLevel t_loglevel) -> bool
 {
   using lib::enum2int;

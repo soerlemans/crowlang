@@ -13,7 +13,7 @@ auto StructType::native_type() const -> NativeTypeOpt
 
 auto StructType::type_variant() const -> TypeVariant
 {
-  using ast::node::node_traits::typing::make_struct;
+  using types::core::make_struct;
 
   return {make_struct(m_identifier)};
 }
@@ -26,10 +26,10 @@ auto FnType::native_type() const -> NativeTypeOpt
 
 auto FnType::type_variant() const -> TypeVariant
 {
-  using ast::node::node_traits::typing::make_function;
-  using ast::node::node_traits::typing::TypeList;
+  using types::core::make_function;
+  using types::core::TypeList;
 
-  // TODO: Convert TypeList of @ref FnType to typing::TypeList.
+  // TODO: Convert TypeList of @ref FnType to core::TypeList.
   TypeList params;
 
   return {make_function(params, m_return_type.type_variant())};
@@ -43,7 +43,7 @@ auto VarType::native_type() const -> NativeTypeOpt
 
 auto VarType::type_variant() const -> TypeVariant
 {
-  using ast::node::node_traits::typing::make_variable;
+  using types::core::make_variable;
 
   return {make_variable(m_type.type_variant())};
 }

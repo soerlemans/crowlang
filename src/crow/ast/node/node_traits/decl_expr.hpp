@@ -1,6 +1,9 @@
 #ifndef CROW_CROW_AST_NODE_NODE_TRAITS_DECL_EXPR_HPP
 #define CROW_CROW_AST_NODE_NODE_TRAITS_DECL_EXPR_HPP
 
+// Absolute Includes:
+#include "crow/ast/node/node_traits/type_data.hpp"
+
 // Includes:
 #include "../include.hpp"
 
@@ -10,12 +13,10 @@
 #include "init_expr.hpp"
 #include "node_position.hpp"
 #include "type_annotation.hpp"
-#include "typing/type_data.hpp"
 
 namespace ast::node::node_traits {
 // Using Statements:
 using container::TextPosition;
-using node_traits::typing::TypeData;
 
 // Classes:
 class DeclExpr : public NodePosition,

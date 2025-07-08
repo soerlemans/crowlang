@@ -16,8 +16,8 @@
 
 namespace {
 // Using Declarations:
-using ast::node::node_traits::typing::NativeType;
-using ast::node::node_traits::typing::nativetype2str;
+using types::core::NativeType;
+using types::core::nativetype2str;
 
 // Functions:
 /*!
@@ -82,6 +82,8 @@ NODE_USING_ALL_NAMESPACES()
 
 auto type_variant2cpp_type(const TypeVariant& t_variant) -> std::string_view
 {
+  using lib::Overload;
+
   std::string_view str{};
 
   if(const auto opt{t_variant.native_type()}; opt) {

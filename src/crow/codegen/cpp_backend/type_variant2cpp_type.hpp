@@ -6,10 +6,11 @@
 
 // Absolute Includes:
 #include "crow/ast/node/fdecl.hpp"
+#include "crow/types/core/core.hpp"
 
 namespace codegen::cpp_backend {
 // Using Statements:
-using ast::node::node_traits::typing::TypeVariant;
+using types::core::TypeVariant;
 /*!
  * Convert the @ref TypeVariant to an actual C++ type.
  */

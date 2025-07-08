@@ -8,9 +8,7 @@
 
 // Absolute Includes:
 #include "crow/exception/type_error.hpp"
-
-// Local Includes:
-#include "symbol/symbol_types.hpp"
+#include "crow/types/semantic/symbol_types.hpp"
 
 namespace semantic {
 // Using Declarations:

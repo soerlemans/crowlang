@@ -15,8 +15,8 @@
 #include <vector>
 
 // Absolute Includes:
-#include "crow/ast/node/node_traits/typing/typing.hpp"
-#include "lib/types.hpp"
+#include "crow/types/core/core.hpp"
+#include "lib/stdtypes.hpp"
 
 namespace clir {
 // Forward Declarations:
@@ -29,7 +29,8 @@ struct Function;
 struct Module;
 
 // Aliases:
-using ast::node::node_traits::typing::NativeType;
+using types::core::NativeType;
+using types::core::TypeVariant;
 
 // We use lists for instructions and basic blocks.
 // This is to prevent any iterator or reference invalidation.
@@ -129,12 +130,6 @@ enum class Opcode : u32 {
   NOP,
 };
 
-enum class SsaVarType {
-  SSA,      // Temporary SSA variable that is being referenced.
-  GLOBAL,   // Global variable reference.
-  AGGREGATE // Struct or other high level data structure.
-};
-
 // Structs:
 struct Literal {
   u64 m_id;
@@ -143,6 +138,7 @@ struct Literal {
 
 struct SsaVar {
   u64 m_id;
+  TypeVariant m_type;
 
   // TODO: Embed typing information from
   std::string m_name; // Name of a struct or alias.

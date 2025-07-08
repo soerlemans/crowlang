@@ -1,9 +1,10 @@
-#ifndef CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_NATIVE_TYPES_HPP
-#define CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_NATIVE_TYPES_HPP
+#ifndef CROW_CROW_TYPES_CORE_NATIVE_TYPES_HPP
+#define CROW_CROW_TYPES_CORE_NATIVE_TYPES_HPP
 
 // STL Includes:
 #include <algorithm>
 #include <cctype>
+#include <iosfwd>
 #include <optional>
 #include <string_view>
 
@@ -11,6 +12,9 @@
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap.hpp>
+
+// Absolute Includes:
+#include "crow/types/core/fdecl.hpp"
 
 
 // Macros:
@@ -21,12 +25,11 @@
       NativeType::t_ntype                                   \
   }
 
-namespace ast::node::node_traits::typing {
+namespace types::core {
 // Forward Declarations:
 enum class NativeType;
 
-// Aliases:
-using NativeTypeOpt = std::optional<NativeType>;
+// Using:
 using NativeTypeMap = boost::bimap<std::string, NativeType>;
 
 // Enums:
@@ -107,13 +110,11 @@ auto is_numeric(NativeType t_native_type) -> bool;
 
 auto str2nativetype(std::string_view t_str) -> NativeType;
 auto nativetype2str(NativeType t_native_type) -> std::string;
-} // namespace ast::node::node_traits::typing
+} // namespace types::core
 
-auto operator<<(std::ostream& t_os,
-                ast::node::node_traits::typing::NativeType t_native_type)
+auto operator<<(std::ostream& t_os, types::core::NativeType t_native_type)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os,
-                const ast::node::node_traits::typing::NativeTypeOpt& t_opt)
+auto operator<<(std::ostream& t_os, const types::core::NativeTypeOpt& t_opt)
   -> std::ostream&;
 
-#endif // CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_NATIVE_TYPES_HPP
+#endif // CROW_CROW_TYPES_CORE_NATIVE_TYPES_HPP

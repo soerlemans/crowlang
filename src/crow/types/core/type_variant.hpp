@@ -1,16 +1,16 @@
-#ifndef CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_TYPE_VARIANT_HPP
-#define CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_TYPE_VARIANT_HPP
+#ifndef CROW_CROW_TYPES_CORE_TYPE_VARIANT_HPP
+#define CROW_CROW_TYPES_CORE_TYPE_VARIANT_HPP
 
 // STL Includes:
+#include <iosfwd>
 #include <variant>
 
 // Local Includes:
-#include "native_types.hpp"
-#include "typing.hpp"
+#include "fdecl.hpp"
 
-namespace ast::node::node_traits::typing {
+namespace types::core {
 // Using Statements:
-using ast::node::node_traits::typing::NativeType;
+using types::core::NativeType;
 
 // Aliases:
 using Variant = std::variant<StructTypePtr, FnTypePtr, VarTypePtr, NativeType>;
@@ -32,15 +32,14 @@ class TypeVariant : public Variant {
   auto function() const -> FnTypePtr;
   auto var() const -> VarTypePtr;
 
-  auto native_type() const -> typing::NativeTypeOpt;
+  auto native_type() const -> core::NativeTypeOpt;
 
   virtual ~TypeVariant() = default;
 };
-} // namespace ast::node::node_traits::typing
+} // namespace types::core
 
 // Functions:
-auto operator<<(std::ostream& t_os,
-                const ast::node::node_traits::typing::TypeVariant& t_data)
+auto operator<<(std::ostream& t_os, const types::core::TypeVariant& t_data)
   -> std::ostream&;
 
-#endif // CROW_CROW_AST_NODE_NODE_TRAITS_TYPING_TYPE_VARIANT_HPP
+#endif // CROW_CROW_TYPES_CORE_TYPE_VARIANT_HPP

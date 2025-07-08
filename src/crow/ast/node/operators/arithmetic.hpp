@@ -13,7 +13,7 @@ using container::TextPosition;
 using node_traits::BinaryOperator;
 using node_traits::NodePosition;
 using node_traits::Op;
-using node_traits::typing::TypeData;
+using node_traits::TypeData;
 
 // Enums:
 enum class ArithmeticOp {

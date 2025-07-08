@@ -3,9 +3,10 @@
 
 // STL Includes:
 #include <array>
+#include <unordered_map>
 
 // Absolute Includes:
-#include "crow/ast/node/node_traits/typing/types.hpp"
+#include "crow/types/core/core.hpp"
 
 /*!
  * @file
@@ -15,8 +16,8 @@
 
 namespace semantic {
 // Using statements:
-using ast::node::node_traits::typing::NativeType;
-using ast::node::node_traits::typing::NativeTypeOpt;
+using types::core::NativeType;
+using types::core::NativeTypeOpt;
 
 // Aliases:
 //! Type for keeping track of the promotion ladder.

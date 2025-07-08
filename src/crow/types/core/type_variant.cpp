@@ -1,14 +1,14 @@
 #include "type_variant.hpp"
 
-// Includes:
+// Absolute Includes:
 #include "crow/debug/log.hpp"
 #include "crow/exception/error.hpp"
 #include "lib/overload.hpp"
 
 // Local Includes:
-#include "types.hpp"
+#include "core_types.hpp"
 
-namespace ast::node::node_traits::typing {
+namespace types::core {
 // Using Statements:
 using exception::error;
 
@@ -31,6 +31,8 @@ auto TypeVariant::var() const -> VarTypePtr
 //! Resolves the @ref TypeVariant to a @ref NativeType if possible.
 auto TypeVariant::native_type() const -> NativeTypeOpt
 {
+  using lib::Overload;
+
   NativeTypeOpt opt;
 
   const auto native{[&](const NativeType t_type) -> NativeTypeOpt {
@@ -49,11 +51,10 @@ auto TypeVariant::native_type() const -> NativeTypeOpt
 
   return opt;
 }
-} // namespace ast::node::node_traits::typing
+} // namespace types::core
 
 // Functions:
-auto operator<<(std::ostream& t_os,
-                const ast::node::node_traits::typing::TypeVariant& t_variant)
+auto operator<<(std::ostream& t_os, const types::core::TypeVariant& t_variant)
   -> std::ostream&
 {
   std::visit(

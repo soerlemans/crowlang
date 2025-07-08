@@ -14,7 +14,5 @@ target_sources(${TARGET_CROW_LIB} PRIVATE
 	alt.cpp
 	unary_operator.cpp
 	binary_operator.cpp
+	type_data.cpp
 )
-
-# Add subdirectories
-add_subdirectory(typing)

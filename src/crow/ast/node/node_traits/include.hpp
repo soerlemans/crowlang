@@ -16,8 +16,7 @@
 #include "params.hpp"
 #include "then.hpp"
 #include "type_annotation.hpp"
+#include "type_data.hpp"
 #include "unary_operator.hpp"
-
-#include "typing/include.hpp"
 
 #endif // CROW_CROW_AST_NODE_NODE_TRAITS_INCLUDE_HPP

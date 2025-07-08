@@ -7,7 +7,7 @@
 // Absolute Includes:
 #include "crow/exception/error.hpp"
 #include "lib/overload.hpp"
-#include "lib/types.hpp"
+#include "lib/stdtypes.hpp"
 
 // Relative AST Includes:
 #include "../node/include_nodes.hpp"
@@ -70,6 +70,7 @@ class AstArchive : public NodeVisitor {
   auto archive(Args&&... t_args) -> void
   {
     using exception::error;
+    using lib::Overload;
 
     const auto fn_archive{[&](auto&& t_archive) {
       t_archive(std::forward<Args>(t_args)...);

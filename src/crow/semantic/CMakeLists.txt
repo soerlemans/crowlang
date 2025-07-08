@@ -7,5 +7,4 @@ target_sources(${TARGET_CROW_LIB} PRIVATE
 )
 
 # Add subdirectories
-add_subdirectory(symbol)
 add_subdirectory(symbol_table)

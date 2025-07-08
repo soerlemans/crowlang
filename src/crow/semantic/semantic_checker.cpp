@@ -14,18 +14,16 @@
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
 #include "crow/debug/log.hpp"
-
-// Local Includes:
-#include "symbol/symbol_data.hpp"
+#include "crow/types/semantic/symbol_data.hpp"
 
 namespace semantic {
 // Using Statements:
-using ast::node::node_traits::typing::NativeType;
 using exception::type_error;
 using symbol::FnTypePtr;
 using symbol::StructTypePtr;
 using symbol::SymbolData;
 using symbol::VarTypePtr;
+using types::core::NativeType;
 
 NODE_USING_ALL_NAMESPACES()
 

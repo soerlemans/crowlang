@@ -15,31 +15,8 @@
 #include <string_view>
 #include <vector>
 
-/*
- * TODO: Implement a conditional newline iomanipulator.
- * The logger should also depend on this.
- * Have a static bool which keeps track of if we allow multiline output.
- * From the logger.
-
-clang-format off
-#include <iostream>
-
-struct ConditionalNewline {
-    bool m_cond;
-
-    ConditionalNewline() : m_cond{false} {}
-};
-
-auto  operator<<(std::ostream& os, const ConditionalNewline& t_cn)
-  -> std::ostream& {
-    if (t_cn.m_cond) {
-        os << '\n';
-    }
-
-    return os;
-}
-clang-format on
- */
+// Absolute Includes:
+#include "lib/iomanip/iomanip.hpp"
 
 // TODO: Relocate, to stdprint directory.
 namespace lib::stdprint {
@@ -151,12 +128,22 @@ auto operator<<(std::ostream& t_os, const std::weak_ptr<T>& t_ptr)
 }
 } // namespace smart_ptr
 
+namespace optional {
+// TODO: Implement.
+}
+
+namespace variant {
+// TODO: Implement.
+}
+
 //! Namespace that when included allows you to use all the ostream functions.
 namespace all {
 using namespace lib::stdprint::vector;
 using namespace lib::stdprint::list;
 using namespace lib::stdprint::array;
 using namespace lib::stdprint::smart_ptr;
+using namespace lib::stdprint::optional;
+using namespace lib::stdprint::variant;
 } // namespace all
 } // namespace lib::stdprint
 

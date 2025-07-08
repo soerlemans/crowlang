@@ -1,6 +1,6 @@
 #include "type_data.hpp"
 
-namespace ast::node::node_traits::typing {
+namespace ast::node::node_traits {
 // Methods:
 auto TypeData::set_type(const TypeVariant t_data) -> void
 {
@@ -11,4 +11,4 @@ auto TypeData::get_type() const -> const TypeVariant&
 {
   return m_data;
 }
-} // namespace ast::node::node_traits::typing
+} // namespace ast::node::node_traits

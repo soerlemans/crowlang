@@ -12,7 +12,7 @@ using node_traits::Body;
 using node_traits::Identifier;
 using node_traits::Params;
 using node_traits::TypeAnnotation;
-using node_traits::typing::TypeData;
+using node_traits::TypeData;
 
 // Classes:
 class Function : public Identifier,

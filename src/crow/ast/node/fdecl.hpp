@@ -27,7 +27,7 @@
   using namespace ast::node::rvalue;      \
   using namespace ast::node::typing;      \
   using namespace ast::node::node_traits; \
-  using namespace ast::node::node_traits::typing;
+  using namespace types::core;
 
 namespace ast::node {
 // Forward Declarations:

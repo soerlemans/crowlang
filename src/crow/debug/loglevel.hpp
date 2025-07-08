@@ -9,7 +9,7 @@
 #include <rang.hpp>
 
 // Absolute Includes:
-#include "lib/types.hpp"
+#include "lib/stdtypes.hpp"
 
 // Macros:
 //! Helper macro for converting @ref LogLevel to string representation.
@@ -84,6 +84,7 @@ constexpr auto loglevel2color(const LogLevel t_loglevel) -> rang::fg
 /*!
  * Checks if the @ref LogLevel is lower than the current g_loglevel.
  */
+[[nodiscard("Pure function must use return value.")]]
 auto is_lower_loglevel(LogLevel t_loglevel) -> bool;
 
 
