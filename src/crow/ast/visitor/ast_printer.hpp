@@ -107,7 +107,7 @@ class AstPrinter : public NodeVisitor {
       print("| Type Annotation: ", t_ptr->type());
     });
 
-    when_derived<typing::TypeData>(t_ptr, [&](auto t_ptr) {
+    when_derived<types::core::TypeData>(t_ptr, [&](auto t_ptr) {
       print("| Type Data: ", t_ptr->get_type());
     });
 

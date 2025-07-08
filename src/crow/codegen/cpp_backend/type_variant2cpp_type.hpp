@@ -9,7 +9,7 @@
 
 namespace codegen::cpp_backend {
 // Using Statements:
-using ast::node::node_traits::typing::TypeVariant;
+using types::core::TypeVariant;
 /*!
  * Convert the @ref TypeVariant to an actual C++ type.
  */

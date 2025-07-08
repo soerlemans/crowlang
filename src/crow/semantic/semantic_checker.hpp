@@ -22,8 +22,8 @@ using namespace ast;
 
 // Using Declarations:
 using ast::node::NodePtr;
-using ast::node::node_traits::typing::NativeType;
-using ast::node::node_traits::typing::NativeTypeOpt;
+using types::core::NativeType;
+using types::core::NativeTypeOpt;
 using ast::visitor::Any;
 using semantic::symbol_table::SymbolTablePtr;
 

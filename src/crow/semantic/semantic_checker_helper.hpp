@@ -16,7 +16,7 @@ namespace semantic {
 // Using Declarations:
 using ast::node::NodeListPtr;
 using ast::node::NodePtr;
-using ast::node::node_traits::typing::NativeTypeOpt;
+using types::core::NativeTypeOpt;
 using ast::visitor::Any;
 using ast::visitor::NodeVisitor;
 using container::TextPosition;

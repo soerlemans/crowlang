@@ -16,8 +16,8 @@
 
 namespace {
 // Using Declarations:
-using ast::node::node_traits::typing::NativeType;
-using ast::node::node_traits::typing::nativetype2str;
+using types::core::NativeType;
+using types::core::nativetype2str;
 
 // Functions:
 /*!

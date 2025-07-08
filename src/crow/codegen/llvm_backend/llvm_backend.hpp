@@ -98,12 +98,12 @@ class LlvmBackend : public BackendInterface {
   auto visit(node::rvalue::Boolean* t_bool) -> Any override;
 
   // Typing:
-  auto visit(ast::node::typing::MethodDecl* t_md) -> Any override;
-  auto visit(ast::node::typing::Interface* t_ifc) -> Any override;
-  auto visit(ast::node::typing::MemberDecl* t_md) -> Any override;
-  auto visit(ast::node::typing::Struct* t_struct) -> Any override;
-  auto visit(ast::node::typing::Impl* t_impl) -> Any override;
-  auto visit(ast::node::typing::DotExpr* t_dot_expr) -> Any override;
+  auto visit(ast::node::types::core::MethodDecl* t_md) -> Any override;
+  auto visit(ast::node::types::core::Interface* t_ifc) -> Any override;
+  auto visit(ast::node::types::core::MemberDecl* t_md) -> Any override;
+  auto visit(ast::node::types::core::Struct* t_struct) -> Any override;
+  auto visit(ast::node::types::core::Impl* t_impl) -> Any override;
+  auto visit(ast::node::types::core::DotExpr* t_dot_expr) -> Any override;
 
   // Util:
   auto configure_target() -> void;

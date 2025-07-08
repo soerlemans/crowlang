@@ -18,7 +18,7 @@
 
 namespace semantic {
 // Using Statements:
-using ast::node::node_traits::typing::NativeType;
+using types::core::NativeType;
 using exception::type_error;
 using symbol::FnTypePtr;
 using symbol::StructTypePtr;
