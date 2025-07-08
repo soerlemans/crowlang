@@ -1,11 +1,11 @@
 #ifndef CROW_CROW_TYPES_CORE_TYPE_DATA_HPP
 #define CROW_CROW_TYPES_CORE_TYPE_DATA_HPP
 
-// Includes:
-#include "../../node_interface.hpp"
+// Absolute Includes:
+#include "crow/ast/node/node_interface.hpp"
 
 // Local Includes:
-#include "types.hpp"
+#include "core_types.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"

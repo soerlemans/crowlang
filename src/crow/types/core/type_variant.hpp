@@ -6,7 +6,7 @@
 
 // Local Includes:
 #include "native_types.hpp"
-#include "typing.hpp"
+#include "core.hpp"
 
 namespace ast::node::node_traits::typing {
 // Using Statements:

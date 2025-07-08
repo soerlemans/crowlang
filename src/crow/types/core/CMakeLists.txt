@@ -1,8 +1,8 @@
 # Add source files
 target_sources(${TARGET_CROW_LIB} PRIVATE
-	typing.cpp
+	types.cpp
 	native_types.cpp
 	type_variant.cpp
-	types.cpp
+	core_types.cpp
 	type_data.cpp
 )

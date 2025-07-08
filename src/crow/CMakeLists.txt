@@ -31,6 +31,9 @@ add_subdirectory(lexer)
 add_subdirectory(ast)
 add_subdirectory(parser)
 
+# Type model for semantic, and codegen:
+add_subdirectory(types)
+
 # Semantic analysis:
 add_subdirectory(semantic)
 
