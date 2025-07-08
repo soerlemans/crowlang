@@ -37,13 +37,13 @@ auto ClirBuilder::visit(If* t_if) -> Any
 
   // Resolve condition, should assign result of operation to a SSA var.
   traverse(cond);
-  auto& if_instr{m_factory->add_instruction(Opcode::IF)};
   const auto last_var{m_factory->last_var()};
   if(!last_var) {
     throw std::runtime_error{
       "ClirBuilder::visit(If*): Condition has no last_var."};
   }
 
+  auto& if_instr{m_factory->add_instruction(Opcode::IF)};
   if_instr.add_operand({last_var});
 
   // Then block:
@@ -279,7 +279,7 @@ auto ClirBuilder::visit(Boolean* t_bool) -> Any
 {
   const bool value{t_bool->get()};
 
-	// Add the literal, which assigns an SSA var for it.
+  // Add the literal, which assigns an SSA var for it.
   m_factory->add_literal(NativeType::BOOL, {value});
 
   return {};
