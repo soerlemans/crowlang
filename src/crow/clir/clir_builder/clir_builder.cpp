@@ -26,14 +26,16 @@ auto ClirBuilder::visit(If* t_if) -> Any
   // We need to create two new blocks an if and else branch.
   auto& main_block{m_factory->last_block()};
 
-  // These will be processed after each block is created.
-  // TODO: InitExpr.
-  // TODO: Add condition for if to main_block
+  // Get relevant members.
+  const auto init_expr{t_if->init_expr()};
   const auto cond{t_if->condition()};
   const auto then{t_if->then()};
   const auto alt{t_if->then()};
 
-  // Resolve condition, should assign result of operation to a ssa var.
+  // Generate IR for init of another var.
+  traverse(init_expr);
+
+  // Resolve condition, should assign result of operation to a SSA var.
   traverse(cond);
   auto& if_instr{m_factory->add_instruction(Opcode::IF)};
   const auto last_var{m_factory->last_var()};
@@ -275,6 +277,11 @@ auto ClirBuilder::visit(String* t_str) -> Any
 
 auto ClirBuilder::visit(Boolean* t_bool) -> Any
 {
+  const bool value{t_bool->get()};
+
+	// Add the literal, which assigns an SSA var for it.
+  m_factory->add_literal(NativeType::BOOL, {value});
+
   return {};
 }
 

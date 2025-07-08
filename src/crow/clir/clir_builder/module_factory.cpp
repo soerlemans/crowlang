@@ -8,6 +8,15 @@ ModuleFactory::ModuleFactory()
   : m_module{std::make_shared<Module>()}, m_var_id{0}, m_instr_id{0}
 {}
 
+auto ModuleFactory::create_var(types::core::TypeVariant t_type) -> SsaVarPtr
+{
+  auto ptr{std::make_shared<SsaVar>(m_var_id, t_type)};
+
+  m_var_id++;
+
+  return ptr;
+}
+
 auto ModuleFactory::last_var() -> SsaVarPtr
 {
   auto& instr{last_instruction()};
@@ -38,6 +47,34 @@ auto ModuleFactory::add_instruction(const Opcode t_opcode) -> Instruction&
   instructions.push_back(instr);
 
   return last_instruction();
+}
+
+auto ModuleFactory::add_literal(NativeType t_type, LiteralValue t_value) -> void
+{
+  Opcode opcode{};
+
+  // Translate native type to literal opcode.
+  // TODO: Create a separate helper function for this.
+  switch(t_type) {
+    case NativeType::BOOL:
+      opcode = Opcode::CONST_BOOL;
+      break;
+
+    default:
+      throw std::runtime_error("ModuleFactory::add_literal(): Given native "
+                               "type is unsupported.");
+      break;
+  }
+
+  // Instruction insertion:
+  auto& instr{add_instruction(opcode)};
+
+  // Add the literal as an operand.
+  Literal lit{t_type, t_value};
+  instr.add_operand(lit);
+
+  auto ssaVar{create_var({t_type})};
+  instr.m_result = std::move(ssaVar);
 }
 
 auto ModuleFactory::insert_jump(Instruction t_instr, BasicBlock& t_block,

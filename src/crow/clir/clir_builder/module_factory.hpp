@@ -32,6 +32,9 @@ class ModuleFactory {
   public:
   ModuleFactory();
 
+	// SsaVar operations:
+  auto create_var(types::core::TypeVariant t_type) -> SsaVarPtr;
+
   /*!
    * Every instruction has a result.
    * Can be a nullptr (indicating the operation has no result).
@@ -42,6 +45,9 @@ class ModuleFactory {
   [[nodiscard("Must use created instruction.")]]
   auto create_instruction(Opcode t_opcode) -> Instruction;
   auto add_instruction(Opcode t_opcode) -> Instruction&;
+
+  //! Add a literal which also creates the proper instruction for it.
+  auto add_literal(NativeType t_type, LiteralValue t_value) -> void;
 
   /*!
    * We usually add a jump statement in retrospect between two blocks.

@@ -47,12 +47,15 @@ using ModulePtr = std::shared_ptr<Module>;
 
 using SsaVarPtr = std::shared_ptr<SsaVar>;
 
-using Operand = std::variant<Literal, SsaVarPtr, Label>;
+// TODO: Support more then just bool, add all other supported native_types.
+//! Variant containing the full
+using LiteralValue = std::variant<std::string, bool>;
+
+using Operand = std::variant<SsaVarPtr, Literal, Label>;
 using OperandSeq = std::vector<Operand>;
 
 using BasicBlockIter = BasicBlockSeq::iterator;
 using FunctionIter = FunctionSeq::iterator;
-
 
 // Enums:
 // I have no clue what im doing with this IR, so I just need to write stuff.
@@ -61,6 +64,9 @@ using FunctionIter = FunctionSeq::iterator;
  * The opcodes which are supported for IR.
  */
 enum class Opcode : u32 {
+  CONST_BOOL, // %<dest> = const_bool <true|false> ; TODO: For now we just use 1
+              // or 0.
+
   // Integer arithmetic:
   IADD,
   ISUB,
@@ -136,16 +142,28 @@ enum class Opcode : u32 {
 
 // Structs:
 struct Literal {
-  u64 m_id;
   NativeType m_type;
+  LiteralValue m_value;
+
+  Literal(const NativeType t_type, const LiteralValue t_value)
+    : m_type{t_type}, m_value{t_value}
+  {}
+
+  virtual ~Literal() = default;
 };
 
 struct SsaVar {
   u64 m_id;
   TypeVariant m_type;
 
-  // TODO: Embed typing information from
-  std::string m_name; // Name of a struct or alias.
+  // TODO: Embed typing information from, aggregate types.
+  std::string m_name;
+
+  SsaVar(u64 t_id, TypeVariant t_type, std::string_view t_name = "")
+    : m_id{t_id}, m_type{t_type}, m_name{t_name}
+  {}
+
+  virtual ~SsaVar() = default;
 };
 
 //! Used for jump operations.
