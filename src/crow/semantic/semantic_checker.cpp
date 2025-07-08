@@ -14,9 +14,7 @@
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
 #include "crow/debug/log.hpp"
-
-// Local Includes:
-#include "symbol/symbol_data.hpp"
+#include "crow/types/semantic/symbol_data.hpp"
 
 namespace semantic {
 // Using Statements:

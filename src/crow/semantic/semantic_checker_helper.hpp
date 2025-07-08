@@ -4,11 +4,11 @@
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
 #include "crow/container/text_position.hpp"
+#include "crow/types/semantic/symbol.hpp"
+#include "crow/types/semantic/symbol_data.hpp"
 
 // Local Includes:
 #include "env_state.hpp"
-#include "symbol/symbol.hpp"
-#include "symbol/symbol_data.hpp"
 #include "symbol_table/symbol_table_factory.hpp"
 #include "type_promoter.hpp"
 

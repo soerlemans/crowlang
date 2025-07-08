@@ -8,7 +8,7 @@
 #include <string>
 
 // Absolute includes:
-#include "crow/semantic/symbol/symbol_data.hpp"
+#include "crow/types/semantic/symbol_data.hpp"
 
 namespace semantic::symbol_table {
 // Using Declarations:
