@@ -11,4 +11,4 @@ auto TypeData::get_type() const -> const TypeVariant&
 {
   return m_data;
 }
-} // namespace types::core
+} // namespace ast::node::node_traits

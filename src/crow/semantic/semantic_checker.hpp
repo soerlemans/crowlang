@@ -22,10 +22,10 @@ using namespace ast;
 
 // Using Declarations:
 using ast::node::NodePtr;
-using types::core::NativeType;
-using types::core::NativeTypeOpt;
 using ast::visitor::Any;
 using semantic::symbol_table::SymbolTablePtr;
+using types::core::NativeType;
+using types::core::NativeTypeOpt;
 
 // Classes:
 // TODO: Add check for checking if the AST only has a single module declaration.

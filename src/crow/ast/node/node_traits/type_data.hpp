@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_TYPES_CORE_TYPE_DATA_HPP
-#define CROW_CROW_TYPES_CORE_TYPE_DATA_HPP
+#ifndef CROW_CROW_AST_NODE_NODE_TRAITS_TYPE_DATA_HPP
+#define CROW_CROW_AST_NODE_NODE_TRAITS_TYPE_DATA_HPP
 
 // Absolute Includes:
 #include "crow/ast/node/node_interface.hpp"
@@ -32,4 +32,4 @@ class TypeData : virtual public NodeInterface {
 };
 } // namespace ast::node::node_traits
 
-#endif // CROW_CROW_TYPES_CORE_TYPE_DATA_HPP
+#endif // CROW_CROW_AST_NODE_NODE_TRAITS_TYPE_DATA_HPP

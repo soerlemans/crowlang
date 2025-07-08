@@ -136,7 +136,6 @@ namespace variant {
 // TODO: Implement.
 }
 
-
 //! Namespace that when included allows you to use all the ostream functions.
 namespace all {
 using namespace lib::stdprint::vector;

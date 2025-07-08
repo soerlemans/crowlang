@@ -4,9 +4,9 @@
 // STL Includes:
 #include <algorithm>
 #include <cctype>
+#include <iosfwd>
 #include <optional>
 #include <string_view>
-#include <iosfwd>
 
 // Library Includes:
 #include <boost/algorithm/string/case_conv.hpp>

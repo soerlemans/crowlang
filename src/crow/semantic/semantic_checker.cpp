@@ -18,12 +18,12 @@
 
 namespace semantic {
 // Using Statements:
-using types::core::NativeType;
 using exception::type_error;
 using symbol::FnTypePtr;
 using symbol::StructTypePtr;
 using symbol::SymbolData;
 using symbol::VarTypePtr;
+using types::core::NativeType;
 
 NODE_USING_ALL_NAMESPACES()
 

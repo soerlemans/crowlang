@@ -40,7 +40,8 @@ auto operator<<(std::ostream& t_os, types::core::StructTypePtr t_struct)
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, types::core::FnTypePtr t_fn) -> std::ostream&
+auto operator<<(std::ostream& t_os, types::core::FnTypePtr t_fn)
+  -> std::ostream&
 {
   using namespace std::literals::string_view_literals;
 
@@ -63,7 +64,8 @@ auto operator<<(std::ostream& t_os, types::core::FnTypePtr t_fn) -> std::ostream
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, types::core::VarTypePtr t_var) -> std::ostream&
+auto operator<<(std::ostream& t_os, types::core::VarTypePtr t_var)
+  -> std::ostream&
 {
   if(t_var) {
     t_os << t_var->m_type;
@@ -76,7 +78,8 @@ auto operator<<(std::ostream& t_os, types::core::VarTypePtr t_var) -> std::ostre
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const types::core::TypeList& t_list) -> std::ostream&
+auto operator<<(std::ostream& t_os, const types::core::TypeList& t_list)
+  -> std::ostream&
 {
   std::string_view sep{""};
   for(const auto& elem : t_list) {

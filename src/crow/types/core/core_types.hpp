@@ -61,5 +61,4 @@ auto operator<<(std::ostream& t_os, const types::core::TypeList& t_list)
   -> std::ostream&;
 
 
-
 #endif // CROW_CROW_TYPES_CORE_CORE_TYPES_HPP
