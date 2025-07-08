@@ -44,7 +44,7 @@ class PrototypeGenerator : public NodeVisitor {
   auto visit(node::packaging::ModuleDecl* t_module) -> Any override;
 
   // Typing:
-  auto visit(node::types::core::Struct* t_struct) -> Any override;
+  auto visit(node::typing::Struct* t_struct) -> Any override;
 
   // Misc:
   auto visit(node::List* t_list) -> Any override;

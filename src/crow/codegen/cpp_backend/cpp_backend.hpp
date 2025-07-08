@@ -139,12 +139,12 @@ class CppBackend : public BackendInterface {
   auto visit(node::rvalue::Boolean* t_bool) -> Any override;
 
   // Typing:
-  auto visit(node::types::core::MethodDecl* t_md) -> Any override;
-  auto visit(node::types::core::Interface* t_ifc) -> Any override;
-  auto visit(node::types::core::MemberDecl* t_md) -> Any override;
-  auto visit(node::types::core::Struct* t_struct) -> Any override;
-  auto visit(node::types::core::Impl* t_impl) -> Any override;
-  auto visit(node::types::core::DotExpr* t_dot_expr) -> Any override;
+  auto visit(node::typing::MethodDecl* t_md) -> Any override;
+  auto visit(node::typing::Interface* t_ifc) -> Any override;
+  auto visit(node::typing::MemberDecl* t_md) -> Any override;
+  auto visit(node::typing::Struct* t_struct) -> Any override;
+  auto visit(node::typing::Impl* t_impl) -> Any override;
+  auto visit(node::typing::DotExpr* t_dot_expr) -> Any override;
 
   // Misc:
   auto visit(node::List* t_list) -> Any override;

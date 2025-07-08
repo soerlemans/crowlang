@@ -12,7 +12,7 @@
 
 // Local Includes:
 #include "core_types.hpp"
-#include "native_types.hpp"
+#include "fdecl.hpp"
 #include "type_variant.hpp"
 
 // TODO: Find a cleaner way to have operators always be accessible.

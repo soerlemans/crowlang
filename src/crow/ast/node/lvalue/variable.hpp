@@ -13,7 +13,7 @@ using container::TextPosition;
 using node_traits::Identifier;
 using node_traits::NodePosition;
 using node_traits::TypeAnnotation;
-using types::core::TypeData;
+using node_traits::TypeData;
 
 // Classes:
 class Variable : public NodePosition,

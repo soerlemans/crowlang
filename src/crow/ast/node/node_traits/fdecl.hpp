@@ -17,6 +17,7 @@ class Then;
 class Alt;
 class UnaryOperator;
 class BinaryOperator;
+class TypeData;
 
 template<typename T>
 class Op;

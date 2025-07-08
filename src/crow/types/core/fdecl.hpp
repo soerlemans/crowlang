@@ -8,13 +8,11 @@
 
 namespace types::core {
 // Forward Declarations:
-class TypeVariant;
-
 struct StructType;
 struct FnType;
 struct VarType;
 
-class TypeData;
+class TypeVariant;
 
 // Aliases:
 using StructTypePtr = std::shared_ptr<StructType>;
