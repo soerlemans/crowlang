@@ -9,22 +9,11 @@
 
 // STL Includes:
 #include <iosfwd>
-#include <list>
-#include <memory>
-#include <optional>
 
 // Local Includes:
-#include "fdecl.hpp"
+#include "core_types.hpp"
 #include "native_types.hpp"
-
-namespace types::core {
-// Aliases:
-using StructTypePtr = std::shared_ptr<StructType>;
-using FnTypePtr = std ::shared_ptr<FnType>;
-using VarTypePtr = std::shared_ptr<VarType>;
-
-using TypeList = std::list<TypeVariant>;
-} // namespace types::core
+#include "type_variant.hpp"
 
 // TODO: Find a cleaner way to have operators always be accessible.
 auto operator<<(std::ostream& t_os, types::core::StructTypePtr t_struct)

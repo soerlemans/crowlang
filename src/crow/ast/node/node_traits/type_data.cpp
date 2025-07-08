@@ -1,6 +1,6 @@
 #include "type_data.hpp"
 
-namespace types::core {
+namespace ast::node::node_traits {
 // Methods:
 auto TypeData::set_type(const TypeVariant t_data) -> void
 {

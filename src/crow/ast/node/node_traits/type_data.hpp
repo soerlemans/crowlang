@@ -3,14 +3,15 @@
 
 // Absolute Includes:
 #include "crow/ast/node/node_interface.hpp"
-
-// Local Includes:
-#include "core_types.hpp"
+#include "crow/types/core/core.hpp"
 
 // Local Includes:
 #include "fdecl.hpp"
 
-namespace types::core {
+namespace ast::node::node_traits {
+// Using:
+using types::core::TypeVariant;
+
 /*!
  * Class for annotating the AST with type information.
  * This information is then later used during code generation.
@@ -29,6 +30,6 @@ class TypeData : virtual public NodeInterface {
 
   virtual ~TypeData() = default;
 };
-} // namespace types::core
+} // namespace ast::node::node_traits
 
 #endif // CROW_CROW_TYPES_CORE_TYPE_DATA_HPP

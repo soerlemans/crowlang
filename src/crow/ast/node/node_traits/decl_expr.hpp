@@ -2,7 +2,7 @@
 #define CROW_CROW_AST_NODE_NODE_TRAITS_DECL_EXPR_HPP
 
 // Absolute Includes:
-#include "crow/types/core/type_data.hpp"
+#include "crow/ast/node/node_traits/type_data.hpp"
 
 // Includes:
 #include "../include.hpp"
@@ -17,7 +17,6 @@
 namespace ast::node::node_traits {
 // Using Statements:
 using container::TextPosition;
-using types::core::TypeData;
 
 // Classes:
 class DeclExpr : public NodePosition,

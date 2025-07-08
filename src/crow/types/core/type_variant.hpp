@@ -5,7 +5,7 @@
 #include <variant>
 
 // Local Includes:
-#include "core.hpp"
+#include "fdecl.hpp"
 #include "native_types.hpp"
 
 namespace types::core {
