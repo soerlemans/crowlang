@@ -18,32 +18,6 @@
 // Absolute Includes:
 #include "lib/iomanip/iomanip.hpp"
 
-/*
- * TODO: Implement a conditional newline iomanipulator.
- * The logger should also depend on this.
- * Have a static bool which keeps track of if we allow multiline output.
- * From the logger.
-
-clang-format off
-#include <iostream>
-
-struct ConditionalNewline {
-    bool m_cond;
-
-    ConditionalNewline() : m_cond{false} {}
-};
-
-auto  operator<<(std::ostream& os, const ConditionalNewline& t_cn)
-  -> std::ostream& {
-    if (t_cn.m_cond) {
-        os << '\n';
-    }
-
-    return os;
-}
-clang-format on
- */
-
 // TODO: Relocate, to stdprint directory.
 namespace lib::stdprint {
 //! Internal helper utilities do not use directly.
