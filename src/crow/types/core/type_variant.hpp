@@ -5,8 +5,8 @@
 #include <variant>
 
 // Local Includes:
-#include "native_types.hpp"
 #include "core.hpp"
+#include "native_types.hpp"
 
 namespace ast::node::node_traits::typing {
 // Using Statements:

@@ -72,7 +72,7 @@ auto operator<<(std::ostream& t_os,
 {
   const auto& [data, opt] = t_scope;
 
-	// Add
+  // Add
   t_os << '"' << data << '"';
 
   // Only show scope if it exists.
