@@ -8,7 +8,7 @@ ModuleFactory::ModuleFactory()
   : m_module{std::make_shared<Module>()}, m_var_id{0}, m_instr_id{0}
 {}
 
-auto ModuleFactory::last_result() -> SsaVarPtr
+auto ModuleFactory::last_var() -> SsaVarPtr
 {
   auto& instr{last_instruction()};
 
@@ -46,8 +46,7 @@ auto ModuleFactory::insert_jump(Instruction t_instr, BasicBlock& t_block,
   auto& instructions{t_block.m_instructions};
 
   // Create label operand.
-  Label label{};
-  label.m_target = &t_target;
+  Label label{&t_target};
 
   // Add label to operands.
   auto& operands{t_instr.m_operands};

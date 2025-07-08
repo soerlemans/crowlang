@@ -19,6 +19,10 @@
 #include "lib/stdtypes.hpp"
 
 namespace clir {
+// Using:
+using types::core::NativeType;
+using types::core::TypeVariant;
+
 // Forward Declarations:
 struct Literal;
 struct SsaVar;
@@ -29,9 +33,6 @@ struct Function;
 struct Module;
 
 // Aliases:
-using types::core::NativeType;
-using types::core::TypeVariant;
-
 // We use lists for instructions and basic blocks.
 // This is to prevent any iterator or reference invalidation.
 // During the building of the IR.
@@ -44,10 +45,10 @@ using ModuleSeq = std::list<Module>;
 
 using ModulePtr = std::shared_ptr<Module>;
 
-using Operand = std::variant<Literal, SsaVar, Label>;
-using OperandSeq = std::vector<Operand>;
-
 using SsaVarPtr = std::shared_ptr<SsaVar>;
+
+using Operand = std::variant<Literal, SsaVarPtr, Label>;
+using OperandSeq = std::vector<Operand>;
 
 using BasicBlockIter = BasicBlockSeq::iterator;
 using FunctionIter = FunctionSeq::iterator;
@@ -130,6 +131,9 @@ enum class Opcode : u32 {
   NOP,
 };
 
+// TODO: Some of these structs, are starting to gain in size.
+// So we must likely move them somewhere else.
+
 // Structs:
 struct Literal {
   u64 m_id;
@@ -148,7 +152,12 @@ struct SsaVar {
 struct Label {
   BasicBlock* m_target;
 
+  Label(BasicBlock* t_target): m_target{t_target}
+  {}
+
   auto label() const -> std::string_view;
+
+  virtual ~Label() = default;
 };
 
 struct Instruction {
@@ -157,6 +166,13 @@ struct Instruction {
   OperandSeq m_operands;
 
   SsaVarPtr m_result;
+
+  auto add_operand(Operand t_operand) -> void
+  {
+    m_operands.emplace_back(std::move(t_operand));
+  };
+
+  virtual ~Instruction() = default;
 };
 
 struct BasicBlock {
@@ -166,6 +182,9 @@ struct BasicBlock {
   // TODO: The control flow graphs, should maybe be a map keyed by label?
   CfgSeq m_successors;
   CfgSeq m_predecessors;
+
+
+  virtual ~BasicBlock() = default;
 };
 
 struct Function {
@@ -173,11 +192,15 @@ struct Function {
   // TODO: Sequence of parameters.
   // TODO: Include return type.
   BasicBlockSeq m_blocks;
+
+  virtual ~Function() = default;
 };
 
 struct Module {
   std::string m_name;
   FunctionSeq m_functions;
+
+  virtual ~Module() = default;
 };
 
 // Functions:

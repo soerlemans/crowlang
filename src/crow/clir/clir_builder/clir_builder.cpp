@@ -33,17 +33,28 @@ auto ClirBuilder::visit(If* t_if) -> Any
   const auto then{t_if->then()};
   const auto alt{t_if->then()};
 
-  // Resolve condition.
+  // Resolve condition, should assign result of operation to a ssa var.
   traverse(cond);
-  const auto if_instr{m_factory->create_instruction(Opcode::IF)};
+  auto& if_instr{m_factory->add_instruction(Opcode::IF)};
+  const auto last_var{m_factory->last_var()};
+  if(!last_var) {
+    throw std::runtime_error{
+      "ClirBuilder::visit(If*): Condition has no last_var."};
+  }
+
+  if_instr.add_operand({last_var});
 
   // Then block:
   auto& then_block{m_factory->add_block("then_block")};
+  if_instr.add_operand({&then_block});
+
   traverse(then);
   const auto then_jump{m_factory->create_instruction(Opcode::JUMP)};
 
   // Alt block:
   auto& alt_block{m_factory->add_block("alt_block")};
+  if_instr.add_operand({&alt_block});
+
   traverse(alt);
   const auto alt_jump{m_factory->create_instruction(Opcode::JUMP)};
 
