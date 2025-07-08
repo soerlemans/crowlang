@@ -35,6 +35,7 @@ auto ClirBuilder::visit(If* t_if) -> Any
 
   // Resolve condition.
   traverse(cond);
+  const auto if_instr{m_factory->create_instruction(Opcode::IF)};
 
   // Then block:
   auto& then_block{m_factory->add_block("then_block")};

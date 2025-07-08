@@ -3,6 +3,8 @@
 // Absolute Includes:
 #include "crow/debug/log.hpp"
 #include "crow/exception/error.hpp"
+#include "crow/types/core/core_types.hpp"
+#include "crow/types/core/native_types.hpp"
 #include "lib/overload.hpp"
 
 // Local Includes:
@@ -58,8 +60,8 @@ auto operator<<(std::ostream& t_os, const types::core::TypeVariant& t_variant)
   -> std::ostream&
 {
   std::visit(
-    [&](auto&& t_v) {
-      t_os << t_v;
+    [&](auto&& t_elem) {
+      t_os << t_elem;
     },
     t_variant);
 
