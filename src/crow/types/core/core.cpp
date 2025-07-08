@@ -11,7 +11,7 @@
 
 
 // Using Statements:
-using namespace ast::node::node_traits::typing;
+using namespace types::core;
 using namespace std::literals::string_view_literals;
 
 // Functions:

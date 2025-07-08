@@ -21,7 +21,7 @@
       NativeType::t_ntype                                   \
   }
 
-namespace ast::node::node_traits::typing {
+namespace types::core {
 // Forward Declarations:
 enum class NativeType;
 
@@ -107,13 +107,11 @@ auto is_numeric(NativeType t_native_type) -> bool;
 
 auto str2nativetype(std::string_view t_str) -> NativeType;
 auto nativetype2str(NativeType t_native_type) -> std::string;
-} // namespace ast::node::node_traits::typing
+} // namespace types::core
 
-auto operator<<(std::ostream& t_os,
-                ast::node::node_traits::typing::NativeType t_native_type)
+auto operator<<(std::ostream& t_os, types::core::NativeType t_native_type)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os,
-                const ast::node::node_traits::typing::NativeTypeOpt& t_opt)
+auto operator<<(std::ostream& t_os, const types::core::NativeTypeOpt& t_opt)
   -> std::ostream&;
 
 #endif // CROW_CROW_TYPES_CORE_NATIVE_TYPES_HPP

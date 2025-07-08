@@ -15,7 +15,7 @@
 #include <vector>
 
 // Absolute Includes:
-#include "crow/ast/node/node_traits/typing/typing.hpp"
+#include "crow/types/core/core.hpp"
 #include "lib/stdtypes.hpp"
 
 namespace clir {
@@ -29,7 +29,7 @@ struct Function;
 struct Module;
 
 // Aliases:
-using ast::node::node_traits::typing::NativeType;
+using types::core::NativeType;
 
 // We use lists for instructions and basic blocks.
 // This is to prevent any iterator or reference invalidation.

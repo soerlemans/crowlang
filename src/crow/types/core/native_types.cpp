@@ -7,8 +7,8 @@
 #include "crow/debug/log.hpp"
 
 // Using Statements:
-using ast::node::node_traits::typing::NativeType;
-using ast::node::node_traits::typing::NativeTypeOpt;
+using types::core::NativeType;
+using types::core::NativeTypeOpt;
 
 namespace {
 // TODO: Move to somewhere in src/lib and make it more generic.
@@ -20,7 +20,7 @@ constexpr auto any_of(const NativeType& t_key, Args&&... t_args) -> bool
 }
 } // namespace
 
-namespace ast::node::node_traits::typing {
+namespace types::core {
 // Functions:
 auto is_integer(const NativeType t_native_type) -> bool
 {
@@ -106,7 +106,7 @@ auto nativetype2str(const NativeType t_native_type) -> std::string
 
   return id;
 }
-} // namespace ast::node::node_traits::typing
+} // namespace types::core
 
 auto operator<<(std::ostream& t_os, const NativeType t_native_type)
   -> std::ostream&

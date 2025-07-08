@@ -1,7 +1,7 @@
 #ifndef CROW_CROW_TYPES_CORE_FDECL_HPP
 #define CROW_CROW_TYPES_CORE_FDECL_HPP
 
-namespace ast::node::node_traits::typing {
+namespace types::core {
 // Forward Declarations:
 class TypeVariant;
 
@@ -10,6 +10,6 @@ struct FnType;
 struct VarType;
 
 class TypeData;
-} // namespace ast::node::node_traits::typing
+} // namespace types::core
 
 #endif // CROW_CROW_TYPES_CORE_FDECL_HPP

@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_TYPES_CORE_TYPING_HPP
-#define CROW_CROW_TYPES_CORE_TYPING_HPP
+#ifndef CROW_CROW_TYPES_CORE_CORE_HPP
+#define CROW_CROW_TYPES_CORE_CORE_HPP
 
 /*!
  * @file
@@ -17,28 +17,24 @@
 #include "fdecl.hpp"
 #include "native_types.hpp"
 
-namespace ast::node::node_traits::typing {
+namespace types::core {
 // Aliases:
 using StructTypePtr = std::shared_ptr<StructType>;
 using FnTypePtr = std ::shared_ptr<FnType>;
 using VarTypePtr = std::shared_ptr<VarType>;
 
 using TypeList = std::list<TypeVariant>;
-} // namespace ast::node::node_traits::typing
+} // namespace types::core
 
 // TODO: Find a cleaner way to have operators always be accessible.
-auto operator<<(std::ostream& t_os,
-                ast::node::node_traits::typing::StructTypePtr t_struct)
+auto operator<<(std::ostream& t_os, types::core::StructTypePtr t_struct)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os,
-                ast::node::node_traits::typing::FnTypePtr t_fn)
+auto operator<<(std::ostream& t_os, types::core::FnTypePtr t_fn)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os,
-                ast::node::node_traits::typing::VarTypePtr t_var)
+auto operator<<(std::ostream& t_os, types::core::VarTypePtr t_var)
   -> std::ostream&;
 
-auto operator<<(std::ostream& t_os,
-                const ast::node::node_traits::typing::TypeList& t_list)
+auto operator<<(std::ostream& t_os, const types::core::TypeList& t_list)
   -> std::ostream&;
 
-#endif // CROW_CROW_TYPES_CORE_TYPING_HPP
+#endif // CROW_CROW_TYPES_CORE_CORE_HPP

@@ -4,23 +4,23 @@
 #include "crow/debug/log.hpp"
 
 // Using Statements:
-namespace ast::node::node_traits::typing {
+namespace types::core {
 // StructType:
-auto StructType::native_type() const -> typing::NativeTypeOpt
+auto StructType::native_type() const -> core::NativeTypeOpt
 {
   return {};
 }
 
 // FnType:
-auto FnType::native_type() const -> typing::NativeTypeOpt
+auto FnType::native_type() const -> core::NativeTypeOpt
 {
   return {};
 }
 
 // VarType:
-auto VarType::native_type() const -> typing::NativeTypeOpt
+auto VarType::native_type() const -> core::NativeTypeOpt
 {
   return m_type.native_type();
 }
 
-} // namespace ast::node::node_traits::typing
+} // namespace types::core

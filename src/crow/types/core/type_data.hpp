@@ -10,7 +10,7 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-namespace ast::node::node_traits::typing {
+namespace types::core {
 /*!
  * Class for annotating the AST with type information.
  * This information is then later used during code generation.
@@ -29,6 +29,6 @@ class TypeData : virtual public NodeInterface {
 
   virtual ~TypeData() = default;
 };
-} // namespace ast::node::node_traits::typing
+} // namespace types::core
 
 #endif // CROW_CROW_TYPES_CORE_TYPE_DATA_HPP

@@ -8,7 +8,7 @@
 // Local Includes:
 #include "core_types.hpp"
 
-namespace ast::node::node_traits::typing {
+namespace types::core {
 // Using Statements:
 using exception::error;
 
@@ -51,11 +51,10 @@ auto TypeVariant::native_type() const -> NativeTypeOpt
 
   return opt;
 }
-} // namespace ast::node::node_traits::typing
+} // namespace types::core
 
 // Functions:
-auto operator<<(std::ostream& t_os,
-                const ast::node::node_traits::typing::TypeVariant& t_variant)
+auto operator<<(std::ostream& t_os, const types::core::TypeVariant& t_variant)
   -> std::ostream&
 {
   std::visit(
