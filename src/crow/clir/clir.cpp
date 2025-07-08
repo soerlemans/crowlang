@@ -33,6 +33,9 @@ auto opcode2str(const Opcode t_opcode) -> std::string_view
   std::string_view str{};
 
   switch(t_opcode) {
+    // Literals:
+    MATCH(CONST_BOOL, "const_bool");
+
     // Integer arithmetic:
     MATCH(IADD, "iadd");
     MATCH(ISUB, "isub");
@@ -111,8 +114,11 @@ auto operator<<(std::ostream& t_os, const clir::Opcode t_op) -> std::ostream&
 
 auto operator<<(std::ostream& t_os, const clir::Literal& t_val) -> std::ostream&
 {
-  // t_os << std::format("{}", t_val.m_id);
-  t_os << "<TODO: Implement Literals>";
+  std::visit(
+    [&](auto&& t_value) {
+      t_os << t_value << ":" << t_val.m_type;
+    },
+    t_val.m_value);
 
   return t_os;
 }
@@ -122,6 +128,14 @@ auto operator<<(std::ostream& t_os, const clir::SsaVar& t_var) -> std::ostream&
   t_os << std::format("%{}", t_var.m_id);
 
   return t_os;
+}
+
+auto operator<<(std::ostream& t_os, const clir::SsaVarPtr& t_ptr)
+  -> std::ostream&
+{
+  using lib::stdprint::detail::print_smart_ptr;
+
+  return print_smart_ptr(t_os, t_ptr);
 }
 
 auto operator<<(std::ostream& t_os, const clir::Label& t_label) -> std::ostream&

@@ -49,7 +49,7 @@ using SsaVarPtr = std::shared_ptr<SsaVar>;
 
 // TODO: Support more then just bool, add all other supported native_types.
 //! Variant containing the full
-using LiteralValue = std::variant<std::string, bool>;
+using LiteralValue = std::variant<bool>;
 
 using Operand = std::variant<SsaVarPtr, Literal, Label>;
 using OperandSeq = std::vector<Operand>;
@@ -64,8 +64,8 @@ using FunctionIter = FunctionSeq::iterator;
  * The opcodes which are supported for IR.
  */
 enum class Opcode : u32 {
-  CONST_BOOL, // %<dest> = const_bool <true|false> ; TODO: For now we just use 1
-              // or 0.
+  // Literals:
+  CONST_BOOL, // %<dest> = const_bool <true|false>
 
   // Integer arithmetic:
   IADD,
@@ -227,9 +227,14 @@ auto opcode2str(Opcode t_opcode) -> std::string_view;
 
 // Functions:
 auto operator<<(std::ostream& t_os, const clir::Opcode t_op) -> std::ostream&;
+
 auto operator<<(std::ostream& t_os, const clir::Literal& t_lit)
   -> std::ostream&;
+
 auto operator<<(std::ostream& t_os, const clir::SsaVar& t_var) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const clir::SsaVarPtr& t_ptr)
+  -> std::ostream&;
+
 auto operator<<(std::ostream& t_os, const clir::Label& t_label)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const clir::Operand& t_operand)

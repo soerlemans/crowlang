@@ -104,9 +104,13 @@ auto ClirBuilder::visit(Return* t_ret) -> Any
   auto expr{t_ret->expr()};
   traverse(expr);
 
-  m_factory->add_instruction(Opcode::RETURN);
-  // TODO: Add last result.
+  const auto last_var{m_factory->last_var()};
+  if(!last_var) {
+    throw std::runtime_error{"ClirBuilder::visit(Ret*): No last_var."};
+  }
 
+  auto& ret{m_factory->add_instruction(Opcode::RETURN)};
+  add_operand({last_var});
 
   return {};
 }
