@@ -23,4 +23,6 @@ using i16 = std::int16_t;
 using i32 = std::int32_t;
 using i64 = std::int64_t;
 
+// TODO: add f32 and f64 when clang libc++ supports them.
+
 #endif // CROW_LIB_STDTYPES_HPP

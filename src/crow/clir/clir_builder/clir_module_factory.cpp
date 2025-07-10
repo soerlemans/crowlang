@@ -4,11 +4,11 @@
 #include <memory>
 
 namespace clir::clir_builder {
-ModuleFactory::ModuleFactory()
+ClirModuleFactory::ClirModuleFactory()
   : m_module{std::make_shared<Module>()}, m_var_id{0}, m_instr_id{0}
 {}
 
-auto ModuleFactory::create_var(types::core::TypeVariant t_type) -> SsaVarPtr
+auto ClirModuleFactory::create_var(types::core::TypeVariant t_type) -> SsaVarPtr
 {
   auto ptr{std::make_shared<SsaVar>(m_var_id, t_type)};
 
@@ -17,14 +17,24 @@ auto ModuleFactory::create_var(types::core::TypeVariant t_type) -> SsaVarPtr
   return ptr;
 }
 
-auto ModuleFactory::last_var() -> SsaVarPtr
+auto ClirModuleFactory::last_ssa_var() -> SsaVarPtr
 {
   auto& instr{last_instruction()};
 
   return instr.m_result;
 }
 
-auto ModuleFactory::create_instruction(const Opcode t_opcode) -> Instruction
+auto ClirModuleFactory::require_last_ssa_var() -> SsaVarPtr
+{
+  auto var{last_ssa_var()};
+  if(!var) {
+    // TODO: Throw stacktraced exception.
+  }
+
+  return var;
+}
+
+auto ClirModuleFactory::create_instruction(const Opcode t_opcode) -> Instruction
 {
   // Cookie cutter the creation of an instruction.
   Instruction instr{};
@@ -38,7 +48,7 @@ auto ModuleFactory::create_instruction(const Opcode t_opcode) -> Instruction
   return instr;
 }
 
-auto ModuleFactory::add_instruction(const Opcode t_opcode) -> Instruction&
+auto ClirModuleFactory::add_instruction(const Opcode t_opcode) -> Instruction&
 {
   auto& block{last_block()};
   auto& instructions{block.m_instructions};
@@ -49,7 +59,8 @@ auto ModuleFactory::add_instruction(const Opcode t_opcode) -> Instruction&
   return last_instruction();
 }
 
-auto ModuleFactory::add_literal(NativeType t_type, LiteralValue t_value) -> void
+auto ClirModuleFactory::add_literal(NativeType t_type, LiteralValue t_value)
+  -> void
 {
   Opcode opcode{};
 
@@ -61,7 +72,7 @@ auto ModuleFactory::add_literal(NativeType t_type, LiteralValue t_value) -> void
       break;
 
     default:
-      throw std::runtime_error("ModuleFactory::add_literal(): Given native "
+      throw std::runtime_error("ClirModuleFactory::add_literal(): Given native "
                                "type is unsupported.");
       break;
   }
@@ -77,8 +88,8 @@ auto ModuleFactory::add_literal(NativeType t_type, LiteralValue t_value) -> void
   instr.m_result = std::move(ssaVar);
 }
 
-auto ModuleFactory::insert_jump(Instruction t_instr, BasicBlock& t_block,
-                                BasicBlock& t_target) -> void
+auto ClirModuleFactory::insert_jump(Instruction t_instr, BasicBlock& t_block,
+                                    BasicBlock& t_target) -> void
 {
   auto& instructions{t_block.m_instructions};
 
@@ -93,7 +104,7 @@ auto ModuleFactory::insert_jump(Instruction t_instr, BasicBlock& t_block,
   instructions.push_back(t_instr);
 }
 
-auto ModuleFactory::insert_jump(BasicBlock& t_block, BasicBlock& t_target)
+auto ClirModuleFactory::insert_jump(BasicBlock& t_block, BasicBlock& t_target)
   -> void
 {
   auto jmp_instr{create_instruction(Opcode::JUMP)};
@@ -101,7 +112,7 @@ auto ModuleFactory::insert_jump(BasicBlock& t_block, BasicBlock& t_target)
   insert_jump(jmp_instr, t_block, t_target);
 }
 
-auto ModuleFactory::last_instruction() -> Instruction&
+auto ClirModuleFactory::last_instruction() -> Instruction&
 {
   auto& block{last_block()};
   auto& instructions{block.m_instructions};
@@ -115,7 +126,7 @@ auto ModuleFactory::last_instruction() -> Instruction&
   return instructions.back();
 }
 
-auto ModuleFactory::add_block(const std::string_view t_label) -> BasicBlock&
+auto ClirModuleFactory::add_block(const std::string_view t_label) -> BasicBlock&
 {
   auto& fn{last_function()};
   auto& blocks{fn.m_blocks};
@@ -130,7 +141,8 @@ auto ModuleFactory::add_block(const std::string_view t_label) -> BasicBlock&
   return last_block();
 }
 
-auto ModuleFactory::find_block(const std::string_view t_label) -> BasicBlock*
+auto ClirModuleFactory::find_block(const std::string_view t_label)
+  -> BasicBlock*
 {
   BasicBlock* ptr{nullptr};
 
@@ -147,7 +159,7 @@ auto ModuleFactory::find_block(const std::string_view t_label) -> BasicBlock*
   return ptr;
 }
 
-auto ModuleFactory::last_block() -> BasicBlock&
+auto ClirModuleFactory::last_block() -> BasicBlock&
 {
   auto& fn{last_function()};
 
@@ -159,14 +171,14 @@ auto ModuleFactory::last_block() -> BasicBlock&
   return fn.m_blocks.back();
 }
 
-auto ModuleFactory::add_function(Function&& t_fn) -> void
+auto ClirModuleFactory::add_function(Function&& t_fn) -> void
 {
   auto& functions{m_module->m_functions};
 
   functions.push_back(t_fn);
 }
 
-auto ModuleFactory::last_function() -> Function&
+auto ClirModuleFactory::last_function() -> Function&
 {
   auto& functions{m_module->m_functions};
 
@@ -178,12 +190,12 @@ auto ModuleFactory::last_function() -> Function&
   return functions.back();
 }
 
-auto ModuleFactory::set_module_name(std::string_view t_name) -> void
+auto ClirModuleFactory::set_module_name(std::string_view t_name) -> void
 {
   m_module->m_name = t_name;
 }
 
-auto ModuleFactory::get_module() -> ModulePtr
+auto ClirModuleFactory::get_module() -> ModulePtr
 {
   return m_module;
 }

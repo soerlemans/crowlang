@@ -48,8 +48,8 @@ using ModulePtr = std::shared_ptr<Module>;
 using SsaVarPtr = std::shared_ptr<SsaVar>;
 
 // TODO: Support more then just bool, add all other supported native_types.
-//! Variant containing the full
-using LiteralValue = std::variant<bool>;
+//! Variant containing all supported literal types.
+using LiteralValue = std::variant<uint, int, std::string, bool>;
 
 using Operand = std::variant<SsaVarPtr, Literal, Label>;
 using OperandSeq = std::vector<Operand>;
@@ -65,7 +65,25 @@ using FunctionIter = FunctionSeq::iterator;
  */
 enum class Opcode : u32 {
   // Literals:
-  CONST_BOOL, // %<dest> = const_bool <true|false>
+  CONST_F32,
+  CONST_F64,
+
+  CONST_INT,
+  CONST_I8,
+  CONST_I16,
+  CONST_I32,
+  CONST_I64,
+  CONST_ISIZE,
+
+  CONST_UINT,
+  CONST_U8,
+  CONST_U16,
+  CONST_U32,
+  CONST_U64,
+  CONST_USIZE,
+
+  CONST_STRING, // %<dest> = const_bool <true|false>
+  CONST_BOOL,   // %<dest> = const_bool <true|false>
 
   // Integer arithmetic:
   IADD,

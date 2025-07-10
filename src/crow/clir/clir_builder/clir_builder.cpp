@@ -187,18 +187,46 @@ auto ClirBuilder::visit(Comparison* t_comp) -> Any
 
 auto ClirBuilder::visit(Increment* t_inc) -> Any
 {
-  m_factory->add_instruction(Opcode::IADD);
+  const auto left{t_inc->left()};
 
-  // TODO: Pass parameters.
+  // TODO: Deduce type, of left.
+  auto& dec_instr{m_factory->add_instruction(Opcode::IADD)};
+
+  traverse(left);
+  const auto last_var{m_factory->last_var()};
+  if(!last_var) {
+    throw std::runtime_error{
+      "ClirBuilder::visit(Increment*): Condition has no last_var."};
+  }
+
+  dec_instr.add_operand({last_var});
+
+  // TODO: Deduce native type.
+  Literal lit{NativeType::INT, 1};
+  dec_instr.add_operand({lit});
 
   return {};
 }
 
 auto ClirBuilder::visit(Decrement* t_dec) -> Any
 {
-  m_factory->add_instruction(Opcode::ISUB);
+  const auto left{t_dec->left()};
 
-  // TODO: Pass parameters.
+  // TODO: Deduce type, of left.
+  auto& dec_instr{m_factory->add_instruction(Opcode::ISUB)};
+
+  traverse(left);
+  const auto last_var{m_factory->last_var()};
+  if(!last_var) {
+    throw std::runtime_error{
+      "ClirBuilder::visit(Decrement*): Condition has no last_var."};
+  }
+
+  dec_instr.add_operand({last_var});
+
+  // TODO: Deduce type, of left.
+  Literal lit{NativeType::INT, 1};
+  dec_instr.add_operand({lit});
 
   return {};
 }
@@ -217,6 +245,7 @@ auto ClirBuilder::visit(UnaryPrefix* t_up) -> Any
 
     case UnaryPrefixOp::MINUS:
       m_factory->add_instruction(Opcode::ISUB);
+
       // TODO: Traverse left.
       break;
 
@@ -241,6 +270,8 @@ auto ClirBuilder::visit(And* t_and) -> Any
 
 auto ClirBuilder::visit(Or* t_or) -> Any
 {
+
+
   return {};
 }
 
@@ -276,6 +307,11 @@ auto ClirBuilder::visit(Integer* t_int) -> Any
 
 auto ClirBuilder::visit(String* t_str) -> Any
 {
+  const std::string value{t_str->get()};
+
+  // Add the literal, which assigns an SSA var for it.
+  m_factory->add_literal(NativeType::STRING, {value});
+
   return {};
 }
 
@@ -300,14 +336,11 @@ STUB(DotExpr)
 // Misc:
 auto ClirBuilder::visit(List* t_list) -> Any
 {
-  // TODO: Implement.
-
   // Traverse all nodes.
   for(NodePtr& node : *t_list) {
     traverse(node);
   }
 
-  // TODO: Return nothing?
   return {};
 }
 

@@ -3,7 +3,7 @@
 
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
-#include "crow/clir/clir_builder/module_factory.hpp"
+#include "crow/clir/clir_builder/clir_module_factory.hpp"
 
 namespace clir::clir_builder {
 // Using:
@@ -18,7 +18,7 @@ using ast::visitor::NodeVisitor;
  */
 class ClirBuilder : public NodeVisitor {
   private:
-  ModuleFactoryPtr m_factory;
+  ClirModuleFactoryPtr m_factory;
 
   public:
   ClirBuilder();

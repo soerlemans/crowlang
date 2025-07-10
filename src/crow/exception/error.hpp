@@ -11,11 +11,9 @@
 #include <cpptrace/cpptrace.hpp>
 
 namespace exception {
-// using cpptrace::stacktrace
-
 // Classes:
 /*!
- * Base exception/error class.
+ * Base error class.
  * Includes a stacktrace when compiling with the @ref DEBUG macro defined.
  */
 class Error : public std::exception {
