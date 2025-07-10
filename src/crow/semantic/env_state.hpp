@@ -7,7 +7,7 @@
 #include <unordered_map>
 
 // Absolute Includes:
-#include "crow/exception/type_error.hpp"
+#include "crow/diagnostic/type_error.hpp"
 #include "crow/types/semantic/symbol_types.hpp"
 
 namespace semantic {

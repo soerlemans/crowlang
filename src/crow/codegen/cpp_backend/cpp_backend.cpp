@@ -10,7 +10,7 @@
 #include "crow/ast/node/include_nodes.hpp"
 #include "crow/codegen/cpp_backend/interop/python_backend/python_backend.hpp"
 #include "crow/debug/log.hpp"
-#include "crow/exception/error.hpp"
+#include "crow/diagnostic/error.hpp"
 #include "lib/stdtypes.hpp"
 
 // Local Includes:

@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_EXCEPTION_TYPE_ERROR_HPP
-#define CROW_CROW_EXCEPTION_TYPE_ERROR_HPP
+#ifndef CROW_CROW_DIAGNOSTIC_TYPE_ERROR_HPP
+#define CROW_CROW_DIAGNOSTIC_TYPE_ERROR_HPP
 
 // Local Includes:
 #include "error.hpp"
@@ -33,4 +33,4 @@ auto type_error(Args&&... t_args) -> void
 }
 } // namespace exception
 
-#endif // CROW_CROW_EXCEPTION_TYPE_ERROR_HPP
+#endif // CROW_CROW_DIAGNOSTIC_TYPE_ERROR_HPP

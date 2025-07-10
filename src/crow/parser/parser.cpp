@@ -2,7 +2,7 @@
 
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
-#include "crow/exception/syntax_error.hpp"
+#include "crow/diagnostic/syntax_error.hpp"
 #include "crow/token/tokentype2str.hpp"
 
 namespace parser {

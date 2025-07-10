@@ -4,7 +4,7 @@
 #include <cassert>
 #include <sstream>
 
-namespace exception {
+namespace diagnostic {
 // Methods:
 Error::Error(const std::string t_msg): std::exception{}, m_error{}
 {

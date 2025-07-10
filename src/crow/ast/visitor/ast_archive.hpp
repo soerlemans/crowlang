@@ -5,7 +5,7 @@
 #include <variant>
 
 // Absolute Includes:
-#include "crow/exception/error.hpp"
+#include "crow/diagnostic/error.hpp"
 #include "lib/overload.hpp"
 #include "lib/stdtypes.hpp"
 

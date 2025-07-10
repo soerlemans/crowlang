@@ -1,4 +1,4 @@
-#include "module_factory.hpp"
+#include "clir_module_factory.hpp"
 
 // STL Includes:
 #include <memory>

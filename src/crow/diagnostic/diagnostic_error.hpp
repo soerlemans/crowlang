@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_EXCEPTION_ERROR_HPP
-#define CROW_CROW_EXCEPTION_ERROR_HPP
+#ifndef CROW_CROW_DIAGNOSTIC_ERROR_HPP
+#define CROW_CROW_DIAGNOSTIC_ERROR_HPP
 
 // STL Includes:
 #include <sstream>
@@ -10,7 +10,7 @@
 // Library Includes:
 #include <cpptrace/cpptrace.hpp>
 
-namespace exception {
+namespace diagnostic {
 // Classes:
 /*!
  * Base error class.
@@ -44,6 +44,6 @@ inline auto error(Args&&... t_args) -> void
 
   throw T{str};
 }
-} // namespace exception
+} // namespace user_error
 
-#endif // CROW_CROW_EXCEPTION_ERROR_HPP
+#endif // CROW_CROW_DIAGNOSTIC_ERROR_HPP

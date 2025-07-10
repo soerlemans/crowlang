@@ -15,7 +15,7 @@ add_subdirectory(debug)
 add_subdirectory(container)
 
 # Error handling:
-add_subdirectory(exception)
+add_subdirectory(diagnostic)
 
 # Handles compiler settings.
 add_subdirectory(settings)

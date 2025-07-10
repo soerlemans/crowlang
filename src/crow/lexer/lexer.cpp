@@ -10,7 +10,7 @@
 
 // Absolute Includes:
 #include "crow/debug/log.hpp"
-#include "crow/exception/syntax_error.hpp"
+#include "crow/diagnostic/syntax_error.hpp"
 
 
 // Macros:

@@ -5,7 +5,7 @@
 
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
-#include "crow/exception/error.hpp"
+#include "crow/diagnostic/error.hpp"
 
 // Local Includes:
 #include "type_variant2cpp_type.hpp"

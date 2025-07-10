@@ -69,7 +69,7 @@ inline auto uncaught_object() -> void
   // clang-format off
   std::cerr << style::bold
 						<< fg::red
-						<< "Uncaught object."
+						<< "Unsupported thrown object was caught."
             << style::reset
 						<< std::endl;
   // clang-format on

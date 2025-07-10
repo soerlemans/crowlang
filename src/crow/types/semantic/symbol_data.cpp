@@ -6,7 +6,7 @@
 
 // Absolute Includes:
 #include "crow/debug/log.hpp"
-#include "crow/exception/error.hpp"
+#include "crow/diagnostic/error.hpp"
 #include "lib/overload.hpp"
 
 // Local Includes:

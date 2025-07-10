@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_EXCEPTION_SYNTAX_ERROR_HPP
-#define CROW_CROW_EXCEPTION_SYNTAX_ERROR_HPP
+#ifndef CROW_CROW_DIAGNOSTIC_SYNTAX_ERROR_HPP
+#define CROW_CROW_DIAGNOSTIC_SYNTAX_ERROR_HPP
 
 // STL Includes:
 #include <filesystem>
@@ -33,4 +33,4 @@ class SyntaxError : public Error {
 };
 } // namespace exception
 
-#endif // CROW_CROW_EXCEPTION_SYNTAX_ERROR_HPP
+#endif // CROW_CROW_DIAGNOSTIC_SYNTAX_ERROR_HPP

@@ -4,7 +4,7 @@ Here is some project documentation about each directory.
 These are in order of when they are used:
 
  1. `container/`: Container classes used in the compiler.
- 2. `exception/`: Contains exceptions and errors thrown in the compiler..
+ 2. `diagnostics/`: Contains user caused errors thrown in the compiler.
  3. `debug/`: Debug utilities for debugging the application.
  4. `settings/`: Contains utilities for the compiler settings.
  5. `state/`: Keeps track of the state of compilation of a translation unit or compilation unit.
