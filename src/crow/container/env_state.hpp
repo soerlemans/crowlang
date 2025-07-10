@@ -42,7 +42,7 @@ class EnvState {
   using EnvMap = std::unordered_map<std::string, T>;
   using EnvStack = std::list<EnvMap>;
   using FindResult = std::pair<T, bool>;
-	using InsertResult = std::pair<typename EnvMap::iterator, bool>;
+  using InsertResult = std::pair<typename EnvMap::iterator, bool>;
 
   private:
   EnvStack m_envs;
