@@ -69,7 +69,7 @@ class AstArchive : public NodeVisitor {
   template<typename... Args>
   auto archive(Args&&... t_args) -> void
   {
-    using exception::error;
+    using diagnostic::error;
     using lib::Overload;
 
     const auto fn_archive{[&](auto&& t_archive) {

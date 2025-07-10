@@ -28,7 +28,7 @@ auto Lexer::text_position() const -> TextPosition
 
 auto Lexer::syntax_error(const std::string_view t_msg) const -> void
 {
-  using exception::SyntaxError;
+  using diagnostic::SyntaxError;
 
   throw SyntaxError{std::string{t_msg}, text_position()};
 }

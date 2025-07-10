@@ -1,5 +1,5 @@
-#ifndef CROW_LIB_STDEXCEPT_HPP
-#define CROW_LIB_STDEXCEPT_HPP
+#ifndef CROW_LIB_STDEXCEPT_STDEXCEPT_HPP
+#define CROW_LIB_STDEXCEPT_STDEXCEPT_HPP
 
 /*!
  * @file stdexcept.hpp
@@ -12,8 +12,8 @@
 #include <cpptrace/cpptrace.hpp>
 
 namespace lib::stdexcept {
-struct exception : public std::exception {};
+class Exception : public std::exception {};
 
 } // namespace lib::stdexcept
 
-#endif // CROW_LIB_STDEXCEPT_HPP
+#endif // CROW_LIB_STDEXCEPT_STDEXCEPT_HPP

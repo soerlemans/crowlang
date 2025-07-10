@@ -12,7 +12,7 @@
 
 namespace semantic {
 // Using Statements:
-using exception::type_error;
+using diagnostic::type_error;
 
 // Public Methods:
 EnvState::EnvState(): m_envs{}

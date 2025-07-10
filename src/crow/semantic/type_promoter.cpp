@@ -13,7 +13,7 @@ auto TypePromoter::get_priority(const TypeLadder& t_ladder,
                                 const NativeType t_type) const
   -> TypeLadder::mapped_type
 {
-  using exception::error;
+  using diagnostic::error;
 
   TypeLadder::mapped_type priority{0};
 

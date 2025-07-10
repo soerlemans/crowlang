@@ -12,7 +12,7 @@
 
 namespace types::core {
 // Using Statements:
-using exception::error;
+using diagnostic::error;
 
 // Methods:
 auto TypeVariant::struct_() const -> StructTypePtr

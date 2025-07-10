@@ -2,11 +2,11 @@
 #define CROW_CROW_DIAGNOSTIC_TYPE_ERROR_HPP
 
 // Local Includes:
-#include "error.hpp"
+#include "diagnostic_error.hpp"
 
-namespace exception {
+namespace diagnostic {
 // Classes:
-class TypeError : public Error {
+class TypeError : public DiagnosticError {
   private:
   auto format(std::string_view t_msg) -> std::string;
 
@@ -20,9 +20,10 @@ class TypeError : public Error {
 template<typename... Args>
 auto type_error(Args&&... t_args) -> void
 {
-  using namespace exception;
+  using diagnostic::diagnostic_error;
+  using diagnostic::TypeError;
 
-  exception::error<TypeError>(std::forward<Args>(t_args)...);
+  diagnostic_error<TypeError>(std::forward<Args>(t_args)...);
 
   std::stringstream ss;
 
@@ -31,6 +32,6 @@ auto type_error(Args&&... t_args) -> void
 
   throw TypeError{ss.view()};
 }
-} // namespace exception
+} // namespace diagnostic
 
 #endif // CROW_CROW_DIAGNOSTIC_TYPE_ERROR_HPP

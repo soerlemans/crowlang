@@ -9,7 +9,7 @@
 
 namespace semantic {
 // Using Statements:
-using exception::type_error;
+using diagnostic::type_error;
 
 // Methods:
 auto SemanticCheckerHelper::push_env() -> void

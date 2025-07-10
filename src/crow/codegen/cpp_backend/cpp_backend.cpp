@@ -96,7 +96,7 @@ auto CppBackend::terminate() -> std::string_view
 // TODO: Add inline option for direct resolution.
 auto CppBackend::resolve(NodePtr t_ptr, const bool t_terminate) -> std::string
 {
-  using exception::error;
+  using diagnostic::error;
 
   std::stringstream ss;
 

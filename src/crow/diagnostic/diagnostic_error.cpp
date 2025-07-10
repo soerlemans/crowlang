@@ -1,4 +1,4 @@
-#include "error.hpp"
+#include "diagnostic_error.hpp"
 
 // STL Includes:
 #include <cassert>
@@ -6,10 +6,11 @@
 
 namespace diagnostic {
 // Methods:
-Error::Error(const std::string t_msg): std::exception{}, m_error{}
+DiagnosticError::DiagnosticError(const std::string t_msg): m_error{}
 {
   std::stringstream ss;
 
+  // Set the given message.
   ss << t_msg;
 
 #ifdef DEBUG
@@ -21,11 +22,12 @@ Error::Error(const std::string t_msg): std::exception{}, m_error{}
   stacktrace.print(ss, true);
 #endif
 
+  // Set the final error message string.
   m_error = ss.str();
 }
 
-auto Error::what() const noexcept -> const char*
+auto DiagnosticError::what() const noexcept -> const char*
 {
   return m_error.c_str();
 }
-} // namespace exception
+} // namespace diagnostic

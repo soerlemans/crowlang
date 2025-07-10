@@ -22,7 +22,7 @@ NODE_USING_ALL_NAMESPACES()
 // I should fix this by having some kind of StrNodeVisitor class or something.
 auto PrototypeGenerator::resolve(NodePtr t_ptr) -> std::string
 {
-  using exception::error;
+  using diagnostic::error;
 
   std::stringstream ss;
 

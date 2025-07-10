@@ -27,7 +27,7 @@ NODE_USING_ALL_NAMESPACES()
 auto AstArchive::set_archive_out(const ArchiveType t_type, std::ostream& t_os)
   -> void
 {
-  using exception::error;
+  using diagnostic::error;
 
   switch(t_type) {
     case ArchiveType::JSON:
@@ -55,7 +55,7 @@ auto AstArchive::set_archive_out(const ArchiveType t_type, std::ostream& t_os)
 auto AstArchive::set_archive_in(const ArchiveType t_type, std::istream& t_is)
   -> void
 {
-  using exception::error;
+  using diagnostic::error;
 
   switch(t_type) {
     case ArchiveType::JSON:

@@ -18,7 +18,7 @@ auto Parser::get_token_stream() -> TokenStream&
 
 auto Parser::syntax_error(const std::string_view t_msg) const -> void
 {
-  using exception::SyntaxError;
+  using diagnostic::SyntaxError;
 
   const auto token{get_token()};
 

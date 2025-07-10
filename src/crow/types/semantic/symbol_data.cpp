@@ -23,7 +23,7 @@ template<typename T>
 auto nullptr_check(const std::string_view t_str,
                    const std::shared_ptr<T>& t_ptr) -> void
 {
-  using exception::error;
+  using diagnostic::error;
 
   if(!t_ptr) {
     const auto msg{std::format("{} ptr is nullptr!", t_str)};

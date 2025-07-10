@@ -13,9 +13,11 @@
 enum ExitCode {
   OK = 0,
   IMPROPER_USAGE,
-  EXCEPTION = 100,
-  SIGNAL = 200,
-  CLI11_EXCEPTION = 300,
+  DIAGNOSTIC_ERROR = 100,
+  EXCEPTION = 200,
+  SIGNAL = 300,
+  CLI11_EXCEPTION = 400,
+  UNCAUGHT_OBJECT = 500
 };
 
 //! Do not absorb cpptrace errors on debug builds.
@@ -47,18 +49,37 @@ static auto run(settings::Settings t_settings) -> void
   }
 }
 
-//! Log something as an exception.
 template<typename T>
-inline auto exception(const T t_msg) -> void
+  requires std::is_base_of<DiagnosticError, T>::value
+inline auto report_error(const T t_err) -> void
 {
   using rang::fg;
   using rang::style;
 
   // Print lovely header.
-  std::cerr << style::bold << fg::red << "Exception:\n" << style::reset;
+  std::cerr << style::bold << fg::red;
+  std::cerr << "Error:\n" << style::reset;
 
   // Print error message.
-  std::cerr << t_msg << std::endl;
+  const std::string_view msg{t_err.what()};
+  std::cerr << msg << std::endl;
+}
+
+//! Log an exception.
+template<typename T>
+  requires std::is_base_of<std::exception, T>::value
+inline auto exception(const T t_exception) -> void
+{
+  using rang::fg;
+  using rang::style;
+
+  // Print lovely header.
+  std::cerr << style::bold << fg::red;
+  std::cerr << "Exception:\n" << style::reset;
+
+  // Print error message.
+  const std::string_view msg{t_exception.what()};
+  std::cerr << msg << std::endl;
 }
 
 inline auto uncaught_object() -> void
@@ -108,6 +129,10 @@ auto main(const int t_argc, char* t_argv[]) -> int
     std::cerr << std::format("CLI11 exit code: {}\n", exit_code);
 
     return ExitCode::CLI11_EXCEPTION;
+  } catch(diagnostic::DiagnosticError& e) {
+    report_error(err);
+
+    return ExitCode::DIAGNOSTIC_ERROR;
   } catch(std::exception& e) {
     exception(e.what());
 
@@ -115,7 +140,7 @@ auto main(const int t_argc, char* t_argv[]) -> int
   } catch(...) {
     uncaught_object();
 
-    return ExitCode::EXCEPTION;
+    return ExitCode::UNCAUGHT_OBJECT;
   }
 
   return ExitCode::OK;
