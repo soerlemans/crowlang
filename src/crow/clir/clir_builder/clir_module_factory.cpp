@@ -121,9 +121,11 @@ auto ClirModuleFactory::last_instruction() -> Instruction&
   auto& instructions{block.m_instructions};
 
   if(instructions.empty()) {
-    lib::stdexcept::runtime_exception(
-      "There are no instructions in the current basic block, cant retrieve "
-      "last one.");
+    using lib::stdexcept::runtime_exception;
+
+    runtime_exception(
+      "There are no instructions in the last basic block, cant retrieve "
+      "last instruction.");
   }
 
   return instructions.back();
@@ -167,8 +169,11 @@ auto ClirModuleFactory::last_block() -> BasicBlock&
   auto& fn{last_function()};
 
   if(fn.m_blocks.empty()) {
-    lib::stdexcept::runtime_exception(
-      "There are no basic blocks in current function, cant retrieve last one.");
+    using lib::stdexcept::runtime_exception;
+
+    runtime_exception(
+      "There are no basic blocks in the last function, cant retrieve last "
+      "basic block.");
   }
 
   return fn.m_blocks.back();
@@ -186,8 +191,10 @@ auto ClirModuleFactory::last_function() -> Function&
   auto& functions{m_module->m_functions};
 
   if(functions.empty()) {
-    lib::stdexcept::runtime_exception(
-      "There are no functions in current CLIR module, can retrieve last one.");
+    using lib::stdexcept::runtime_exception;
+
+    runtime_exception("There are no functions in the CLIR "
+                      "module, cant retrieve last function.");
   }
 
   return functions.back();

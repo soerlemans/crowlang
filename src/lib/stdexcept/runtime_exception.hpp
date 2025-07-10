@@ -1,5 +1,5 @@
-#ifndef RUNTIME_EXCEPTION_HPP
-#define RUNTIME_EXCEPTION_HPP
+#ifndef CROW_LIB_STDEXCEPT_RUNTIME_EXCEPTION_HPP
+#define CROW_LIB_STDEXCEPT_RUNTIME_EXCEPTION_HPP
 
 // Local Includes:
 #include "exception.hpp"
@@ -20,4 +20,4 @@ auto runtime_exception(Args&&... t_args) -> void
 }
 } // namespace lib::stdexcept
 
-#endif // CROW_LIB_STDEXCEPT_INVALID_ARGUMENT_HPP
+#endif // CROW_LIB_STDEXCEPT_RUNTIME_EXCEPTION_HPP

@@ -51,6 +51,7 @@ auto EnvState::get_symbol(const std::string_view t_id) const -> SymbolData
   }
 
   if(!found) {
+    // Should never happen so throw.
     type_error("Identifier ", str, " is not defined.");
   }
 

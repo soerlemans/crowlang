@@ -11,13 +11,8 @@
 #include "crow/types/semantic/symbol_types.hpp"
 
 namespace semantic {
-// Using Declarations:
+// Using :
 using symbol::SymbolData;
-
-// Aliases:
-using EnvMap = std::unordered_map<std::string, SymbolData>;
-using EnvSymbol = EnvMap::value_type;
-using EnvStack = std::list<EnvMap>;
 
 // Classes:
 /*!
@@ -47,8 +42,6 @@ class EnvState {
 } // namespace semantic
 
 // Functions:
-auto operator<<(std::ostream& t_os, const semantic::EnvStack& t_envs)
-  -> std::ostream&;
 auto operator<<(std::ostream& t_os, const semantic::EnvState& t_env_state)
   -> std::ostream&;
 

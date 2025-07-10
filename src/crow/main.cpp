@@ -64,8 +64,7 @@ inline auto report_diagnostic_error(const T t_err) -> void
   std::cerr << "Error:\n" << style::reset;
 
   // Print error message.
-  const std::string_view msg{t_err.what()};
-  std::cerr << msg << std::endl;
+  std::cerr << t_err.what() << std::endl;
 }
 
 //! Log an stdexcept::exception.
@@ -81,8 +80,7 @@ inline auto report_stdexcept(const T t_exception) -> void
   std::cerr << "Crow Exception:\n" << style::reset;
 
   // Print error message.
-  const std::string_view msg{t_exception.what()};
-  std::cerr << msg << std::endl;
+  std::cerr << t_exception.what() << std::endl;
 }
 
 //! Log an exception.
@@ -98,8 +96,7 @@ inline auto report_exception(const T t_exception) -> void
   std::cerr << "Exception:\n" << style::reset;
 
   // Print error message.
-  const std::string_view msg{t_exception.what()};
-  std::cerr << msg << std::endl;
+  std::cerr << t_exception.what() << std::endl;
 }
 
 inline auto report_uncaught_object() -> void
