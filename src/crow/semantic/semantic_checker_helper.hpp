@@ -44,9 +44,9 @@ class SemanticCheckerHelper : public NodeVisitor {
 
   protected:
   // Environment related methods:
-  auto clear_env() -> void;
   auto push_env() -> void;
   auto pop_env() -> void;
+  auto clear_env() -> void;
 
   /*!
    * Add symbol to current @ref EnvSate.

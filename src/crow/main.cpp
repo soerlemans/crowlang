@@ -1,21 +1,26 @@
-// STL Includes:
-#include <fstream>
-
 // Library Includes:
 #include <cpptrace/cpptrace.hpp>
 
 // Absolute Includes:
 #include "crow/debug/log.hpp"
+#include "crow/diagnostic/diagnostic.hpp"
 #include "crow/settings/settings.hpp"
 #include "crow/unit/translation_unit.hpp"
+#include "lib/stdexcept/stdexcept.hpp"
 
 // Enums:
 enum ExitCode {
   OK = 0,
   IMPROPER_USAGE,
-  EXCEPTION = 100,
-  SIGNAL = 200,
-  CLI11_EXCEPTION = 300,
+
+  DIAGNOSTIC_ERROR = 100,
+  STDEXCEPT_EXCEPTION = 200,
+  STL_EXCEPTION = 300,
+
+  SIGNAL = 400,
+  CLI11_EXCEPTION = 500,
+
+  UNCAUGHT_OBJECT = 600
 };
 
 //! Do not absorb cpptrace errors on debug builds.
@@ -47,21 +52,57 @@ static auto run(settings::Settings t_settings) -> void
   }
 }
 
-//! Log something as an exception.
 template<typename T>
-inline auto exception(const T t_msg) -> void
+  requires std::is_base_of<diagnostic::DiagnosticError, T>::value
+inline auto report_diagnostic_error(const T t_err) -> void
 {
   using rang::fg;
   using rang::style;
 
   // Print lovely header.
-  std::cerr << style::bold << fg::red << "Exception:\n" << style::reset;
+  std::cerr << style::bold << fg::red;
+  std::cerr << "Error:\n" << style::reset;
 
   // Print error message.
-  std::cerr << t_msg << std::endl;
+  const std::string_view msg{t_err.what()};
+  std::cerr << msg << std::endl;
 }
 
-inline auto uncaught_object() -> void
+//! Log an stdexcept::exception.
+template<typename T>
+  requires std::is_base_of<lib::stdexcept::Exception, T>::value
+inline auto report_stdexcept(const T t_exception) -> void
+{
+  using rang::fg;
+  using rang::style;
+
+  // Print lovely header.
+  std::cerr << style::bold << fg::red;
+  std::cerr << "Exception:\n" << style::reset;
+
+  // Print error message.
+  const std::string_view msg{t_exception.what()};
+  std::cerr << msg << std::endl;
+}
+
+//! Log an exception.
+template<typename T>
+  requires std::is_base_of<std::exception, T>::value
+inline auto report_exception(const T t_exception) -> void
+{
+  using rang::fg;
+  using rang::style;
+
+  // Print lovely header.
+  std::cerr << style::bold << fg::red;
+  std::cerr << "Exception:\n" << style::reset;
+
+  // Print error message.
+  const std::string_view msg{t_exception.what()};
+  std::cerr << msg << std::endl;
+}
+
+inline auto report_uncaught_object() -> void
 {
   using rang::fg;
   using rang::style;
@@ -69,7 +110,7 @@ inline auto uncaught_object() -> void
   // clang-format off
   std::cerr << style::bold
 						<< fg::red
-						<< "Uncaught object."
+						<< "Unsupported thrown object was caught."
             << style::reset
 						<< std::endl;
   // clang-format on
@@ -108,14 +149,22 @@ auto main(const int t_argc, char* t_argv[]) -> int
     std::cerr << std::format("CLI11 exit code: {}\n", exit_code);
 
     return ExitCode::CLI11_EXCEPTION;
-  } catch(std::exception& e) {
-    exception(e.what());
+  } catch(diagnostic::DiagnosticError& diag_err) {
+    report_diagnostic_error(diag_err);
 
-    return ExitCode::EXCEPTION;
+    return ExitCode::DIAGNOSTIC_ERROR;
+  } catch(lib::stdexcept::Exception& except) {
+    report_stdexcept(except);
+
+    return ExitCode::STDEXCEPT_EXCEPTION;
+  } catch(std::exception& except) {
+    report_exception(except);
+
+    return ExitCode::STL_EXCEPTION;
   } catch(...) {
-    uncaught_object();
+    report_uncaught_object();
 
-    return ExitCode::EXCEPTION;
+    return ExitCode::UNCAUGHT_OBJECT;
   }
 
   return ExitCode::OK;

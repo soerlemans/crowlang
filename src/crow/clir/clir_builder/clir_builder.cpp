@@ -26,23 +26,37 @@ auto ClirBuilder::visit(If* t_if) -> Any
   // We need to create two new blocks an if and else branch.
   auto& main_block{m_factory->last_block()};
 
-  // These will be processed after each block is created.
-  // TODO: InitExpr.
-  // TODO: Add condition for if to main_block
+  // Get relevant members.
+  const auto init_expr{t_if->init_expr()};
   const auto cond{t_if->condition()};
   const auto then{t_if->then()};
   const auto alt{t_if->then()};
 
-  // Resolve condition.
+  // Generate IR for init of another var.
+  traverse(init_expr);
+
+  // Resolve condition, should assign result of operation to a SSA var.
   traverse(cond);
+  const auto last_var{m_factory->last_ssa_var()};
+  if(!last_var) {
+    throw std::runtime_error{
+      "ClirBuilder::visit(If*): Condition has no last_var."};
+  }
+
+  auto& if_instr{m_factory->add_instruction(Opcode::IF)};
+  if_instr.add_operand({last_var});
 
   // Then block:
   auto& then_block{m_factory->add_block("then_block")};
+  if_instr.add_operand({&then_block});
+
   traverse(then);
   const auto then_jump{m_factory->create_instruction(Opcode::JUMP)};
 
   // Alt block:
   auto& alt_block{m_factory->add_block("alt_block")};
+  if_instr.add_operand({&alt_block});
+
   traverse(alt);
   const auto alt_jump{m_factory->create_instruction(Opcode::JUMP)};
 
@@ -90,9 +104,13 @@ auto ClirBuilder::visit(Return* t_ret) -> Any
   auto expr{t_ret->expr()};
   traverse(expr);
 
-  m_factory->add_instruction(Opcode::RETURN);
-  // TODO: Add last result.
+  const auto last_var{m_factory->last_ssa_var()};
+  if(!last_var) {
+    throw std::runtime_error{"ClirBuilder::visit(Ret*): No last_var."};
+  }
 
+  auto& ret{m_factory->add_instruction(Opcode::RETURN)};
+  ret.add_operand({last_var});
 
   return {};
 }
@@ -169,18 +187,46 @@ auto ClirBuilder::visit(Comparison* t_comp) -> Any
 
 auto ClirBuilder::visit(Increment* t_inc) -> Any
 {
-  m_factory->add_instruction(Opcode::IADD);
+  const auto left{t_inc->left()};
 
-  // TODO: Pass parameters.
+  // TODO: Deduce type, of left.
+  auto& dec_instr{m_factory->add_instruction(Opcode::IADD)};
+
+  traverse(left);
+  const auto last_var{m_factory->last_ssa_var()};
+  if(!last_var) {
+    throw std::runtime_error{
+      "ClirBuilder::visit(Increment*): Condition has no last_var."};
+  }
+
+  dec_instr.add_operand({last_var});
+
+  // TODO: Deduce native type.
+  Literal lit{NativeType::INT, 1};
+  dec_instr.add_operand({lit});
 
   return {};
 }
 
 auto ClirBuilder::visit(Decrement* t_dec) -> Any
 {
-  m_factory->add_instruction(Opcode::ISUB);
+  const auto left{t_dec->left()};
 
-  // TODO: Pass parameters.
+  // TODO: Deduce type, of left.
+  auto& dec_instr{m_factory->add_instruction(Opcode::ISUB)};
+
+  traverse(left);
+  const auto last_var{m_factory->last_ssa_var()};
+  if(!last_var) {
+    throw std::runtime_error{
+      "ClirBuilder::visit(Decrement*): Condition has no last_var."};
+  }
+
+  dec_instr.add_operand({last_var});
+
+  // TODO: Deduce type, of left.
+  Literal lit{NativeType::INT, 1};
+  dec_instr.add_operand({lit});
 
   return {};
 }
@@ -199,6 +245,7 @@ auto ClirBuilder::visit(UnaryPrefix* t_up) -> Any
 
     case UnaryPrefixOp::MINUS:
       m_factory->add_instruction(Opcode::ISUB);
+
       // TODO: Traverse left.
       break;
 
@@ -223,6 +270,8 @@ auto ClirBuilder::visit(And* t_and) -> Any
 
 auto ClirBuilder::visit(Or* t_or) -> Any
 {
+
+
   return {};
 }
 
@@ -258,11 +307,21 @@ auto ClirBuilder::visit(Integer* t_int) -> Any
 
 auto ClirBuilder::visit(String* t_str) -> Any
 {
+  const std::string value{t_str->get()};
+
+  // Add the literal, which assigns an SSA var for it.
+  m_factory->add_literal(NativeType::STRING, {value});
+
   return {};
 }
 
 auto ClirBuilder::visit(Boolean* t_bool) -> Any
 {
+  const bool value{t_bool->get()};
+
+  // Add the literal, which assigns an SSA var for it.
+  m_factory->add_literal(NativeType::BOOL, {value});
+
   return {};
 }
 
@@ -277,14 +336,11 @@ STUB(DotExpr)
 // Misc:
 auto ClirBuilder::visit(List* t_list) -> Any
 {
-  // TODO: Implement.
-
   // Traverse all nodes.
   for(NodePtr& node : *t_list) {
     traverse(node);
   }
 
-  // TODO: Return nothing?
   return {};
 }
 
@@ -294,7 +350,7 @@ auto ClirBuilder::translate(NodePtr t_ast) -> ModulePtr
   ModulePtr ptr{nullptr};
 
   // Initialize the module factory.
-  m_factory = std::make_unique<ModuleFactory>();
+  m_factory = std::make_unique<ClirModuleFactory>();
 
   // Traverse the AST using the module factory to create the CLIR module.
   traverse(t_ast);

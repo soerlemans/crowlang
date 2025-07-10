@@ -9,9 +9,28 @@
 
 namespace semantic {
 // Using Statements:
-using exception::type_error;
+using diagnostic::type_error;
 
 // Methods:
+auto SemanticCheckerHelper::push_env() -> void
+{
+  m_env_state.push_env();
+  m_symbol_table_factory.push_scope();
+}
+
+auto SemanticCheckerHelper::pop_env() -> void
+{
+  m_env_state.pop_env();
+  m_symbol_table_factory.pop_scope();
+}
+
+auto SemanticCheckerHelper::clear_env() -> void
+{
+  // Reset/clear the construction object.
+  m_env_state.clear();
+  m_symbol_table_factory.clear();
+}
+
 // Environment state related methods:
 auto SemanticCheckerHelper::add_symbol(const std::string_view t_id,
                                        const SymbolData& t_data) -> bool
@@ -43,25 +62,6 @@ auto SemanticCheckerHelper::retrieve_symbol_table() const -> SymbolTablePtr
 {
   // Retrieve the construct global symbol table.
   return m_symbol_table_factory.retrieve();
-}
-
-auto SemanticCheckerHelper::push_env() -> void
-{
-  m_env_state.push_env();
-  m_symbol_table_factory.push_scope();
-}
-
-auto SemanticCheckerHelper::pop_env() -> void
-{
-  m_env_state.pop_env();
-  m_symbol_table_factory.pop_scope();
-}
-
-auto SemanticCheckerHelper::clear_env() -> void
-{
-  // Reset/clear the construction object.
-  m_env_state.clear();
-  m_symbol_table_factory.clear();
 }
 
 // Type promotion related methods:

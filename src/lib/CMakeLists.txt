@@ -5,3 +5,4 @@ target_sources(${TARGET_CROW_LIB} PRIVATE
 
 # Add subdirectories.
 add_subdirectory(iomanip)
+add_subdirectory(stdexcept)

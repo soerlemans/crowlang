@@ -2,16 +2,15 @@
 
 // Absolute Includes:
 #include "crow/debug/log.hpp"
-#include "crow/exception/error.hpp"
+#include "crow/types/core/core_types.hpp"
+#include "crow/types/core/native_types.hpp"
 #include "lib/overload.hpp"
+#include "lib/stdexcept/stdexcept.hpp"
 
 // Local Includes:
 #include "core_types.hpp"
 
 namespace types::core {
-// Using Statements:
-using exception::error;
-
 // Methods:
 auto TypeVariant::struct_() const -> StructTypePtr
 {
@@ -32,6 +31,7 @@ auto TypeVariant::var() const -> VarTypePtr
 auto TypeVariant::native_type() const -> NativeTypeOpt
 {
   using lib::Overload;
+  using lib::stdexcept::unexpected_nullptr;
 
   NativeTypeOpt opt;
 
@@ -41,7 +41,8 @@ auto TypeVariant::native_type() const -> NativeTypeOpt
 
   const auto methods{[&](const std::shared_ptr<auto>& t_data) {
     if(!t_data) {
-      error("ptr is nullptr!");
+      // TODO: Replace with stdexcept, unexpected_nullptr;
+      unexpected_nullptr("ptr is nullptr!");
     }
 
     return t_data->native_type();
@@ -58,8 +59,8 @@ auto operator<<(std::ostream& t_os, const types::core::TypeVariant& t_variant)
   -> std::ostream&
 {
   std::visit(
-    [&](auto&& t_v) {
-      t_os << t_v;
+    [&](auto&& t_elem) {
+      t_os << t_elem;
     },
     t_variant);
 

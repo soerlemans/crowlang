@@ -2,7 +2,7 @@
 
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
-#include "crow/exception/syntax_error.hpp"
+#include "crow/diagnostic/syntax_error.hpp"
 #include "crow/token/tokentype2str.hpp"
 
 namespace parser {
@@ -18,7 +18,7 @@ auto Parser::get_token_stream() -> TokenStream&
 
 auto Parser::syntax_error(const std::string_view t_msg) const -> void
 {
-  using exception::SyntaxError;
+  using diagnostic::SyntaxError;
 
   const auto token{get_token()};
 

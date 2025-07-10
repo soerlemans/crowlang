@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CLIR_CLIR_BUILDER_MODULE_FACTORY_HPP
-#define CROW_CROW_CLIR_CLIR_BUILDER_MODULE_FACTORY_HPP
+#ifndef CROW_CROW_CLIR_CLIR_BUILDER_CLIR_MODULE_FACTORY_HPP
+#define CROW_CROW_CLIR_CLIR_BUILDER_CLIR_MODULE_FACTORY_HPP
 
 // STL Includes:
 #include <memory>
@@ -9,10 +9,10 @@
 
 namespace clir::clir_builder {
 // Forward Declarations:
-class ModuleFactory;
+class ClirModuleFactory;
 
 // Aliases:
-using ModuleFactoryPtr = std::unique_ptr<ModuleFactory>;
+using ClirModuleFactoryPtr = std::unique_ptr<ClirModuleFactory>;
 
 // Classes:
 /*!
@@ -21,7 +21,7 @@ using ModuleFactoryPtr = std::unique_ptr<ModuleFactory>;
  * In the @ref ClirBuilder.
  * Here we handle all the boilerplate operations for constructing the CLIR.
  */
-class ModuleFactory {
+class ClirModuleFactory {
   private:
   ModulePtr m_module;
 
@@ -30,18 +30,25 @@ class ModuleFactory {
   u64 m_instr_id;
 
   public:
-  ModuleFactory();
+  ClirModuleFactory();
+
+  // SsaVar operations:
+  auto create_var(types::core::TypeVariant t_type) -> SsaVarPtr;
 
   /*!
    * Every instruction has a result.
-   * Can be a nullptr (indicating the operation has no result).
+   * Can be a nullptr (indicating the operation did no result).
    */
-  auto last_result() -> SsaVarPtr;
+  auto last_ssa_var() -> SsaVarPtr;
+  auto require_last_ssa_var() -> SsaVarPtr;
 
   // Instruction operations:
   [[nodiscard("Must use created instruction.")]]
   auto create_instruction(Opcode t_opcode) -> Instruction;
   auto add_instruction(Opcode t_opcode) -> Instruction&;
+
+  //! Add a literal which also creates the proper instruction for it.
+  auto add_literal(NativeType t_type, LiteralValue t_value) -> void;
 
   /*!
    * We usually add a jump statement in retrospect between two blocks.
@@ -72,8 +79,8 @@ class ModuleFactory {
 
   auto get_module() -> ModulePtr;
 
-  virtual ~ModuleFactory() = default;
+  virtual ~ClirModuleFactory() = default;
 };
 } // namespace clir::clir_builder
 
-#endif // CROW_CROW_CLIR_CLIR_BUILDER_MODULE_FACTORY_HPP
+#endif // CROW_CROW_CLIR_CLIR_BUILDER_CLIR_MODULE_FACTORY_HPP

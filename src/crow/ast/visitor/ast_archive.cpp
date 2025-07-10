@@ -2,6 +2,7 @@
 
 // Absolute Includes:
 #include "crow/debug/log.hpp"
+#include "lib/stdexcept/stdexcept.hpp"
 
 
 /*!
@@ -27,8 +28,6 @@ NODE_USING_ALL_NAMESPACES()
 auto AstArchive::set_archive_out(const ArchiveType t_type, std::ostream& t_os)
   -> void
 {
-  using exception::error;
-
   switch(t_type) {
     case ArchiveType::JSON:
       m_archive.emplace<JSONOutputArchive>(t_os);
@@ -47,7 +46,7 @@ auto AstArchive::set_archive_out(const ArchiveType t_type, std::ostream& t_os)
       break;
 
     default:
-      error("Unrecognized output archive format.");
+      lib::stdexcept::invalid_argument("Unrecognized output archive format.");
       break;
   }
 }
@@ -55,8 +54,6 @@ auto AstArchive::set_archive_out(const ArchiveType t_type, std::ostream& t_os)
 auto AstArchive::set_archive_in(const ArchiveType t_type, std::istream& t_is)
   -> void
 {
-  using exception::error;
-
   switch(t_type) {
     case ArchiveType::JSON:
       m_archive.emplace<JSONInputArchive>(t_is);
@@ -75,7 +72,7 @@ auto AstArchive::set_archive_in(const ArchiveType t_type, std::istream& t_is)
       break;
 
     default:
-      error("Unrecognized output archive format.");
+      lib::stdexcept::invalid_argument("Unrecognized input archive format.");
       break;
   }
 }

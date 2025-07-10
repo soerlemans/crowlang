@@ -18,7 +18,7 @@
 
 namespace semantic {
 // Using Statements:
-using exception::type_error;
+using diagnostic::type_error;
 using symbol::FnTypePtr;
 using symbol::StructTypePtr;
 using symbol::SymbolData;
@@ -301,8 +301,6 @@ auto SemanticChecker::visit(Arithmetic* t_arith) -> Any
 
 auto SemanticChecker::visit(Assignment* t_assign) -> Any
 {
-  using namespace exception;
-
   const auto var{get_symbol_data(t_assign->left())};
   const auto var_resolved{var.resolve_type()};
 

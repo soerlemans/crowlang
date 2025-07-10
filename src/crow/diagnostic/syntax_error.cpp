@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <string>
 
-namespace exception {
+namespace diagnostic {
 // Methods:
 auto SyntaxError::format(const std::string_view t_msg,
                          const TextPosition& t_pos) const -> std::string
@@ -38,6 +38,6 @@ auto SyntaxError::format(const std::string_view t_msg,
 
 SyntaxError::SyntaxError(const std::string_view t_msg,
                          const TextPosition& t_pos)
-  : Error{format(t_msg, t_pos)}, m_pos(t_pos)
+  : DiagnosticError{format(t_msg, t_pos)}, m_pos(t_pos)
 {}
-} // namespace exception
+} // namespace diagnostic

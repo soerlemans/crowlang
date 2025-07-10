@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_EXCEPTION_SYNTAX_ERROR_HPP
-#define CROW_CROW_EXCEPTION_SYNTAX_ERROR_HPP
+#ifndef CROW_CROW_DIAGNOSTIC_SYNTAX_ERROR_HPP
+#define CROW_CROW_DIAGNOSTIC_SYNTAX_ERROR_HPP
 
 // STL Includes:
 #include <filesystem>
@@ -8,9 +8,9 @@
 #include "crow/container/text_position.hpp"
 
 // Local Includes:
-#include "error.hpp"
+#include "diagnostic_error.hpp"
 
-namespace exception {
+namespace diagnostic {
 // Using Statements:
 using container::TextPosition;
 
@@ -18,7 +18,7 @@ using container::TextPosition;
 /*!
  * Is thrown when source code of a crow program contains a syntax error.
  */
-class SyntaxError : public Error {
+class SyntaxError : public DiagnosticError {
   private:
   auto format(std::string_view t_msg, const TextPosition& t_pos) const
     -> std::string;
@@ -31,6 +31,6 @@ class SyntaxError : public Error {
 
   virtual ~SyntaxError() = default;
 };
-} // namespace exception
+} // namespace diagnostic
 
-#endif // CROW_CROW_EXCEPTION_SYNTAX_ERROR_HPP
+#endif // CROW_CROW_DIAGNOSTIC_SYNTAX_ERROR_HPP

@@ -10,7 +10,7 @@
 
 // Absolute Includes:
 #include "crow/debug/log.hpp"
-#include "crow/exception/syntax_error.hpp"
+#include "crow/diagnostic/syntax_error.hpp"
 
 
 // Macros:
@@ -28,7 +28,7 @@ auto Lexer::text_position() const -> TextPosition
 
 auto Lexer::syntax_error(const std::string_view t_msg) const -> void
 {
-  using exception::SyntaxError;
+  using diagnostic::SyntaxError;
 
   throw SyntaxError{std::string{t_msg}, text_position()};
 }

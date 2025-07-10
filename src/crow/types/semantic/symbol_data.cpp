@@ -6,8 +6,8 @@
 
 // Absolute Includes:
 #include "crow/debug/log.hpp"
-#include "crow/exception/error.hpp"
 #include "lib/overload.hpp"
+#include "lib/stdexcept/stdexcept.hpp"
 
 // Local Includes:
 #include "symbol_types.hpp"
@@ -23,12 +23,12 @@ template<typename T>
 auto nullptr_check(const std::string_view t_str,
                    const std::shared_ptr<T>& t_ptr) -> void
 {
-  using exception::error;
+  using lib::stdexcept::unexpected_nullptr;
 
   if(!t_ptr) {
     const auto msg{std::format("{} ptr is nullptr!", t_str)};
 
-    error("ptr is nullptr!");
+    unexpected_nullptr("ptr is nullptr!");
   }
 }
 } // namespace

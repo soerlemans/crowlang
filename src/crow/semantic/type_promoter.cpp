@@ -5,7 +5,7 @@
 
 // Absolute Includes:
 #include "crow/debug/log.hpp"
-#include "crow/exception/error.hpp"
+#include "crow/diagnostic/diagnostic_error.hpp"
 
 namespace semantic {
 // Methods:
@@ -13,7 +13,7 @@ auto TypePromoter::get_priority(const TypeLadder& t_ladder,
                                 const NativeType t_type) const
   -> TypeLadder::mapped_type
 {
-  using exception::error;
+  using diagnostic::diagnostic_error;
 
   TypeLadder::mapped_type priority{0};
 
@@ -26,7 +26,7 @@ auto TypePromoter::get_priority(const TypeLadder& t_ladder,
     ss << "NativeType does not exist in floating point TypeLadder.\n";
     ss << "Did not find " << t_type << '\n';
 
-    error(ss.str());
+    diagnostic_error(ss.str());
   }
 
   return priority;
