@@ -27,8 +27,6 @@ class SymbolEnvState : public container::EnvState<symbol::SymbolData> {
   using BaseEnvState = container::EnvState<SymbolData>;
 
   public:
-  using EnvState = container::EnvState<SymbolData>;
-
   SymbolEnvState();
 
   //! Get means it is required and if we dont find it error.

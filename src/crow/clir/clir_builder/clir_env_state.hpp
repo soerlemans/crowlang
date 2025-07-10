@@ -1,47 +1,34 @@
 #ifndef CROW_CROW_CLIR_CLIR_BUILDER_CLIR_ENV_STATE_HPP
 #define CROW_CROW_CLIR_CLIR_BUILDER_CLIR_ENV_STATE_HPP
 
+// Absolute Includes:
+#include "crow/container/env_state.hpp"
 #include "crow/types/core/core.hpp"
 
 namespace clir::clir_builder {
 // Classes:
 /*!
- * Keep track of the current state of the environment.
- * Functions, variables, structs, etc.
+ * Keep track of the current state of the environment and its Symbols.
+ * This is a Scoped @ref SymbolTable, that only keeps track of the symbols.
  * That are currently in scope when traversing the AST.
- * Used for lookup of temporary SSA vars and function signatures.
+ * Used in @ref SemanticChecker.
  */
-class ClirEnvState {
+class ClirEnvState : public container::EnvState<types::core::TypeVariant> {
   private:
-  // Aliases:
-  using EnvMap = std::unordered_map<std::string, TypeVariant>;
-  using EnvValue = EnvMap::value_type;
-  using EnvStack = std::list<EnvMap>;
-
-  EnvStack m_envs;
+  using TypeVariant = types::core::TypeVariant;
+  using BaseEnvState = container::EnvState<TypeVariant>;
 
   public:
   ClirEnvState();
 
-  auto add_symbol(EnvValue t_pair) -> std::pair<EnvMap::iterator, bool>;
-  auto get_symbol(std::string_view t_id) const -> SymbolData;
+  //! Get means it is required and if we dont find it error.
+  auto get(const std::string_view t_key) const -> TypeVariant;
 
-  auto push_env() -> void;
-  auto pop_env() -> void;
-
-  auto clear() -> void;
-  auto stack() const -> const EnvStack&;
+  friend auto operator<<(std::ostream& t_os, const ClirEnvState& t_state)
+    -> std::ostream&;
 
   virtual ~ClirEnvState() = default;
 };
-
-// Functions:
-auto operator<<(std::ostream& t_os, const semantic::EnvStack& t_envs)
-  -> std::ostream&;
-auto operator<<(std::ostream& t_os, const semantic::ClirEnvState& t_env_state)
-  -> std::ostream&;
-
-
 } // namespace clir::clir_builder
 
 #endif // CROW_CROW_CLIR_CLIR_BUILDER_CLIR_ENV_STATE_HPP
