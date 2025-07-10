@@ -1,5 +1,5 @@
-#ifndef UNEXPECTED_NULLPTR_HPP
-#define UNEXPECTED_NULLPTR_HPP
+#ifndef CROW_LIB_STDEXCEPT_UNEXPECTED_NULLPTR_HPP
+#define CROW_LIB_STDEXCEPT_UNEXPECTED_NULLPTR_HPP
 
 // Local Includes:
 #include "exception.hpp"
@@ -20,4 +20,4 @@ auto unexpected_nullptr(Args&&... t_args) -> void
 }
 } // namespace lib::stdexcept
 
-#endif // UNEXPECTED_NULLPTR_HPP
+#endif // CROW_LIB_STDEXCEPT_UNEXPECTED_NULLPTR_HPP

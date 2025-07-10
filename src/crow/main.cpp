@@ -1,13 +1,12 @@
-// STL Includes:
-#include <fstream>
-
 // Library Includes:
 #include <cpptrace/cpptrace.hpp>
 
 // Absolute Includes:
 #include "crow/debug/log.hpp"
+#include "crow/diagnostic/diagnostic_error.hpp"
 #include "crow/settings/settings.hpp"
 #include "crow/unit/translation_unit.hpp"
+#include "lib/stdexcept/stdexcept.hpp"
 
 // Enums:
 enum ExitCode {
@@ -55,7 +54,7 @@ static auto run(settings::Settings t_settings) -> void
 
 template<typename T>
   requires std::is_base_of<DiagnosticError, T>::value
-inline auto report_error(const T t_err) -> void
+inline auto report_diagnostic_error(const T t_err) -> void
 {
   using rang::fg;
   using rang::style;
@@ -150,22 +149,22 @@ auto main(const int t_argc, char* t_argv[]) -> int
     std::cerr << std::format("CLI11 exit code: {}\n", exit_code);
 
     return ExitCode::CLI11_EXCEPTION;
-  } catch(diagnostic::DiagnosticError& e) {
-    report_error(err);
+  } catch(diagnostic::DiagnosticError& diag_err) {
+    report_diagnostic_error(diag_err);
 
     return ExitCode::DIAGNOSTIC_ERROR;
   } catch(lib::stdexcept::Exception& except) {
-    report_stdexcept(e.what());
+    report_stdexcept(except);
 
     return ExitCode::STDEXCEPT_EXCEPTION;
   } catch(std::exception& except) {
-    report_exception(except.what());
+    report_exception(except);
 
     return ExitCode::STL_EXCEPTION;
   } catch(...) {
     report_uncaught_object();
 
-    return ExitCode::report_UNCAUGHT_OBJECT;
+    return ExitCode::UNCAUGHT_OBJECT;
   }
 
   return ExitCode::OK;

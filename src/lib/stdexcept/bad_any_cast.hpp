@@ -1,5 +1,5 @@
-#ifndef BAD_ANY_CAST_HPP
-#define BAD_ANY_CAST_HPP
+#ifndef CROW_LIB_STDEXCEPT_BAD_ANY_CAST_HPP
+#define CROW_LIB_STDEXCEPT_BAD_ANY_CAST_HPP
 
 // Local Includes:
 #include "exception.hpp"
@@ -19,4 +19,4 @@ auto bad_any_cast(Args&&... t_args) -> void
   exception<BadAnyCast>(std::forward<Args>(t_args)...);
 }
 } // namespace lib::stdexcept
-#endif // BAD_ANY_CAST_HPP
+#endif // CROW_LIB_STDEXCEPT_BAD_ANY_CAST_HPP

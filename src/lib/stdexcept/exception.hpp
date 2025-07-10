@@ -1,5 +1,5 @@
-#ifndef CROW_LIB_STDEXCEPT_STDEXCEPT_HPP
-#define CROW_LIB_STDEXCEPT_STDEXCEPT_HPP
+#ifndef CROW_LIB_STDEXCEPT_EXCEPTION_HPP
+#define CROW_LIB_STDEXCEPT_EXCEPTION_HPP
 
 /*!
  * @file Exception.hpp
@@ -43,4 +43,4 @@ inline auto exception(Args&&... t_args) -> void
 }
 } // namespace lib::stdexcept
 
-#endif // CROW_LIB_STDEXCEPT_STDEXCEPT_HPP
+#endif // CROW_LIB_STDEXCEPT_EXCEPTION_HPP

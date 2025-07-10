@@ -1,9 +1,9 @@
-#ifndef STDEXCEPT_HPP
-#define STDEXCEPT_HPP
+#ifndef CROW_LIB_STDEXCEPT_STDEXCEPT_HPP
+#define CROW_LIB_STDEXCEPT_STDEXCEPT_HPP
 
 // Local Includes:
 #include "bad_any_cast.hpp"
 #include "exception.hpp"
 #include "unexpected_nullptr.hpp"
 
-#endif // STDEXCEPT_HPP
+#endif // CROW_LIB_STDEXCEPT_STDEXCEPT_HPP
