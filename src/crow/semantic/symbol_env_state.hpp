@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_SEMANTIC_ENV_STATE_HPP
-#define CROW_CROW_SEMANTIC_ENV_STATE_HPP
+#ifndef CROW_CROW_SEMANTIC_SYMBOL_ENV_STATE_HPP
+#define CROW_CROW_SEMANTIC_SYMBOL_ENV_STATE_HPP
 
 // STL Includes:
 #include <iomanip>
@@ -43,4 +43,4 @@ class SymbolEnvState : public container::EnvState<symbol::SymbolData> {
 
 // Functions:
 
-#endif // CROW_CROW_SEMANTIC_ENV_STATE_HPP
+#endif // CROW_CROW_SEMANTIC_SYMBOL_ENV_STATE_HPP
