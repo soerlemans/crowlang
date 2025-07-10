@@ -38,7 +38,7 @@ using types::core::NativeTypeOpt;
  */
 class SemanticCheckerHelper : public NodeVisitor {
   private:
-  EnvState m_env_state;
+  SymbolEnvState m_symbol_state;
   SymbolTableFactory m_symbol_table_factory;
   TypePromoter m_type_promoter;
 

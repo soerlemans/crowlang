@@ -9,7 +9,8 @@
 #include <string>
 #include <string_view>
 #include <type_traits>
-#include <unordered_map>>
+#include <unordered_map>
+#include <utility>
 #include <variant>
 
 // Absolute Includes:
@@ -35,13 +36,15 @@ struct IsVariant<std::variant<Args...>> : std::true_type {};
  * @note the give @ref std::variant must be default constructible.
  */
 template<typename T>
-  requires IsVariant<T>::value
+// requires IsVariant<T>::value
 class EnvState {
-  private:
-  // Aliases:
+  protected:
   using EnvMap = std::unordered_map<std::string, T>;
   using EnvStack = std::list<EnvMap>;
+  using FindResult = std::pair<T, bool>;
+	using InsertResult = std::pair<typename EnvMap::iterator, bool>;
 
+  private:
   EnvStack m_envs;
 
   public:
@@ -52,7 +55,8 @@ class EnvState {
     m_envs.emplace_back();
   }
 
-  virtual auto insert(const T& t_value) -> std::pair<EnvMap::iterator, bool>
+  virtual auto insert(const EnvMap::value_type& t_value)
+    -> std::pair<typename EnvMap::iterator, bool>
   {
     auto& current_scope{m_envs.back()};
     const auto result{current_scope.insert(t_value)};
@@ -61,7 +65,7 @@ class EnvState {
   }
 
   //! Return entry and boolean if it was found.
-  virtual auto find(const std::string_view t_key) const -> std::pair<T, bool>
+  virtual auto find(const std::string_view t_key) const -> FindResult
   {
     bool found{false};
     T value{};
@@ -105,7 +109,7 @@ class EnvState {
     m_envs.emplace_back();
   }
 
-  friend auto operator<<(std::ostream& t_os, const EnvState<T>& t_estate)
+  friend auto operator<<(std::ostream& t_os, const EnvState<T>& t_state)
     -> std::ostream&
   {
     using namespace std::literals::string_view_literals;
@@ -114,7 +118,7 @@ class EnvState {
 
     auto sep{""sv};
     auto env_index{0};
-    for(const auto& env : m_envs) {
+    for(const auto& env : t_state.m_envs) {
       t_os << sep << env_index << ":[";
 
       auto sep_elem{""sv};

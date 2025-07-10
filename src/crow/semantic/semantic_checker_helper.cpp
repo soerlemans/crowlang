@@ -14,48 +14,48 @@ using diagnostic::type_error;
 // Methods:
 auto SemanticCheckerHelper::push_env() -> void
 {
-  m_env_state.push_env();
+  m_symbol_state.push_env();
   m_symbol_table_factory.push_scope();
 }
 
 auto SemanticCheckerHelper::pop_env() -> void
 {
-  m_env_state.pop_env();
+  m_symbol_state.pop_env();
   m_symbol_table_factory.pop_scope();
 }
 
 auto SemanticCheckerHelper::clear_env() -> void
 {
   // Reset/clear the construction object.
-  m_env_state.clear();
+  m_symbol_state.clear();
   m_symbol_table_factory.clear();
 }
 
 // Environment state related methods:
-auto SemanticCheckerHelper::add_symbol(const std::string_view t_id,
+auto SemanticCheckerHelper::add_symbol(const std::string_view t_key,
                                        const SymbolData& t_data) -> bool
 {
   // If insertion in the environment fails, something is going wrong.
   // Possibly a duplicate entry or similar.
   const auto [iter, insertion_success] =
-    m_env_state.add_symbol({std::string{t_id}, t_data});
+    m_symbol_state.insert({std::string{t_key}, t_data});
 
 
-  DBG_VERBOSE("EnvState: ", m_env_state);
+  DBG_VERBOSE("EnvState: ", m_symbol_state);
 
   // Add symbol to global symbol table.
   // Do not insert if insertion in environment failed.
   if(insertion_success) {
-    m_symbol_table_factory.add_symbol(t_id, t_data);
+    m_symbol_table_factory.insert(t_key, t_data);
   }
 
   return insertion_success;
 }
 
-auto SemanticCheckerHelper::get_symbol(const std::string_view t_id) const
+auto SemanticCheckerHelper::get_symbol(const std::string_view t_key) const
   -> SymbolData
 {
-  return m_env_state.get_symbol(t_id);
+  return m_symbol_state.get(t_key);
 }
 
 auto SemanticCheckerHelper::retrieve_symbol_table() const -> SymbolTablePtr

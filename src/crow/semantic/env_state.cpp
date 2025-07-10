@@ -1,8 +1,6 @@
 #include "env_state.hpp"
 
 // STL Includes:
-#include <algorithm>
-#include <any>
 #include <iomanip>
 #include <ranges>
 #include <sstream>
@@ -11,109 +9,35 @@
 #include "crow/debug/log.hpp"
 
 namespace semantic {
-// Using Statements:
-using diagnostic::type_error;
+SymbolEnvState::SymbolEnvState(): BaseEnvState{}
+{}
 
-// Public Methods:
-EnvState::EnvState(): m_envs{}
+auto SymbolEnvState::get(const std::string_view t_key) const -> SymbolData
 {
-  // Always initialize the global scope.
-  // Or esle we will get lookup errors.
-  m_envs.emplace_back();
-}
+  const auto [variant, found] = EnvState::find(t_key);
 
-auto EnvState::add_symbol(const EnvSymbol t_pair)
-  -> std::pair<EnvMap::iterator, bool>
-{
-  auto& current_scope{m_envs.back()};
-  const auto result{current_scope.insert(t_pair)};
-
-  return result;
-}
-
-auto EnvState::get_symbol(const std::string_view t_id) const -> SymbolData
-{
-  bool found{false};
-  SymbolData data;
-  const auto str{std::quoted(t_id)};
-
-  // We want to traverse the scopes from inner to outer so we reverse the range.
-  for(const auto& env : m_envs | std::views::reverse) {
-    const auto iter{env.find(std::string{t_id})};
-
-    if(iter != env.end()) {
-      found = true;
-      data = iter->second;
-
-      DBG_INFO("Found Symbol ", str, " of type ", data, " in Env!");
-      break;
-    }
-  }
-
+  const auto str{std::quoted(t_key)};
   if(!found) {
-    // Should never happen so throw.
+    using diagnostic::type_error;
+
+    // Should never happen so throw and report to user.
     type_error("Identifier ", str, " is not defined.");
   }
 
-  return data;
+  // Return the found SymbolData.
+  DBG_INFO("Found Symbol ", str, " of type ", variant, " in SymbolEnv!");
+  return {variant};
 }
 
-auto EnvState::push_env() -> void
+auto operator<<(std::ostream& t_os, const SymbolEnvState& t_state)
+  -> std::ostream&
 {
-  m_envs.emplace_back();
-}
+  const auto& base{static_cast<const SymbolEnvState::BaseEnvState&>(t_state)};
 
-auto EnvState::pop_env() -> void
-{
-  m_envs.pop_back();
-}
+  // Call formatting for base class.
+  // FIXME: Not working right now, base class cant find SymbolData operator<<().
+  // operator<<(t_os, base);
 
-auto EnvState::clear() -> void
-{
-  m_envs.clear();
-
-  // Always make sure the Global scope exists
-  m_envs.emplace_back();
-}
-
-auto EnvState::stack() const -> const EnvStack&
-{
-  return m_envs;
+  return t_os;
 }
 } // namespace semantic
-
-// Functions:
-auto operator<<(std::ostream& t_os, const semantic::EnvStack& t_envs)
-  -> std::ostream&
-{
-  using namespace std::literals::string_view_literals;
-
-  auto sep{""sv};
-  auto env_index{0};
-  for(const auto& env : t_envs) {
-    t_os << sep << env_index << ":[";
-
-    auto sep_elem{""sv};
-    for(const auto& elem : env) {
-      const auto& [first, second] = elem;
-
-      t_os << sep_elem << '{' << first << ':' << second << '}';
-
-      sep_elem = ", "sv;
-    }
-    t_os << ']';
-
-    sep = ", "sv;
-    env_index++;
-  }
-
-  return t_os;
-}
-
-auto operator<<(std::ostream& t_os, const semantic::EnvState& t_env_state)
-  -> std::ostream&
-{
-  t_os << t_env_state.stack();
-
-  return t_os;
-}

@@ -2,18 +2,18 @@
 #define CROW_CROW_SEMANTIC_ENV_STATE_HPP
 
 // STL Includes:
+#include <iomanip>
+#include <sstream>
 #include <string>
 #include <string_view>
 #include <unordered_map>
 
 // Absolute Includes:
-#include "crow/diagnostic/type_error.hpp"
-#include "crow/types/semantic/symbol_types.hpp"
+#include "crow/container/env_state.hpp"
+#include "crow/diagnostic/diagnostic.hpp"
+#include "crow/types/semantic/semantic.hpp"
 
 namespace semantic {
-// Using :
-using symbol::SymbolData;
-
 // Classes:
 /*!
  * Keep track of the current state of the environment and its Symbols.
@@ -21,28 +21,26 @@ using symbol::SymbolData;
  * That are currently in scope when traversing the AST.
  * Used in @ref SemanticChecker.
  */
-class EnvState {
+class SymbolEnvState : public container::EnvState<symbol::SymbolData> {
   private:
-  EnvStack m_envs;
+  using SymbolData = symbol::SymbolData;
+  using BaseEnvState = container::EnvState<SymbolData>;
 
   public:
-  EnvState();
+  using EnvState = container::EnvState<SymbolData>;
 
-  auto add_symbol(EnvSymbol t_pair) -> std::pair<EnvMap::iterator, bool>;
-  auto get_symbol(std::string_view t_id) const -> SymbolData;
+  SymbolEnvState();
 
-  auto push_env() -> void;
-  auto pop_env() -> void;
+  //! Get means it is required and if we dont find it error.
+  auto get(const std::string_view t_key) const -> SymbolData;
 
-  auto clear() -> void;
-  auto stack() const -> const EnvStack&;
+  friend auto operator<<(std::ostream& t_os, const SymbolEnvState& t_env_state)
+    -> std::ostream&;
 
-  virtual ~EnvState() = default;
+  virtual ~SymbolEnvState() = default;
 };
 } // namespace semantic
 
 // Functions:
-auto operator<<(std::ostream& t_os, const semantic::EnvState& t_env_state)
-  -> std::ostream&;
 
 #endif // CROW_CROW_SEMANTIC_ENV_STATE_HPP
