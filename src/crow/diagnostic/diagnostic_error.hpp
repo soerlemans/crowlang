@@ -3,12 +3,7 @@
 
 // STL Includes:
 #include <sstream>
-#include <stdexcept>
-#include <string_view>
-#include <utility>
-
-// Library Includes:
-#include <cpptrace/cpptrace.hpp>
+#include <string>
 
 namespace diagnostic {
 // Classes:
@@ -22,9 +17,9 @@ class DiagnosticError {
   std::string m_error;
 
   public:
-  DiagnosticError(std::string t_msg);
+  DiagnosticError(std::string_view t_msg);
 
-  virtual auto what() const noexcept -> const char*;
+  virtual auto what() const noexcept -> const std::string_view;
 
   // TODO: Maybe keep the stack trace separately accessible?
   // auto trace() const noexcept -> const stacktrace&;
@@ -38,14 +33,11 @@ template<typename T = DiagnosticError, typename... Args>
 inline auto diagnostic_error(Args&&... t_args) -> void
 {
   std::stringstream ss;
-  std::string str;
 
   // Add all arguments to the string stream.
   (ss << ... << t_args);
 
-  str = ss.view();
-
-  throw T{str};
+  throw T{ss.view()};
 }
 } // namespace diagnostic
 

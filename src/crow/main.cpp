@@ -13,11 +13,15 @@
 enum ExitCode {
   OK = 0,
   IMPROPER_USAGE,
+
   DIAGNOSTIC_ERROR = 100,
-  EXCEPTION = 200,
-  SIGNAL = 300,
-  CLI11_EXCEPTION = 400,
-  UNCAUGHT_OBJECT = 500
+  STDEXCEPT_EXCEPTION = 200,
+  STL_EXCEPTION = 300,
+
+  SIGNAL = 400,
+  CLI11_EXCEPTION = 500,
+
+  UNCAUGHT_OBJECT = 600
 };
 
 //! Do not absorb cpptrace errors on debug builds.
@@ -65,10 +69,10 @@ inline auto report_error(const T t_err) -> void
   std::cerr << msg << std::endl;
 }
 
-//! Log an exception.
+//! Log an stdexcept::exception.
 template<typename T>
-  requires std::is_base_of<std::exception, T>::value
-inline auto exception(const T t_exception) -> void
+  requires std::is_base_of<lib::stdexcept::Exception, T>::value
+inline auto report_stdexcept(const T t_exception) -> void
 {
   using rang::fg;
   using rang::style;
@@ -82,7 +86,24 @@ inline auto exception(const T t_exception) -> void
   std::cerr << msg << std::endl;
 }
 
-inline auto uncaught_object() -> void
+//! Log an exception.
+template<typename T>
+  requires std::is_base_of<std::exception, T>::value
+inline auto report_exception(const T t_exception) -> void
+{
+  using rang::fg;
+  using rang::style;
+
+  // Print lovely header.
+  std::cerr << style::bold << fg::red;
+  std::cerr << "Exception:\n" << style::reset;
+
+  // Print error message.
+  const std::string_view msg{t_exception.what()};
+  std::cerr << msg << std::endl;
+}
+
+inline auto report_uncaught_object() -> void
 {
   using rang::fg;
   using rang::style;
@@ -133,14 +154,18 @@ auto main(const int t_argc, char* t_argv[]) -> int
     report_error(err);
 
     return ExitCode::DIAGNOSTIC_ERROR;
-  } catch(std::exception& e) {
-    exception(e.what());
+  } catch(lib::stdexcept::Exception& except) {
+    report_stdexcept(e.what());
 
-    return ExitCode::EXCEPTION;
+    return ExitCode::STDEXCEPT_EXCEPTION;
+  } catch(std::exception& except) {
+    report_exception(except.what());
+
+    return ExitCode::STL_EXCEPTION;
   } catch(...) {
-    uncaught_object();
+    report_uncaught_object();
 
-    return ExitCode::UNCAUGHT_OBJECT;
+    return ExitCode::report_UNCAUGHT_OBJECT;
   }
 
   return ExitCode::OK;

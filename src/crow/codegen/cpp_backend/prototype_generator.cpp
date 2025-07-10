@@ -5,7 +5,7 @@
 
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
-#include "crow/diagnostic/error.hpp"
+#include "lib/stdexcept/stdexcept.hpp"
 
 // Local Includes:
 #include "type_variant2cpp_type.hpp"
@@ -22,9 +22,7 @@ NODE_USING_ALL_NAMESPACES()
 // I should fix this by having some kind of StrNodeVisitor class or something.
 auto PrototypeGenerator::resolve(NodePtr t_ptr) -> std::string
 {
-  using diagnostic::error;
-
-  std::stringstream ss;
+  std::stringstream ss{};
 
   if(t_ptr) {
     const auto any{traverse(t_ptr)};
@@ -32,7 +30,7 @@ auto PrototypeGenerator::resolve(NodePtr t_ptr) -> std::string
     try {
       ss << std::any_cast<std::string>(any);
     } catch(std::bad_any_cast& exception) {
-      error(exception.what());
+      lib::stdexcept::bad_any_cast(exception.what());
     }
   }
 

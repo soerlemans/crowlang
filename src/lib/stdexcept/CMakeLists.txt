@@ -1,4 +1,6 @@
 # Add source files.
 target_sources(${TARGET_CROW_LIB} PRIVATE
-	stdexcept.cpp
+	exception.cpp
+	unexpected_nullptr.cpp
+	bad_any_cast.cpp
 )

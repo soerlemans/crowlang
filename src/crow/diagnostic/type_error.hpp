@@ -20,17 +20,7 @@ class TypeError : public DiagnosticError {
 template<typename... Args>
 auto type_error(Args&&... t_args) -> void
 {
-  using diagnostic::diagnostic_error;
-  using diagnostic::TypeError;
-
   diagnostic_error<TypeError>(std::forward<Args>(t_args)...);
-
-  std::stringstream ss;
-
-  // Fold expression
-  (ss << ... << t_args);
-
-  throw TypeError{ss.view()};
 }
 } // namespace diagnostic
 

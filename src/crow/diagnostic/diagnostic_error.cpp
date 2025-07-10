@@ -1,12 +1,15 @@
 #include "diagnostic_error.hpp"
 
+// Library Includes:
+#include <cpptrace/cpptrace.hpp>
+
 // STL Includes:
 #include <cassert>
 #include <sstream>
 
 namespace diagnostic {
 // Methods:
-DiagnosticError::DiagnosticError(const std::string t_msg): m_error{}
+DiagnosticError::DiagnosticError(const std::string_view t_msg): m_error{}
 {
   std::stringstream ss;
 
@@ -26,8 +29,8 @@ DiagnosticError::DiagnosticError(const std::string t_msg): m_error{}
   m_error = ss.str();
 }
 
-auto DiagnosticError::what() const noexcept -> const char*
+auto DiagnosticError::what() const noexcept -> const std::string_view
 {
-  return m_error.c_str();
+  return m_error;
 }
 } // namespace diagnostic

@@ -10,7 +10,7 @@
 #include "crow/ast/node/include_nodes.hpp"
 #include "crow/codegen/cpp_backend/interop/python_backend/python_backend.hpp"
 #include "crow/debug/log.hpp"
-#include "crow/diagnostic/error.hpp"
+#include "lib/stdexcept/stdexcept.hpp"
 #include "lib/stdtypes.hpp"
 
 // Local Includes:
@@ -96,8 +96,6 @@ auto CppBackend::terminate() -> std::string_view
 // TODO: Add inline option for direct resolution.
 auto CppBackend::resolve(NodePtr t_ptr, const bool t_terminate) -> std::string
 {
-  using diagnostic::error;
-
   std::stringstream ss;
 
   if(t_ptr) {
@@ -109,7 +107,7 @@ auto CppBackend::resolve(NodePtr t_ptr, const bool t_terminate) -> std::string
     try {
       ss << std::any_cast<std::string>(any);
     } catch(std::bad_any_cast& exception) {
-      error(exception.what());
+      lib::stdexcept::bad_any_cast(exception.what());
     }
   }
 

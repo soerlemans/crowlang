@@ -37,7 +37,7 @@ auto ClirBuilder::visit(If* t_if) -> Any
 
   // Resolve condition, should assign result of operation to a SSA var.
   traverse(cond);
-  const auto last_var{m_factory->last_var()};
+  const auto last_var{m_factory->last_ssa_var()};
   if(!last_var) {
     throw std::runtime_error{
       "ClirBuilder::visit(If*): Condition has no last_var."};
@@ -104,7 +104,7 @@ auto ClirBuilder::visit(Return* t_ret) -> Any
   auto expr{t_ret->expr()};
   traverse(expr);
 
-  const auto last_var{m_factory->last_var()};
+  const auto last_var{m_factory->last_ssa_var()};
   if(!last_var) {
     throw std::runtime_error{"ClirBuilder::visit(Ret*): No last_var."};
   }
@@ -193,7 +193,7 @@ auto ClirBuilder::visit(Increment* t_inc) -> Any
   auto& dec_instr{m_factory->add_instruction(Opcode::IADD)};
 
   traverse(left);
-  const auto last_var{m_factory->last_var()};
+  const auto last_var{m_factory->last_ssa_var()};
   if(!last_var) {
     throw std::runtime_error{
       "ClirBuilder::visit(Increment*): Condition has no last_var."};
@@ -216,7 +216,7 @@ auto ClirBuilder::visit(Decrement* t_dec) -> Any
   auto& dec_instr{m_factory->add_instruction(Opcode::ISUB)};
 
   traverse(left);
-  const auto last_var{m_factory->last_var()};
+  const auto last_var{m_factory->last_ssa_var()};
   if(!last_var) {
     throw std::runtime_error{
       "ClirBuilder::visit(Decrement*): Condition has no last_var."};
@@ -350,7 +350,7 @@ auto ClirBuilder::translate(NodePtr t_ast) -> ModulePtr
   ModulePtr ptr{nullptr};
 
   // Initialize the module factory.
-  m_factory = std::make_unique<ModuleFactory>();
+  m_factory = std::make_unique<ClirModuleFactory>();
 
   // Traverse the AST using the module factory to create the CLIR module.
   traverse(t_ast);

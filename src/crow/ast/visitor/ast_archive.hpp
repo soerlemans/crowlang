@@ -5,7 +5,7 @@
 #include <variant>
 
 // Absolute Includes:
-#include "crow/diagnostic/error.hpp"
+#include "crow/diagnostic/diagnostic_error.hpp"
 #include "lib/overload.hpp"
 #include "lib/stdtypes.hpp"
 
@@ -69,7 +69,7 @@ class AstArchive : public NodeVisitor {
   template<typename... Args>
   auto archive(Args&&... t_args) -> void
   {
-    using diagnostic::error;
+    using diagnostic::diagnostic_error;
     using lib::Overload;
 
     const auto fn_archive{[&](auto&& t_archive) {
@@ -78,7 +78,7 @@ class AstArchive : public NodeVisitor {
 
     const auto fn_monostate{[]([[maybe_unused]]
                                std::monostate t_state) {
-      error("Attempted to archive std::monostate.");
+      diagnostic_error("Attempted to archive std::monostate.");
     }};
 
     std::visit(Overload{fn_archive, fn_monostate}, m_archive);
