@@ -78,7 +78,7 @@ inline auto report_stdexcept(const T t_exception) -> void
 
   // Print lovely header.
   std::cerr << style::bold << fg::red;
-  std::cerr << "Exception:\n" << style::reset;
+  std::cerr << "Crow Exception:\n" << style::reset;
 
   // Print error message.
   const std::string_view msg{t_exception.what()};

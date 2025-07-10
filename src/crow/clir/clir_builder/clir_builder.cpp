@@ -37,11 +37,7 @@ auto ClirBuilder::visit(If* t_if) -> Any
 
   // Resolve condition, should assign result of operation to a SSA var.
   traverse(cond);
-  const auto last_var{m_factory->last_ssa_var()};
-  if(!last_var) {
-    throw std::runtime_error{
-      "ClirBuilder::visit(If*): Condition has no last_var."};
-  }
+  const auto last_var{m_factory->require_last_ssa_var()};
 
   auto& if_instr{m_factory->add_instruction(Opcode::IF)};
   if_instr.add_operand({last_var});
@@ -103,11 +99,7 @@ auto ClirBuilder::visit(Return* t_ret) -> Any
 
   auto expr{t_ret->expr()};
   traverse(expr);
-
-  const auto last_var{m_factory->last_ssa_var()};
-  if(!last_var) {
-    throw std::runtime_error{"ClirBuilder::visit(Ret*): No last_var."};
-  }
+  const auto last_var{m_factory->require_last_ssa_var()};
 
   auto& ret{m_factory->add_instruction(Opcode::RETURN)};
   ret.add_operand({last_var});
@@ -188,17 +180,11 @@ auto ClirBuilder::visit(Comparison* t_comp) -> Any
 auto ClirBuilder::visit(Increment* t_inc) -> Any
 {
   const auto left{t_inc->left()};
+  traverse(left);
+  const auto last_var{m_factory->require_last_ssa_var()};
 
   // TODO: Deduce type, of left.
   auto& dec_instr{m_factory->add_instruction(Opcode::IADD)};
-
-  traverse(left);
-  const auto last_var{m_factory->last_ssa_var()};
-  if(!last_var) {
-    throw std::runtime_error{
-      "ClirBuilder::visit(Increment*): Condition has no last_var."};
-  }
-
   dec_instr.add_operand({last_var});
 
   // TODO: Deduce native type.
@@ -211,17 +197,11 @@ auto ClirBuilder::visit(Increment* t_inc) -> Any
 auto ClirBuilder::visit(Decrement* t_dec) -> Any
 {
   const auto left{t_dec->left()};
+  traverse(left);
+  const auto last_var{m_factory->require_last_ssa_var()};
 
   // TODO: Deduce type, of left.
   auto& dec_instr{m_factory->add_instruction(Opcode::ISUB)};
-
-  traverse(left);
-  const auto last_var{m_factory->last_ssa_var()};
-  if(!last_var) {
-    throw std::runtime_error{
-      "ClirBuilder::visit(Decrement*): Condition has no last_var."};
-  }
-
   dec_instr.add_operand({last_var});
 
   // TODO: Deduce type, of left.
