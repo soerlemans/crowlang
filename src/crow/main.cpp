@@ -3,7 +3,7 @@
 
 // Absolute Includes:
 #include "crow/debug/log.hpp"
-#include "crow/diagnostic/diagnostic_error.hpp"
+#include "crow/diagnostic/diagnostic.hpp"
 #include "crow/settings/settings.hpp"
 #include "crow/unit/translation_unit.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
@@ -53,7 +53,7 @@ static auto run(settings::Settings t_settings) -> void
 }
 
 template<typename T>
-  requires std::is_base_of<DiagnosticError, T>::value
+  requires std::is_base_of<diagnostic::DiagnosticError, T>::value
 inline auto report_diagnostic_error(const T t_err) -> void
 {
   using rang::fg;

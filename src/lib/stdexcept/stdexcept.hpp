@@ -4,6 +4,7 @@
 // Local Includes:
 #include "bad_any_cast.hpp"
 #include "exception.hpp"
+#include "invalid_argument.hpp"
 #include "unexpected_nullptr.hpp"
 
 #endif // CROW_LIB_STDEXCEPT_STDEXCEPT_HPP

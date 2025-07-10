@@ -2,7 +2,6 @@
 
 // Absolute Includes:
 #include "crow/debug/log.hpp"
-#include "crow/diagnostic/diagnostic_error.hpp"
 #include "crow/types/core/core_types.hpp"
 #include "crow/types/core/native_types.hpp"
 #include "lib/overload.hpp"
