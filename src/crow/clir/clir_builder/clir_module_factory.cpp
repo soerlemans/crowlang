@@ -3,6 +3,9 @@
 // STL Includes:
 #include <memory>
 
+// Absolute Includes:
+#include "lib/stdexcept/stdexcept.hpp"
+
 namespace clir::clir_builder {
 ClirModuleFactory::ClirModuleFactory()
   : m_module{std::make_shared<Module>()}, m_var_id{0}, m_instr_id{0}
@@ -28,7 +31,8 @@ auto ClirModuleFactory::require_last_ssa_var() -> SsaVarPtr
 {
   auto var{last_ssa_var()};
   if(!var) {
-    // TODO: Throw stacktraced exception.
+    lib::stdexcept::exception(
+      "Expected last IR instruction to produce an SSA var.");
   }
 
   return var;
@@ -72,8 +76,7 @@ auto ClirModuleFactory::add_literal(NativeType t_type, LiteralValue t_value)
       break;
 
     default:
-      throw std::runtime_error("ClirModuleFactory::add_literal(): Given native "
-                               "type is unsupported.");
+      lib::stdexcept::invalid_argument("Given native type is unsupported.");
       break;
   }
 
@@ -118,9 +121,9 @@ auto ClirModuleFactory::last_instruction() -> Instruction&
   auto& instructions{block.m_instructions};
 
   if(instructions.empty()) {
-    throw std::runtime_error{
-      "There are no instructions in the current basic block"
-      ", cant retrieve last one."};
+    lib::stdexcept::runtime_exception(
+      "There are no instructions in the current basic block, cant retrieve "
+      "last one.");
   }
 
   return instructions.back();
@@ -164,8 +167,8 @@ auto ClirModuleFactory::last_block() -> BasicBlock&
   auto& fn{last_function()};
 
   if(fn.m_blocks.empty()) {
-    throw std::runtime_error{"There are no basic blocks in current function"
-                             ", cant retrieve last one."};
+    lib::stdexcept::runtime_exception(
+      "There are no basic blocks in current function, cant retrieve last one.");
   }
 
   return fn.m_blocks.back();
@@ -183,8 +186,8 @@ auto ClirModuleFactory::last_function() -> Function&
   auto& functions{m_module->m_functions};
 
   if(functions.empty()) {
-    throw std::runtime_error{"There are no functions in current CLIR module, "
-                             "can retrieve last one."};
+    lib::stdexcept::runtime_exception(
+      "There are no functions in current CLIR module, can retrieve last one.");
   }
 
   return functions.back();
