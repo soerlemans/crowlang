@@ -28,6 +28,9 @@ using FunctionEnvState = ClirEnvState<Function*>;
 class ClirModuleFactory {
   private:
   ModulePtr m_module;
+
+  // We need two separate environments to prevent IR temporaries from clashing.
+  // Semantic pass should prevent any variables and functions from conflicting.
   SsaVarEnvState m_ssa_env;
   FunctionEnvState m_fn_env;
 
@@ -37,6 +40,11 @@ class ClirModuleFactory {
 
   public:
   ClirModuleFactory();
+
+  // Env operations:
+  auto push_env() -> void;
+  auto pop_env() -> void;
+  auto clear_env() -> void;
 
   // SsaVar operations:
   auto create_var(types::core::TypeVariant t_type) -> SsaVarPtr;

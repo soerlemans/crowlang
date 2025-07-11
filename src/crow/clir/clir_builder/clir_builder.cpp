@@ -126,8 +126,12 @@ auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
   m_factory->add_function(std::move(fn));
   m_factory->add_block("main");
 
+  m_factory->push_env();
+
   // Traverse the body.
   traverse(t_fn->body());
+
+  m_factory->pop_env();
 
   return {};
 }
@@ -337,6 +341,9 @@ auto ClirBuilder::translate(NodePtr t_ast) -> ModulePtr
 
   // Obtain the CLIR module created by the module factory.
   ptr = m_factory->get_module();
+
+  // Clear the environment, as we are done with it.
+  m_factory->clear_env();
 
   // Free the factory.
   m_factory.reset();
