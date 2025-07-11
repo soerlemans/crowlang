@@ -52,9 +52,37 @@ static auto run(settings::Settings t_settings) -> void
   }
 }
 
+/*
+ *
+ */
+inline auto report_issue() -> void
+{
+  using rang::fg;
+  using rang::style;
+
+  const std::string_view gh_issue_open{
+    "https://github.com/soerlemans/crowlang/issues/new/choose"};
+
+  // clang-format off
+  std::cerr << "\n";
+
+  std::cerr << style::bold << fg::blue;
+  std::cerr << "Reporting an issue:\n";
+  std::cerr << style::reset;
+
+  std::cerr << fg::blue;
+  std::cerr << "If you are seeing this message and are not a crowlang contributor.\n";
+  std::cerr << "Then please open a Github Issue.\n\n";
+
+  std::cerr << "As this error is likely a result of unintended behavior.\n";
+  std::cerr << "Open an issue at: " << style::bold << gh_issue_open
+						<< style::reset << std::endl;
+  // clang-format on
+}
+
 template<typename T>
   requires std::is_base_of<diagnostic::DiagnosticError, T>::value
-inline auto report_diagnostic_error(const T t_err) -> void
+inline auto report_diagnostic_error(const T& t_err) -> void
 {
   using rang::fg;
   using rang::style;
@@ -64,31 +92,31 @@ inline auto report_diagnostic_error(const T t_err) -> void
   std::cerr << "Error:\n" << style::reset;
 
   // Print error message.
-  const std::string_view msg{t_err.what()};
-  std::cerr << msg << std::endl;
+  std::cerr << t_err.what() << std::endl;
 }
 
 //! Log an stdexcept::exception.
 template<typename T>
   requires std::is_base_of<lib::stdexcept::Exception, T>::value
-inline auto report_stdexcept(const T t_exception) -> void
+inline auto report_stdexcept(const T& t_exception) -> void
 {
   using rang::fg;
   using rang::style;
 
   // Print lovely header.
   std::cerr << style::bold << fg::red;
-  std::cerr << "Crow Exception:\n" << style::reset;
+  std::cerr << "Crow exception:\n" << style::reset;
 
   // Print error message.
-  const std::string_view msg{t_exception.what()};
-  std::cerr << msg << std::endl;
+  std::cerr << t_exception.what() << std::endl;
+
+  report_issue();
 }
 
 //! Log an exception.
 template<typename T>
   requires std::is_base_of<std::exception, T>::value
-inline auto report_exception(const T t_exception) -> void
+inline auto report_exception(const T& t_exception) -> void
 {
   using rang::fg;
   using rang::style;
@@ -98,11 +126,12 @@ inline auto report_exception(const T t_exception) -> void
   std::cerr << "Exception:\n" << style::reset;
 
   // Print error message.
-  const std::string_view msg{t_exception.what()};
-  std::cerr << msg << std::endl;
+  std::cerr << t_exception.what() << std::endl;
+
+  report_issue();
 }
 
-inline auto report_uncaught_object() -> void
+inline auto report_unhandled_object() -> void
 {
   using rang::fg;
   using rang::style;
@@ -110,9 +139,11 @@ inline auto report_uncaught_object() -> void
   // clang-format off
   std::cerr << style::bold
 						<< fg::red
-						<< "Unsupported thrown object was caught."
+						<< "Unhandled thrown object was caught."
             << style::reset
 						<< std::endl;
+
+  report_issue();
   // clang-format on
 }
 
@@ -158,11 +189,12 @@ auto main(const int t_argc, char* t_argv[]) -> int
 
     return ExitCode::STDEXCEPT_EXCEPTION;
   } catch(std::exception& except) {
+    std::cerr << except.what() << '\n';
     report_exception(except);
 
     return ExitCode::STL_EXCEPTION;
   } catch(...) {
-    report_uncaught_object();
+    report_unhandled_object();
 
     return ExitCode::UNCAUGHT_OBJECT;
   }

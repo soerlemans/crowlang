@@ -45,8 +45,8 @@ class SymbolTableFactory {
   public:
   SymbolTableFactory() = default;
 
-  //! Add symbol to current level of nesting.
-  auto add_symbol(std::string_view t_id, const SymbolData& t_data) -> bool;
+  //! Insert symbol to the current level of scoping.
+  auto insert(std::string_view t_id, const SymbolData& t_data) -> bool;
 
   // Manage nesting of symbols:
   auto push_scope() -> void;

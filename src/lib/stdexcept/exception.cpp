@@ -11,6 +11,9 @@ Exception::Exception(const std::string_view t_msg): m_msg{}
   // Set the given message.
   ss << t_msg << '\n';
 
+  // Add a newline before the stack trace.
+  ss << '\n';
+
   // TODO: Disable colors when --no-color is passed.
   // Print the stacktrace with colors.
   auto stacktrace{cpptrace::stacktrace::current()};

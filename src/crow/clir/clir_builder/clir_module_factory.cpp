@@ -8,14 +8,38 @@
 
 namespace clir::clir_builder {
 ClirModuleFactory::ClirModuleFactory()
-  : m_module{std::make_shared<Module>()}, m_var_id{0}, m_instr_id{0}
+  : m_module{std::make_shared<Module>()},
+    m_ssa_env{},
+    m_fn_env{},
+    m_var_idm_var_id{0},
+    m_instr_id{0}
 {}
+
+auto ClirModuleFactory::push_env() -> void
+{
+  m_ssa_env.push_env();
+  m_fn_env.push_env();
+}
+
+auto ClirModuleFactory::pop_env() -> void
+{
+  m_ssa_env.pop_env();
+  m_fn_env.pop_env();
+}
+
+auto ClirModuleFactory::clear_env() -> void
+{
+  m_ssa_env.clear();
+  m_fn_env.clear();
+}
 
 auto ClirModuleFactory::create_var(types::core::TypeVariant t_type) -> SsaVarPtr
 {
   auto ptr{std::make_shared<SsaVar>(m_var_id, t_type)};
 
   m_var_id++;
+
+  // TODO: Add environment registration for variable.
 
   return ptr;
 }
@@ -121,9 +145,11 @@ auto ClirModuleFactory::last_instruction() -> Instruction&
   auto& instructions{block.m_instructions};
 
   if(instructions.empty()) {
-    lib::stdexcept::runtime_exception(
-      "There are no instructions in the current basic block, cant retrieve "
-      "last one.");
+    using lib::stdexcept::runtime_exception;
+
+    runtime_exception(
+      "There are no instructions in the last basic block, cant retrieve "
+      "last instruction.");
   }
 
   return instructions.back();
@@ -167,8 +193,11 @@ auto ClirModuleFactory::last_block() -> BasicBlock&
   auto& fn{last_function()};
 
   if(fn.m_blocks.empty()) {
-    lib::stdexcept::runtime_exception(
-      "There are no basic blocks in current function, cant retrieve last one.");
+    using lib::stdexcept::runtime_exception;
+
+    runtime_exception(
+      "There are no basic blocks in the last function, cant retrieve last "
+      "basic block.");
   }
 
   return fn.m_blocks.back();
@@ -178,6 +207,8 @@ auto ClirModuleFactory::add_function(Function&& t_fn) -> void
 {
   auto& functions{m_module->m_functions};
 
+  // TODO: Add environment registration for function.
+
   functions.push_back(t_fn);
 }
 
@@ -186,8 +217,10 @@ auto ClirModuleFactory::last_function() -> Function&
   auto& functions{m_module->m_functions};
 
   if(functions.empty()) {
-    lib::stdexcept::runtime_exception(
-      "There are no functions in current CLIR module, can retrieve last one.");
+    using lib::stdexcept::runtime_exception;
+
+    runtime_exception("There are no functions in the CLIR "
+                      "module, cant retrieve last function.");
   }
 
   return functions.back();

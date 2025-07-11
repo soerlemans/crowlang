@@ -91,7 +91,6 @@ auto TextBuffer::position() const -> TextPosition
   return {m_source, line(), m_lineno, m_columnno};
 }
 
-// Friend methods:
 auto operator<<(std::ostream& t_os, const TextBuffer& t_tb) -> std::ostream&
 {
   for(auto& line : t_tb.m_buffer) {
