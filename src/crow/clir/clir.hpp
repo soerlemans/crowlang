@@ -46,6 +46,7 @@ using ModuleSeq = std::list<Module>;
 using ModulePtr = std::shared_ptr<Module>;
 
 using SsaVarPtr = std::shared_ptr<SsaVar>;
+using FunctionPtr = std::shared_ptr<Function>;
 
 // TODO: Support more then just bool, add all other supported native_types.
 //! Variant containing all supported literal types.

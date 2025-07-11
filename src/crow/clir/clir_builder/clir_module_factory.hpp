@@ -6,6 +6,7 @@
 
 // Absolute Includes:
 #include "crow/clir/clir.hpp"
+#include "crow/clir/clir_builder/clir_env_state.hpp"
 
 namespace clir::clir_builder {
 // Forward Declarations:
@@ -13,6 +14,9 @@ class ClirModuleFactory;
 
 // Aliases:
 using ClirModuleFactoryPtr = std::unique_ptr<ClirModuleFactory>;
+
+using SsaVarEnvState = ClirEnvState<SsaVarPtr>;
+using FunctionEnvState = ClirEnvState<Function*>;
 
 // Classes:
 /*!
@@ -24,6 +28,8 @@ using ClirModuleFactoryPtr = std::unique_ptr<ClirModuleFactory>;
 class ClirModuleFactory {
   private:
   ModulePtr m_module;
+  SsaVarEnvState m_ssa_env;
+  FunctionEnvState m_fn_env;
 
   // We need to increment these to prevent collisions.
   u64 m_var_id;

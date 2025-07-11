@@ -118,7 +118,7 @@ auto SemanticCheckerHelper::get_symbol_data(NodePtr t_ptr) -> SymbolData
     } catch(const std::bad_any_cast& e) {
       DBG_CRITICAL(e.what());
 
-      // TODO: Print elegant error message and terminate
+      // TODO: Print elegant error message and terminate.
       throw e;
     }
   }
