@@ -86,7 +86,9 @@ auto opcode2str(const Opcode t_opcode) -> std::string_view
     MATCH(FCMP_GTE, "fcmp_gte");
 
     // Memory handling:
-    MATCH(ASSIGN, "assign");
+    MATCH(INIT, "init");
+    MATCH(UPDATE, "update");
+
     MATCH(LOAD, "load");
     MATCH(STORE, "store");
     MATCH(LEA, "lea");
@@ -182,7 +184,7 @@ auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)
   using clir::opcode2str;
   using clir::Operand;
 
-  const auto& [id, opcode, operands, result] = t_inst;
+  const auto& [id, opcode, operands, result, comment] = t_inst;
 
   // If the result is present, prepend it to the opcode.
   std::stringstream assign_ss{};
@@ -199,6 +201,11 @@ auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)
     t_os << sep << operand;
 
     sep = ", ";
+  }
+
+  // Print a comment if we added one.
+  if(!comment.empty()) {
+    t_os << std::format(" ; {}", comment);
   }
 
   return t_os;

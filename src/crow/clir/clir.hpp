@@ -33,6 +33,11 @@ struct Function;
 struct Module;
 
 // Aliases:
+using ModulePtr = std::shared_ptr<Module>;
+
+using SsaVarPtr = std::shared_ptr<SsaVar>;
+using FunctionPtr = std::shared_ptr<Function>;
+
 // We use lists for instructions and basic blocks.
 // This is to prevent any iterator or reference invalidation.
 // During the building of the IR.
@@ -42,11 +47,7 @@ using InstructionSeq = std::list<Instruction>;
 using BasicBlockSeq = std::list<BasicBlock>;
 using FunctionSeq = std::list<Function>;
 using ModuleSeq = std::list<Module>;
-
-using ModulePtr = std::shared_ptr<Module>;
-
-using SsaVarPtr = std::shared_ptr<SsaVar>;
-using FunctionPtr = std::shared_ptr<Function>;
+using SsaVarVec = std::vector<SsaVarPtr>;
 
 // TODO: Support more then just bool, add all other supported native_types.
 //! Variant containing all supported literal types.
@@ -121,7 +122,9 @@ enum class Opcode : u32 {
 
   // Memory handling:
   // clang-format off
-  ASSIGN,    // %<dest> = assign <src> ; dest = src.
+  INIT,      // %<dest> = init <src> ; dest = src. Adds a comment For the in source variable that is instantiated.
+  UPDATE,    // %<dest> = update <src> ; dest = src. Adds a comment of the in source variable referenced.
+
   LOAD,      // %<dest> = load <src> ; dest = *src.
   STORE,     // %<dest> = store <src> ; *dest = src.
   ALLOCA,    // %<dest> = alloca <count>; Allocate memory on the heap.
@@ -203,6 +206,8 @@ struct Instruction {
   OperandSeq m_operands;
 
   SsaVarPtr m_result;
+
+  std::string m_comment;
 
   auto add_operand(Operand t_operand) -> void
   {

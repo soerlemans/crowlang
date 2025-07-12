@@ -3,6 +3,7 @@
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
 #include "crow/debug/log.hpp"
+#include "lib/stdexcept/stdexcept.hpp"
 
 // Macros:
 #define STUB(t_type)                                              \
@@ -117,10 +118,13 @@ auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
 {
   Function fn{};
 
-  const auto name{t_fn->identifier()};
+  const auto id{t_fn->identifier()};
+  const auto params{t_fn->params()};
+
+  // const auto return_type{t_fn->m_return_type()};
   const auto body{t_fn->identifier()};
 
-  fn.m_name = name;
+  fn.m_name = id;
 
   // Add the function to the current module.
   m_factory->add_function(std::move(fn));
@@ -128,9 +132,38 @@ auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
 
   m_factory->push_env();
 
+  for(const auto& node : *params) {
+    // Gain a raw ptr (non owning).
+    // If the AST changes the assertion will be triggered.
+    const auto* param{dynamic_cast<Parameter*>(node.get())};
+    if(!param) {
+      using lib::stdexcept::unexpected_nullptr;
+
+      unexpected_nullptr("Failed to dynamic_cast to Parameter*.");
+    }
+
+    const auto type{param->get_type()};
+
+    auto& assign_instr{m_factory->add_instruction(Opcode::INIT)};
+    m_factory->add_var(type);
+
+    // DEBUG_ASSERT(param, R"(Was unable to cast to "Parameter*"!)", param,
+    // node,
+    //              params);
+
+    // const auto id{param->identifier()};
+    // const auto type{str2nativetype(param->type())};
+
+    // const SymbolData data{symbol::make_variable(false, type)};
+
+    // Add parameter to environment.
+    // if(!add_symbol(id, data)) {
+    // TODO: Throw!
+    //}
+  }
+
   // Traverse the body.
   traverse(t_fn->body());
-
   m_factory->pop_env();
 
   return {};
@@ -149,16 +182,31 @@ auto ClirBuilder::visit([[maybe_unused]] ReturnType* t_rt) -> Any
 // Lvalue:
 auto ClirBuilder::visit(Let* t_let) -> Any
 {
+  const auto type{t_let->get_type()};
+
+  auto& assign_instr{m_factory->add_instruction(Opcode::INIT)};
+  m_factory->add_var(type);
+
   return {};
 }
 
 auto ClirBuilder::visit(Var* t_var) -> Any
 {
+  const auto type{t_var->get_type()};
+
+  auto& assign_instr{m_factory->add_instruction(Opcode::INIT)};
+  m_factory->add_var(type);
+
   return {};
 }
 
 auto ClirBuilder::visit(Variable* t_var) -> Any
 {
+  // Look for reference in m_ssa_env, and update last SsaVarPtr used.
+  // To the current one, after doing a reassignment to a new one.
+
+  m_factory->add_instruction(Opcode::UPDATE);
+
   return {};
 }
 
@@ -329,6 +377,22 @@ auto ClirBuilder::visit(List* t_list) -> Any
 }
 
 // Implementation:
+auto ClirBuilder::get_call_args(ast::node::NodeListPtr t_list) -> SsaVarVec
+{
+  SsaVarVec vec{};
+
+  for(const auto& ptr : *t_list) {
+    // Traverse to generate a last var that we can get.
+    traverse(ptr);
+
+    // Get the refs.
+    const auto& last_var{m_factory->require_last_ssa_var()};
+    vec.push_back(last_var);
+  }
+
+  return vec;
+}
+
 auto ClirBuilder::translate(NodePtr t_ast) -> ModulePtr
 {
   ModulePtr ptr{nullptr};
