@@ -4,11 +4,11 @@
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
 #include "crow/container/text_position.hpp"
+#include "crow/types/semantic/semantic.hpp"
 #include "crow/types/semantic/symbol.hpp"
-#include "crow/types/semantic/symbol_data.hpp"
 
 // Local Includes:
-#include "env_state.hpp"
+#include "symbol_env_state.hpp"
 #include "symbol_table/symbol_table_factory.hpp"
 #include "type_promoter.hpp"
 
@@ -38,7 +38,7 @@ using types::core::NativeTypeOpt;
  */
 class SemanticCheckerHelper : public NodeVisitor {
   private:
-  EnvState m_env_state;
+  SymbolEnvState m_symbol_state;
   SymbolTableFactory m_symbol_table_factory;
   TypePromoter m_type_promoter;
 

@@ -8,9 +8,11 @@
  */
 
 // STL Includes:
+#include <format>
 #include <list>
 #include <memory>
 #include <ostream>
+#include <string_view>
 #include <variant>
 #include <vector>
 
@@ -33,6 +35,11 @@ struct Function;
 struct Module;
 
 // Aliases:
+using ModulePtr = std::shared_ptr<Module>;
+
+using SsaVarPtr = std::shared_ptr<SsaVar>;
+using FunctionPtr = std::shared_ptr<Function>;
+
 // We use lists for instructions and basic blocks.
 // This is to prevent any iterator or reference invalidation.
 // During the building of the IR.
@@ -42,10 +49,7 @@ using InstructionSeq = std::list<Instruction>;
 using BasicBlockSeq = std::list<BasicBlock>;
 using FunctionSeq = std::list<Function>;
 using ModuleSeq = std::list<Module>;
-
-using ModulePtr = std::shared_ptr<Module>;
-
-using SsaVarPtr = std::shared_ptr<SsaVar>;
+using SsaVarVec = std::vector<SsaVarPtr>;
 
 // TODO: Support more then just bool, add all other supported native_types.
 //! Variant containing all supported literal types.
@@ -120,7 +124,9 @@ enum class Opcode : u32 {
 
   // Memory handling:
   // clang-format off
-  ASSIGN,    // %<dest> = assign <src> ; dest = src.
+  INIT,      // %<dest> = init <src> ; dest = src. Adds a comment For the in source variable that is instantiated.
+  UPDATE,    // %<dest> = update <src> ; dest = src. Adds a comment of the in source variable referenced.
+
   LOAD,      // %<dest> = load <src> ; dest = *src.
   STORE,     // %<dest> = store <src> ; *dest = src.
   ALLOCA,    // %<dest> = alloca <count>; Allocate memory on the heap.
@@ -203,6 +209,8 @@ struct Instruction {
 
   SsaVarPtr m_result;
 
+  std::string m_comment;
+
   auto add_operand(Operand t_operand) -> void
   {
     m_operands.emplace_back(std::move(t_operand));
@@ -266,5 +274,21 @@ auto operator<<(std::ostream& t_os, const clir::Function& t_fn)
 auto operator<<(std::ostream& t_os, const clir::Module& t_mod) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const clir::ModulePtr& t_mod)
   -> std::ostream&;
+
+// Format specializations:
+template<>
+// struct std::formatter<clir::SsaVar> : std::formatter<std::string_view> {
+struct std::formatter<clir::SsaVar> {
+  template<typename FormatContext>
+  auto format(const clir::SsaVar& t_var, FormatContext& ctx)
+    -> std::formatter<std::string_view>
+  {
+    // Reuse operator<<()
+    std::ostringstream oss{};
+    oss << t_var.m_id;
+
+    return std::formatter<std::string_view>::format(oss.view(), ctx);
+  }
+};
 
 #endif // CROW_CROW_CLIR_CLIR_HPP

@@ -5,6 +5,7 @@ Parameter::Parameter(TextPosition t_pos, const std::string_view t_identifier,
                      const std::string_view t_type)
   : NodePosition{std::move(t_pos)},
     Identifier{t_identifier},
-    TypeAnnotation{t_type}
+    TypeAnnotation{t_type},
+    TypeData{}
 {}
 } // namespace ast::node::function

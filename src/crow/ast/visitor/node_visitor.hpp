@@ -32,7 +32,7 @@ using node::NodePtr;
  */
 class NodeVisitor {
   protected:
-  virtual auto traverse(NodePtr t_ast) -> Any;
+  virtual auto traverse(NodePtr t_node) -> Any;
 
   public:
   NodeVisitor() = default;

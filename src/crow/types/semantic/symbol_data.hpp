@@ -21,7 +21,8 @@ using types::core::NativeTypeOpt;
 using types::core::TypeVariant;
 
 // Aliases:
-using Variant = std::variant<StructTypePtr, FnTypePtr, VarTypePtr, NativeType>;
+// TODO: Add monostate.
+using Variant = std::variant<NativeType, StructTypePtr, FnTypePtr, VarTypePtr>;
 
 // Classes:
 // FIXME: We probably should probably not inherit from Variant.

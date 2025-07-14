@@ -6,6 +6,7 @@
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
 #include "crow/debug/log.hpp"
+#include "lib/stdexcept/stdexcept.hpp"
 
 
 // Macros:
@@ -26,14 +27,18 @@ NODE_USING_ALL_NAMESPACES()
 
 // Methods:
 //! Traverse all nodes neatly
-auto NodeVisitor::traverse(NodePtr t_ast) -> Any
+auto NodeVisitor::traverse(NodePtr t_node) -> Any
 {
   Any any{};
 
   // Kick off the traversal.
-  if(t_ast) {
-    any = t_ast->accept(this);
+  if(!t_node) {
+    using lib::stdexcept::unexpected_nullptr;
+
+    unexpected_nullptr("Cant traverse a nullptr.");
   }
+
+  any = t_node->accept(this);
 
   return any;
 }

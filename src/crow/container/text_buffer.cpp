@@ -1,16 +1,20 @@
 #include "text_buffer.hpp"
 
+namespace {
+constexpr std::size_t default_buffer_reserve_size = 1'024;
+}
+
 namespace container {
 // Methods:
 TextBuffer::TextBuffer(): m_lineno{0}, m_columnno{0}
 {
-  m_buffer.reserve(256);
+  m_buffer.reserve(default_buffer_reserve_size);
 }
 
 TextBuffer::TextBuffer(const std::string_view t_source)
   : m_source{t_source}, m_lineno{0}, m_columnno{0}
 {
-  m_buffer.reserve(256);
+  m_buffer.reserve(default_buffer_reserve_size);
 }
 
 auto TextBuffer::add_line(std::string t_line) -> void
@@ -88,10 +92,9 @@ auto TextBuffer::eos() const -> bool
 //! make this more elegant
 auto TextBuffer::position() const -> TextPosition
 {
-  return {m_source, line(), m_lineno, m_columnno};
+  return TextPosition{m_source, line(), m_lineno, m_columnno};
 }
 
-// Friend methods:
 auto operator<<(std::ostream& t_os, const TextBuffer& t_tb) -> std::ostream&
 {
   for(auto& line : t_tb.m_buffer) {

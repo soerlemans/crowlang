@@ -4,8 +4,8 @@
 #include "crow/debug/log.hpp"
 
 namespace semantic::symbol_table {
-auto SymbolTableFactory::add_symbol(const std::string_view t_id,
-                                    const SymbolData& t_data) -> bool
+auto SymbolTableFactory::insert(const std::string_view t_id,
+                                const SymbolData& t_data) -> bool
 {
   using symbol_table::SymbolMapEntry;
   using symbol_table::SymbolMapInsertResult;

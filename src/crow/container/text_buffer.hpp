@@ -17,7 +17,8 @@ class TextBuffer : public TextStream {
   std::string m_source;
 
   // Keep track of current position in the filebuffer
-  mutable std::size_t m_lineno, m_columnno;
+  mutable std::size_t m_lineno;
+  mutable std::size_t m_columnno;
 
   public:
   TextBuffer();

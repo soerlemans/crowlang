@@ -87,6 +87,8 @@ auto SemanticChecker::visit(Parameter* t_param) -> Any
 {
   const auto type{str2nativetype(t_param->type())};
 
+  t_param->set_type({type});
+
   return SymbolData{type};
 }
 
