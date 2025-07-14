@@ -2,14 +2,15 @@
 
 // STL Includes:
 #include <format>
+#include <sstream>
 #include <stdexcept>
+#include <string>
 #include <string_view>
+
 
 // Absolute Includes:
 #include "lib/stdexcept/stdexcept.hpp"
 #include "lib/stdprint.hpp"
-
-namespace clir {
 
 // Macros:
 #define MATCH(t_key, t_value) \
@@ -17,6 +18,22 @@ namespace clir {
     str = t_value;            \
     break
 
+// Internal
+namespace {
+// TODO: Move to lib/?
+template<typename T>
+constexpr inline auto to_string(const T& t_elem) -> std::string
+{
+  std::ostringstream oss{};
+
+  oss << t_elem;
+
+  return oss.str();
+}
+
+} // namespace
+
+namespace clir {
 // Methods:
 // TODO: Move somewhere else.
 auto Label::label() const -> std::string_view
@@ -190,26 +207,32 @@ auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)
 
   const auto& [id, opcode, operands, result, comment] = t_inst;
 
+  // Format: "{id}: {result =} {opcode} {operand}, {operand}, {etc}"
+  std::stringstream ss{};
+
   // If the result is present, prepend it to the opcode.
-  std::stringstream assign_ss{};
+  std::string assign_str{};
   if(result) {
-    assign_ss << *result << " = ";
+    assign_str = std::format("{} = ", to_string(*result));
   }
 
   const auto opcode_str{opcode2str(opcode)};
-  t_os << std::format("{}: {}{} ", id, assign_ss.str(), opcode_str);
+  ss << std::format("{}: {}{} ", id, assign_str, opcode_str);
 
   // Loop over operands and print them.
   std::string_view sep{};
   for(const Operand& operand : operands) {
-    t_os << sep << operand;
+    ss << sep << operand;
 
     sep = ", ";
   }
 
-  // Print a comment if we added one.
+  // Add printing of a comment if not empty.
   if(!comment.empty()) {
-    t_os << std::format(" ; {}", comment);
+    // We left align in a column of 80 characters.
+    t_os << std::format("{:<80} ; {}", ss.view(), comment);
+  } else {
+    t_os << ss.view();
   }
 
   return t_os;

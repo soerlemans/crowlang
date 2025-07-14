@@ -8,9 +8,11 @@
  */
 
 // STL Includes:
+#include <format>
 #include <list>
 #include <memory>
 #include <ostream>
+#include <string_view>
 #include <variant>
 #include <vector>
 
@@ -272,5 +274,21 @@ auto operator<<(std::ostream& t_os, const clir::Function& t_fn)
 auto operator<<(std::ostream& t_os, const clir::Module& t_mod) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const clir::ModulePtr& t_mod)
   -> std::ostream&;
+
+// Format specializations:
+template<>
+// struct std::formatter<clir::SsaVar> : std::formatter<std::string_view> {
+struct std::formatter<clir::SsaVar> {
+  template<typename FormatContext>
+  auto format(const clir::SsaVar& t_var, FormatContext& ctx)
+    -> std::formatter<std::string_view>
+  {
+    // Reuse operator<<()
+    std::ostringstream oss{};
+    oss << t_var.m_id;
+
+    return std::formatter<std::string_view>::format(oss.view(), ctx);
+  }
+};
 
 #endif // CROW_CROW_CLIR_CLIR_HPP

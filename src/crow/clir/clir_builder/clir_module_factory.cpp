@@ -190,6 +190,8 @@ auto ClirModuleFactory::add_update(const std::string_view t_name)
   const auto type{prev_var->m_type};
   auto result_var{add_var(type)};
 
+  // TODO: Update m_var_env to have the symbol now refer to the new result_var.
+
   return update_instr;
 }
 
