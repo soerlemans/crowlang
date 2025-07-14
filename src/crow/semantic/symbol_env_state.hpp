@@ -30,7 +30,7 @@ class SymbolEnvState : public container::EnvState<symbol::SymbolData> {
   SymbolEnvState();
 
   //! Get means it is required and if we dont find it error.
-  auto get(const std::string_view t_key) const -> SymbolData;
+  auto get(std::string_view t_key) const -> SymbolData;
 
   friend auto operator<<(std::ostream& t_os, const SymbolEnvState& t_env_state)
     -> std::ostream&;

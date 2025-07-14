@@ -37,10 +37,9 @@ class ClirEnvState : public container::EnvState<T> {
   ClirEnvState(): BaseEnvState{}
   {}
 
-  //! Get means it is required and if we dont find it error.
-  auto get(const std::string_view t_key) const -> T
+  auto get(const std::string_view t_key) -> BaseEnvState::Iter
   {
-    const auto [result, found] = BaseEnvState::find(t_key);
+    const auto [iter, found] = BaseEnvState::find(t_key);
 
     if(!found) {
       using lib::stdexcept::runtime_exception;
@@ -50,8 +49,24 @@ class ClirEnvState : public container::EnvState<T> {
       runtime_exception("Identifier ", str, " is not defined.");
     }
 
-    // Return the found entry.
-    return {result};
+    return {iter};
+  }
+
+  //! Get means it is required and if we dont find it error.
+  auto get_value(const std::string_view t_key) -> T
+  {
+    const auto iter{get(t_key)};
+
+    return {iter->second};
+  }
+
+  //! Get means it is required and if we dont find it error.
+  auto update(const std::string_view t_key, const T& t_value) -> void
+  {
+    auto iter{get(t_key)};
+
+    // Update the value in place.
+    iter->second = t_value;
   }
 
   friend auto operator<<(std::ostream& t_os, const ClirEnvState& t_state)

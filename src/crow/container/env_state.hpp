@@ -41,8 +41,15 @@ class EnvState {
   protected:
   using EnvMap = std::unordered_map<std::string, T>;
   using EnvStack = std::list<EnvMap>;
-  using FindResult = std::pair<T, bool>;
-  using InsertResult = std::pair<typename EnvMap::iterator, bool>;
+
+  using Iter = typename EnvMap::iterator;
+  using ConstIter = typename EnvMap::const_iterator;
+
+  using FindResult = std::pair<Iter, bool>;
+  using ConstFindResult = std::pair<ConstIter, bool>;
+
+  using InsertResult = std::pair<Iter, bool>;
+
 
   private:
   EnvStack m_envs;
@@ -65,10 +72,35 @@ class EnvState {
   }
 
   //! Return entry and boolean if it was found.
-  virtual auto find(const std::string_view t_key) const -> FindResult
+  virtual auto find(const std::string_view t_key) -> FindResult
   {
+    FindResult result{};
+    result.first = Iter{};
+    result.second = false;
+
+    // We want to traverse the scopes from inner.
+    // To outer so we reverse the range.
+    auto rbegin = m_envs.rbegin();
+    auto rend = m_envs.rend();
+    for(auto env_iter = rbegin; env_iter != rend; ++env_iter) {
+      // for(auto& env : m_envs | std::views::reverse) {
+      auto iter{env_iter->find(std::string{t_key})};
+
+      if(iter != env_iter.end()) {
+        result.first = iter;
+        result.second = true;
+        break;
+      }
+    }
+
+    return result;
+  }
+
+  //! Return entry and boolean if it was found.
+  virtual auto find(const std::string_view t_key) const -> ConstFindResult
+  {
+    ConstIter pair_iter{};
     bool found{false};
-    T value{};
 
     // We want to traverse the scopes from inner.
     // To outer so we reverse the range.
@@ -77,12 +109,12 @@ class EnvState {
 
       if(iter != env.end()) {
         found = true;
-        value = iter->second;
+        pair_iter = iter;
         break;
       }
     }
 
-    return {value, found};
+    return ConstFindResult{pair_iter, found};
   }
 
   virtual auto push_env() -> void

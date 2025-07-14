@@ -184,13 +184,15 @@ auto ClirModuleFactory::add_update(const std::string_view t_name)
 {
   auto& update_instr{add_instruction(Opcode::UPDATE)};
 
-  auto prev_var{m_var_env.get(t_name)};
+  auto prev_var{m_var_env.get_value(t_name)};
   update_instr.add_operand(prev_var);
 
   const auto type{prev_var->m_type};
   auto result_var{add_var(type)};
 
-  // TODO: Update m_var_env to have the symbol now refer to the new result_var.
+  // Update with the new result var.
+  // For the next variable reference.
+  m_var_env.update(t_name, result_var);
 
   return update_instr;
 }
