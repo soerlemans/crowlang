@@ -13,6 +13,16 @@
 #include "crow/types/core/core.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
 
+// FIXME: Just realized, our IR only has two scopes.
+// Global and a temp var in a function body or all other blocks.
+// Since we have a var id, these effectively never clash.
+// So we do not need a list of nested scopes.
+// So we can optimize this away by just using one unordered_map<>.
+// And perform lookups that way.
+// Maybe this class has some utility for debugging?
+// For now just leave as is as it works, and atm fixing this design mistake.
+// Is not pressing.
+
 namespace clir::clir_builder {
 // Classes:
 /*!
