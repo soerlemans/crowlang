@@ -6,6 +6,7 @@
 #include <string_view>
 
 // Absolute Includes:
+#include "lib/stdexcept/stdexcept.hpp"
 #include "lib/stdprint.hpp"
 
 namespace clir {
@@ -30,6 +31,8 @@ auto Label::label() const -> std::string_view
 // Functions:
 auto opcode2str(const Opcode t_opcode) -> std::string_view
 {
+  using lib::stdexcept::invalid_argument;
+
   std::string_view str{};
 
   switch(t_opcode) {
@@ -117,8 +120,7 @@ auto opcode2str(const Opcode t_opcode) -> std::string_view
     MATCH(NOP, "nop");
 
     default:
-      throw std::invalid_argument{
-        "opcode2str(): Opcode could not be converted to std::string_view."};
+      invalid_argument("Opcode could not be converted to std::string_view.");
       break;
   }
 
@@ -146,6 +148,8 @@ auto operator<<(std::ostream& t_os, const clir::Literal& t_val) -> std::ostream&
 
 auto operator<<(std::ostream& t_os, const clir::SsaVar& t_var) -> std::ostream&
 {
+  // TODO: Think about conditional printing of the type as well?
+
   t_os << std::format("%{}", t_var.m_id);
 
   return t_os;

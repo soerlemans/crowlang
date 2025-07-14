@@ -12,6 +12,12 @@
 #include "crow/debug/log.hpp"
 #include "crow/diagnostic/syntax_error.hpp"
 
+// TODO: Fix use of cctype functions in the lexer.
+// Currently we use the cctype functions.
+// Which are local dependent and also have undefined behavior.
+// For signed char, which is the default type of std::string.
+// So we need to create safe wrappers that maybe throw on negative input.
+// Oneday we should implement unicode, support via std::u8string.
 
 // Macros:
 #define LOG_TOKEN(t_msg, t_str) DBG_INFO(t_msg, std::quoted(std::string{t_str}))

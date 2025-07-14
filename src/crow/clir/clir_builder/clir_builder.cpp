@@ -4,6 +4,7 @@
 #include "crow/ast/node/include_nodes.hpp"
 #include "crow/debug/log.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
+#include "lib/string_util.hpp"
 
 // Macros:
 #define STUB(t_type)                                              \
@@ -38,7 +39,7 @@ auto ClirBuilder::visit(If* t_if) -> Any
 
   // Resolve condition, should assign result of operation to a SSA var.
   traverse(cond);
-  const auto last_var{m_factory->require_last_ssa_var()};
+  const auto last_var{m_factory->require_last_var()};
 
   auto& if_instr{m_factory->add_instruction(Opcode::IF)};
   if_instr.add_operand({last_var});
@@ -98,12 +99,18 @@ auto ClirBuilder::visit(Return* t_ret) -> Any
 {
   auto& block{m_factory->last_block()};
 
+  // An expression is optional for a return statement.
   auto expr{t_ret->expr()};
-  traverse(expr);
-  const auto last_var{m_factory->require_last_ssa_var()};
+  if(expr) {
+    traverse(expr);
+    const auto last_var{m_factory->require_last_var()};
 
-  auto& ret{m_factory->add_instruction(Opcode::RETURN)};
-  ret.add_operand({last_var});
+    auto& ret{m_factory->add_instruction(Opcode::RETURN)};
+    ret.add_operand({last_var});
+  } else {
+    // Add the return with no operand.
+    m_factory->add_instruction(Opcode::RETURN);
+  }
 
   return {};
 }
@@ -132,34 +139,28 @@ auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
 
   m_factory->push_env();
 
+  // TODO: Maybe make a helper method for this?
   for(const auto& node : *params) {
     // Gain a raw ptr (non owning).
     // If the AST changes the assertion will be triggered.
-    const auto* param{dynamic_cast<Parameter*>(node.get())};
+    auto* param{dynamic_cast<Parameter*>(node.get())};
     if(!param) {
       using lib::stdexcept::unexpected_nullptr;
 
       unexpected_nullptr("Failed to dynamic_cast to Parameter*.");
     }
 
+    // Init the parameter variables.
+    const auto name{param->identifier()};
     const auto type{param->get_type()};
 
-    auto& assign_instr{m_factory->add_instruction(Opcode::INIT)};
-    m_factory->add_var(type);
+    auto source_line{param->position().m_line};
+    lib::strip_whitespace(source_line);
+    lib::trim_whitespace(source_line);
+    source_line += '.';
 
-    // DEBUG_ASSERT(param, R"(Was unable to cast to "Parameter*"!)", param,
-    // node,
-    //              params);
-
-    // const auto id{param->identifier()};
-    // const auto type{str2nativetype(param->type())};
-
-    // const SymbolData data{symbol::make_variable(false, type)};
-
-    // Add parameter to environment.
-    // if(!add_symbol(id, data)) {
-    // TODO: Throw!
-    //}
+    auto& init_instr{m_factory->add_init(name, type)};
+    init_instr.m_comment = source_line;
   }
 
   // Traverse the body.
@@ -182,30 +183,56 @@ auto ClirBuilder::visit([[maybe_unused]] ReturnType* t_rt) -> Any
 // Lvalue:
 auto ClirBuilder::visit(Let* t_let) -> Any
 {
+  // The let and var keywords function the same in SSA.
+  const auto name{t_let->identifier()};
   const auto type{t_let->get_type()};
 
-  auto& assign_instr{m_factory->add_instruction(Opcode::INIT)};
-  m_factory->add_var(type);
+  const auto init_expr{t_let->init_expr()};
+
+  auto source_line{t_let->position().m_line};
+  lib::strip_whitespace(source_line);
+  lib::trim_whitespace(source_line);
+  source_line += '.';
+
+  traverse(init_expr);
+  // TODO: Get last var?
+
+  auto& init_instr{m_factory->add_init(name, type)};
+  init_instr.m_comment = source_line;
 
   return {};
 }
 
 auto ClirBuilder::visit(Var* t_var) -> Any
 {
+  // The let and var keywords function the same in SSA.
+  const auto name{t_var->identifier()};
   const auto type{t_var->get_type()};
 
-  auto& assign_instr{m_factory->add_instruction(Opcode::INIT)};
-  m_factory->add_var(type);
+  const auto init_expr{t_var->init_expr()};
+
+  auto source_line{t_var->position().m_line};
+  lib::strip_whitespace(source_line);
+  lib::trim_whitespace(source_line);
+  source_line += '.';
+
+  traverse(init_expr);
+  // TODO: Get last var?
+
+  auto& init_instr{m_factory->add_init(name, type)};
+  init_instr.m_comment = source_line;
 
   return {};
 }
 
 auto ClirBuilder::visit(Variable* t_var) -> Any
 {
-  // Look for reference in m_ssa_env, and update last SsaVarPtr used.
-  // To the current one, after doing a reassignment to a new one.
+  const auto name{t_var->identifier()};
 
-  m_factory->add_instruction(Opcode::UPDATE);
+  // TODO: add casting of a variable if it differs from.
+  // The source type.
+
+  m_factory->add_update(name);
 
   return {};
 }
@@ -233,7 +260,7 @@ auto ClirBuilder::visit(Increment* t_inc) -> Any
 {
   const auto left{t_inc->left()};
   traverse(left);
-  const auto last_var{m_factory->require_last_ssa_var()};
+  const auto last_var{m_factory->require_last_var()};
 
   // TODO: Deduce type, of left.
   auto& dec_instr{m_factory->add_instruction(Opcode::IADD)};
@@ -250,7 +277,7 @@ auto ClirBuilder::visit(Decrement* t_dec) -> Any
 {
   const auto left{t_dec->left()};
   traverse(left);
-  const auto last_var{m_factory->require_last_ssa_var()};
+  const auto last_var{m_factory->require_last_var()};
 
   // TODO: Deduce type, of left.
   auto& dec_instr{m_factory->add_instruction(Opcode::ISUB)};
@@ -386,7 +413,7 @@ auto ClirBuilder::get_call_args(ast::node::NodeListPtr t_list) -> SsaVarVec
     traverse(ptr);
 
     // Get the refs.
-    const auto& last_var{m_factory->require_last_ssa_var()};
+    const auto& last_var{m_factory->require_last_var()};
     vec.push_back(last_var);
   }
 

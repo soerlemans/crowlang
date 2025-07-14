@@ -81,7 +81,7 @@ class ClirBuilder : public NodeVisitor {
   virtual auto visit(ast::node::List* t_list) -> Any;
 
   // Implementation:
-	//! Return all the SSA vars that are needed for a call.
+  //! Return all the SSA vars that are needed for a call.
   auto get_call_args(ast::node::NodeListPtr t_list) -> SsaVarVec;
 
   //! Translate the AST to a CLIR module.

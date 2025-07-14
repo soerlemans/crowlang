@@ -56,21 +56,22 @@ auto ClirModuleFactory::add_var(types::core::TypeVariant t_type) -> SsaVarPtr
   auto ssa_var{create_var(t_type)};
   auto& instr{last_instruction()};
 
+  // Add the variable to the last instruction.
   instr.m_result = ssa_var;
 
   return ssa_var;
 }
 
-auto ClirModuleFactory::last_ssa_var() -> SsaVarPtr
+auto ClirModuleFactory::last_var() -> SsaVarPtr
 {
   auto& instr{last_instruction()};
 
   return instr.m_result;
 }
 
-auto ClirModuleFactory::require_last_ssa_var() -> SsaVarPtr
+auto ClirModuleFactory::require_last_var() -> SsaVarPtr
 {
-  auto var{last_ssa_var()};
+  auto var{last_var()};
   if(!var) {
     lib::stdexcept::exception(
       "Expected last IR instruction to produce an SSA var.");
@@ -133,7 +134,7 @@ auto ClirModuleFactory::add_literal(NativeType t_type, LiteralValue t_value)
 }
 
 auto ClirModuleFactory::insert_jump(Instruction t_instr, BasicBlock& t_block,
-                                    BasicBlock& t_target) -> void
+                                    BasicBlock& t_target) -> Instruction&
 {
   auto& instructions{t_block.m_instructions};
 
@@ -146,14 +147,50 @@ auto ClirModuleFactory::insert_jump(Instruction t_instr, BasicBlock& t_block,
 
   // Push back instruction to source block.
   instructions.push_back(t_instr);
+
+  return instructions.back();
 }
 
 auto ClirModuleFactory::insert_jump(BasicBlock& t_block, BasicBlock& t_target)
-  -> void
+  -> Instruction&
 {
   auto jmp_instr{create_instruction(Opcode::JUMP)};
 
-  insert_jump(jmp_instr, t_block, t_target);
+  return insert_jump(jmp_instr, t_block, t_target);
+}
+
+auto ClirModuleFactory::add_init(const std::string_view t_name,
+                                 types::core::TypeVariant t_type)
+  -> Instruction&
+{
+  auto& assign_instr{add_instruction(Opcode::INIT)};
+  auto result_var{add_var(t_type)};
+
+  // TODO: Check for errors.
+  const auto [iter, inserted] =
+    m_var_env.insert({std::string{t_name}, result_var});
+
+  if(!inserted) {
+    using lib::stdexcept::runtime_exception;
+
+    runtime_exception("Could not insert ", std::quoted(t_name), ".");
+  }
+
+  return assign_instr;
+}
+
+auto ClirModuleFactory::add_update(const std::string_view t_name)
+  -> Instruction&
+{
+  auto& update_instr{add_instruction(Opcode::UPDATE)};
+
+  auto prev_var{m_var_env.get(t_name)};
+  update_instr.add_operand(prev_var);
+
+  const auto type{prev_var->m_type};
+  auto result_var{add_var(type)};
+
+  return update_instr;
 }
 
 auto ClirModuleFactory::last_instruction() -> Instruction&

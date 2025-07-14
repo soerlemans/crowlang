@@ -24,6 +24,15 @@ using FunctionEnvState = ClirEnvState<Function*>;
  * When walking the AST.
  * In the @ref ClirBuilder.
  * Here we handle all the boilerplate operations for constructing the CLIR.
+ *
+ * @note Any method starting with `create_` will create that item.
+ * But not add it to the current module the factory is building.
+ *
+ * @note Any method starting with `add_` will create that item.
+ * As well as add itto the last item it can be added to.
+ *
+ * @note Any method starting with `last_` will retrieve the last item.
+ * Of that object that was added to the module.
  */
 class ClirModuleFactory {
   private:
@@ -54,8 +63,8 @@ class ClirModuleFactory {
    * Every instruction has a result.
    * Can be a nullptr (indicating the operation did no result).
    */
-  auto last_ssa_var() -> SsaVarPtr;
-  auto require_last_ssa_var() -> SsaVarPtr;
+  auto last_var() -> SsaVarPtr;
+  auto require_last_var() -> SsaVarPtr;
 
   // Instruction operations:
   [[nodiscard("Must use created instruction.")]]
@@ -71,8 +80,22 @@ class ClirModuleFactory {
    * (in some cases).
    */
   auto insert_jump(Instruction t_instr, BasicBlock& t_block,
-                   BasicBlock& t_target) -> void;
-  auto insert_jump(BasicBlock& t_block, BasicBlock& t_target) -> void;
+                   BasicBlock& t_target) -> Instruction&;
+  auto insert_jump(BasicBlock& t_block, BasicBlock& t_target) -> Instruction&;
+
+
+  /*!
+   * Add an init for a variable.
+   */
+  auto add_init(std::string_view t_name, types::core::TypeVariant t_type)
+    -> Instruction&;
+
+  /*!
+   * Variables need to be referenced to an SSA var.
+   * An update statement creates a new last statement.
+   * So we can reference the last SSA var.
+   */
+  auto add_update(std::string_view t_name) -> Instruction&;
 
   auto last_instruction() -> Instruction&;
 
