@@ -80,13 +80,14 @@ class EnvState {
 
     // We want to traverse the scopes from inner.
     // To outer so we reverse the range.
+    // We need to use reverse iterators for the non-const implementation.
     auto rbegin = m_envs.rbegin();
     auto rend = m_envs.rend();
     for(auto env_iter = rbegin; env_iter != rend; ++env_iter) {
-      // for(auto& env : m_envs | std::views::reverse) {
-      auto iter{env_iter->find(std::string{t_key})};
+      auto& scope{*env_iter};
+      auto iter{scope.find(std::string{t_key})};
 
-      if(iter != env_iter.end()) {
+      if(iter != scope.end()) {
         result.first = iter;
         result.second = true;
         break;
