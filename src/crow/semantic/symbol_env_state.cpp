@@ -14,7 +14,7 @@ SymbolEnvState::SymbolEnvState(): BaseEnvState{}
 
 auto SymbolEnvState::get(const std::string_view t_key) const -> SymbolData
 {
-  const auto [variant, found] = EnvState::find(t_key);
+  const auto [iter, found] = EnvState::find(t_key);
 
   const auto str{std::quoted(t_key)};
   if(!found) {
@@ -25,8 +25,9 @@ auto SymbolEnvState::get(const std::string_view t_key) const -> SymbolData
   }
 
   // Return the found SymbolData.
-  DBG_INFO("Found Symbol ", str, " of type ", variant, " in SymbolEnv!");
-  return {variant};
+  SymbolData data{iter->second};
+  DBG_INFO("Found Symbol ", str, " of type ", data, " in SymbolEnv!");
+  return {data};
 }
 
 auto operator<<(std::ostream& t_os, const SymbolEnvState& t_state)
