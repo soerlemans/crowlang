@@ -4,6 +4,7 @@
 #include "crow/ast/node/include_nodes.hpp"
 #include "crow/diagnostic/syntax_error.hpp"
 #include "crow/token/tokentype2str.hpp"
+#include "lib/stdexcept/stdexcept.hpp"
 
 namespace parser {
 // Using statements:
@@ -16,7 +17,7 @@ auto Parser::get_token_stream() -> TokenStream&
   return m_token_stream;
 }
 
-auto Parser::syntax_error(const std::string_view t_msg) const -> void
+auto Parser::throw_syntax_error(const std::string_view t_msg) const -> void
 {
   using diagnostic::SyntaxError;
 
@@ -26,15 +27,18 @@ auto Parser::syntax_error(const std::string_view t_msg) const -> void
 }
 
 // FIXME: This function should be replaced with the printing of a stacktrace
-auto Parser::eos_error(const std::string_view t_msg) const -> void
+auto Parser::throw_eos_error(const std::string_view t_msg) const -> void
 {
   if(m_token_stream.eos()) {
-    std::stringstream ss;
+    using lib::stdexcept::throw_runtime_exception;
+
+    std::stringstream ss{};
     ss << "EOS reached!\n";
     ss << " - ";
     ss << t_msg;
 
-    throw std::runtime_error{ss.str()};
+    // TODO: Replace with a diagnostic error.
+    throw_runtime_exception{ss.str()};
   }
 }
 
@@ -45,7 +49,7 @@ auto Parser::eos() const -> bool
 
 auto Parser::check(const TokenType t_type) -> bool
 {
-  eos_error("Tried to check for token at EOS!");
+  throw_eos_error("Tried to check for token at EOS!");
 
   const auto token{m_token_stream.current()};
 
@@ -54,7 +58,7 @@ auto Parser::check(const TokenType t_type) -> bool
 
 auto Parser::next() -> Token&
 {
-  eos_error("Tried to move to next Token at EOS!");
+  throw_eos_error("Tried to move to next Token at EOS!");
 
   return m_token_stream.next();
 }
@@ -66,7 +70,7 @@ auto Parser::expect(const TokenType t_type) -> Token&
     ss << "Expected -> ";
     ss << std::quoted(tokentype2str(t_type), '\'');
 
-    syntax_error(ss.str());
+    throw_syntax_error(ss.str());
   }
 
   auto& token{get_token()};
@@ -83,7 +87,7 @@ auto Parser::prev() -> Token&
 
 auto Parser::get_token() const -> Token&
 {
-  eos_error("Tried to return get token at EOS!");
+  throw_eos_error("Tried to return get token at EOS!");
 
   return m_token_stream.current();
 }

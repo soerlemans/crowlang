@@ -18,7 +18,7 @@ class TypeError : public DiagnosticError {
 
 // Functions:
 template<typename... Args>
-inline auto type_error(Args&&... t_args) -> void
+inline auto throw_type_error(Args&&... t_args) -> void
 {
   throw_diagnostic_error<TypeError>(std::forward<Args>(t_args)...);
 }

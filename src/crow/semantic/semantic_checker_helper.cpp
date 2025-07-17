@@ -9,7 +9,7 @@
 
 namespace semantic {
 // Using Statements:
-using diagnostic::type_error;
+using diagnostic::throw_type_error;
 
 // Methods:
 auto SemanticCheckerHelper::push_env() -> void
@@ -78,7 +78,7 @@ auto SemanticCheckerHelper::handle_condition(const SymbolData& t_data,
 
       ss << t_pos;
 
-      type_error(ss.str());
+      throw_type_error(ss.str());
     }
   } else {
     ss << "Non native types can not casted to " << std::quoted("bool")
@@ -86,7 +86,7 @@ auto SemanticCheckerHelper::handle_condition(const SymbolData& t_data,
 
     ss << t_pos;
 
-    type_error(ss.str());
+    throw_type_error(ss.str());
   }
 }
 

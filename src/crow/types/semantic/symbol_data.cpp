@@ -23,12 +23,12 @@ template<typename T>
 auto nullptr_check(const std::string_view t_str,
                    const std::shared_ptr<T>& t_ptr) -> void
 {
-  using lib::stdexcept::unexpected_nullptr;
+  using lib::stdexcept::throw_unexpected_nullptr;
 
   if(!t_ptr) {
     const auto msg{std::format("{} ptr is nullptr!", t_str)};
 
-    unexpected_nullptr("ptr is nullptr!");
+    throw_unexpected_nullptr("ptr is nullptr!");
   }
 }
 } // namespace

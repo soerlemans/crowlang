@@ -18,10 +18,10 @@ auto SymbolEnvState::get(const std::string_view t_key) const -> SymbolData
 
   const auto str{std::quoted(t_key)};
   if(!found) {
-    using diagnostic::type_error;
+    using diagnostic::throw_type_error;
 
     // Should never happen so throw and report to user.
-    type_error("Identifier ", str, " is not defined.");
+    throw_type_error("Identifier ", str, " is not defined.");
   }
 
   // Return the found SymbolData.

@@ -104,7 +104,7 @@ auto PrattParser::negation() -> NodePtr
     if(auto ptr{prefix_expr(TokenType::NOT)}; ptr) {
       node = make_node<Not>(pos, std::move(ptr));
     } else {
-      syntax_error("After a negation (!) an expression must follow");
+      throw_syntax_error("After a negation (!) an expression must follow");
     }
   }
 
@@ -123,7 +123,7 @@ auto PrattParser::unary_prefix() -> NodePtr
 
     NodePtr rhs{prefix_expr(token.type())};
     if(!rhs) {
-      syntax_error("Expected an expression after + or -");
+      throw_syntax_error("Expected an expression after + or -");
     }
 
     node = make_node<UnaryPrefix>(token.type(), std::move(rhs));
@@ -331,7 +331,7 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
       } else {
         rhs = expr(rbp);
         if(!rhs) {
-          syntax_error("Infix operations require a right hand side");
+          throw_syntax_error("Infix operations require a right hand side");
         }
       }
 

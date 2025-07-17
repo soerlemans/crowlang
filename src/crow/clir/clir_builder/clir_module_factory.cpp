@@ -73,7 +73,7 @@ auto ClirModuleFactory::require_last_var() -> SsaVarPtr
 {
   auto var{last_var()};
   if(!var) {
-    lib::stdexcept::exception(
+    lib::stdexcept::throw_runtime_exception(
       "Expected last IR instruction to produce an SSA var.");
   }
 
@@ -118,7 +118,8 @@ auto ClirModuleFactory::add_literal(NativeType t_type, LiteralValue t_value)
       break;
 
     default:
-      lib::stdexcept::invalid_argument("Given native type is unsupported.");
+      lib::stdexcept::throw_invalid_argument(
+        "Given native type is unsupported.");
       break;
   }
 

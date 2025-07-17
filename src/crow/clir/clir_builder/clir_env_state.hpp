@@ -42,11 +42,11 @@ class ClirEnvState : public container::EnvState<T> {
     const auto [iter, found] = BaseEnvState::find(t_key);
 
     if(!found) {
-      using lib::stdexcept::runtime_exception;
+      using lib::stdexcept::throw_runtime_exception;
 
       // Should never happen so throw and report to user.
       const auto str{std::quoted(t_key)};
-      runtime_exception("Identifier ", str, " is not defined.");
+      throw_runtime_exception("Identifier ", str, " is not defined.");
     }
 
     return {iter};
