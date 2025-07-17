@@ -4,7 +4,6 @@
 #include "crow/ast/node/include_nodes.hpp"
 #include "crow/debug/log.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
-#include "lib/string_util.hpp"
 
 // Macros:
 #define STUB(t_type)                                              \
@@ -153,14 +152,10 @@ auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
     // Init the parameter variables.
     const auto name{param->identifier()};
     const auto type{param->get_type()};
-
-    auto source_line{param->position().m_line};
-    lib::strip_whitespace(source_line);
-    lib::trim_whitespace(source_line);
-    source_line += '.';
+    const auto source_line{param->position().m_line};
 
     auto& init_instr{m_factory->add_init(name, type)};
-    init_instr.m_comment = source_line;
+    m_factory->add_comment(source_line);
   }
 
   // Traverse the body.
@@ -189,17 +184,15 @@ auto ClirBuilder::visit(Let* t_let) -> Any
 
   const auto init_expr{t_let->init_expr()};
 
-  auto source_line{t_let->position().m_line};
-  lib::strip_whitespace(source_line);
-  lib::trim_whitespace(source_line);
-  source_line += '.';
+  const auto source_line{t_let->position().m_line};
 
   traverse(init_expr);
   const auto last_var{m_factory->require_last_var()};
 
   auto& init_instr{m_factory->add_init(name, type)};
+  m_factory->add_comment(source_line);
+
   init_instr.add_operand({last_var});
-  init_instr.m_comment = source_line;
 
   return {};
 }
@@ -212,17 +205,15 @@ auto ClirBuilder::visit(Var* t_var) -> Any
 
   const auto init_expr{t_var->init_expr()};
 
-  auto source_line{t_var->position().m_line};
-  lib::strip_whitespace(source_line);
-  lib::trim_whitespace(source_line);
-  source_line += '.';
+  const auto source_line{t_var->position().m_line};
 
   traverse(init_expr);
   const auto last_var{m_factory->require_last_var()};
 
   auto& init_instr{m_factory->add_init(name, type)};
+  m_factory->add_comment(source_line);
+
   init_instr.add_operand({last_var});
-  init_instr.m_comment = source_line;
 
   return {};
 }
@@ -242,8 +233,80 @@ auto ClirBuilder::visit(Variable* t_var) -> Any
 // Operators:
 auto ClirBuilder::visit(Arithmetic* t_arith) -> Any
 {
+  using types::core::is_float;
+  using types::core::is_integer;
+
+  // FIXME: Also support type promotion/casting.
+  const auto left{t_arith->left()};
+  const auto right{t_arith->right()};
+  const auto type{t_arith->get_type()};
+  const auto source_line{t_arith->position().m_line};
+
+  traverse(left);
+  const auto left_var{m_factory->require_last_var()};
+
+  traverse(right);
+  const auto right_var{m_factory->require_last_var()};
+
+  const auto add_instr{[&](const Opcode t_opcode) {
+    auto& instr{m_factory->add_instruction(t_opcode)};
+    m_factory->add_comment(source_line);
+
+    instr.add_operand({left_var});
+    instr.add_operand({right_var});
+
+    instr.m_result = m_factory->create_var(type);
+  }};
+
+  const auto add_arithmetic_instr{[&](const Opcode t_iop, const Opcode t_fiop) {
+    // TODO: Code for selecting either integer or float instruction.
+    // auto opt{type->native_type()};
+    // if(opt) {
+    //   const auto native_type{opt.value()};
+    //   is_float(native_type);
+
+    // } else {
+    //   using lib::stdexcept::throw_invalid_argument;
+
+    //   // We only support arithmetic on native types and numerics.
+    //   throw_invalid_argument();
+    // }
+    // if(is_integer()) {
+    //   add_instr(t_iop);
+    // } else {
+    //   add_instr(t_fop);
+    // }
+
+    add_instr(t_iop);
+  }};
+
   const auto op{t_arith->op()};
   switch(op) {
+    case ArithmeticOp::POWER:
+      add_arithmetic_instr(Opcode::IADD, Opcode::FADD);
+      break;
+
+    case ArithmeticOp::MULTIPLY:
+      add_arithmetic_instr(Opcode::IMUL, Opcode::FMUL);
+      break;
+
+    case ArithmeticOp::DIVIDE:
+      add_arithmetic_instr(Opcode::IDIV, Opcode::FDIV);
+      break;
+
+    case ArithmeticOp::MODULO:
+      // FIXME: Check for float argument as its not allowed.
+      add_instr(Opcode::IMOD);
+      break;
+
+    case ArithmeticOp::ADD:
+      add_arithmetic_instr(Opcode::IADD, Opcode::FADD);
+      break;
+
+    case ArithmeticOp::SUBTRACT:
+      add_arithmetic_instr(Opcode::ISUB, Opcode::FSUB);
+      break;
+
     default:
       using lib::stdexcept::throw_invalid_argument;
 

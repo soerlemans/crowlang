@@ -29,16 +29,4 @@ auto SymbolEnvState::get(const std::string_view t_key) const -> SymbolData
   DBG_INFO("Found Symbol ", str, " of type ", data, " in SymbolEnv!");
   return {data};
 }
-
-auto operator<<(std::ostream& t_os, const SymbolEnvState& t_state)
-  -> std::ostream&
-{
-  const auto& base{static_cast<const SymbolEnvState::BaseEnvState&>(t_state)};
-
-  // Call formatting for base class.
-  // FIXME: Not working right now, base class cant find SymbolData operator<<().
-  // operator<<(t_os, base);
-
-  return t_os;
-}
 } // namespace semantic

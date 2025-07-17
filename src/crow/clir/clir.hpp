@@ -88,29 +88,29 @@ enum class Opcode : u32 {
   // CONST_U64,
   // CONST_USIZE,
 
-  CONST_STRING, // %<dest> = const_bool <true|false>
+  CONST_STRING, // %<dest> = const_string <string literal>
   CONST_BOOL,   // %<dest> = const_bool <true|false>
 
   // Integer arithmetic:
-  IADD,
-  ISUB,
-  IMUL,
-  IDIV,
-  IMOD,
-  INEG,
+  IADD, // %<dest> = iadd <src> <div>
+  ISUB, // %<dest> = isub <src> <div>
+  IMUL, // %<dest> = imul <src> <div>
+  IDIV, // %<dest> = idiv <src> <div>
+  IMOD, // %<dest> = imod <src> <div>
+  INEG, // %<dest> = ineg <src>
 
   // Integer comparison:
-  ICMP_LT,
-  ICMP_LTE,
-  ICMP_EQ,
-  ICMP_NQ,
-  ICMP_GT,
-  ICMP_GTE,
+  ICMP_LT,  // %<dest> = icmp_lt <lhs> <rhs>
+  ICMP_LTE, // %<dest> = icmp_lte <lhs> <rhs>
+  ICMP_EQ,  // %<dest> = icmp_eq <lhs> <rhs>
+  ICMP_NQ,  // %<dest> = icmp_nq <lhs> <rhs>
+  ICMP_GT,  // %<dest> = icmp_gt <lhs> <rhs>
+  ICMP_GTE, // %<dest> = icmp_gte <lhs> <rhs>
 
   // Float Arithmetic:
-  FADD,
-  FSUB,
-  FMUL,
+  FADD, // %<dest> = fadd <src> <div>
+  FSUB, // %<dest> = fsub <src> <div>
+  FMUL, // %<dest> = fmul <src> <div>
   FDIV, // %<dest> = fdiv <src> <div>
   FNEG, // %<dest> = fneg <src>
 

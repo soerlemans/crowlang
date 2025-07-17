@@ -32,13 +32,8 @@ class SymbolEnvState : public container::EnvState<symbol::SymbolData> {
   //! Get means it is required and if we dont find it error.
   auto get(std::string_view t_key) const -> SymbolData;
 
-  friend auto operator<<(std::ostream& t_os, const SymbolEnvState& t_env_state)
-    -> std::ostream&;
-
   virtual ~SymbolEnvState() = default;
 };
 } // namespace semantic
-
-// Functions:
 
 #endif // CROW_CROW_SEMANTIC_SYMBOL_ENV_STATE_HPP

@@ -69,18 +69,6 @@ class ClirEnvState : public container::EnvState<T> {
     iter->second = t_value;
   }
 
-  friend auto operator<<(std::ostream& t_os, const ClirEnvState& t_state)
-    -> std::ostream&
-  {
-    const auto& base{static_cast<const ClirEnvState::BaseEnvState&>(t_state)};
-
-    // Call formatting for base class.
-    // FIXME: Not working right now, base class cant find IrVariant.
-    // operator<<(). operator<<(t_os, base);
-
-    return t_os;
-  }
-
   virtual ~ClirEnvState() = default;
 };
 } // namespace clir::clir_builder

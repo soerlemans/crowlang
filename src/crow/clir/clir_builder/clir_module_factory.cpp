@@ -5,6 +5,7 @@
 
 // Absolute Includes:
 #include "lib/stdexcept/stdexcept.hpp"
+#include "lib/string_util.hpp"
 
 namespace clir::clir_builder {
 ClirModuleFactory::ClirModuleFactory()
@@ -103,6 +104,17 @@ auto ClirModuleFactory::add_instruction(const Opcode t_opcode) -> Instruction&
   instructions.push_back(instr);
 
   return last_instruction();
+}
+
+auto ClirModuleFactory::add_comment(std::string t_comment) -> void
+{
+  auto& instr{last_instruction()};
+
+  lib::strip_whitespace(t_comment);
+  lib::trim_whitespace(t_comment);
+  t_comment += '.';
+
+  instr.m_comment = t_comment;
 }
 
 auto ClirModuleFactory::add_literal(NativeType t_type, LiteralValue t_value)

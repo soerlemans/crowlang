@@ -70,6 +70,7 @@ class ClirModuleFactory {
   [[nodiscard("Must use created instruction.")]]
   auto create_instruction(Opcode t_opcode) -> Instruction;
   auto add_instruction(Opcode t_opcode) -> Instruction&;
+  auto add_comment(std::string t_comment) -> void;
 
   //! Add a literal which also creates the proper instruction for it.
   auto add_literal(NativeType t_type, LiteralValue t_value) -> void;

@@ -17,6 +17,14 @@
 #include "lib/stdexcept/stdexcept.hpp"
 
 namespace container {
+// Forward Declarations:
+template<typename T>
+class EnvState;
+
+template<typename T>
+inline auto print_env_state(std::ostream& t_os,
+                            container::EnvState<T>& t_state);
+
 // Structs:
 //! Primary template defaults to false.
 template<typename T>
