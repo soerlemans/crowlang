@@ -27,7 +27,7 @@ auto Parser::throw_syntax_error(const std::string_view t_msg) const -> void
 }
 
 // FIXME: This function should be replaced with the printing of a stacktrace
-auto Parser::throw_eos_error(const std::string_view t_msg) const -> void
+auto Parser::throw_if_eos(const std::string_view t_msg) const -> void
 {
   if(m_token_stream.eos()) {
     using lib::stdexcept::throw_runtime_exception;
@@ -38,7 +38,7 @@ auto Parser::throw_eos_error(const std::string_view t_msg) const -> void
     ss << t_msg;
 
     // TODO: Replace with a diagnostic error.
-    throw_runtime_exception{ss.str()};
+    throw_runtime_exception(ss.str());
   }
 }
 
@@ -49,7 +49,7 @@ auto Parser::eos() const -> bool
 
 auto Parser::check(const TokenType t_type) -> bool
 {
-  throw_eos_error("Tried to check for token at EOS!");
+  throw_if_eos("Tried to check for token at EOS!");
 
   const auto token{m_token_stream.current()};
 
@@ -58,7 +58,7 @@ auto Parser::check(const TokenType t_type) -> bool
 
 auto Parser::next() -> Token&
 {
-  throw_eos_error("Tried to move to next Token at EOS!");
+  throw_if_eos("Tried to move to next Token at EOS!");
 
   return m_token_stream.next();
 }
@@ -87,7 +87,7 @@ auto Parser::prev() -> Token&
 
 auto Parser::get_token() const -> Token&
 {
-  throw_eos_error("Tried to return get token at EOS!");
+  throw_if_eos("Tried to return get token at EOS!");
 
   return m_token_stream.current();
 }

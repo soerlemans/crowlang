@@ -31,7 +31,7 @@ auto NodeVisitor::traverse(NodePtr t_node) -> Any
 {
   Any any{};
 
-	// Throw on nullptr.
+  // Throw on nullptr.
   if(!t_node) {
     using lib::stdexcept::throw_unexpected_nullptr;
 

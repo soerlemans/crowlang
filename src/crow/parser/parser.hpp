@@ -59,7 +59,7 @@ class Parser {
 
   // Helper methods for parsing:
   auto throw_syntax_error(std::string_view t_msg) const -> void;
-  auto throw_eos_error(std::string_view t_msg) const -> void;
+  auto throw_if_eos(std::string_view t_msg) const -> void;
 
   auto eos() const -> bool;
 

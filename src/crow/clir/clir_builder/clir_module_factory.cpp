@@ -113,6 +113,14 @@ auto ClirModuleFactory::add_literal(NativeType t_type, LiteralValue t_value)
   // Translate native type to literal opcode.
   // TODO: Create a separate helper function for this.
   switch(t_type) {
+    case NativeType::F32:
+      opcode = Opcode::CONST_F32;
+      break;
+
+    case NativeType::INT:
+      opcode = Opcode::CONST_INT;
+      break;
+
     case NativeType::BOOL:
       opcode = Opcode::CONST_BOOL;
       break;

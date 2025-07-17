@@ -243,8 +243,11 @@ auto ClirBuilder::visit(Variable* t_var) -> Any
 auto ClirBuilder::visit(Arithmetic* t_arith) -> Any
 {
   const auto op{t_arith->op()};
-  switch() {
+  switch(op) {
     default:
+      using lib::stdexcept::throw_invalid_argument;
+
+      throw_invalid_argument("Arithmetic operator not supported.");
       break;
   }
 
@@ -364,11 +367,25 @@ auto ClirBuilder::visit(ModuleDecl* t_module) -> Any
 // RValue:
 auto ClirBuilder::visit([[maybe_unused]] Float* t_float) -> Any
 {
+  // const auto value{t_int->get()};
+
+  // Add the literal, which assigns an SSA var for it.
+  // m_factory->add_literal(NativeType::F32, {value});
+
   return {};
 }
 
 auto ClirBuilder::visit(Integer* t_int) -> Any
 {
+  const auto value_i64{t_int->get()};
+
+  // TODO: Check if it fits ahead of time.
+  // FIXME: Cast to int for now (assumed integer literal default type).
+  const auto value{int{value_i64}};
+
+  // Add the literal, which assigns an SSA var for it.
+  m_factory->add_literal(NativeType::INT, {value});
+
   return {};
 }
 
