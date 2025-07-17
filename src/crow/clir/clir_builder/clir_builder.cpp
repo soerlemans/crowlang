@@ -145,9 +145,9 @@ auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
     // If the AST changes the assertion will be triggered.
     auto* param{dynamic_cast<Parameter*>(node.get())};
     if(!param) {
-      using lib::stdexcept::unexpected_nullptr;
+      using lib::stdexcept::throw_unexpected_nullptr;
 
-      unexpected_nullptr("Failed to dynamic_cast to Parameter*.");
+      throw_unexpected_nullptr("Failed to dynamic_cast to Parameter*.");
     }
 
     // Init the parameter variables.
@@ -242,6 +242,12 @@ auto ClirBuilder::visit(Variable* t_var) -> Any
 // Operators:
 auto ClirBuilder::visit(Arithmetic* t_arith) -> Any
 {
+  const auto op{t_arith->op()};
+  switch() {
+    default:
+      break;
+  }
+
   return {};
 }
 

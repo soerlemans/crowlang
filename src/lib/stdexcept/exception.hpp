@@ -32,7 +32,7 @@ class Exception {
 // Functions:
 template<typename T = Exception, typename... Args>
   requires std::is_base_of<Exception, T>::value
-inline auto exception(Args&&... t_args) -> void
+inline auto throw_exception(Args&&... t_args) -> void
 {
   std::stringstream ss{};
 

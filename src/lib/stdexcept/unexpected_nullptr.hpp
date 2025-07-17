@@ -14,9 +14,9 @@ class UnexpectedNullptr : public Exception {
 
 // Functions:
 template<typename... Args>
-auto unexpected_nullptr(Args&&... t_args) -> void
+inline auto throw_unexpected_nullptr(Args&&... t_args) -> void
 {
-  exception<UnexpectedNullptr>(std::forward<Args>(t_args)...);
+  throw_exception<UnexpectedNullptr>(std::forward<Args>(t_args)...);
 }
 } // namespace lib::stdexcept
 

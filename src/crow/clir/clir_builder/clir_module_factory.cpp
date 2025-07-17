@@ -40,9 +40,9 @@ auto ClirModuleFactory::create_var(types::core::TypeVariant t_type) -> SsaVarPtr
   const auto key{std::to_string(ptr->m_id)};
   auto [iter, inserted] = m_var_env.insert({key, ptr});
   if(!inserted) {
-    using lib::stdexcept::runtime_exception;
+    using lib::stdexcept::throw_runtime_exception;
 
-    runtime_exception("Can not insert duplicate variable name.");
+    throw_runtime_exception("Can not insert duplicate variable name.");
   }
 
   m_var_id++;
@@ -171,9 +171,9 @@ auto ClirModuleFactory::add_init(const std::string_view t_name,
     m_var_env.insert({std::string{t_name}, result_var});
 
   if(!inserted) {
-    using lib::stdexcept::runtime_exception;
+    using lib::stdexcept::throw_runtime_exception;
 
-    runtime_exception("Could not insert ", std::quoted(t_name), ".");
+    throw_runtime_exception("Could not insert ", std::quoted(t_name), ".");
   }
 
   return assign_instr;
@@ -203,9 +203,9 @@ auto ClirModuleFactory::last_instruction() -> Instruction&
   auto& instructions{block.m_instructions};
 
   if(instructions.empty()) {
-    using lib::stdexcept::runtime_exception;
+    using lib::stdexcept::throw_runtime_exception;
 
-    runtime_exception(
+    throw_runtime_exception(
       "There are no instructions in the last basic block, cant retrieve "
       "last instruction.");
   }
@@ -251,9 +251,9 @@ auto ClirModuleFactory::last_block() -> BasicBlock&
   auto& fn{last_function()};
 
   if(fn.m_blocks.empty()) {
-    using lib::stdexcept::runtime_exception;
+    using lib::stdexcept::throw_runtime_exception;
 
-    runtime_exception(
+    throw_runtime_exception(
       "There are no basic blocks in the last function, cant retrieve last "
       "basic block.");
   }
@@ -275,10 +275,10 @@ auto ClirModuleFactory::last_function() -> Function&
   auto& functions{m_module->m_functions};
 
   if(functions.empty()) {
-    using lib::stdexcept::runtime_exception;
+    using lib::stdexcept::throw_runtime_exception;
 
-    runtime_exception("There are no functions in the CLIR "
-                      "module, cant retrieve last function.");
+    throw_runtime_exception("There are no functions in the CLIR "
+                            "module, cant retrieve last function.");
   }
 
   return functions.back();

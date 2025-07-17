@@ -30,7 +30,7 @@ class DiagnosticError {
 // Functions:
 template<typename T = DiagnosticError, typename... Args>
   requires std::is_base_of<DiagnosticError, T>::value
-inline auto diagnostic_error(Args&&... t_args) -> void
+inline auto throw_diagnostic_error(Args&&... t_args) -> void
 {
   std::stringstream ss;
 
