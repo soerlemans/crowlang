@@ -140,6 +140,9 @@ auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
 
   // TODO: Maybe make a helper method for this?
   for(const auto& node : *params) {
+    // FIXME: We need a separate instruction for retrieving call arguments.
+    // This is a temporary solution.
+
     // Gain a raw ptr (non owning).
     // If the AST changes the assertion will be triggered.
     auto* param{dynamic_cast<Parameter*>(node.get())};
@@ -324,8 +327,73 @@ auto ClirBuilder::visit(Assignment* t_assign) -> Any
 
 auto ClirBuilder::visit(Comparison* t_comp) -> Any
 {
-  // Dummy harcoded value for now.
-  m_factory->add_instruction(Opcode::ICMP_LT);
+  using types::core::is_float;
+  using types::core::is_integer;
+
+  const auto left{t_comp->left()};
+  const auto right{t_comp->right()};
+  // const auto type{t_comp->get_type()};
+  const auto source_line{t_comp->position().m_line};
+
+  traverse(left);
+  const auto left_var{m_factory->require_last_var()};
+
+  traverse(right);
+  const auto right_var{m_factory->require_last_var()};
+
+  // TODO: Unify with arithmetic, assignment and comparison implementation.
+  const auto add_instr{[&](const Opcode t_opcode) {
+    auto& instr{m_factory->add_instruction(t_opcode)};
+    m_factory->add_comment(source_line);
+
+    instr.add_operand({left_var});
+    instr.add_operand({right_var});
+
+    // A comparison always returns the boolean type.
+    instr.m_result = m_factory->create_var({NativeType::BOOL});
+  }};
+
+  const auto add_comparison_instr{[&](const Opcode t_iop, const Opcode t_fiop) {
+    // TODO: Left and right are already check to be of the same type.
+    // In the semantic checker.
+    // So we just need to evaluate if this is an integer or float comparison.
+    add_instr(t_iop);
+  }};
+
+  const auto op{t_comp->op()};
+  switch(op) {
+    case ComparisonOp::LESS_THAN:
+      add_comparison_instr(Opcode::ICMP_LT, Opcode::FCMP_LTE);
+      break;
+
+    case ComparisonOp::LESS_THAN_EQUAL:
+      add_comparison_instr(Opcode::ICMP_LTE, Opcode::FCMP_LT);
+      break;
+
+    case ComparisonOp::EQUAL:
+      add_comparison_instr(Opcode::ICMP_EQ, Opcode::FCMP_EQ);
+      break;
+
+    case ComparisonOp::NOT_EQUAL:
+      add_comparison_instr(Opcode::ICMP_NQ, Opcode::FCMP_NQ);
+      break;
+
+    case ComparisonOp::GREATER_THAN:
+      add_comparison_instr(Opcode::ICMP_GT, Opcode::FCMP_GT);
+      break;
+
+    case ComparisonOp::GREATER_THAN_EQUAL:
+      add_comparison_instr(Opcode::ICMP_GTE, Opcode::FCMP_GTE);
+      break;
+
+    default:
+      using lib::stdexcept::throw_invalid_argument;
+
+      throw_invalid_argument("Comparison operator not supported.");
+      break;
+  }
+
+  return {};
 
   return {};
 }
