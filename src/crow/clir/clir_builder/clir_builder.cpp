@@ -195,9 +195,10 @@ auto ClirBuilder::visit(Let* t_let) -> Any
   source_line += '.';
 
   traverse(init_expr);
-  // TODO: Get last var?
+  const auto last_var{m_factory->require_last_var()};
 
   auto& init_instr{m_factory->add_init(name, type)};
+  init_instr.add_operand({last_var});
   init_instr.m_comment = source_line;
 
   return {};
@@ -217,9 +218,10 @@ auto ClirBuilder::visit(Var* t_var) -> Any
   source_line += '.';
 
   traverse(init_expr);
-  // TODO: Get last var?
+  const auto last_var{m_factory->require_last_var()};
 
   auto& init_instr{m_factory->add_init(name, type)};
+  init_instr.add_operand({last_var});
   init_instr.m_comment = source_line;
 
   return {};
