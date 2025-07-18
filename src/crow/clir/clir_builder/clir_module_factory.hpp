@@ -57,7 +57,7 @@ class ClirModuleFactory {
 
   // SsaVar operations:
   auto create_var(types::core::TypeVariant t_type) -> SsaVarPtr;
-  auto add_var(types::core::TypeVariant t_type) -> SsaVarPtr;
+  auto add_result_var(types::core::TypeVariant t_type) -> SsaVarPtr;
 
   /*!
    * Every instruction has a result.
@@ -93,10 +93,13 @@ class ClirModuleFactory {
 
   /*!
    * Variables need to be referenced to an SSA var.
-   * An update statement creates a new last statement.
+   * An update statement creates a new statement.
+   * Which assigns the old ssa variable, to a new ssa variable.
    * So we can reference the last SSA var.
    */
   auto add_update(std::string_view t_name) -> Instruction&;
+  auto add_update(std::string_view t_name, SsaVarPtr t_prev_var)
+    -> Instruction&;
 
   auto last_instruction() -> Instruction&;
 

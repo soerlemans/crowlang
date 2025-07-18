@@ -117,6 +117,11 @@ auto ClirBuilder::visit(Return* t_ret) -> Any
 // Functions:
 auto ClirBuilder::visit(Parameter* t_param) -> Any
 {
+  const auto name{t_param->identifier()};
+  const auto type{t_param->get_type()};
+
+  //   m_factory->create_var(type);
+
   return {};
 }
 
@@ -322,6 +327,94 @@ auto ClirBuilder::visit(Arithmetic* t_arith) -> Any
 
 auto ClirBuilder::visit(Assignment* t_assign) -> Any
 {
+  using types::core::is_float;
+  using types::core::is_integer;
+
+  const auto left{t_assign->left()};
+  const auto right{t_assign->right()};
+  const auto source_line{t_assign->position().m_line};
+
+  // For now we need a dynamic_cast.
+  auto* lhs{dynamic_cast<Variable*>(left.get())};
+  if(!lhs) {
+    using lib::stdexcept::throw_unexpected_nullptr;
+
+    throw_unexpected_nullptr("Failed to dynamic_cast to Variable*.");
+  }
+
+  const auto name{lhs->identifier()};
+  const auto type{lhs->get_type()};
+  const auto result_var{m_factory->create_var(type)};
+
+  // TODO: Unify with arithmetic, assignment and comparison implementation.
+  const auto add_instr{[&](const Opcode t_opcode) {
+    // We traverse right side first.
+    // This is significant for IR generation of assignment operator.
+    traverse(right);
+    const auto right_var{m_factory->require_last_var()};
+
+    traverse(left);
+    const auto left_var{m_factory->require_last_var()};
+
+    auto& instr{m_factory->add_instruction(t_opcode)};
+    instr.add_operand({left_var});
+    instr.add_operand({right_var});
+
+    // An assignment assigns to a new var.
+    instr.m_result = result_var;
+  }};
+
+  const auto add_assignment_instr{[&](const Opcode t_iop, const Opcode t_fiop) {
+    // TODO: Left and right are already check to be of the same type.
+    // In the semantic checker.
+    // So we just need to evaluate if this is an integer or float comparison.
+    add_instr(t_iop);
+
+    // Add the final update, for the variable name and comment.
+    m_factory->add_update(name, result_var);
+    m_factory->add_comment(source_line);
+  }};
+
+  // We need to update the left hand side variable.
+  const auto op{t_assign->op()};
+  switch(op) {
+    case AssignmentOp::MULTIPLY:
+      add_assignment_instr(Opcode::IMUL, Opcode::FMUL);
+      break;
+
+    case AssignmentOp::DIVIDE:
+      add_assignment_instr(Opcode::IDIV, Opcode::FDIV);
+      break;
+
+    case AssignmentOp::MODULO:
+      add_instr(Opcode::IMOD);
+      break;
+
+    case AssignmentOp::ADD:
+      add_assignment_instr(Opcode::IADD, Opcode::FADD);
+      break;
+
+    case AssignmentOp::SUBTRACT:
+      add_assignment_instr(Opcode::ISUB, Opcode::FSUB);
+      break;
+
+    case AssignmentOp::REGULAR: {
+      traverse(right);
+      const auto right_var{m_factory->require_last_var()};
+
+      // For a regular assignment just update the ssa env state.
+      m_factory->add_update(name, right_var);
+      m_factory->add_comment(source_line);
+      break;
+    }
+
+    default:
+      using lib::stdexcept::throw_invalid_argument;
+
+      throw_invalid_argument("Assignment operator not supported.");
+      break;
+  }
+
   return {};
 }
 
@@ -332,7 +425,6 @@ auto ClirBuilder::visit(Comparison* t_comp) -> Any
 
   const auto left{t_comp->left()};
   const auto right{t_comp->right()};
-  // const auto type{t_comp->get_type()};
   const auto source_line{t_comp->position().m_line};
 
   traverse(left);
@@ -394,8 +486,6 @@ auto ClirBuilder::visit(Comparison* t_comp) -> Any
   }
 
   return {};
-
-  return {};
 }
 
 auto ClirBuilder::visit(Increment* t_inc) -> Any
@@ -441,10 +531,12 @@ auto ClirBuilder::visit(UnaryPrefix* t_up) -> Any
 
   switch(op) {
     case UnaryPrefixOp::PLUS:
+      // TODO: Determine if float or integer.
       // TODO: No op.
       break;
 
     case UnaryPrefixOp::MINUS:
+      // TODO: Determine if float or integer.
       m_factory->add_instruction(Opcode::ISUB);
 
       // TODO: Traverse left.

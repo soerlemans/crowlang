@@ -146,9 +146,9 @@ enum class Opcode : u32 {
   PHI,
 
   // High level control flow:
-  IF, // if <condition> <label_true> <label_false>
+  IF, // %<dest> = if <condition> <label_true> <label_false>
   ELSE,
-  LOOP, // Maybe just call it a while? (for wont exist).
+  LOOP, // loop <>.
   MATCH,
   SWITCH, // Jump table.
 
@@ -158,9 +158,9 @@ enum class Opcode : u32 {
   EXTRACT,
 
   // Call a function.
-  CALL,
+  CALL, // %<dest> = call <function reference> <arguments...>
 
-  NOP,
+  NOP, // nop ; Short for "No Operation", does nothing.
 };
 
 // TODO: Some of these structs, are starting to gain in size.
@@ -235,9 +235,12 @@ struct BasicBlock {
 
 struct Function {
   std::string m_name;
-  // TODO: Sequence of parameters.
-  // TODO: Include return type.
+  SsaVarVec m_params;
   BasicBlockSeq m_blocks;
+
+  // TODO: Include return type.
+
+  Function() = default;
 
   virtual ~Function() = default;
 };
