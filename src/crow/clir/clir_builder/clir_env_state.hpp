@@ -37,7 +37,7 @@ class ClirEnvState : public container::EnvState<T> {
   ClirEnvState(): BaseEnvState{}
   {}
 
-  auto get(const std::string_view t_key) -> BaseEnvState::Iter
+  auto lookup(const std::string_view t_key) -> BaseEnvState::Iter
   {
     const auto [iter, found] = BaseEnvState::find(t_key);
 
@@ -55,7 +55,7 @@ class ClirEnvState : public container::EnvState<T> {
   //! Get means it is required and if we dont find it error.
   auto get_value(const std::string_view t_key) -> T
   {
-    const auto iter{get(t_key)};
+    const auto iter{lookup(t_key)};
 
     return {iter->second};
   }
@@ -63,7 +63,7 @@ class ClirEnvState : public container::EnvState<T> {
   //! Get means it is required and if we dont find it error.
   auto update(const std::string_view t_key, const T& t_value) -> void
   {
-    auto iter{get(t_key)};
+    auto iter{lookup(t_key)};
 
     // Update the value in place.
     iter->second = t_value;

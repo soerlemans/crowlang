@@ -1,7 +1,10 @@
 module inc_
 
 func inc(t_inc: int) -> int {
-  let test = 10 + 10
+  var test = 10 + 10
+
+  test += 20
+  test = 20
 
   t_inc++
 

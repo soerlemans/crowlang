@@ -52,7 +52,7 @@ auto ClirModuleFactory::create_var(types::core::TypeVariant t_type) -> SsaVarPtr
   return ptr;
 }
 
-auto ClirModuleFactory::add_var(types::core::TypeVariant t_type) -> SsaVarPtr
+auto ClirModuleFactory::add_result_var(types::core::TypeVariant t_type) -> SsaVarPtr
 {
   auto ssa_var{create_var(t_type)};
   auto& instr{last_instruction()};
@@ -185,7 +185,7 @@ auto ClirModuleFactory::add_init(const std::string_view t_name,
   -> Instruction&
 {
   auto& assign_instr{add_instruction(Opcode::INIT)};
-  auto result_var{add_var(t_type)};
+  auto result_var{add_result_var(t_type)};
 
   // TODO: Check for errors.
   const auto [iter, inserted] =
@@ -203,13 +203,22 @@ auto ClirModuleFactory::add_init(const std::string_view t_name,
 auto ClirModuleFactory::add_update(const std::string_view t_name)
   -> Instruction&
 {
+  // Get the previous ssa variable associated with the name.
+  auto prev_var{m_var_env.get_value(t_name)};
+
+  return add_update(t_name, prev_var);
+}
+
+auto ClirModuleFactory::add_update(std::string_view t_name,
+                                   SsaVarPtr t_prev_var) -> Instruction&
+{
   auto& update_instr{add_instruction(Opcode::UPDATE)};
 
-  auto prev_var{m_var_env.get_value(t_name)};
-  update_instr.add_operand(prev_var);
+  // Add the last usage of the ssa variable associated with the name.
+  update_instr.add_operand(t_prev_var);
 
-  const auto type{prev_var->m_type};
-  auto result_var{add_var(type)};
+  const auto type{t_prev_var->m_type};
+  auto result_var{add_result_var(type)};
 
   // Update with the new result var.
   // For the next variable reference.

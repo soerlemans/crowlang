@@ -223,7 +223,6 @@ auto CrowParser::assignment() -> NodePtr
   NodePtr node;
 
   if(auto lhs{lvalue()}; lhs) {
-
     const auto pos{get_position()};
     const auto lambda{[&](const AssignmentOp t_op) {
       newline_opt();
