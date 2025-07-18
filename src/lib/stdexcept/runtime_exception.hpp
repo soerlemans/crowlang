@@ -14,9 +14,9 @@ class RuntimeException : public Exception {
 
 // Functions:
 template<typename... Args>
-auto runtime_exception(Args&&... t_args) -> void
+inline auto throw_runtime_exception(Args&&... t_args) -> void
 {
-  exception<RuntimeException>(std::forward<Args>(t_args)...);
+  throw_exception<RuntimeException>(std::forward<Args>(t_args)...);
 }
 } // namespace lib::stdexcept
 

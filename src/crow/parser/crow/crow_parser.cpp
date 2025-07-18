@@ -25,7 +25,7 @@ auto CrowParser::context_check(const Context t_context) -> void
   const auto enabled{m_store.get(t_context)};
 
   if(!enabled) {
-    syntax_error("Keyword used outside of proper context.");
+    throw_syntax_error("Keyword used outside of proper context.");
   }
 }
 
@@ -52,7 +52,7 @@ auto CrowParser::terminator() -> void
   }};
 
   if(!is_terminator()) {
-    syntax_error("Expected at least one 'TERMINATOR'");
+    throw_syntax_error("Expected at least one 'TERMINATOR'");
   }
 
   while(!eos()) {
@@ -98,7 +98,7 @@ auto CrowParser::init_expr(const TokenType t_type) -> NodePtr
       if(next_if(TokenType::ASSIGNMENT)) {
         get_expr();
       } else if(t_type == TokenType::LET) {
-        syntax_error("Variables declared with Let must be initialized.");
+        throw_syntax_error("Variables declared with Let must be initialized.");
       }
     } else {
       expect(TokenType::ASSIGNMENT);
@@ -181,7 +181,7 @@ auto CrowParser::expr_list() -> NodeListPtr
   auto nodes{expr_list_opt()};
 
   if(nodes->empty()) {
-    syntax_error("Expected a list of expressions");
+    throw_syntax_error("Expected a list of expressions");
   }
 
   return nodes;
@@ -206,7 +206,7 @@ auto CrowParser::expr_list_opt() -> NodeListPtr
 
         nodes->push_back(std::move(ptr));
       } else {
-        syntax_error("Expected another expression after ','");
+        throw_syntax_error("Expected another expression after ','");
       }
     } else {
       break;
@@ -362,7 +362,7 @@ auto CrowParser::branch_statement(const TokenType t_type) -> NodePtr
   if(next_if(t_type)) {
     auto [init, cond] = eval_expr();
     if(!cond) {
-      syntax_error("Expected a conditional");
+      throw_syntax_error("Expected a conditional");
     }
 
     auto then_ptr{body()};
@@ -419,7 +419,7 @@ auto CrowParser::statement() -> NodePtr
     node = std::move(ptr);
     // TODO: Detect expressions which have no side effects and throw.
     // } else if() {
-    // syntax_error();
+    // throw_syntax_error();
   }
 
   return node;
@@ -623,7 +623,7 @@ auto CrowParser::param_list() -> NodeListPtr
   auto nodes{param_list_opt()};
 
   if(nodes->empty()) {
-    syntax_error("Expected list of parameters");
+    throw_syntax_error("Expected list of parameters");
   }
 
   return nodes;
@@ -670,7 +670,7 @@ auto CrowParser::return_type() -> std::string
   const auto type{return_type_opt()};
 
   if(type.empty()) {
-    syntax_error("Expected a return type!");
+    throw_syntax_error("Expected a return type!");
   }
 
   return type;
@@ -721,7 +721,7 @@ auto CrowParser::function() -> NodePtr
 
     auto body_ptr{body()};
     if(!body_ptr) {
-      syntax_error("Expected a function body");
+      throw_syntax_error("Expected a function body");
     }
 
     node =
@@ -763,7 +763,7 @@ auto CrowParser::import_list(Import& t_import) -> void
   DBG_TRACE_FN(VERBOSE);
 
   if(!import_expr(t_import)) {
-    syntax_error("Expected at least one import expression!");
+    throw_syntax_error("Expected at least one import expression!");
   }
 
   while(!eos()) {
@@ -771,7 +771,7 @@ auto CrowParser::import_list(Import& t_import) -> void
       terminator();
 
       if(!import_expr(t_import)) {
-        syntax_error("Expected another import expression!");
+        throw_syntax_error("Expected another import expression!");
       }
     } else if(next_if(TokenType::NEWLINE)) {
       newline_opt();
@@ -805,7 +805,7 @@ auto CrowParser::import_() -> NodePtr
       import_list(*import_ptr);
       expect(TokenType::PAREN_CLOSE);
     } else {
-      syntax_error("Expected string or an import list");
+      throw_syntax_error("Expected string or an import list");
     }
 
     node = std::move(import_ptr);
@@ -860,7 +860,7 @@ auto CrowParser::item_list() -> NodeListPtr
   if(auto ptr{module_decl()}; ptr) {
     node = std::move(ptr);
   } else {
-    syntax_error("First statement in crowlang should be a module name.");
+    throw_syntax_error("First statement in crowlang should be a module name.");
   }
 
   // Parsing of item_list.

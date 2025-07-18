@@ -14,9 +14,9 @@ class BadAnyCast : public Exception {
 
 // Functions:
 template<typename... Args>
-auto bad_any_cast(Args&&... t_args) -> void
+auto throw_bad_any_cast(Args&&... t_args) -> void
 {
-  exception<BadAnyCast>(std::forward<Args>(t_args)...);
+  throw_exception<BadAnyCast>(std::forward<Args>(t_args)...);
 }
 } // namespace lib::stdexcept
 #endif // CROW_LIB_STDEXCEPT_BAD_ANY_CAST_HPP

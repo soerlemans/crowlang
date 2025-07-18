@@ -69,46 +69,48 @@ using FunctionIter = FunctionSeq::iterator;
  */
 enum class Opcode : u32 {
   // Literals:
-  CONST_F32,
-  CONST_F64,
+  CONST_F32, // %<dest> = const_f32 <float32 literal>
+  CONST_F64, // %<dest> = const_f64 <float64 literal>
 
-  CONST_INT,
-  CONST_I8,
-  CONST_I16,
-  CONST_I32,
-  CONST_I64,
-  CONST_ISIZE,
+  CONST_INT, // %<dest> = const_int <integer literal>
 
-  CONST_UINT,
-  CONST_U8,
-  CONST_U16,
-  CONST_U32,
-  CONST_U64,
-  CONST_USIZE,
+  // FIXME: Unused as of writing as we dont support suffix literals yet.
+  // CONST_I8,
+  // CONST_I16,
+  // CONST_I32,
+  // CONST_I64,
+  // CONST_ISIZE,
 
-  CONST_STRING, // %<dest> = const_bool <true|false>
+  // CONST_UINT,
+  // CONST_U8,
+  // CONST_U16,
+  // CONST_U32,
+  // CONST_U64,
+  // CONST_USIZE,
+
+  CONST_STRING, // %<dest> = const_string <string literal>
   CONST_BOOL,   // %<dest> = const_bool <true|false>
 
   // Integer arithmetic:
-  IADD,
-  ISUB,
-  IMUL,
-  IDIV,
-  IMOD,
-  INEG,
+  IADD, // %<dest> = iadd <src> <div>
+  ISUB, // %<dest> = isub <src> <div>
+  IMUL, // %<dest> = imul <src> <div>
+  IDIV, // %<dest> = idiv <src> <div>
+  IMOD, // %<dest> = imod <src> <div>
+  INEG, // %<dest> = ineg <src>
 
   // Integer comparison:
-  ICMP_LT,
-  ICMP_LTE,
-  ICMP_EQ,
-  ICMP_NQ,
-  ICMP_GT,
-  ICMP_GTE,
+  ICMP_LT,  // %<dest> = icmp_lt <lhs> <rhs>
+  ICMP_LTE, // %<dest> = icmp_lte <lhs> <rhs>
+  ICMP_EQ,  // %<dest> = icmp_eq <lhs> <rhs>
+  ICMP_NQ,  // %<dest> = icmp_nq <lhs> <rhs>
+  ICMP_GT,  // %<dest> = icmp_gt <lhs> <rhs>
+  ICMP_GTE, // %<dest> = icmp_gte <lhs> <rhs>
 
   // Float Arithmetic:
-  FADD,
-  FSUB,
-  FMUL,
+  FADD, // %<dest> = fadd <src> <div>
+  FSUB, // %<dest> = fsub <src> <div>
+  FMUL, // %<dest> = fmul <src> <div>
   FDIV, // %<dest> = fdiv <src> <div>
   FNEG, // %<dest> = fneg <src>
 

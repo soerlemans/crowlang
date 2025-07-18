@@ -4,7 +4,6 @@
 #include "crow/ast/node/include_nodes.hpp"
 #include "crow/debug/log.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
-#include "lib/string_util.hpp"
 
 // Macros:
 #define STUB(t_type)                                              \
@@ -141,26 +140,25 @@ auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
 
   // TODO: Maybe make a helper method for this?
   for(const auto& node : *params) {
+    // FIXME: We need a separate instruction for retrieving call arguments.
+    // This is a temporary solution.
+
     // Gain a raw ptr (non owning).
     // If the AST changes the assertion will be triggered.
     auto* param{dynamic_cast<Parameter*>(node.get())};
     if(!param) {
-      using lib::stdexcept::unexpected_nullptr;
+      using lib::stdexcept::throw_unexpected_nullptr;
 
-      unexpected_nullptr("Failed to dynamic_cast to Parameter*.");
+      throw_unexpected_nullptr("Failed to dynamic_cast to Parameter*.");
     }
 
     // Init the parameter variables.
     const auto name{param->identifier()};
     const auto type{param->get_type()};
-
-    auto source_line{param->position().m_line};
-    lib::strip_whitespace(source_line);
-    lib::trim_whitespace(source_line);
-    source_line += '.';
+    const auto source_line{param->position().m_line};
 
     auto& init_instr{m_factory->add_init(name, type)};
-    init_instr.m_comment = source_line;
+    m_factory->add_comment(source_line);
   }
 
   // Traverse the body.
@@ -189,16 +187,15 @@ auto ClirBuilder::visit(Let* t_let) -> Any
 
   const auto init_expr{t_let->init_expr()};
 
-  auto source_line{t_let->position().m_line};
-  lib::strip_whitespace(source_line);
-  lib::trim_whitespace(source_line);
-  source_line += '.';
+  const auto source_line{t_let->position().m_line};
 
   traverse(init_expr);
-  // TODO: Get last var?
+  const auto last_var{m_factory->require_last_var()};
 
   auto& init_instr{m_factory->add_init(name, type)};
-  init_instr.m_comment = source_line;
+  m_factory->add_comment(source_line);
+
+  init_instr.add_operand({last_var});
 
   return {};
 }
@@ -211,16 +208,15 @@ auto ClirBuilder::visit(Var* t_var) -> Any
 
   const auto init_expr{t_var->init_expr()};
 
-  auto source_line{t_var->position().m_line};
-  lib::strip_whitespace(source_line);
-  lib::trim_whitespace(source_line);
-  source_line += '.';
+  const auto source_line{t_var->position().m_line};
 
   traverse(init_expr);
-  // TODO: Get last var?
+  const auto last_var{m_factory->require_last_var()};
 
   auto& init_instr{m_factory->add_init(name, type)};
-  init_instr.m_comment = source_line;
+  m_factory->add_comment(source_line);
+
+  init_instr.add_operand({last_var});
 
   return {};
 }
@@ -240,6 +236,87 @@ auto ClirBuilder::visit(Variable* t_var) -> Any
 // Operators:
 auto ClirBuilder::visit(Arithmetic* t_arith) -> Any
 {
+  using types::core::is_float;
+  using types::core::is_integer;
+
+  // FIXME: Also support type promotion/casting.
+  const auto left{t_arith->left()};
+  const auto right{t_arith->right()};
+  const auto type{t_arith->get_type()};
+  const auto source_line{t_arith->position().m_line};
+
+  traverse(left);
+  const auto left_var{m_factory->require_last_var()};
+
+  traverse(right);
+  const auto right_var{m_factory->require_last_var()};
+
+  const auto add_instr{[&](const Opcode t_opcode) {
+    auto& instr{m_factory->add_instruction(t_opcode)};
+    m_factory->add_comment(source_line);
+
+    instr.add_operand({left_var});
+    instr.add_operand({right_var});
+
+    instr.m_result = m_factory->create_var(type);
+  }};
+
+  const auto add_arithmetic_instr{[&](const Opcode t_iop, const Opcode t_fiop) {
+    // TODO: Code for selecting either integer or float instruction.
+    // auto opt{type->native_type()};
+    // if(opt) {
+    //   const auto native_type{opt.value()};
+    //   is_float(native_type);
+
+    // } else {
+    //   using lib::stdexcept::throw_invalid_argument;
+
+    //   // We only support arithmetic on native types and numerics.
+    //   throw_invalid_argument();
+    // }
+    // if(is_integer()) {
+    //   add_instr(t_iop);
+    // } else {
+    //   add_instr(t_fop);
+    // }
+
+    add_instr(t_iop);
+  }};
+
+  const auto op{t_arith->op()};
+  switch(op) {
+    case ArithmeticOp::POWER:
+      add_arithmetic_instr(Opcode::IADD, Opcode::FADD);
+      break;
+
+    case ArithmeticOp::MULTIPLY:
+      add_arithmetic_instr(Opcode::IMUL, Opcode::FMUL);
+      break;
+
+    case ArithmeticOp::DIVIDE:
+      add_arithmetic_instr(Opcode::IDIV, Opcode::FDIV);
+      break;
+
+    case ArithmeticOp::MODULO:
+      // FIXME: Check for float argument as its not allowed.
+      add_instr(Opcode::IMOD);
+      break;
+
+    case ArithmeticOp::ADD:
+      add_arithmetic_instr(Opcode::IADD, Opcode::FADD);
+      break;
+
+    case ArithmeticOp::SUBTRACT:
+      add_arithmetic_instr(Opcode::ISUB, Opcode::FSUB);
+      break;
+
+    default:
+      using lib::stdexcept::throw_invalid_argument;
+
+      throw_invalid_argument("Arithmetic operator not supported.");
+      break;
+  }
+
   return {};
 }
 
@@ -250,8 +327,73 @@ auto ClirBuilder::visit(Assignment* t_assign) -> Any
 
 auto ClirBuilder::visit(Comparison* t_comp) -> Any
 {
-  // Dummy harcoded value for now.
-  m_factory->add_instruction(Opcode::ICMP_LT);
+  using types::core::is_float;
+  using types::core::is_integer;
+
+  const auto left{t_comp->left()};
+  const auto right{t_comp->right()};
+  // const auto type{t_comp->get_type()};
+  const auto source_line{t_comp->position().m_line};
+
+  traverse(left);
+  const auto left_var{m_factory->require_last_var()};
+
+  traverse(right);
+  const auto right_var{m_factory->require_last_var()};
+
+  // TODO: Unify with arithmetic, assignment and comparison implementation.
+  const auto add_instr{[&](const Opcode t_opcode) {
+    auto& instr{m_factory->add_instruction(t_opcode)};
+    m_factory->add_comment(source_line);
+
+    instr.add_operand({left_var});
+    instr.add_operand({right_var});
+
+    // A comparison always returns the boolean type.
+    instr.m_result = m_factory->create_var({NativeType::BOOL});
+  }};
+
+  const auto add_comparison_instr{[&](const Opcode t_iop, const Opcode t_fiop) {
+    // TODO: Left and right are already check to be of the same type.
+    // In the semantic checker.
+    // So we just need to evaluate if this is an integer or float comparison.
+    add_instr(t_iop);
+  }};
+
+  const auto op{t_comp->op()};
+  switch(op) {
+    case ComparisonOp::LESS_THAN:
+      add_comparison_instr(Opcode::ICMP_LT, Opcode::FCMP_LTE);
+      break;
+
+    case ComparisonOp::LESS_THAN_EQUAL:
+      add_comparison_instr(Opcode::ICMP_LTE, Opcode::FCMP_LT);
+      break;
+
+    case ComparisonOp::EQUAL:
+      add_comparison_instr(Opcode::ICMP_EQ, Opcode::FCMP_EQ);
+      break;
+
+    case ComparisonOp::NOT_EQUAL:
+      add_comparison_instr(Opcode::ICMP_NQ, Opcode::FCMP_NQ);
+      break;
+
+    case ComparisonOp::GREATER_THAN:
+      add_comparison_instr(Opcode::ICMP_GT, Opcode::FCMP_GT);
+      break;
+
+    case ComparisonOp::GREATER_THAN_EQUAL:
+      add_comparison_instr(Opcode::ICMP_GTE, Opcode::FCMP_GTE);
+      break;
+
+    default:
+      using lib::stdexcept::throw_invalid_argument;
+
+      throw_invalid_argument("Comparison operator not supported.");
+      break;
+  }
+
+  return {};
 
   return {};
 }
@@ -356,11 +498,25 @@ auto ClirBuilder::visit(ModuleDecl* t_module) -> Any
 // RValue:
 auto ClirBuilder::visit([[maybe_unused]] Float* t_float) -> Any
 {
+  // const auto value{t_int->get()};
+
+  // Add the literal, which assigns an SSA var for it.
+  // m_factory->add_literal(NativeType::F32, {value});
+
   return {};
 }
 
 auto ClirBuilder::visit(Integer* t_int) -> Any
 {
+  const auto value_i64{t_int->get()};
+
+  // TODO: Check if it fits ahead of time.
+  // FIXME: Cast to int for now (assumed integer literal default type).
+  const auto value{int{value_i64}};
+
+  // Add the literal, which assigns an SSA var for it.
+  m_factory->add_literal(NativeType::INT, {value});
+
   return {};
 }
 

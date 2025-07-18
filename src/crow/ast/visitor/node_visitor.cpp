@@ -31,13 +31,14 @@ auto NodeVisitor::traverse(NodePtr t_node) -> Any
 {
   Any any{};
 
-  // Kick off the traversal.
+  // Throw on nullptr.
   if(!t_node) {
-    using lib::stdexcept::unexpected_nullptr;
+    using lib::stdexcept::throw_unexpected_nullptr;
 
-    unexpected_nullptr("Cant traverse a nullptr.");
+    throw_unexpected_nullptr("Cant traverse a nullptr.");
   }
 
+  // Kick off the traversal.
   any = t_node->accept(this);
 
   return any;

@@ -30,7 +30,7 @@ auto PrototypeGenerator::resolve(NodePtr t_ptr) -> std::string
     try {
       ss << std::any_cast<std::string>(any);
     } catch(std::bad_any_cast& exception) {
-      lib::stdexcept::bad_any_cast(exception.what());
+      lib::stdexcept::throw_bad_any_cast(exception.what());
     }
   }
 

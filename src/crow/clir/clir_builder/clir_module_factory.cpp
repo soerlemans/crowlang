@@ -5,6 +5,7 @@
 
 // Absolute Includes:
 #include "lib/stdexcept/stdexcept.hpp"
+#include "lib/string_util.hpp"
 
 namespace clir::clir_builder {
 ClirModuleFactory::ClirModuleFactory()
@@ -40,9 +41,9 @@ auto ClirModuleFactory::create_var(types::core::TypeVariant t_type) -> SsaVarPtr
   const auto key{std::to_string(ptr->m_id)};
   auto [iter, inserted] = m_var_env.insert({key, ptr});
   if(!inserted) {
-    using lib::stdexcept::runtime_exception;
+    using lib::stdexcept::throw_runtime_exception;
 
-    runtime_exception("Can not insert duplicate variable name.");
+    throw_runtime_exception("Can not insert duplicate variable name.");
   }
 
   m_var_id++;
@@ -73,7 +74,7 @@ auto ClirModuleFactory::require_last_var() -> SsaVarPtr
 {
   auto var{last_var()};
   if(!var) {
-    lib::stdexcept::exception(
+    lib::stdexcept::throw_runtime_exception(
       "Expected last IR instruction to produce an SSA var.");
   }
 
@@ -105,6 +106,17 @@ auto ClirModuleFactory::add_instruction(const Opcode t_opcode) -> Instruction&
   return last_instruction();
 }
 
+auto ClirModuleFactory::add_comment(std::string t_comment) -> void
+{
+  auto& instr{last_instruction()};
+
+  lib::strip_whitespace(t_comment);
+  lib::trim_whitespace(t_comment);
+  t_comment += '.';
+
+  instr.m_comment = t_comment;
+}
+
 auto ClirModuleFactory::add_literal(NativeType t_type, LiteralValue t_value)
   -> void
 {
@@ -113,12 +125,21 @@ auto ClirModuleFactory::add_literal(NativeType t_type, LiteralValue t_value)
   // Translate native type to literal opcode.
   // TODO: Create a separate helper function for this.
   switch(t_type) {
+    case NativeType::F32:
+      opcode = Opcode::CONST_F32;
+      break;
+
+    case NativeType::INT:
+      opcode = Opcode::CONST_INT;
+      break;
+
     case NativeType::BOOL:
       opcode = Opcode::CONST_BOOL;
       break;
 
     default:
-      lib::stdexcept::invalid_argument("Given native type is unsupported.");
+      lib::stdexcept::throw_invalid_argument(
+        "Given native type is unsupported.");
       break;
   }
 
@@ -171,9 +192,9 @@ auto ClirModuleFactory::add_init(const std::string_view t_name,
     m_var_env.insert({std::string{t_name}, result_var});
 
   if(!inserted) {
-    using lib::stdexcept::runtime_exception;
+    using lib::stdexcept::throw_runtime_exception;
 
-    runtime_exception("Could not insert ", std::quoted(t_name), ".");
+    throw_runtime_exception("Could not insert ", std::quoted(t_name), ".");
   }
 
   return assign_instr;
@@ -203,9 +224,9 @@ auto ClirModuleFactory::last_instruction() -> Instruction&
   auto& instructions{block.m_instructions};
 
   if(instructions.empty()) {
-    using lib::stdexcept::runtime_exception;
+    using lib::stdexcept::throw_runtime_exception;
 
-    runtime_exception(
+    throw_runtime_exception(
       "There are no instructions in the last basic block, cant retrieve "
       "last instruction.");
   }
@@ -251,9 +272,9 @@ auto ClirModuleFactory::last_block() -> BasicBlock&
   auto& fn{last_function()};
 
   if(fn.m_blocks.empty()) {
-    using lib::stdexcept::runtime_exception;
+    using lib::stdexcept::throw_runtime_exception;
 
-    runtime_exception(
+    throw_runtime_exception(
       "There are no basic blocks in the last function, cant retrieve last "
       "basic block.");
   }
@@ -275,10 +296,10 @@ auto ClirModuleFactory::last_function() -> Function&
   auto& functions{m_module->m_functions};
 
   if(functions.empty()) {
-    using lib::stdexcept::runtime_exception;
+    using lib::stdexcept::throw_runtime_exception;
 
-    runtime_exception("There are no functions in the CLIR "
-                      "module, cant retrieve last function.");
+    throw_runtime_exception("There are no functions in the CLIR "
+                            "module, cant retrieve last function.");
   }
 
   return functions.back();

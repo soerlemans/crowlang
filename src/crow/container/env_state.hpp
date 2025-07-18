@@ -17,6 +17,14 @@
 #include "lib/stdexcept/stdexcept.hpp"
 
 namespace container {
+// Forward Declarations:
+template<typename T>
+class EnvState;
+
+template<typename T>
+inline auto print_env_state(std::ostream& t_os,
+                            container::EnvState<T>& t_state);
+
 // Structs:
 //! Primary template defaults to false.
 template<typename T>
@@ -126,9 +134,9 @@ class EnvState {
   virtual auto pop_env() -> void
   {
     if(m_envs.empty()) {
-      using lib::stdexcept::runtime_exception;
+      using lib::stdexcept::throw_runtime_exception;
 
-      runtime_exception("Tried to call pop_back on empty list.");
+      throw_runtime_exception("Tried to call pop_back on empty list.");
     }
 
     m_envs.pop_back();

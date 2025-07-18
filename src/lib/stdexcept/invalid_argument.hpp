@@ -14,9 +14,9 @@ class InvalidArgument : public Exception {
 
 // Functions:
 template<typename... Args>
-auto invalid_argument(Args&&... t_args) -> void
+inline auto throw_invalid_argument(Args&&... t_args) -> void
 {
-  exception<InvalidArgument>(std::forward<Args>(t_args)...);
+  throw_exception<InvalidArgument>(std::forward<Args>(t_args)...);
 }
 } // namespace lib::stdexcept
 

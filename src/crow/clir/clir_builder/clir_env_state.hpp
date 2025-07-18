@@ -42,11 +42,11 @@ class ClirEnvState : public container::EnvState<T> {
     const auto [iter, found] = BaseEnvState::find(t_key);
 
     if(!found) {
-      using lib::stdexcept::runtime_exception;
+      using lib::stdexcept::throw_runtime_exception;
 
       // Should never happen so throw and report to user.
       const auto str{std::quoted(t_key)};
-      runtime_exception("Identifier ", str, " is not defined.");
+      throw_runtime_exception("Identifier ", str, " is not defined.");
     }
 
     return {iter};
@@ -67,18 +67,6 @@ class ClirEnvState : public container::EnvState<T> {
 
     // Update the value in place.
     iter->second = t_value;
-  }
-
-  friend auto operator<<(std::ostream& t_os, const ClirEnvState& t_state)
-    -> std::ostream&
-  {
-    const auto& base{static_cast<const ClirEnvState::BaseEnvState&>(t_state)};
-
-    // Call formatting for base class.
-    // FIXME: Not working right now, base class cant find IrVariant.
-    // operator<<(). operator<<(t_os, base);
-
-    return t_os;
   }
 
   virtual ~ClirEnvState() = default;

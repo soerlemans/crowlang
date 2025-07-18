@@ -32,7 +32,7 @@ auto Lexer::text_position() const -> TextPosition
   return m_text->position();
 }
 
-auto Lexer::syntax_error(const std::string_view t_msg) const -> void
+auto Lexer::throw_syntax_error(const std::string_view t_msg) const -> void
 {
   using diagnostic::SyntaxError;
 
@@ -276,7 +276,7 @@ auto Lexer::handle_float(const std::string_view t_str) -> Token
         m_text->next();
         ss << m_text->character();
       } else if(ch.value() == g_dot.m_identifier) {
-        syntax_error("Cant have a second '.' in a float literal.");
+        throw_syntax_error("Cant have a second '.' in a float literal.");
       } else {
         break;
       }
@@ -428,7 +428,7 @@ auto Lexer::symbol() -> Token
   if(!opt) {
     std::stringstream ss;
     ss << "Symbol encountered is not valid: " << m_text->character() << '\n';
-    syntax_error(ss.str());
+    throw_syntax_error(ss.str());
   }
 
   // Add the symbol if we recognize it

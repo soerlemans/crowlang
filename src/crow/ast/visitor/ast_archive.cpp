@@ -46,7 +46,8 @@ auto AstArchive::set_archive_out(const ArchiveType t_type, std::ostream& t_os)
       break;
 
     default:
-      lib::stdexcept::invalid_argument("Unrecognized output archive format.");
+      lib::stdexcept::throw_invalid_argument(
+        "Unrecognized output archive format.");
       break;
   }
 }
@@ -72,7 +73,8 @@ auto AstArchive::set_archive_in(const ArchiveType t_type, std::istream& t_is)
       break;
 
     default:
-      lib::stdexcept::invalid_argument("Unrecognized input archive format.");
+      lib::stdexcept::throw_invalid_argument(
+        "Unrecognized input archive format.");
       break;
   }
 }

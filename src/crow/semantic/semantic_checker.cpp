@@ -18,7 +18,7 @@
 
 namespace semantic {
 // Using Statements:
-using diagnostic::type_error;
+using diagnostic::throw_type_error;
 using symbol::FnTypePtr;
 using symbol::StructTypePtr;
 using symbol::SymbolData;
@@ -167,7 +167,7 @@ auto SemanticChecker::visit(Call* t_fn_call) -> Any
 
     ss << "Call signature: " << id << "(" << args << ")";
 
-    type_error(ss.str());
+    throw_type_error(ss.str());
   }
 
   return fn->m_return_type;
@@ -211,7 +211,7 @@ auto SemanticChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
 
       err_ss << t_decl->position();
 
-      type_error(err_ss.str());
+      throw_type_error(err_ss.str());
     }
   }
 
@@ -290,7 +290,7 @@ auto SemanticChecker::visit(Arithmetic* t_arith) -> Any
 
     ss << t_arith->position();
 
-    type_error(ss.str());
+    throw_type_error(ss.str());
   }
 
   // Annotate AST.
@@ -322,7 +322,7 @@ auto SemanticChecker::visit(Assignment* t_assign) -> Any
 
     ss << t_assign->position();
 
-    type_error(ss.str());
+    throw_type_error(ss.str());
   }
 
   // If the expression being assigned is castable too the typ ebeing assigned
@@ -336,7 +336,7 @@ auto SemanticChecker::visit(Assignment* t_assign) -> Any
 
     ss << t_assign->position();
 
-    type_error(ss.str());
+    throw_type_error(ss.str());
   }
 
   // TODO: Annotate types.
@@ -362,7 +362,7 @@ auto SemanticChecker::visit(Comparison* t_comp) -> Any
 
     ss << t_comp->position();
 
-    type_error(ss.str());
+    throw_type_error(ss.str());
   }
 
   // TODO: Annotate types.
@@ -376,7 +376,7 @@ auto SemanticChecker::visit(Increment* t_inc) -> Any
 
   if(!opt) {
     // TODO: Add position
-    type_error("Trying to increment a non native type is illegal.");
+    throw_type_error("Trying to increment a non native type is illegal.");
   }
 
   if(!is_integer(opt.value())) {
@@ -384,7 +384,7 @@ auto SemanticChecker::visit(Increment* t_inc) -> Any
 
     ss << "Trying to increment a variable that is not an integer.";
 
-    type_error(ss.str());
+    throw_type_error(ss.str());
   }
 
   return SymbolData{opt.value()};
@@ -396,7 +396,7 @@ auto SemanticChecker::visit(Decrement* t_dec) -> Any
 
   if(!opt) {
     // TODO: Add position
-    type_error("Trying to decrement a non native type is illegal.");
+    throw_type_error("Trying to decrement a non native type is illegal.");
   }
 
   if(!is_integer(opt.value())) {
@@ -404,7 +404,7 @@ auto SemanticChecker::visit(Decrement* t_dec) -> Any
 
     ss << "Trying to decrement a variable that is not an integer.";
 
-    type_error(ss.str());
+    throw_type_error(ss.str());
   }
 
   return SymbolData{opt.value()};

@@ -31,7 +31,7 @@ auto TypeVariant::var() const -> VarTypePtr
 auto TypeVariant::native_type() const -> NativeTypeOpt
 {
   using lib::Overload;
-  using lib::stdexcept::unexpected_nullptr;
+  using lib::stdexcept::throw_unexpected_nullptr;
 
   NativeTypeOpt opt;
 
@@ -41,8 +41,8 @@ auto TypeVariant::native_type() const -> NativeTypeOpt
 
   const auto methods{[&](const std::shared_ptr<auto>& t_data) {
     if(!t_data) {
-      // TODO: Replace with stdexcept, unexpected_nullptr;
-      unexpected_nullptr("ptr is nullptr!");
+      // TODO: Improve error message.
+      throw_unexpected_nullptr("ptr is nullptr!");
     }
 
     return t_data->native_type();
