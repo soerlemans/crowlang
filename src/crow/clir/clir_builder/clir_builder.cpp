@@ -573,17 +573,32 @@ auto ClirBuilder::visit(UnaryPrefix* t_up) -> Any
 // Logical:
 auto ClirBuilder::visit(Not* t_not) -> Any
 {
+  const auto left{t_or->left()};
+  const auto source_line{t_or->position().m_line};
+
   return {};
 }
 
 auto ClirBuilder::visit(And* t_and) -> Any
 {
+  const auto left{t_and->left()};
+  const auto right{t_and->right()};
+
+  const auto source_line{t_and->position().m_line};
+
+  // TODO: Implement short circuiting.
+
   return {};
 }
 
 auto ClirBuilder::visit(Or* t_or) -> Any
 {
+  const auto left{t_or->left()};
+  const auto right{t_or->right()};
 
+  const auto source_line{t_or->position().m_line};
+
+  // TODO: Implement short circuiting.
 
   return {};
 }
