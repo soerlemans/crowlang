@@ -91,8 +91,8 @@ class ClirModuleFactory {
 
   /*!
    * Add an init for a variable.
-	 *
-	 * @note this binds a source variable name to an ssa var.
+   *
+   * @note this binds a source variable name to an ssa var.
    */
   auto add_init(std::string_view t_name, types::core::TypeVariant t_type)
     -> Instruction&;
@@ -120,6 +120,15 @@ class ClirModuleFactory {
 
   // Function operations:
   auto add_function(Function&& t_fn) -> void;
+
+  /*!
+   * Get a function by name.
+   *
+   * @note semantic analysis should ensure that a function exists.
+   * So if we cant get the function we should throw.
+   */
+  // auto get_function(std::string_view t_key) -> Function&;
+
   auto last_function() -> Function&;
 
   // Module operations:

@@ -518,7 +518,6 @@ auto ClirBuilder::visit(Increment* t_inc) -> Any
   Literal lit{NativeType::INT, 1};
   inc_instr.add_operand({lit});
 
-
   return {};
 }
 
