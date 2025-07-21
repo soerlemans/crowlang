@@ -260,12 +260,21 @@ auto operator<<(std::ostream& t_os, const clir::BasicBlock& t_bblock)
 auto operator<<(std::ostream& t_os, const clir::Function& t_fn) -> std::ostream&
 {
   using clir::BasicBlock;
+  using clir::SsaVarPtr;
 
-  const auto& [name, bblocks] = t_fn;
+  const auto& [name, params, bblocks] = t_fn;
 
-  t_os << std::format("function {} {{\n", name);
+  t_os << std::format("function {}", name);
 
-  // TODO: Print parameters.
+  t_os << '(';
+  std::string_view sep{};
+  for(const SsaVarPtr& ptr : params) {
+    t_os << sep << ptr;
+
+    sep = ", ";
+  }
+  t_os << ") {\n";
+
   // TODO: Print return type.
 
   for(const BasicBlock& bblock : bblocks) {

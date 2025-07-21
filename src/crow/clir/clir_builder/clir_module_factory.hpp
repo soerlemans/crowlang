@@ -84,9 +84,15 @@ class ClirModuleFactory {
                    BasicBlock& t_target) -> Instruction&;
   auto insert_jump(BasicBlock& t_block, BasicBlock& t_target) -> Instruction&;
 
+  /*!
+   * Bind a ssa variable to a source variable name.
+   */
+  auto create_var_binding(std::string_view t_name, SsaVarPtr t_var) -> void;
 
   /*!
    * Add an init for a variable.
+	 *
+	 * @note this binds a source variable name to an ssa var.
    */
   auto add_init(std::string_view t_name, types::core::TypeVariant t_type)
     -> Instruction&;

@@ -69,6 +69,8 @@ auto ClirBuilder::visit(If* t_if) -> Any
 
 auto ClirBuilder::visit(Loop* t_loop) -> Any
 {
+
+
   return {};
 }
 
@@ -96,8 +98,6 @@ auto ClirBuilder::visit(Defer* t_defer) -> Any
 
 auto ClirBuilder::visit(Return* t_ret) -> Any
 {
-  auto& block{m_factory->last_block()};
-
   // An expression is optional for a return statement.
   auto expr{t_ret->expr()};
   if(expr) {
@@ -120,7 +120,15 @@ auto ClirBuilder::visit(Parameter* t_param) -> Any
   const auto name{t_param->identifier()};
   const auto type{t_param->get_type()};
 
-  //   m_factory->create_var(type);
+  auto param_var{m_factory->create_var(type)};
+
+  auto& current_fn{m_factory->last_function()};
+
+  // Add the just created ssa var to the param list.
+  current_fn.m_params.push_back(param_var);
+
+  // Insert an update statement for debugging.
+  m_factory->create_var_binding(name, param_var);
 
   return {};
 }
@@ -143,28 +151,31 @@ auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
 
   m_factory->push_env();
 
+  // Visit all the parameters, to add to the parameter list.
+  traverse(params);
+
   // TODO: Maybe make a helper method for this?
-  for(const auto& node : *params) {
-    // FIXME: We need a separate instruction for retrieving call arguments.
-    // This is a temporary solution.
+  // for(const auto& node : *params) {
+  //   // FIXME: We need a separate instruction for retrieving call arguments.
+  //   // This is a temporary solution.
 
-    // Gain a raw ptr (non owning).
-    // If the AST changes the assertion will be triggered.
-    auto* param{dynamic_cast<Parameter*>(node.get())};
-    if(!param) {
-      using lib::stdexcept::throw_unexpected_nullptr;
+  //   // Gain a raw ptr (non owning).
+  //   // If the AST changes the assertion will be triggered.
+  //   auto* param{dynamic_cast<Parameter*>(node.get())};
+  //   if(!param) {
+  //     using lib::stdexcept::throw_unexpected_nullptr;
 
-      throw_unexpected_nullptr("Failed to dynamic_cast to Parameter*.");
-    }
+  //     throw_unexpected_nullptr("Failed to dynamic_cast to Parameter*.");
+  //   }
 
-    // Init the parameter variables.
-    const auto name{param->identifier()};
-    const auto type{param->get_type()};
-    const auto source_line{param->position().m_line};
+  //   // Init the parameter variables.
+  //   const auto name{param->identifier()};
+  //   const auto type{param->get_type()};
+  //   const auto source_line{param->position().m_line};
 
-    auto& init_instr{m_factory->add_init(name, type)};
-    m_factory->add_comment(source_line);
-  }
+  //   auto& init_instr{m_factory->add_init(name, type)};
+  //   m_factory->add_comment(source_line);
+  // }
 
   // Traverse the body.
   traverse(t_fn->body());
@@ -229,11 +240,13 @@ auto ClirBuilder::visit(Var* t_var) -> Any
 auto ClirBuilder::visit(Variable* t_var) -> Any
 {
   const auto name{t_var->identifier()};
+  const auto source_line{t_var->position().m_line};
 
   // TODO: add casting of a variable if it differs from.
   // The source type.
 
   m_factory->add_update(name);
+  m_factory->add_comment(source_line);
 
   return {};
 }
@@ -490,29 +503,37 @@ auto ClirBuilder::visit(Comparison* t_comp) -> Any
 
 auto ClirBuilder::visit(Increment* t_inc) -> Any
 {
+  // FIXME: Currently the addition does not update the bindings in
+  // m_ssa_var_env.
   const auto left{t_inc->left()};
+
   traverse(left);
   const auto last_var{m_factory->require_last_var()};
 
   // TODO: Deduce type, of left.
-  auto& dec_instr{m_factory->add_instruction(Opcode::IADD)};
-  dec_instr.add_operand({last_var});
+  auto& inc_instr{m_factory->add_instruction(Opcode::IADD)};
+  inc_instr.add_operand({last_var});
 
   // TODO: Deduce native type.
   Literal lit{NativeType::INT, 1};
-  dec_instr.add_operand({lit});
+  inc_instr.add_operand({lit});
+
 
   return {};
 }
 
 auto ClirBuilder::visit(Decrement* t_dec) -> Any
 {
+  // FIXME: Currently the subtraction does not update the bindings in
+  // m_ssa_var_env.
   const auto left{t_dec->left()};
+
   traverse(left);
   const auto last_var{m_factory->require_last_var()};
 
   // TODO: Deduce type, of left.
   auto& dec_instr{m_factory->add_instruction(Opcode::ISUB)};
+
   dec_instr.add_operand({last_var});
 
   // TODO: Deduce type, of left.

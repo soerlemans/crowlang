@@ -52,7 +52,8 @@ auto ClirModuleFactory::create_var(types::core::TypeVariant t_type) -> SsaVarPtr
   return ptr;
 }
 
-auto ClirModuleFactory::add_result_var(types::core::TypeVariant t_type) -> SsaVarPtr
+auto ClirModuleFactory::add_result_var(types::core::TypeVariant t_type)
+  -> SsaVarPtr
 {
   auto ssa_var{create_var(t_type)};
   auto& instr{last_instruction()};
@@ -180,6 +181,18 @@ auto ClirModuleFactory::insert_jump(BasicBlock& t_block, BasicBlock& t_target)
   return insert_jump(jmp_instr, t_block, t_target);
 }
 
+auto ClirModuleFactory::create_var_binding(std::string_view t_name,
+                                           SsaVarPtr t_var) -> void
+{
+  // TODO: Check for errors.
+  const auto [iter, inserted] = m_var_env.insert({std::string{t_name}, t_var});
+  if(!inserted) {
+    using lib::stdexcept::throw_runtime_exception;
+
+    throw_runtime_exception("Could not insert ", std::quoted(t_name), ".");
+  }
+}
+
 auto ClirModuleFactory::add_init(const std::string_view t_name,
                                  types::core::TypeVariant t_type)
   -> Instruction&
@@ -187,15 +200,8 @@ auto ClirModuleFactory::add_init(const std::string_view t_name,
   auto& assign_instr{add_instruction(Opcode::INIT)};
   auto result_var{add_result_var(t_type)};
 
-  // TODO: Check for errors.
-  const auto [iter, inserted] =
-    m_var_env.insert({std::string{t_name}, result_var});
-
-  if(!inserted) {
-    using lib::stdexcept::throw_runtime_exception;
-
-    throw_runtime_exception("Could not insert ", std::quoted(t_name), ".");
-  }
+  // Bind the source variable name to the ssa var.
+  create_var_binding(t_name, result_var);
 
   return assign_instr;
 }
