@@ -294,8 +294,12 @@ auto operator<<(std::ostream& t_os, const clir::Module& t_mod) -> std::ostream&
   t_os << std::format("module {}\n\n", name);
 
   // Print the functions part of the module.
+  std::string_view sep{};
   for(const Function& fn : functions) {
-    t_os << fn;
+    t_os << sep << fn;
+
+    // Add a newline between functions.
+    sep = "\n";
   }
 
   return t_os;

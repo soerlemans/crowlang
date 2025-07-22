@@ -573,18 +573,16 @@ auto ClirBuilder::visit(And* t_and) -> Any
   const auto source_line{t_and->position().m_line};
 
   // Jump to enter and flow.
-  auto main_jump{m_factory->add_instruction(Opcode::JUMP)};
+  auto& main_jump{m_factory->add_instruction(Opcode::JUMP)};
 
-  // Need a new block to reference.
+  // Left term block:
   auto& left_block{m_factory->add_block("and_left_term")};
 
-  // Create label for true branch.
-  Label main_label{&left_block};
-  main_jump.add_operand({main_label});
+  // Create jump for left term block.
+  main_jump.add_operand(Label{&left_block});
 
   traverse(left);
   const auto left_var{m_factory->require_last_var()};
-  const auto left_jump{m_factory->create_instruction(Opcode::JUMP)};
 
   // Add a conditional jump skipping if left term is false.
   auto& cjmp_instr{m_factory->add_instruction(Opcode::COND_JUMP)};
@@ -592,29 +590,35 @@ auto ClirBuilder::visit(And* t_and) -> Any
   cjmp_instr.m_result = cjmp_var;
   m_factory->add_comment(source_line);
 
+  const auto left_jump{m_factory->create_instruction(Opcode::JUMP)};
+
+  // Right term block:
   auto& right_block{m_factory->add_block("and_right_term")};
 
   traverse(right);
   const auto right_var{m_factory->require_last_var()};
   const auto right_jump{m_factory->create_instruction(Opcode::JUMP)};
 
+  // Right block:
   auto& merge_block{m_factory->add_block("and_merge")};
 
   // Finish conditional jump args.
+  // We go to the merge_block on false to short circuit.
   cjmp_instr.add_operand(left_var);
   cjmp_instr.add_operand(Label{&right_block});
   cjmp_instr.add_operand(Label{&merge_block});
 
+  m_factory->add_literal(NativeType::BOOL, {false});
+  auto false_var{m_factory->require_last_var()};
+
   auto& phi_instr{m_factory->add_instruction(Opcode::PHI)};
   phi_instr.m_result = m_factory->create_var(NativeType::BOOL);
-
-  auto false_instr{m_factory->add_literal(NativeType::BOOL, {false})};
 
   // If we short circuit and go directly to the merge block.
   // Then the result is false.
   phi_instr.add_operand({cjmp_var});
   phi_instr.add_operand({right_var});
-  phi_instr.add_operand({false_instr.m_result});
+  phi_instr.add_operand({false_var});
 
   // Insert jumps to merge into the block.
   m_factory->insert_jump(left_jump, left_block, merge_block);
@@ -626,26 +630,22 @@ auto ClirBuilder::visit(And* t_and) -> Any
 auto ClirBuilder::visit(Or* t_or) -> Any
 {
   // TODO: Refactor very messy.
-  // Only difference with and is that the cond_jump for short circuiting.
-  // Is swapped.
 
-  const auto left{t_or->left()};
-  const auto right{t_or->right()};
-  const auto source_line{t_or->position().m_line};
+  const auto left{t_and->left()};
+  const auto right{t_and->right()};
+  const auto source_line{t_and->position().m_line};
 
   // Jump to enter and flow.
-  auto main_jump{m_factory->add_instruction(Opcode::JUMP)};
+  auto& main_jump{m_factory->add_instruction(Opcode::JUMP)};
 
-  // Need a new block to reference.
-  auto& left_block{m_factory->add_block("or_left_term")};
+  // Left term block:
+  auto& left_block{m_factory->add_block("and_left_term")};
 
-  // Create label for true branch.
-  Label main_label{&left_block};
-  main_jump.add_operand({main_label});
+  // Create jump for left term block.
+  main_jump.add_operand(Label{&left_block});
 
   traverse(left);
   const auto left_var{m_factory->require_last_var()};
-  const auto left_jump{m_factory->create_instruction(Opcode::JUMP)};
 
   // Add a conditional jump skipping if left term is false.
   auto& cjmp_instr{m_factory->add_instruction(Opcode::COND_JUMP)};
@@ -653,42 +653,39 @@ auto ClirBuilder::visit(Or* t_or) -> Any
   cjmp_instr.m_result = cjmp_var;
   m_factory->add_comment(source_line);
 
-  auto& right_block{m_factory->add_block("or_right_term")};
+  const auto left_jump{m_factory->create_instruction(Opcode::JUMP)};
 
-  // Create label for true branch.
-  Label label{&right_block};
-  cjmp_instr.add_operand({label});
+  // Right term block:
+  auto& right_block{m_factory->add_block("and_right_term")};
 
   traverse(right);
   const auto right_var{m_factory->require_last_var()};
   const auto right_jump{m_factory->create_instruction(Opcode::JUMP)};
 
-  // Create merge block.
+  // Right block:
   auto& merge_block{m_factory->add_block("and_merge")};
 
   // Finish conditional jump args.
+  // We go to the merge_block on true to short circuit.
   cjmp_instr.add_operand(left_var);
   cjmp_instr.add_operand(Label{&merge_block});
   cjmp_instr.add_operand(Label{&right_block});
 
-  auto& phi_instr{m_factory->add_instruction(Opcode::PHI)};
-  phi_instr.m_result = m_factory->create_var(NativeType::BOOL);
-
-  // We need the short
   m_factory->add_literal(NativeType::BOOL, {true});
   auto true_var{m_factory->require_last_var()};
 
+  auto& phi_instr{m_factory->add_instruction(Opcode::PHI)};
+  phi_instr.m_result = m_factory->create_var(NativeType::BOOL);
+
   // If we short circuit and go directly to the merge block.
-  // Then the result is true.
+  // Then the result is false.
   phi_instr.add_operand({cjmp_var});
   phi_instr.add_operand({true_var});
-  phi_instr.add_operand({left_var});
+  phi_instr.add_operand({right_var});
 
   // Insert jumps to merge into the block.
   m_factory->insert_jump(left_jump, left_block, merge_block);
   m_factory->insert_jump(right_jump, right_block, merge_block);
-
-  return {};
 
   return {};
 }
