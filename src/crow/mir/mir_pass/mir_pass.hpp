@@ -6,8 +6,16 @@
 
 namespace mir::mir_pass {
 class MirPass {
+  protected:
+  ModulePtr m_module;
+
+  // clang-format off
+	// TODO: Add symbol table, containing references to MIR entities (functions, variables, structs).
+  // clang-format on
   public:
   MirPass() = default;
+
+  virtual auto run(ModulePtr t_module) -> void = 0;
 
   virtual ~MirPass() = default;
 };
