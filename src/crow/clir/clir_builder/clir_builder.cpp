@@ -31,49 +31,60 @@ auto ClirBuilder::visit(If* t_if) -> Any
   const auto init_expr{t_if->init_expr()};
   const auto cond{t_if->condition()};
   const auto then{t_if->then()};
-  const auto alt{t_if->then()};
+  const auto alt{t_if->alt()};
 
   // Generate IR for init of another var.
-  traverse(init_expr);
+  if(init_expr) {
+    traverse(init_expr);
+  }
 
   // Resolve condition, should assign result of operation to a SSA var.
   traverse(cond);
   const auto last_var{m_factory->require_last_var()};
 
-  auto& if_instr{m_factory->add_instruction(Opcode::IF)};
+  auto& if_instr{m_factory->add_instruction(Opcode::COND_JUMP)};
   if_instr.add_operand({last_var});
 
   // Then block:
-  auto& then_block{m_factory->add_block("then_block")};
+  auto& then_block{m_factory->add_block("if_then")};
   if_instr.add_operand({&then_block});
 
   traverse(then);
   const auto then_jump{m_factory->create_instruction(Opcode::JUMP)};
 
   // Alt block:
-  auto& alt_block{m_factory->add_block("alt_block")};
-  if_instr.add_operand({&alt_block});
+  if(alt) {
+    auto& alt_block{m_factory->add_block("if_alt")};
+    if_instr.add_operand({&alt_block});
 
-  traverse(alt);
-  const auto alt_jump{m_factory->create_instruction(Opcode::JUMP)};
+    traverse(alt);
+    const auto alt_jump{m_factory->create_instruction(Opcode::JUMP)};
+  }
 
   // Final block after the if statement.
-  auto& final_block{m_factory->add_block("final_block")};
+  auto& merge_block{m_factory->add_block("if_merge")};
 
   // Insert jumps at the end of the blocks.
-  m_factory->insert_jump(then_jump, then_block, final_block);
-  m_factory->insert_jump(alt_jump, alt_block, final_block);
+  m_factory->insert_jump(then_jump, then_block, merge_block);
+
+  if(alt) {
+    // FIXME:
+    // m_factory->insert_jump(alt_jump, alt_block, merge_block);
+  }
 
   return {};
 }
 
 auto ClirBuilder::visit(Loop* t_loop) -> Any
 {
+
+
   return {};
 }
 
 auto ClirBuilder::visit(Continue* t_continue) -> Any
 {
+  // TODO: Replace continue with JUMP?
   m_factory->add_instruction(Opcode::CONTINUE);
 
   return {};
@@ -81,6 +92,7 @@ auto ClirBuilder::visit(Continue* t_continue) -> Any
 
 auto ClirBuilder::visit(Break* t_break) -> Any
 {
+  // TODO: Replace break with JUMP?
   m_factory->add_instruction(Opcode::BREAK);
 
   return {};
@@ -89,15 +101,19 @@ auto ClirBuilder::visit(Break* t_break) -> Any
 auto ClirBuilder::visit(Defer* t_defer) -> Any
 {
   // Defer statements are inserted at the end.
-  // Of a return statement or any other break in return.
+  // Before all return statements.
+  // Or at the end of a function.
+
+  // To implement this we need to queue, defer operations.
+  // And when they are returned or at the end of the function.
+  // Insert all the operations, that we deferred.
+  // We should likely use an std::vector for this.
 
   return {};
 }
 
 auto ClirBuilder::visit(Return* t_ret) -> Any
 {
-  auto& block{m_factory->last_block()};
-
   // An expression is optional for a return statement.
   auto expr{t_ret->expr()};
   if(expr) {
@@ -117,6 +133,19 @@ auto ClirBuilder::visit(Return* t_ret) -> Any
 // Functions:
 auto ClirBuilder::visit(Parameter* t_param) -> Any
 {
+  const auto name{t_param->identifier()};
+  const auto type{t_param->get_type()};
+
+  auto param_var{m_factory->create_var(type)};
+
+  auto& current_fn{m_factory->last_function()};
+
+  // Add the just created ssa var to the param list.
+  current_fn.m_params.push_back(param_var);
+
+  // Insert an update statement for debugging.
+  m_factory->create_var_binding(name, param_var);
+
   return {};
 }
 
@@ -138,28 +167,8 @@ auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
 
   m_factory->push_env();
 
-  // TODO: Maybe make a helper method for this?
-  for(const auto& node : *params) {
-    // FIXME: We need a separate instruction for retrieving call arguments.
-    // This is a temporary solution.
-
-    // Gain a raw ptr (non owning).
-    // If the AST changes the assertion will be triggered.
-    auto* param{dynamic_cast<Parameter*>(node.get())};
-    if(!param) {
-      using lib::stdexcept::throw_unexpected_nullptr;
-
-      throw_unexpected_nullptr("Failed to dynamic_cast to Parameter*.");
-    }
-
-    // Init the parameter variables.
-    const auto name{param->identifier()};
-    const auto type{param->get_type()};
-    const auto source_line{param->position().m_line};
-
-    auto& init_instr{m_factory->add_init(name, type)};
-    m_factory->add_comment(source_line);
-  }
+  // Visit all the parameters, to add to the parameter list.
+  traverse(params);
 
   // Traverse the body.
   traverse(t_fn->body());
@@ -170,17 +179,23 @@ auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
 
 auto ClirBuilder::visit(Call* t_call) -> Any
 {
+  // TODO: Implement.
+
   return {};
 }
 
 auto ClirBuilder::visit([[maybe_unused]] ReturnType* t_rt) -> Any
 {
+  // TODO: Do something with this?
+
   return {};
 }
 
 // Lvalue:
 auto ClirBuilder::visit(Let* t_let) -> Any
 {
+  // TODO: Cleanup messy.
+
   // The let and var keywords function the same in SSA.
   const auto name{t_let->identifier()};
   const auto type{t_let->get_type()};
@@ -202,6 +217,8 @@ auto ClirBuilder::visit(Let* t_let) -> Any
 
 auto ClirBuilder::visit(Var* t_var) -> Any
 {
+  // TODO: Cleanup messy.
+
   // The let and var keywords function the same in SSA.
   const auto name{t_var->identifier()};
   const auto type{t_var->get_type()};
@@ -224,11 +241,13 @@ auto ClirBuilder::visit(Var* t_var) -> Any
 auto ClirBuilder::visit(Variable* t_var) -> Any
 {
   const auto name{t_var->identifier()};
+  const auto source_line{t_var->position().m_line};
 
   // TODO: add casting of a variable if it differs from.
   // The source type.
 
   m_factory->add_update(name);
+  m_factory->add_comment(source_line);
 
   return {};
 }
@@ -322,6 +341,94 @@ auto ClirBuilder::visit(Arithmetic* t_arith) -> Any
 
 auto ClirBuilder::visit(Assignment* t_assign) -> Any
 {
+  using types::core::is_float;
+  using types::core::is_integer;
+
+  const auto left{t_assign->left()};
+  const auto right{t_assign->right()};
+  const auto source_line{t_assign->position().m_line};
+
+  // For now we need a dynamic_cast.
+  auto* lhs{dynamic_cast<Variable*>(left.get())};
+  if(!lhs) {
+    using lib::stdexcept::throw_unexpected_nullptr;
+
+    throw_unexpected_nullptr("Failed to dynamic_cast to Variable*.");
+  }
+
+  const auto name{lhs->identifier()};
+  const auto type{lhs->get_type()};
+  const auto result_var{m_factory->create_var(type)};
+
+  // TODO: Unify with arithmetic, assignment and comparison implementation.
+  const auto add_instr{[&](const Opcode t_opcode) {
+    // We traverse right side first.
+    // This is significant for IR generation of assignment operator.
+    traverse(right);
+    const auto right_var{m_factory->require_last_var()};
+
+    traverse(left);
+    const auto left_var{m_factory->require_last_var()};
+
+    auto& instr{m_factory->add_instruction(t_opcode)};
+    instr.add_operand({left_var});
+    instr.add_operand({right_var});
+
+    // An assignment assigns to a new var.
+    instr.m_result = result_var;
+  }};
+
+  const auto add_assignment_instr{[&](const Opcode t_iop, const Opcode t_fiop) {
+    // TODO: Left and right are already check to be of the same type.
+    // In the semantic checker.
+    // So we just need to evaluate if this is an integer or float comparison.
+    add_instr(t_iop);
+
+    // Add the final update, for the variable name and comment.
+    m_factory->add_update(name, result_var);
+    m_factory->add_comment(source_line);
+  }};
+
+  // We need to update the left hand side variable.
+  const auto op{t_assign->op()};
+  switch(op) {
+    case AssignmentOp::MULTIPLY:
+      add_assignment_instr(Opcode::IMUL, Opcode::FMUL);
+      break;
+
+    case AssignmentOp::DIVIDE:
+      add_assignment_instr(Opcode::IDIV, Opcode::FDIV);
+      break;
+
+    case AssignmentOp::MODULO:
+      add_instr(Opcode::IMOD);
+      break;
+
+    case AssignmentOp::ADD:
+      add_assignment_instr(Opcode::IADD, Opcode::FADD);
+      break;
+
+    case AssignmentOp::SUBTRACT:
+      add_assignment_instr(Opcode::ISUB, Opcode::FSUB);
+      break;
+
+    case AssignmentOp::REGULAR: {
+      traverse(right);
+      const auto right_var{m_factory->require_last_var()};
+
+      // For a regular assignment just update the ssa env state.
+      m_factory->add_update(name, right_var);
+      m_factory->add_comment(source_line);
+      break;
+    }
+
+    default:
+      using lib::stdexcept::throw_invalid_argument;
+
+      throw_invalid_argument("Assignment operator not supported.");
+      break;
+  }
+
   return {};
 }
 
@@ -332,7 +439,6 @@ auto ClirBuilder::visit(Comparison* t_comp) -> Any
 
   const auto left{t_comp->left()};
   const auto right{t_comp->right()};
-  // const auto type{t_comp->get_type()};
   const auto source_line{t_comp->position().m_line};
 
   traverse(left);
@@ -394,35 +500,40 @@ auto ClirBuilder::visit(Comparison* t_comp) -> Any
   }
 
   return {};
-
-  return {};
 }
 
 auto ClirBuilder::visit(Increment* t_inc) -> Any
 {
+  // FIXME: Currently the addition does not update the bindings in
+  // m_ssa_var_env.
   const auto left{t_inc->left()};
+
   traverse(left);
   const auto last_var{m_factory->require_last_var()};
 
   // TODO: Deduce type, of left.
-  auto& dec_instr{m_factory->add_instruction(Opcode::IADD)};
-  dec_instr.add_operand({last_var});
+  auto& inc_instr{m_factory->add_instruction(Opcode::IADD)};
+  inc_instr.add_operand({last_var});
 
   // TODO: Deduce native type.
   Literal lit{NativeType::INT, 1};
-  dec_instr.add_operand({lit});
+  inc_instr.add_operand({lit});
 
   return {};
 }
 
 auto ClirBuilder::visit(Decrement* t_dec) -> Any
 {
+  // FIXME: Currently the subtraction does not update the bindings in
+  // m_ssa_var_env.
   const auto left{t_dec->left()};
+
   traverse(left);
   const auto last_var{m_factory->require_last_var()};
 
   // TODO: Deduce type, of left.
   auto& dec_instr{m_factory->add_instruction(Opcode::ISUB)};
+
   dec_instr.add_operand({last_var});
 
   // TODO: Deduce type, of left.
@@ -441,10 +552,12 @@ auto ClirBuilder::visit(UnaryPrefix* t_up) -> Any
 
   switch(op) {
     case UnaryPrefixOp::PLUS:
+      // TODO: Determine if float or integer.
       // TODO: No op.
       break;
 
     case UnaryPrefixOp::MINUS:
+      // TODO: Determine if float or integer.
       m_factory->add_instruction(Opcode::ISUB);
 
       // TODO: Traverse left.
@@ -461,17 +574,136 @@ auto ClirBuilder::visit(UnaryPrefix* t_up) -> Any
 // Logical:
 auto ClirBuilder::visit(Not* t_not) -> Any
 {
+  const auto left{t_not->left()};
+  const auto source_line{t_not->position().m_line};
+
+  // TODO: Implement.
+
   return {};
 }
 
 auto ClirBuilder::visit(And* t_and) -> Any
 {
+  // TODO: Refactor very messy.
+
+  const auto left{t_and->left()};
+  const auto right{t_and->right()};
+  const auto source_line{t_and->position().m_line};
+
+  // Jump to enter and flow.
+  auto& main_jump{m_factory->add_instruction(Opcode::JUMP)};
+
+  // Left term block:
+  auto& left_block{m_factory->add_block("and_left_term")};
+
+  // Create jump for left term block.
+  main_jump.add_operand(Label{&left_block});
+
+  traverse(left);
+  const auto left_var{m_factory->require_last_var()};
+
+  // Add a conditional jump skipping if left term is false.
+  auto& cjmp_instr{m_factory->add_instruction(Opcode::COND_JUMP)};
+  auto cjmp_var{m_factory->create_var(NativeType::BOOL)};
+  cjmp_instr.m_result = cjmp_var;
+  m_factory->add_comment(source_line);
+
+  const auto left_jump{m_factory->create_instruction(Opcode::JUMP)};
+
+  // Right term block:
+  auto& right_block{m_factory->add_block("and_right_term")};
+
+  traverse(right);
+  const auto right_var{m_factory->require_last_var()};
+  const auto right_jump{m_factory->create_instruction(Opcode::JUMP)};
+
+  // Right block:
+  auto& merge_block{m_factory->add_block("and_merge")};
+
+  // Finish conditional jump args.
+  // We go to the merge_block on false to short circuit.
+  cjmp_instr.add_operand(left_var);
+  cjmp_instr.add_operand(Label{&right_block});
+  cjmp_instr.add_operand(Label{&merge_block});
+
+  m_factory->add_literal(NativeType::BOOL, {false});
+  auto false_var{m_factory->require_last_var()};
+
+  auto& phi_instr{m_factory->add_instruction(Opcode::PHI)};
+  phi_instr.m_result = m_factory->create_var(NativeType::BOOL);
+
+  // If we short circuit and go directly to the merge block.
+  // Then the result is false.
+  phi_instr.add_operand({cjmp_var});
+  phi_instr.add_operand({right_var});
+  phi_instr.add_operand({false_var});
+
+  // Insert jumps to merge into the block.
+  m_factory->insert_jump(left_jump, left_block, merge_block);
+  m_factory->insert_jump(right_jump, right_block, merge_block);
+
   return {};
 }
 
 auto ClirBuilder::visit(Or* t_or) -> Any
 {
+  // TODO: Refactor very messy.
 
+  const auto left{t_or->left()};
+  const auto right{t_or->right()};
+  const auto source_line{t_or->position().m_line};
+
+  // Jump to enter and flow.
+  auto& main_jump{m_factory->add_instruction(Opcode::JUMP)};
+
+  // Left term block:
+  auto& left_block{m_factory->add_block("or_left_term")};
+
+  // Create jump for left term block.
+  main_jump.add_operand(Label{&left_block});
+
+  traverse(left);
+  const auto left_var{m_factory->require_last_var()};
+
+  // Add a conditional jump skipping if left term is false.
+  auto& cjmp_instr{m_factory->add_instruction(Opcode::COND_JUMP)};
+  auto cjmp_var{m_factory->create_var(NativeType::BOOL)};
+  cjmp_instr.m_result = cjmp_var;
+  m_factory->add_comment(source_line);
+
+  const auto left_jump{m_factory->create_instruction(Opcode::JUMP)};
+
+  // Right term block:
+  auto& right_block{m_factory->add_block("or_right_term")};
+
+  traverse(right);
+  const auto right_var{m_factory->require_last_var()};
+  const auto right_jump{m_factory->create_instruction(Opcode::JUMP)};
+
+  // Right block:
+  auto& merge_block{m_factory->add_block("or_merge")};
+
+  // Finish conditional jump args.
+  // We go to the merge_block on true to short circuit.
+  cjmp_instr.add_operand(left_var);
+  cjmp_instr.add_operand(Label{&merge_block});
+  cjmp_instr.add_operand(Label{&right_block});
+
+  m_factory->add_literal(NativeType::BOOL, {true});
+  auto true_var{m_factory->require_last_var()};
+
+  auto& phi_instr{m_factory->add_instruction(Opcode::PHI)};
+  phi_instr.m_result = m_factory->create_var(NativeType::BOOL);
+
+  // If we short circuit and go directly to the merge block.
+  // Then the result is false.
+  phi_instr.add_operand({cjmp_var});
+  phi_instr.add_operand({true_var});
+  phi_instr.add_operand({right_var});
+
+  // Insert jumps to merge into the block.
+  m_factory->insert_jump(left_jump, left_block, merge_block);
+  m_factory->insert_jump(right_jump, right_block, merge_block);
 
   return {};
 }

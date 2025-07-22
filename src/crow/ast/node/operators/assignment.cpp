@@ -1,7 +1,7 @@
 #include "assignment.hpp"
 
-// STL Includes:
-#include <exception>
+// Absolute Includes:
+#include "lib/stdexcept/stdexcept.hpp"
 
 // Macros:
 #define MATCH(t_key, t_value) \
@@ -36,10 +36,15 @@ auto assignment_op2str(const AssignmentOp t_op) -> std::string_view
     MATCH(ADD, "+=");
     MATCH(SUBTRACT, "-=");
 
-    default:
-      throw std::invalid_argument{
-        "AssignmentOp could not be converted to std::string_view."};
+    MATCH(REGULAR, "=");
+
+    default: {
+      using lib::stdexcept::throw_invalid_argument;
+
+      throw_invalid_argument(
+        "AssignmentOp could not be converted to std::string_view.");
       break;
+    }
   }
 
   return str;

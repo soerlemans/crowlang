@@ -123,8 +123,6 @@ auto opcode2str(const Opcode t_opcode) -> std::string_view
     MATCH(PHI, "phi");
 
     // High level control flow:
-    MATCH(IF, "if");
-    MATCH(ELSE, "else");
     MATCH(LOOP, "loop");
     MATCH(MATCH, "match");
     MATCH(SWITCH, "switch");
@@ -185,7 +183,7 @@ auto operator<<(std::ostream& t_os, const clir::SsaVarPtr& t_ptr)
 
 auto operator<<(std::ostream& t_os, const clir::Label& t_label) -> std::ostream&
 {
-  t_os << std::format("{}", t_label.label());
+  t_os << std::format("<{}>", t_label.label());
 
   return t_os;
 }
@@ -260,12 +258,21 @@ auto operator<<(std::ostream& t_os, const clir::BasicBlock& t_bblock)
 auto operator<<(std::ostream& t_os, const clir::Function& t_fn) -> std::ostream&
 {
   using clir::BasicBlock;
+  using clir::SsaVarPtr;
 
-  const auto& [name, bblocks] = t_fn;
+  const auto& [name, params, bblocks] = t_fn;
 
-  t_os << std::format("function {} {{\n", name);
+  t_os << std::format("function {}", name);
 
-  // TODO: Print parameters.
+  t_os << '(';
+  std::string_view sep{};
+  for(const SsaVarPtr& ptr : params) {
+    t_os << sep << ptr;
+
+    sep = ", ";
+  }
+  t_os << ") {\n";
+
   // TODO: Print return type.
 
   for(const BasicBlock& bblock : bblocks) {
@@ -287,8 +294,12 @@ auto operator<<(std::ostream& t_os, const clir::Module& t_mod) -> std::ostream&
   t_os << std::format("module {}\n\n", name);
 
   // Print the functions part of the module.
+  std::string_view sep{};
   for(const Function& fn : functions) {
-    t_os << fn;
+    t_os << sep << fn;
+
+    // Add a newline between functions.
+    sep = "\n";
   }
 
   return t_os;

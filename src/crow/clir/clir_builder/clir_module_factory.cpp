@@ -1,6 +1,7 @@
 #include "clir_module_factory.hpp"
 
 // STL Includes:
+#include <iomanip>
 #include <memory>
 
 // Absolute Includes:
@@ -12,8 +13,9 @@ ClirModuleFactory::ClirModuleFactory()
   : m_module{std::make_shared<Module>()},
     m_var_env{},
     m_fn_env{},
-    m_var_id{0},
-    m_instr_id{0}
+    m_block_id{0},
+    m_instr_id{0},
+    m_var_id{0}
 {}
 
 auto ClirModuleFactory::push_env() -> void
@@ -52,7 +54,8 @@ auto ClirModuleFactory::create_var(types::core::TypeVariant t_type) -> SsaVarPtr
   return ptr;
 }
 
-auto ClirModuleFactory::add_var(types::core::TypeVariant t_type) -> SsaVarPtr
+auto ClirModuleFactory::add_result_var(types::core::TypeVariant t_type)
+  -> SsaVarPtr
 {
   auto ssa_var{create_var(t_type)};
   auto& instr{last_instruction()};
@@ -95,15 +98,22 @@ auto ClirModuleFactory::create_instruction(const Opcode t_opcode) -> Instruction
   return instr;
 }
 
-auto ClirModuleFactory::add_instruction(const Opcode t_opcode) -> Instruction&
+auto ClirModuleFactory::add_instruction_to(const Opcode t_opcode,
+                                           BasicBlock& t_block) -> Instruction&
 {
-  auto& block{last_block()};
-  auto& instructions{block.m_instructions};
+  auto& instructions{t_block.m_instructions};
 
   auto instr{create_instruction(t_opcode)};
   instructions.push_back(instr);
 
   return last_instruction();
+}
+
+auto ClirModuleFactory::add_instruction(const Opcode t_opcode) -> Instruction&
+{
+  auto& block{last_block()};
+
+  return add_instruction_to(t_opcode, block);
 }
 
 auto ClirModuleFactory::add_comment(std::string t_comment) -> void
@@ -112,13 +122,12 @@ auto ClirModuleFactory::add_comment(std::string t_comment) -> void
 
   lib::strip_whitespace(t_comment);
   lib::trim_whitespace(t_comment);
-  t_comment += '.';
 
-  instr.m_comment = t_comment;
+  instr.m_comment = std::format(R"("{}".)", t_comment);
 }
 
 auto ClirModuleFactory::add_literal(NativeType t_type, LiteralValue t_value)
-  -> void
+  -> Instruction&
 {
   Opcode opcode{};
 
@@ -152,6 +161,8 @@ auto ClirModuleFactory::add_literal(NativeType t_type, LiteralValue t_value)
 
   auto ssaVar{create_var({t_type})};
   instr.m_result = std::move(ssaVar);
+
+  return instr;
 }
 
 auto ClirModuleFactory::insert_jump(Instruction t_instr, BasicBlock& t_block,
@@ -180,22 +191,27 @@ auto ClirModuleFactory::insert_jump(BasicBlock& t_block, BasicBlock& t_target)
   return insert_jump(jmp_instr, t_block, t_target);
 }
 
-auto ClirModuleFactory::add_init(const std::string_view t_name,
-                                 types::core::TypeVariant t_type)
-  -> Instruction&
+auto ClirModuleFactory::create_var_binding(std::string_view t_name,
+                                           SsaVarPtr t_var) -> void
 {
-  auto& assign_instr{add_instruction(Opcode::INIT)};
-  auto result_var{add_var(t_type)};
-
   // TODO: Check for errors.
-  const auto [iter, inserted] =
-    m_var_env.insert({std::string{t_name}, result_var});
-
+  const auto [iter, inserted] = m_var_env.insert({std::string{t_name}, t_var});
   if(!inserted) {
     using lib::stdexcept::throw_runtime_exception;
 
     throw_runtime_exception("Could not insert ", std::quoted(t_name), ".");
   }
+}
+
+auto ClirModuleFactory::add_init(const std::string_view t_name,
+                                 types::core::TypeVariant t_type)
+  -> Instruction&
+{
+  auto& assign_instr{add_instruction(Opcode::INIT)};
+  auto result_var{add_result_var(t_type)};
+
+  // Bind the source variable name to the ssa var.
+  create_var_binding(t_name, result_var);
 
   return assign_instr;
 }
@@ -203,13 +219,22 @@ auto ClirModuleFactory::add_init(const std::string_view t_name,
 auto ClirModuleFactory::add_update(const std::string_view t_name)
   -> Instruction&
 {
+  // Get the previous ssa variable associated with the name.
+  auto prev_var{m_var_env.get_value(t_name)};
+
+  return add_update(t_name, prev_var);
+}
+
+auto ClirModuleFactory::add_update(std::string_view t_name,
+                                   SsaVarPtr t_prev_var) -> Instruction&
+{
   auto& update_instr{add_instruction(Opcode::UPDATE)};
 
-  auto prev_var{m_var_env.get_value(t_name)};
-  update_instr.add_operand(prev_var);
+  // Add the last usage of the ssa variable associated with the name.
+  update_instr.add_operand(t_prev_var);
 
-  const auto type{prev_var->m_type};
-  auto result_var{add_var(type)};
+  const auto type{t_prev_var->m_type};
+  auto result_var{add_result_var(type)};
 
   // Update with the new result var.
   // For the next variable reference.
@@ -234,19 +259,38 @@ auto ClirModuleFactory::last_instruction() -> Instruction&
   return instructions.back();
 }
 
-auto ClirModuleFactory::add_block(const std::string_view t_label) -> BasicBlock&
+auto ClirModuleFactory::create_block(const std::string_view t_label)
+  -> BasicBlock
+{
+  // Create basic block and set its label.
+  // We want all blocks to have their own unique label.
+  BasicBlock block{};
+
+  block.m_label = std::format("{}#{}", t_label, m_block_id);
+
+  m_block_id++;
+
+  // Return the just added basic block.
+  return block;
+}
+
+auto ClirModuleFactory::append_block(const BasicBlock& t_block) -> BasicBlock&
 {
   auto& fn{last_function()};
   auto& blocks{fn.m_blocks};
 
-  // Create basic block and set its label.
-  BasicBlock block{};
-  block.m_label = t_label;
-
-  blocks.push_back(block);
+  // Add the new block to the last function.
+  blocks.push_back(t_block);
 
   // Return the just added basic block.
   return last_block();
+}
+
+auto ClirModuleFactory::add_block(const std::string_view t_label) -> BasicBlock&
+{
+  const auto block{create_block(t_label)};
+
+  return append_block(block);
 }
 
 auto ClirModuleFactory::find_block(const std::string_view t_label)

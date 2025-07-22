@@ -136,21 +136,19 @@ enum class Opcode : u32 {
   // clang-format on
 
   // Control Flow:
-  COND_JUMP, // cond_jmp <condition> <label_true> <label_false>
+  COND_JUMP, // %<dest> = cond_jmp <condition> <label_true> <label_false>
   JUMP,      // jmp <label>
   CONTINUE,  // continue
   BREAK,     // break
   RETURN,    // ret %<var>
 
-  // SSA specific, select Literal based on the control path.
-  PHI,
+  // SSA specific, select value based on the control path.
+  PHI, // %<dest> = phi <condition> <value_true> <value_false>
 
   // High level control flow:
-  IF, // if <condition> <label_true> <label_false>
-  ELSE,
-  LOOP, // Maybe just call it a while? (for wont exist).
+  LOOP, // loop <cond>.
   MATCH,
-  SWITCH, // Jump table.
+  SWITCH, // switch <index> ; Jump table.
 
   // Struct operations:
   CONSTRUCT,
@@ -158,9 +156,9 @@ enum class Opcode : u32 {
   EXTRACT,
 
   // Call a function.
-  CALL,
+  CALL, // %<dest> = call <function reference> <arguments...>
 
-  NOP,
+  NOP, // nop ; Short for "No Operation", does nothing.
 };
 
 // TODO: Some of these structs, are starting to gain in size.
@@ -229,15 +227,19 @@ struct BasicBlock {
   CfgSeq m_successors;
   CfgSeq m_predecessors;
 
+  BasicBlock() = default;
 
   virtual ~BasicBlock() = default;
 };
 
 struct Function {
   std::string m_name;
-  // TODO: Sequence of parameters.
-  // TODO: Include return type.
+  SsaVarVec m_params;
   BasicBlockSeq m_blocks;
+
+  // TODO: Include return type.
+
+  Function() = default;
 
   virtual ~Function() = default;
 };
@@ -245,6 +247,8 @@ struct Function {
 struct Module {
   std::string m_name;
   FunctionSeq m_functions;
+
+  Module() = default;
 
   virtual ~Module() = default;
 };
