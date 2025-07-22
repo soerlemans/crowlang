@@ -636,7 +636,7 @@ auto ClirBuilder::visit(And* t_and) -> Any
   // Then the result is false.
   phi_instr.add_operand({cjmp_var});
   phi_instr.add_operand({right_var});
-  phi_instr.add_operand({false_var});
+  phi_instr.add_operand({false_var}); // Short-circuit false.
 
   // Insert jumps to merge into the block.
   m_factory->insert_jump(left_jump, left_block, merge_block);
@@ -698,7 +698,7 @@ auto ClirBuilder::visit(Or* t_or) -> Any
   // If we short circuit and go directly to the merge block.
   // Then the result is false.
   phi_instr.add_operand({cjmp_var});
-  phi_instr.add_operand({true_var});
+  phi_instr.add_operand({true_var}); // Short-circuit true.
   phi_instr.add_operand({right_var});
 
   // Insert jumps to merge into the block.
