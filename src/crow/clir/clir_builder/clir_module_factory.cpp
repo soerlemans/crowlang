@@ -84,7 +84,8 @@ auto ClirModuleFactory::require_last_var() -> SsaVarPtr
   return var;
 }
 
-auto ClirModuleFactory::create_instruction(const Opcode t_opcode) -> Instruction
+auto ClirModuleFactory::create_instruction(const Opcode t_opcode) const
+  -> Instruction
 {
   // Cookie cutter the creation of an instruction.
   Instruction instr{};
@@ -259,21 +260,38 @@ auto ClirModuleFactory::last_instruction() -> Instruction&
   return instructions.back();
 }
 
-auto ClirModuleFactory::add_block(const std::string_view t_label) -> BasicBlock&
+auto ClirModuleFactory::create_block(const std::string_view t_label) const
+  -> BasicBlock
+{
+  // Create basic block and set its label.
+  // We want all blocks to have their own unique label.
+  BasicBlock block{};
+
+  block.m_label = std::format("{}#{}", t_label, m_block_id);
+
+  m_block_id++;
+
+  // Return the just added basic block.
+  return block;
+}
+
+auto ClirModuleFactory::append_block(const BasicBlock& t_block) -> BasicBlock&
 {
   auto& fn{last_function()};
   auto& blocks{fn.m_blocks};
 
-  // Create basic block and set its label.
-  // We want all blocks to have their own id.
-  BasicBlock block{};
-  block.m_label = std::format("{}#{}", t_label, m_block_id);
-  m_block_id++;
-
-  blocks.push_back(block);
+  // Add the new block to the last function.
+  blocks.push_back(t_block);
 
   // Return the just added basic block.
   return last_block();
+}
+
+auto ClirModuleFactory::add_block(const std::string_view t_label) -> BasicBlock&
+{
+  const auto block{create_block(t_label)};
+
+  return append_block(block);
 }
 
 auto ClirModuleFactory::find_block(const std::string_view t_label)

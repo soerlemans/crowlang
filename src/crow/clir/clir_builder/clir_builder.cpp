@@ -84,6 +84,7 @@ auto ClirBuilder::visit(Loop* t_loop) -> Any
 
 auto ClirBuilder::visit(Continue* t_continue) -> Any
 {
+  // TODO: Replace continue with JUMP?
   m_factory->add_instruction(Opcode::CONTINUE);
 
   return {};
@@ -91,6 +92,7 @@ auto ClirBuilder::visit(Continue* t_continue) -> Any
 
 auto ClirBuilder::visit(Break* t_break) -> Any
 {
+  // TODO: Replace break with JUMP?
   m_factory->add_instruction(Opcode::BREAK);
 
   return {};
@@ -99,7 +101,13 @@ auto ClirBuilder::visit(Break* t_break) -> Any
 auto ClirBuilder::visit(Defer* t_defer) -> Any
 {
   // Defer statements are inserted at the end.
-  // Of a return statement or any other break in return.
+  // Before all return statements.
+  // Or at the end of a function.
+
+  // To implement this we need to queue, defer operations.
+  // And when they are returned or at the end of the function.
+  // Insert all the operations, that we deferred.
+  // We should likely use an std::vector for this.
 
   return {};
 }
@@ -639,7 +647,7 @@ auto ClirBuilder::visit(Or* t_or) -> Any
   auto& main_jump{m_factory->add_instruction(Opcode::JUMP)};
 
   // Left term block:
-  auto& left_block{m_factory->add_block("and_left_term")};
+  auto& left_block{m_factory->add_block("or_left_term")};
 
   // Create jump for left term block.
   main_jump.add_operand(Label{&left_block});
@@ -656,14 +664,14 @@ auto ClirBuilder::visit(Or* t_or) -> Any
   const auto left_jump{m_factory->create_instruction(Opcode::JUMP)};
 
   // Right term block:
-  auto& right_block{m_factory->add_block("and_right_term")};
+  auto& right_block{m_factory->add_block("or_right_term")};
 
   traverse(right);
   const auto right_var{m_factory->require_last_var()};
   const auto right_jump{m_factory->create_instruction(Opcode::JUMP)};
 
   // Right block:
-  auto& merge_block{m_factory->add_block("and_merge")};
+  auto& merge_block{m_factory->add_block("or_merge")};
 
   // Finish conditional jump args.
   // We go to the merge_block on true to short circuit.
