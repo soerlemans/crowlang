@@ -53,7 +53,7 @@ using SsaVarVec = std::vector<SsaVarPtr>;
 
 // TODO: Support more then just bool, add all other supported native_types.
 //! Variant containing all supported literal types.
-using LiteralValue = std::variant<uint, int, std::string, bool>;
+using LiteralValue = std::variant<uint, int, f64, std::string, bool>;
 
 using Operand = std::variant<SsaVarPtr, Literal, Label>;
 using OperandSeq = std::vector<Operand>;

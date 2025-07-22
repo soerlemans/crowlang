@@ -730,10 +730,11 @@ auto ClirBuilder::visit(ModuleDecl* t_module) -> Any
 // RValue:
 auto ClirBuilder::visit([[maybe_unused]] Float* t_float) -> Any
 {
-  // const auto value{t_int->get()};
+  // const auto value_f64{t_float->get()}; // Cereal does not support
+  const auto value{t_float->get()};
 
   // Add the literal, which assigns an SSA var for it.
-  // m_factory->add_literal(NativeType::F32, {value});
+  m_factory->add_literal(NativeType::F32, {value});
 
   return {};
 }

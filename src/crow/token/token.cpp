@@ -30,14 +30,14 @@ auto Token::str() const -> std::string
   return get<std::string>();
 }
 
-auto Token::int_() const -> int
+auto Token::int_() const -> i64
 {
-  return get<int>();
+  return get<i64>();
 }
 
-auto Token::double_() const -> double
+auto Token::float_() const -> f64
 {
-  return get<double>();
+  return get<f64>();
 }
 
 auto Token::position() const -> const TextPosition&

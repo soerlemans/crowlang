@@ -8,6 +8,7 @@
 
 // Absolute Includes:
 #include "crow/container/text_position.hpp"
+#include "lib/stdtypes.hpp"
 
 // Local Includes:
 #include "token_type.hpp"
@@ -20,7 +21,7 @@ using container::TextPosition;
 class Token;
 
 // Aliases:
-using TokenValue = std::variant<int, double, std::string>;
+using TokenValue = std::variant<i64, f64, std::string>;
 
 // Classes:
 class Token {
@@ -45,8 +46,8 @@ class Token {
   }
 
   auto str() const -> std::string;
-  auto int_() const -> int;
-  auto double_() const -> double;
+  auto int_() const -> i64;
+  auto float_() const -> f64;
 
   auto position() const -> const TextPosition&;
 
