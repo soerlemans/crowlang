@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CLIR_OPERAND_HPP
-#define CROW_CROW_CLIR_OPERAND_HPP
+#ifndef CROW_CROW_MIR_OPERAND_HPP
+#define CROW_CROW_MIR_OPERAND_HPP
 
 // STL Includes:
 #include <memory>
@@ -37,4 +37,4 @@ class Operand {
 
 } // namespace mir
 
-#endif // CROW_CROW_CLIR_OPERAND_HPP
+#endif // CROW_CROW_MIR_OPERAND_HPP

@@ -1,9 +1,9 @@
-#ifndef DEBUG_HPP
-#define DEBUG_HPP
+#ifndef CROW_CROW_DEBUG_DEBUG_HPP
+#define CROW_CROW_DEBUG_DEBUG_HPP
 
 
 // Local Includes:
 #include "log.hpp"
 #include "trace.hpp"
 
-#endif // DEBUG_HPP
+#endif // CROW_CROW_DEBUG_DEBUG_HPP

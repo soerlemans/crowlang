@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CLIR_CLIR_HPP
-#define CROW_CROW_CLIR_CLIR_HPP
+#ifndef CROW_CROW_MIR_MIR_HPP
+#define CROW_CROW_MIR_MIR_HPP
 
 /*!
  * @file CLIR is short for CrowLang Intermediate Representation.
@@ -260,23 +260,20 @@ auto opcode2str(Opcode t_opcode) -> std::string_view;
 // Functions:
 auto operator<<(std::ostream& t_os, const mir::Opcode t_op) -> std::ostream&;
 
-auto operator<<(std::ostream& t_os, const mir::Literal& t_lit)
-  -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::Literal& t_lit) -> std::ostream&;
 
 auto operator<<(std::ostream& t_os, const mir::SsaVar& t_var) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::SsaVarPtr& t_ptr)
   -> std::ostream&;
 
-auto operator<<(std::ostream& t_os, const mir::Label& t_label)
-  -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::Label& t_label) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::Operand& t_operand)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::Instruction& t_inst)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::BasicBlock& t_bblock)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, const mir::Function& t_fn)
-  -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::Function& t_fn) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::Module& t_mod) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::ModulePtr& t_mod)
   -> std::ostream&;
@@ -297,4 +294,4 @@ struct std::formatter<mir::SsaVar> {
   }
 };
 
-#endif // CROW_CROW_CLIR_CLIR_HPP
+#endif // CROW_CROW_MIR_MIR_HPP

@@ -9,7 +9,7 @@
 #include "lib/string_util.hpp"
 
 namespace mir::mir_builder {
-ClirModuleFactory::ClirModuleFactory()
+MirModuleFactory::MirModuleFactory()
   : m_module{std::make_shared<Module>()},
     m_var_env{},
     m_fn_env{},
@@ -18,25 +18,25 @@ ClirModuleFactory::ClirModuleFactory()
     m_var_id{0}
 {}
 
-auto ClirModuleFactory::push_env() -> void
+auto MirModuleFactory::push_env() -> void
 {
   m_var_env.push_env();
   m_fn_env.push_env();
 }
 
-auto ClirModuleFactory::pop_env() -> void
+auto MirModuleFactory::pop_env() -> void
 {
   m_var_env.pop_env();
   m_fn_env.pop_env();
 }
 
-auto ClirModuleFactory::clear_env() -> void
+auto MirModuleFactory::clear_env() -> void
 {
   m_var_env.clear();
   m_fn_env.clear();
 }
 
-auto ClirModuleFactory::create_var(types::core::TypeVariant t_type) -> SsaVarPtr
+auto MirModuleFactory::create_var(types::core::TypeVariant t_type) -> SsaVarPtr
 {
   auto ptr{std::make_shared<SsaVar>(m_var_id, t_type)};
 
@@ -54,7 +54,7 @@ auto ClirModuleFactory::create_var(types::core::TypeVariant t_type) -> SsaVarPtr
   return ptr;
 }
 
-auto ClirModuleFactory::add_result_var(types::core::TypeVariant t_type)
+auto MirModuleFactory::add_result_var(types::core::TypeVariant t_type)
   -> SsaVarPtr
 {
   auto ssa_var{create_var(t_type)};
@@ -66,14 +66,14 @@ auto ClirModuleFactory::add_result_var(types::core::TypeVariant t_type)
   return ssa_var;
 }
 
-auto ClirModuleFactory::last_var() -> SsaVarPtr
+auto MirModuleFactory::last_var() -> SsaVarPtr
 {
   auto& instr{last_instruction()};
 
   return instr.m_result;
 }
 
-auto ClirModuleFactory::require_last_var() -> SsaVarPtr
+auto MirModuleFactory::require_last_var() -> SsaVarPtr
 {
   auto var{last_var()};
   if(!var) {
@@ -84,7 +84,7 @@ auto ClirModuleFactory::require_last_var() -> SsaVarPtr
   return var;
 }
 
-auto ClirModuleFactory::create_instruction(const Opcode t_opcode) -> Instruction
+auto MirModuleFactory::create_instruction(const Opcode t_opcode) -> Instruction
 {
   // Cookie cutter the creation of an instruction.
   Instruction instr{};
@@ -98,8 +98,8 @@ auto ClirModuleFactory::create_instruction(const Opcode t_opcode) -> Instruction
   return instr;
 }
 
-auto ClirModuleFactory::add_instruction_to(const Opcode t_opcode,
-                                           BasicBlock& t_block) -> Instruction&
+auto MirModuleFactory::add_instruction_to(const Opcode t_opcode,
+                                          BasicBlock& t_block) -> Instruction&
 {
   auto& instructions{t_block.m_instructions};
 
@@ -109,14 +109,14 @@ auto ClirModuleFactory::add_instruction_to(const Opcode t_opcode,
   return last_instruction();
 }
 
-auto ClirModuleFactory::add_instruction(const Opcode t_opcode) -> Instruction&
+auto MirModuleFactory::add_instruction(const Opcode t_opcode) -> Instruction&
 {
   auto& block{last_block()};
 
   return add_instruction_to(t_opcode, block);
 }
 
-auto ClirModuleFactory::add_comment(std::string t_comment) -> void
+auto MirModuleFactory::add_comment(std::string t_comment) -> void
 {
   auto& instr{last_instruction()};
 
@@ -126,7 +126,7 @@ auto ClirModuleFactory::add_comment(std::string t_comment) -> void
   instr.m_comment = std::format(R"("{}".)", t_comment);
 }
 
-auto ClirModuleFactory::add_literal(NativeType t_type, LiteralValue t_value)
+auto MirModuleFactory::add_literal(NativeType t_type, LiteralValue t_value)
   -> Instruction&
 {
   Opcode opcode{};
@@ -169,8 +169,8 @@ auto ClirModuleFactory::add_literal(NativeType t_type, LiteralValue t_value)
   return instr;
 }
 
-auto ClirModuleFactory::insert_jump(Instruction t_instr, BasicBlock& t_block,
-                                    BasicBlock& t_target) -> Instruction&
+auto MirModuleFactory::insert_jump(Instruction t_instr, BasicBlock& t_block,
+                                   BasicBlock& t_target) -> Instruction&
 {
   auto& instructions{t_block.m_instructions};
 
@@ -187,7 +187,7 @@ auto ClirModuleFactory::insert_jump(Instruction t_instr, BasicBlock& t_block,
   return instructions.back();
 }
 
-auto ClirModuleFactory::insert_jump(BasicBlock& t_block, BasicBlock& t_target)
+auto MirModuleFactory::insert_jump(BasicBlock& t_block, BasicBlock& t_target)
   -> Instruction&
 {
   auto jmp_instr{create_instruction(Opcode::JUMP)};
@@ -195,8 +195,8 @@ auto ClirModuleFactory::insert_jump(BasicBlock& t_block, BasicBlock& t_target)
   return insert_jump(jmp_instr, t_block, t_target);
 }
 
-auto ClirModuleFactory::create_var_binding(std::string_view t_name,
-                                           SsaVarPtr t_var) -> void
+auto MirModuleFactory::create_var_binding(std::string_view t_name,
+                                          SsaVarPtr t_var) -> void
 {
   // TODO: Check for errors.
   const auto [iter, inserted] = m_var_env.insert({std::string{t_name}, t_var});
@@ -207,9 +207,8 @@ auto ClirModuleFactory::create_var_binding(std::string_view t_name,
   }
 }
 
-auto ClirModuleFactory::add_init(const std::string_view t_name,
-                                 types::core::TypeVariant t_type)
-  -> Instruction&
+auto MirModuleFactory::add_init(const std::string_view t_name,
+                                types::core::TypeVariant t_type) -> Instruction&
 {
   auto& assign_instr{add_instruction(Opcode::INIT)};
   auto result_var{add_result_var(t_type)};
@@ -220,8 +219,7 @@ auto ClirModuleFactory::add_init(const std::string_view t_name,
   return assign_instr;
 }
 
-auto ClirModuleFactory::add_update(const std::string_view t_name)
-  -> Instruction&
+auto MirModuleFactory::add_update(const std::string_view t_name) -> Instruction&
 {
   // Get the previous ssa variable associated with the name.
   auto prev_var{m_var_env.get_value(t_name)};
@@ -229,8 +227,8 @@ auto ClirModuleFactory::add_update(const std::string_view t_name)
   return add_update(t_name, prev_var);
 }
 
-auto ClirModuleFactory::add_update(std::string_view t_name,
-                                   SsaVarPtr t_prev_var) -> Instruction&
+auto MirModuleFactory::add_update(std::string_view t_name, SsaVarPtr t_prev_var)
+  -> Instruction&
 {
   auto& update_instr{add_instruction(Opcode::UPDATE)};
 
@@ -247,7 +245,7 @@ auto ClirModuleFactory::add_update(std::string_view t_name,
   return update_instr;
 }
 
-auto ClirModuleFactory::last_instruction() -> Instruction&
+auto MirModuleFactory::last_instruction() -> Instruction&
 {
   auto& block{last_block()};
   auto& instructions{block.m_instructions};
@@ -263,7 +261,7 @@ auto ClirModuleFactory::last_instruction() -> Instruction&
   return instructions.back();
 }
 
-auto ClirModuleFactory::create_block(const std::string_view t_label)
+auto MirModuleFactory::create_block(const std::string_view t_label)
   -> BasicBlock
 {
   // Create basic block and set its label.
@@ -278,7 +276,7 @@ auto ClirModuleFactory::create_block(const std::string_view t_label)
   return block;
 }
 
-auto ClirModuleFactory::append_block(const BasicBlock& t_block) -> BasicBlock&
+auto MirModuleFactory::append_block(const BasicBlock& t_block) -> BasicBlock&
 {
   auto& fn{last_function()};
   auto& blocks{fn.m_blocks};
@@ -290,15 +288,14 @@ auto ClirModuleFactory::append_block(const BasicBlock& t_block) -> BasicBlock&
   return last_block();
 }
 
-auto ClirModuleFactory::add_block(const std::string_view t_label) -> BasicBlock&
+auto MirModuleFactory::add_block(const std::string_view t_label) -> BasicBlock&
 {
   const auto block{create_block(t_label)};
 
   return append_block(block);
 }
 
-auto ClirModuleFactory::find_block(const std::string_view t_label)
-  -> BasicBlock*
+auto MirModuleFactory::find_block(const std::string_view t_label) -> BasicBlock*
 {
   BasicBlock* ptr{nullptr};
 
@@ -315,7 +312,7 @@ auto ClirModuleFactory::find_block(const std::string_view t_label)
   return ptr;
 }
 
-auto ClirModuleFactory::last_block() -> BasicBlock&
+auto MirModuleFactory::last_block() -> BasicBlock&
 {
   auto& fn{last_function()};
 
@@ -330,7 +327,7 @@ auto ClirModuleFactory::last_block() -> BasicBlock&
   return fn.m_blocks.back();
 }
 
-auto ClirModuleFactory::add_function(Function&& t_fn) -> void
+auto MirModuleFactory::add_function(Function&& t_fn) -> void
 {
   auto& functions{m_module->m_functions};
 
@@ -339,7 +336,7 @@ auto ClirModuleFactory::add_function(Function&& t_fn) -> void
   functions.push_back(t_fn);
 }
 
-auto ClirModuleFactory::last_function() -> Function&
+auto MirModuleFactory::last_function() -> Function&
 {
   auto& functions{m_module->m_functions};
 
@@ -353,12 +350,12 @@ auto ClirModuleFactory::last_function() -> Function&
   return functions.back();
 }
 
-auto ClirModuleFactory::set_module_name(std::string_view t_name) -> void
+auto MirModuleFactory::set_module_name(std::string_view t_name) -> void
 {
   m_module->m_name = t_name;
 }
 
-auto ClirModuleFactory::get_module() -> ModulePtr
+auto MirModuleFactory::get_module() -> ModulePtr
 {
   return m_module;
 }

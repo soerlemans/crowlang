@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CLIR_FDECL_HPP
-#define CROW_CROW_CLIR_FDECL_HPP
+#ifndef CROW_CROW_MIR_FDECL_HPP
+#define CROW_CROW_MIR_FDECL_HPP
 
 /*!
  * @file Forward declarations for any operations on CLIR.
@@ -25,4 +25,4 @@ using BasicBlockSeq = std::vector<BasicBlock>;
 using CfgSeq = std::list<BasicBlock*>;
 } // namespace mir
 
-#endif // CROW_CROW_CLIR_FDECL_HPP
+#endif // CROW_CROW_MIR_FDECL_HPP

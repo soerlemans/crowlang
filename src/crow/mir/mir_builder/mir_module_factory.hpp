@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CLIR_CLIR_BUILDER_CLIR_MODULE_FACTORY_HPP
-#define CROW_CROW_CLIR_CLIR_BUILDER_CLIR_MODULE_FACTORY_HPP
+#ifndef CROW_CROW_MIR_MIR_BUILDER_MIR_MODULE_FACTORY_HPP
+#define CROW_CROW_MIR_MIR_BUILDER_MIR_MODULE_FACTORY_HPP
 
 // STL Includes:
 #include <memory>
@@ -10,19 +10,19 @@
 
 namespace mir::mir_builder {
 // Forward Declarations:
-class ClirModuleFactory;
+class MirModuleFactory;
 
 // Aliases:
-using ClirModuleFactoryPtr = std::unique_ptr<ClirModuleFactory>;
+using MirModuleFactoryPtr = std::unique_ptr<MirModuleFactory>;
 
-using SsaVarEnvState = ClirEnvState<SsaVarPtr>;
-using FunctionEnvState = ClirEnvState<Function*>;
+using SsaVarEnvState = MirEnvState<SsaVarPtr>;
+using FunctionEnvState = MirEnvState<Function*>;
 
 // Classes:
 /*!
  * Utility class to aid building a CLIR module.
  * When walking the AST.
- * In the @ref ClirBuilder.
+ * In the @ref MirBuilder.
  * Here we handle all the boilerplate operations for constructing the CLIR.
  *
  * @note Any method starting with `create_` will create that item.
@@ -34,7 +34,7 @@ using FunctionEnvState = ClirEnvState<Function*>;
  * @note Any method starting with `last_` will retrieve the last item.
  * Of that object that was added to the module.
  */
-class ClirModuleFactory {
+class MirModuleFactory {
   private:
   ModulePtr m_module;
 
@@ -49,7 +49,7 @@ class ClirModuleFactory {
   u64 m_var_id;
 
   public:
-  ClirModuleFactory();
+  MirModuleFactory();
 
   // Env operations:
   auto push_env() -> void;
@@ -149,8 +149,8 @@ class ClirModuleFactory {
 
   auto get_module() -> ModulePtr;
 
-  virtual ~ClirModuleFactory() = default;
+  virtual ~MirModuleFactory() = default;
 };
 } // namespace mir::mir_builder
 
-#endif // CROW_CROW_CLIR_CLIR_BUILDER_CLIR_MODULE_FACTORY_HPP
+#endif // CROW_CROW_MIR_MIR_BUILDER_MIR_MODULE_FACTORY_HPP

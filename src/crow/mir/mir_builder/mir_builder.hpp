@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CLIR_CLIR_BUILDER_CLIR_BUILDER_HPP
-#define CROW_CROW_CLIR_CLIR_BUILDER_CLIR_BUILDER_HPP
+#ifndef CROW_CROW_MIR_MIR_BUILDER_MIR_BUILDER_HPP
+#define CROW_CROW_MIR_MIR_BUILDER_MIR_BUILDER_HPP
 
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
@@ -14,7 +14,7 @@ using ast::visitor::NodeVisitor;
 // Structs:
 /*!
  */
-struct ClirTranslateParams {
+struct MirTranslateParams {
   NodePtr m_ast;
   // SymbolTablePtr m_symbol_table;
 };
@@ -24,12 +24,12 @@ struct ClirTranslateParams {
  * So we convert the AST to the IR that we defined.
  * Our strategy involves assuming that every given
  */
-class ClirBuilder : public NodeVisitor {
+class MirBuilder : public NodeVisitor {
   private:
-  ClirModuleFactoryPtr m_factory;
+  MirModuleFactoryPtr m_factory;
 
   public:
-  ClirBuilder();
+  MirBuilder();
 
   // Control:
   virtual auto visit(ast::node::control::If* t_if) -> Any;
@@ -95,10 +95,10 @@ class ClirBuilder : public NodeVisitor {
   //! Translate the AST to a CLIR module.
   auto translate(NodePtr t_ast) -> ModulePtr;
 
-  virtual ~ClirBuilder() = default;
+  virtual ~MirBuilder() = default;
 };
 
 
 } // namespace mir::mir_builder
 
-#endif // CROW_CROW_CLIR_CLIR_BUILDER_CLIR_BUILDER_HPP
+#endif // CROW_CROW_MIR_MIR_BUILDER_MIR_BUILDER_HPP
