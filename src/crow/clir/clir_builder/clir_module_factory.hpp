@@ -61,10 +61,17 @@ class ClirModuleFactory {
   auto add_result_var(types::core::TypeVariant t_type) -> SsaVarPtr;
 
   /*!
-   * Every instruction has a result.
-   * Can be a nullptr (indicating the operation did no result).
+   * Returns the result @ref SsaVarPtr from the last @ref Instruction.
+   *
+   * @remark Can be a nullptr if last instruction has no result variable.
    */
   auto last_var() -> SsaVarPtr;
+
+  /*!
+   * Returns the result @ref SsaVarPtr from the last @ref Instruction.
+   *
+   * @remark Throws if the last instruction has no result variable.
+   */
   auto require_last_var() -> SsaVarPtr;
 
   // Instruction operations:
