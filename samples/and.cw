@@ -1,9 +1,13 @@
-module if_
+module and_
 
-func and(t_left: bool, t_right: bool) -> bool {
-  if t_left && t_right {
-    return True
+func and_op(t_left: bool, t_right: bool) -> bool {
+  let result = t_left && t_right
+
+  if result {
+    println("True")
+  } else {
+    println("False")
   }
 
-  return False
+  return result
 }

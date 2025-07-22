@@ -42,11 +42,11 @@ auto ClirBuilder::visit(If* t_if) -> Any
   traverse(cond);
   const auto last_var{m_factory->require_last_var()};
 
-  auto& if_instr{m_factory->add_instruction(Opcode::IF)};
+  auto& if_instr{m_factory->add_instruction(Opcode::COND_JUMP)};
   if_instr.add_operand({last_var});
 
   // Then block:
-  auto& then_block{m_factory->add_block("then_block")};
+  auto& then_block{m_factory->add_block("if_then")};
   if_instr.add_operand({&then_block});
 
   traverse(then);
@@ -54,7 +54,7 @@ auto ClirBuilder::visit(If* t_if) -> Any
 
   // Alt block:
   if(alt) {
-    auto& alt_block{m_factory->add_block("alt_block")};
+    auto& alt_block{m_factory->add_block("if_alt")};
     if_instr.add_operand({&alt_block});
 
     traverse(alt);
@@ -62,14 +62,14 @@ auto ClirBuilder::visit(If* t_if) -> Any
   }
 
   // Final block after the if statement.
-  auto& final_block{m_factory->add_block("final_block")};
+  auto& merge_block{m_factory->add_block("if_merge")};
 
   // Insert jumps at the end of the blocks.
-  m_factory->insert_jump(then_jump, then_block, final_block);
+  m_factory->insert_jump(then_jump, then_block, merge_block);
 
   if(alt) {
     // FIXME:
-    // m_factory->insert_jump(alt_jump, alt_block, final_block);
+    // m_factory->insert_jump(alt_jump, alt_block, merge_block);
   }
 
   return {};
@@ -566,36 +566,129 @@ auto ClirBuilder::visit(Not* t_not) -> Any
 
 auto ClirBuilder::visit(And* t_and) -> Any
 {
+  // TODO: Refactor very messy.
+
   const auto left{t_and->left()};
   const auto right{t_and->right()};
-
-  auto& left_block{m_factory->add_block("left_term_and")};
-  traverse(left);
-  const auto left_var{m_factory->require_last_var()};
-
-  // Add a conditional jump skipping if left term is false.
-  auto& cond_jmp_instr{m_factory->add_instruction(Opcode::COND_JUMP)};
-  // cond_jmp_instr.
-
-  auto& right_block{m_factory->add_block("right_term_and")};
-  traverse(right);
-  const auto right_var{m_factory->require_last_var()};
-
   const auto source_line{t_and->position().m_line};
 
-  auto& final_block{m_factory->add_block("final_block")};
+  // Jump to enter and flow.
+  auto main_jump{m_factory->add_instruction(Opcode::JUMP)};
+
+  // Need a new block to reference.
+  auto& left_block{m_factory->add_block("and_left_term")};
+
+  // Create label for true branch.
+  Label main_label{&left_block};
+  main_jump.add_operand({main_label});
+
+  traverse(left);
+  const auto left_var{m_factory->require_last_var()};
+  const auto left_jump{m_factory->create_instruction(Opcode::JUMP)};
+
+  // Add a conditional jump skipping if left term is false.
+  auto& cjmp_instr{m_factory->add_instruction(Opcode::COND_JUMP)};
+  auto cjmp_var{m_factory->create_var(NativeType::BOOL)};
+  cjmp_instr.m_result = cjmp_var;
+  m_factory->add_comment(source_line);
+
+  auto& right_block{m_factory->add_block("and_right_term")};
+
+  traverse(right);
+  const auto right_var{m_factory->require_last_var()};
+  const auto right_jump{m_factory->create_instruction(Opcode::JUMP)};
+
+  auto& merge_block{m_factory->add_block("and_merge")};
+
+  // Finish conditional jump args.
+  cjmp_instr.add_operand(left_var);
+  cjmp_instr.add_operand(Label{&right_block});
+  cjmp_instr.add_operand(Label{&merge_block});
+
+  auto& phi_instr{m_factory->add_instruction(Opcode::PHI)};
+  phi_instr.m_result = m_factory->create_var(NativeType::BOOL);
+
+  auto false_instr{m_factory->add_literal(NativeType::BOOL, {false})};
+
+  // If we short circuit and go directly to the merge block.
+  // Then the result is false.
+  phi_instr.add_operand({cjmp_var});
+  phi_instr.add_operand({right_var});
+  phi_instr.add_operand({false_instr.m_result});
+
+  // Insert jumps to merge into the block.
+  m_factory->insert_jump(left_jump, left_block, merge_block);
+  m_factory->insert_jump(right_jump, right_block, merge_block);
 
   return {};
 }
 
 auto ClirBuilder::visit(Or* t_or) -> Any
 {
+  // TODO: Refactor very messy.
+  // Only difference with and is that the cond_jump for short circuiting.
+  // Is swapped.
+
   const auto left{t_or->left()};
   const auto right{t_or->right()};
-
   const auto source_line{t_or->position().m_line};
 
-  // TODO: Implement short circuiting.
+  // Jump to enter and flow.
+  auto main_jump{m_factory->add_instruction(Opcode::JUMP)};
+
+  // Need a new block to reference.
+  auto& left_block{m_factory->add_block("or_left_term")};
+
+  // Create label for true branch.
+  Label main_label{&left_block};
+  main_jump.add_operand({main_label});
+
+  traverse(left);
+  const auto left_var{m_factory->require_last_var()};
+  const auto left_jump{m_factory->create_instruction(Opcode::JUMP)};
+
+  // Add a conditional jump skipping if left term is false.
+  auto& cjmp_instr{m_factory->add_instruction(Opcode::COND_JUMP)};
+  auto cjmp_var{m_factory->create_var(NativeType::BOOL)};
+  cjmp_instr.m_result = cjmp_var;
+  m_factory->add_comment(source_line);
+
+  auto& right_block{m_factory->add_block("or_right_term")};
+
+  // Create label for true branch.
+  Label label{&right_block};
+  cjmp_instr.add_operand({label});
+
+  traverse(right);
+  const auto right_var{m_factory->require_last_var()};
+  const auto right_jump{m_factory->create_instruction(Opcode::JUMP)};
+
+  // Create merge block.
+  auto& merge_block{m_factory->add_block("and_merge")};
+
+  // Finish conditional jump args.
+  cjmp_instr.add_operand(left_var);
+  cjmp_instr.add_operand(Label{&merge_block});
+  cjmp_instr.add_operand(Label{&right_block});
+
+  auto& phi_instr{m_factory->add_instruction(Opcode::PHI)};
+  phi_instr.m_result = m_factory->create_var(NativeType::BOOL);
+
+  // We need the short
+  m_factory->add_literal(NativeType::BOOL, {true});
+  auto true_var{m_factory->require_last_var()};
+
+  // If we short circuit and go directly to the merge block.
+  // Then the result is true.
+  phi_instr.add_operand({cjmp_var});
+  phi_instr.add_operand({true_var});
+  phi_instr.add_operand({left_var});
+
+  // Insert jumps to merge into the block.
+  m_factory->insert_jump(left_jump, left_block, merge_block);
+  m_factory->insert_jump(right_jump, right_block, merge_block);
+
+  return {};
 
   return {};
 }

@@ -1,6 +1,7 @@
 #include "clir_module_factory.hpp"
 
 // STL Includes:
+#include <iomanip>
 #include <memory>
 
 // Absolute Includes:
@@ -97,15 +98,22 @@ auto ClirModuleFactory::create_instruction(const Opcode t_opcode) -> Instruction
   return instr;
 }
 
-auto ClirModuleFactory::add_instruction(const Opcode t_opcode) -> Instruction&
+auto ClirModuleFactory::add_instruction_to(const Opcode t_opcode,
+                                           BasicBlock& t_block) -> Instruction&
 {
-  auto& block{last_block()};
-  auto& instructions{block.m_instructions};
+  auto& instructions{t_block.m_instructions};
 
   auto instr{create_instruction(t_opcode)};
   instructions.push_back(instr);
 
   return last_instruction();
+}
+
+auto ClirModuleFactory::add_instruction(const Opcode t_opcode) -> Instruction&
+{
+  auto& block{last_block()};
+
+  return add_instruction_to(t_opcode, block);
 }
 
 auto ClirModuleFactory::add_comment(std::string t_comment) -> void
@@ -114,13 +122,12 @@ auto ClirModuleFactory::add_comment(std::string t_comment) -> void
 
   lib::strip_whitespace(t_comment);
   lib::trim_whitespace(t_comment);
-  t_comment += '.';
 
-  instr.m_comment = t_comment;
+  instr.m_comment = std::format(R"("{}".)", t_comment);
 }
 
 auto ClirModuleFactory::add_literal(NativeType t_type, LiteralValue t_value)
-  -> void
+  -> Instruction&
 {
   Opcode opcode{};
 
@@ -154,6 +161,8 @@ auto ClirModuleFactory::add_literal(NativeType t_type, LiteralValue t_value)
 
   auto ssaVar{create_var({t_type})};
   instr.m_result = std::move(ssaVar);
+
+  return instr;
 }
 
 auto ClirModuleFactory::insert_jump(Instruction t_instr, BasicBlock& t_block,
@@ -256,9 +265,9 @@ auto ClirModuleFactory::add_block(const std::string_view t_label) -> BasicBlock&
   auto& blocks{fn.m_blocks};
 
   // Create basic block and set its label.
-	// We want all blocks to have their own id.
+  // We want all blocks to have their own id.
   BasicBlock block{};
-  block.m_label = std::format("{}_{}", t_label, m_block_id);
+  block.m_label = std::format("{}#{}", t_label, m_block_id);
   m_block_id++;
 
   blocks.push_back(block);

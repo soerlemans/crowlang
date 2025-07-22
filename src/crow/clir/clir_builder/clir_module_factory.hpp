@@ -70,11 +70,12 @@ class ClirModuleFactory {
   // Instruction operations:
   [[nodiscard("Must use created instruction.")]]
   auto create_instruction(Opcode t_opcode) -> Instruction;
+  auto add_instruction_to(Opcode t_opcode, BasicBlock& t_block) -> Instruction&;
   auto add_instruction(Opcode t_opcode) -> Instruction&;
   auto add_comment(std::string t_comment) -> void;
 
   //! Add a literal which also creates the proper instruction for it.
-  auto add_literal(NativeType t_type, LiteralValue t_value) -> void;
+  auto add_literal(NativeType t_type, LiteralValue t_value) -> Instruction&;
 
   /*!
    * We usually add a jump statement in retrospect between two blocks.

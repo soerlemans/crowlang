@@ -43,13 +43,13 @@ auto SemanticChecker::visit(If* t_if) -> Any
     traverse(init_expr);
   }
 
-	// The condition is resolved to a type.
+  // The condition is resolved to a type.
   const auto cond{get_symbol_data(t_if->condition())};
   DBG_INFO("Condition: ", cond);
 
   handle_condition(cond, t_if->position());
 
-	// Branch traversal:
+  // Branch traversal:
   traverse(then);
 
   if(alt) {

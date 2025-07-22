@@ -123,8 +123,6 @@ auto opcode2str(const Opcode t_opcode) -> std::string_view
     MATCH(PHI, "phi");
 
     // High level control flow:
-    MATCH(IF, "if");
-    MATCH(ELSE, "else");
     MATCH(LOOP, "loop");
     MATCH(MATCH, "match");
     MATCH(SWITCH, "switch");
@@ -185,7 +183,7 @@ auto operator<<(std::ostream& t_os, const clir::SsaVarPtr& t_ptr)
 
 auto operator<<(std::ostream& t_os, const clir::Label& t_label) -> std::ostream&
 {
-  t_os << std::format("{}", t_label.label());
+  t_os << std::format("<{}>", t_label.label());
 
   return t_os;
 }

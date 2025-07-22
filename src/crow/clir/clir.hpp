@@ -136,7 +136,7 @@ enum class Opcode : u32 {
   // clang-format on
 
   // Control Flow:
-  COND_JUMP, // cond_jmp <condition> <label_true>
+  COND_JUMP, // %<dest> = cond_jmp <condition> <label_true> <label_false>
   JUMP,      // jmp <label>
   CONTINUE,  // continue
   BREAK,     // break
@@ -146,11 +146,9 @@ enum class Opcode : u32 {
   PHI,
 
   // High level control flow:
-  IF, // %<dest> = if <condition> <label_true> <label_false>
-  ELSE,
-  LOOP, // loop <>.
+  LOOP, // loop <cond>.
   MATCH,
-  SWITCH, // Jump table.
+  SWITCH, // switch <index> ; Jump table.
 
   // Struct operations:
   CONSTRUCT,
