@@ -44,8 +44,9 @@ class ClirModuleFactory {
   FunctionEnvState m_fn_env;
 
   // We need to increment these to prevent collisions.
-  u64 m_var_id;
+  u64 m_block_id;
   u64 m_instr_id;
+  u64 m_var_id;
 
   public:
   ClirModuleFactory();

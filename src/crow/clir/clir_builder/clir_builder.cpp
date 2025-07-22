@@ -154,29 +154,6 @@ auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
   // Visit all the parameters, to add to the parameter list.
   traverse(params);
 
-  // TODO: Maybe make a helper method for this?
-  // for(const auto& node : *params) {
-  //   // FIXME: We need a separate instruction for retrieving call arguments.
-  //   // This is a temporary solution.
-
-  //   // Gain a raw ptr (non owning).
-  //   // If the AST changes the assertion will be triggered.
-  //   auto* param{dynamic_cast<Parameter*>(node.get())};
-  //   if(!param) {
-  //     using lib::stdexcept::throw_unexpected_nullptr;
-
-  //     throw_unexpected_nullptr("Failed to dynamic_cast to Parameter*.");
-  //   }
-
-  //   // Init the parameter variables.
-  //   const auto name{param->identifier()};
-  //   const auto type{param->get_type()};
-  //   const auto source_line{param->position().m_line};
-
-  //   auto& init_instr{m_factory->add_init(name, type)};
-  //   m_factory->add_comment(source_line);
-  // }
-
   // Traverse the body.
   traverse(t_fn->body());
   m_factory->pop_env();

@@ -12,8 +12,9 @@ ClirModuleFactory::ClirModuleFactory()
   : m_module{std::make_shared<Module>()},
     m_var_env{},
     m_fn_env{},
-    m_var_id{0},
-    m_instr_id{0}
+    m_block_id{0},
+    m_instr_id{0},
+    m_var_id{0}
 {}
 
 auto ClirModuleFactory::push_env() -> void
@@ -255,8 +256,10 @@ auto ClirModuleFactory::add_block(const std::string_view t_label) -> BasicBlock&
   auto& blocks{fn.m_blocks};
 
   // Create basic block and set its label.
+	// We want all blocks to have their own id.
   BasicBlock block{};
-  block.m_label = t_label;
+  block.m_label = std::format("{}_{}", t_label, m_block_id);
+  m_block_id++;
 
   blocks.push_back(block);
 

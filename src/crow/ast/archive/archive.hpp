@@ -56,10 +56,10 @@
  * @param t_typename The name of the class you want to archive.
  * @param ... The names of the node_traits you want to archive.
  */
-#define AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(t_typename, ...)       \
-  AST_ARCHIVE_MAKE_ARCHIVEABLE(t_typename)                         \
-  {                                                                \
-    archive_traits<Archive, t_type, __VA_ARGS__>(t_archive, this); \
+#define AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(t_typename, ...)           \
+  AST_ARCHIVE_MAKE_ARCHIVEABLE(t_typename)                             \
+  {                                                                    \
+    archive_traits<Archive, t_typename, __VA_ARGS__>(t_archive, this); \
   }
 
 /*!
@@ -67,9 +67,9 @@
  * Since AST nodes always inherit from the @ref NodeInterface class.
  * We need to make this relationship aware.
  */
-#define REGISTER_ARCHIVEABLE_TYPE(t_namespace, t_type)           \
-  CEREAL_REGISTER_TYPE_WITH_NAME(t_namespace::t_type, #t_type)   \
-  CEREAL_REGISTER_POLYMORPHIC_RELATION(ast::node::NodeInterface, \
-                                       t_namespace::t_type);
+#define REGISTER_ARCHIVEABLE_TYPE(t_namespace, t_typename)             \
+  CEREAL_REGISTER_TYPE_WITH_NAME(t_namespace::t_typename, #t_typename) \
+  CEREAL_REGISTER_POLYMORPHIC_RELATION(ast::node::NodeInterface,       \
+                                       t_namespace::t_typename);
 
 #endif // CROW_CROW_AST_ARCHIVE_ARCHIVE_HPP
