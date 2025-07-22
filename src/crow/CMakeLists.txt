@@ -38,7 +38,7 @@ add_subdirectory(types)
 add_subdirectory(semantic)
 
 # CrowLang Intermediate Representation generation:
-add_subdirectory(clir)
+add_subdirectory(mir)
 
 # Code generation phase:
 add_subdirectory(codegen)

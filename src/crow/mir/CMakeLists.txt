@@ -1,7 +1,8 @@
 # Add source files:
 target_sources(${TARGET_CROW_LIB} PRIVATE
-  clir.cpp
+  mir.cpp
 )
 
 # Add subdirectories:
-add_subdirectory(clir_builder)
+add_subdirectory(mir_builder)
+add_subdirectory(mir_pass)

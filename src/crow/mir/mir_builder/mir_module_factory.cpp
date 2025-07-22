@@ -1,4 +1,4 @@
-#include "clir_module_factory.hpp"
+#include "mir_module_factory.hpp"
 
 // STL Includes:
 #include <iomanip>
@@ -8,7 +8,7 @@
 #include "lib/stdexcept/stdexcept.hpp"
 #include "lib/string_util.hpp"
 
-namespace clir::clir_builder {
+namespace mir::mir_builder {
 ClirModuleFactory::ClirModuleFactory()
   : m_module{std::make_shared<Module>()},
     m_var_env{},
@@ -362,4 +362,4 @@ auto ClirModuleFactory::get_module() -> ModulePtr
 {
   return m_module;
 }
-} // namespace clir::clir_builder
+} // namespace mir::mir_builder

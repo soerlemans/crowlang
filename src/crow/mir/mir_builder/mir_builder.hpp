@@ -3,9 +3,9 @@
 
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
-#include "crow/clir/clir_builder/clir_module_factory.hpp"
+#include "crow/mir/mir_builder/mir_module_factory.hpp"
 
-namespace clir::clir_builder {
+namespace mir::mir_builder {
 // Using:
 using ast::node::NodePtr;
 using ast::visitor::Any;
@@ -99,6 +99,6 @@ class ClirBuilder : public NodeVisitor {
 };
 
 
-} // namespace clir::clir_builder
+} // namespace mir::mir_builder
 
 #endif // CROW_CROW_CLIR_CLIR_BUILDER_CLIR_BUILDER_HPP

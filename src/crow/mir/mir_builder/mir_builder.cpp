@@ -1,4 +1,4 @@
-#include "clir_builder.hpp"
+#include "mir_builder.hpp"
 
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
@@ -14,7 +14,7 @@
     return {};                                                    \
   }
 
-namespace clir::clir_builder {
+namespace mir::mir_builder {
 // Using statements:
 NODE_USING_ALL_NAMESPACES()
 
@@ -830,4 +830,4 @@ auto ClirBuilder::translate(NodePtr t_ast) -> ModulePtr
 
   return ptr;
 }
-} // namespace clir::clir_builder
+} // namespace mir::mir_builder

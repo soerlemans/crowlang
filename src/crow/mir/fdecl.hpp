@@ -12,7 +12,7 @@
 // Absolute Includes:
 #include "lib/stdtypes.hpp"
 
-namespace clir {
+namespace mir {
 // Forward Declarations:
 struct Value;
 struct Instruction;
@@ -23,6 +23,6 @@ using ValueSeq = std::vector<Value>;
 using InstructionSeq = std::vector<Instruction>;
 using BasicBlockSeq = std::vector<BasicBlock>;
 using CfgSeq = std::list<BasicBlock*>;
-} // namespace clir
+} // namespace mir
 
 #endif // CROW_CROW_CLIR_FDECL_HPP

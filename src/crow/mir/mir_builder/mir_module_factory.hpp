@@ -5,10 +5,10 @@
 #include <memory>
 
 // Absolute Includes:
-#include "crow/clir/clir.hpp"
-#include "crow/clir/clir_builder/clir_env_state.hpp"
+#include "crow/mir/mir.hpp"
+#include "crow/mir/mir_builder/mir_env_state.hpp"
 
-namespace clir::clir_builder {
+namespace mir::mir_builder {
 // Forward Declarations:
 class ClirModuleFactory;
 
@@ -151,6 +151,6 @@ class ClirModuleFactory {
 
   virtual ~ClirModuleFactory() = default;
 };
-} // namespace clir::clir_builder
+} // namespace mir::mir_builder
 
 #endif // CROW_CROW_CLIR_CLIR_BUILDER_CLIR_MODULE_FACTORY_HPP

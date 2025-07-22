@@ -8,7 +8,7 @@
 #include <variant>
 
 // Absolute Includes:
-#include "crow/clir/clir.hpp"
+#include "crow/mir/mir.hpp"
 #include "crow/container/env_state.hpp"
 #include "crow/types/core/core.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
@@ -23,7 +23,7 @@
 // For now just leave as is as it works, and atm fixing this design mistake.
 // Is not pressing.
 
-namespace clir::clir_builder {
+namespace mir::mir_builder {
 // Classes:
 /*!
  * TODO: Document.
@@ -71,6 +71,6 @@ class ClirEnvState : public container::EnvState<T> {
 
   virtual ~ClirEnvState() = default;
 };
-} // namespace clir::clir_builder
+} // namespace mir::mir_builder
 
 #endif // CROW_CROW_CLIR_CLIR_BUILDER_CLIR_ENV_STATE_HPP

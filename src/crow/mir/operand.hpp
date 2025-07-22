@@ -6,7 +6,7 @@
 #include <variant>
 #include <vector>
 
-namespace clir {
+namespace mir {
 // Using:
 using types::core::NativeType;
 using types::core::TypeVariant;
@@ -35,6 +35,6 @@ class Operand {
   public:
 };
 
-} // namespace clir
+} // namespace mir
 
 #endif // CROW_CROW_CLIR_OPERAND_HPP

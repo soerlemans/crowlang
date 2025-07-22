@@ -20,7 +20,7 @@
 #include "crow/types/core/core.hpp"
 #include "lib/stdtypes.hpp"
 
-namespace clir {
+namespace mir {
 // Using:
 using types::core::NativeType;
 using types::core::TypeVariant;
@@ -255,38 +255,38 @@ struct Module {
 
 // Functions:
 auto opcode2str(Opcode t_opcode) -> std::string_view;
-} // namespace clir
+} // namespace mir
 
 // Functions:
-auto operator<<(std::ostream& t_os, const clir::Opcode t_op) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::Opcode t_op) -> std::ostream&;
 
-auto operator<<(std::ostream& t_os, const clir::Literal& t_lit)
-  -> std::ostream&;
-
-auto operator<<(std::ostream& t_os, const clir::SsaVar& t_var) -> std::ostream&;
-auto operator<<(std::ostream& t_os, const clir::SsaVarPtr& t_ptr)
+auto operator<<(std::ostream& t_os, const mir::Literal& t_lit)
   -> std::ostream&;
 
-auto operator<<(std::ostream& t_os, const clir::Label& t_label)
+auto operator<<(std::ostream& t_os, const mir::SsaVar& t_var) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::SsaVarPtr& t_ptr)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, const clir::Operand& t_operand)
+
+auto operator<<(std::ostream& t_os, const mir::Label& t_label)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)
+auto operator<<(std::ostream& t_os, const mir::Operand& t_operand)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, const clir::BasicBlock& t_bblock)
+auto operator<<(std::ostream& t_os, const mir::Instruction& t_inst)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, const clir::Function& t_fn)
+auto operator<<(std::ostream& t_os, const mir::BasicBlock& t_bblock)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, const clir::Module& t_mod) -> std::ostream&;
-auto operator<<(std::ostream& t_os, const clir::ModulePtr& t_mod)
+auto operator<<(std::ostream& t_os, const mir::Function& t_fn)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::Module& t_mod) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::ModulePtr& t_mod)
   -> std::ostream&;
 
 // Format specializations:
 template<>
-// struct std::formatter<clir::SsaVar> : std::formatter<std::string_view> {
-struct std::formatter<clir::SsaVar> {
+// struct std::formatter<mir::SsaVar> : std::formatter<std::string_view> {
+struct std::formatter<mir::SsaVar> {
   template<typename FormatContext>
-  auto format(const clir::SsaVar& t_var, FormatContext& ctx)
+  auto format(const mir::SsaVar& t_var, FormatContext& ctx)
     -> std::formatter<std::string_view>
   {
     // Reuse operator<<()

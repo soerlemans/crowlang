@@ -7,9 +7,9 @@
 // Absolute Includes:
 #include "crow/ast/node/fdecl.hpp"
 #include "crow/ast/visitor/ast_printer.hpp"
-#include "crow/clir/clir_builder/clir_builder.hpp"
 #include "crow/codegen/backend_interface.hpp"
 #include "crow/lexer/lexer.hpp"
+#include "crow/mir/mir_builder/mir_builder.hpp"
 #include "crow/parser/crow/crow_parser.hpp"
 #include "crow/semantic/semantic_checker.hpp"
 
@@ -126,7 +126,7 @@ auto TranslationUnit::semantic(NodePtr t_ast) -> SymbolTablePtr
 
 auto TranslationUnit::ir(NodePtr t_ast) -> ModulePtr
 {
-  using clir::clir_builder::ClirBuilder;
+  using mir::mir_builder::ClirBuilder;
 
   m_phase = TranslationUnitPhase::IR_GENERATION;
 
