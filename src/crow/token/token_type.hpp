@@ -30,9 +30,12 @@ enum class TokenType {
   INTERFACE,
   IMPL,
 
-  // Attributes:
+  // Meta:
   ATTRIBUTE_OPEN,
   ATTRIBUTE_CLOSE,
+
+  DECLARE,
+  MACRO,
 
   // Control statements:
   FUNCTION,

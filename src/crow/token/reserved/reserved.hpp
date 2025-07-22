@@ -45,12 +45,14 @@ namespace keywords {
   DEFINE_TERMINAL(g_impl,      "impl",      IMPL);
 
   // Control statements:
-  DEFINE_TERMINAL(g_fn,    "func",  FUNCTION);
-  DEFINE_TERMINAL(g_match, "match", MATCH);
-  DEFINE_TERMINAL(g_if,    "if",    IF);
-  DEFINE_TERMINAL(g_else,  "else",  ELSE);
-  DEFINE_TERMINAL(g_elif,  "elif",  ELIF);
-  DEFINE_TERMINAL(g_loop,  "loop",  LOOP);
+  DEFINE_TERMINAL(g_declare, "declare", DECLARE);
+  DEFINE_TERMINAL(g_macro,   "macro",   MACRO);
+  DEFINE_TERMINAL(g_func,    "func",    FUNCTION);
+  DEFINE_TERMINAL(g_match,   "match",   MATCH);
+  DEFINE_TERMINAL(g_if,      "if",      IF);
+  DEFINE_TERMINAL(g_else,    "else",    ELSE);
+  DEFINE_TERMINAL(g_elif,    "elif",    ELIF);
+  DEFINE_TERMINAL(g_loop,    "loop",    LOOP);
 
   // Jump:
   DEFINE_TERMINAL(g_break,    "break",    BREAK);
@@ -68,7 +70,7 @@ namespace keywords {
   // 	(g_var.pair())
   // 	(g_module.pair()) (g_import.pair()) (g_priv.pair()) (g_pub.pair())
   // 	(g_struct.pair()) (g_interface.pair()) (g_impl.pair())
-  //    (g_fn.pair())
+  //    (g_func.pair())
   // 	(g_match.pair())
   //    (g_if.pair()) (g_else.pair()) (g_elif.pair())
   //    (g_loop.pair())
@@ -80,7 +82,8 @@ namespace keywords {
     g_let.pair(), g_var.pair(),
     g_module.pair(), g_import.pair(), g_priv.pair(), g_pub.pair(),
     g_struct.pair(), g_interface.pair(), g_impl.pair(),
-    g_fn.pair(),
+    g_declare.pair(), g_macro.pair(),
+    g_func.pair(),
     g_match.pair(),
     g_if.pair(), g_else.pair(), g_elif.pair(),
     g_loop.pair(),
@@ -94,7 +97,7 @@ namespace keywords {
 namespace symbols {
   // Attributes:
   DEFINE_TERMINAL(g_attribute_open,  "[[", ATTRIBUTE_OPEN);
-  DEFINE_TERMINAL(g_attribute_close, "[[", ATTRIBUTE_CLOSE);
+  DEFINE_TERMINAL(g_attribute_close, "]]", ATTRIBUTE_CLOSE);
 
   // Braces
   DEFINE_TERMINAL(g_paren_open,     '(', PAREN_OPEN);

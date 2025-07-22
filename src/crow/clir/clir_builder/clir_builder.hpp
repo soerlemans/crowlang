@@ -11,6 +11,14 @@ using ast::node::NodePtr;
 using ast::visitor::Any;
 using ast::visitor::NodeVisitor;
 
+// Structs:
+/*!
+ */
+struct ClirTranslateParams {
+  NodePtr m_ast;
+  // SymbolTablePtr m_symbol_table;
+};
+
 // Classes:
 /*!
  * So we convert the AST to the IR that we defined.

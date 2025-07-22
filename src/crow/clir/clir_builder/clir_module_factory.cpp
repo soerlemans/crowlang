@@ -138,6 +138,10 @@ auto ClirModuleFactory::add_literal(NativeType t_type, LiteralValue t_value)
       opcode = Opcode::CONST_F32;
       break;
 
+    case NativeType::F64:
+      opcode = Opcode::CONST_F64;
+      break;
+
     case NativeType::INT:
       opcode = Opcode::CONST_INT;
       break;
