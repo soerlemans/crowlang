@@ -142,8 +142,8 @@ enum class Opcode : u32 {
   BREAK,     // break
   RETURN,    // ret %<var>
 
-  // SSA specific, select Literal based on the control path.
-  PHI,
+  // SSA specific, select value based on the control path.
+  PHI, // %<dest> = phi <condition> <value_true> <value_false>
 
   // High level control flow:
   LOOP, // loop <cond>.

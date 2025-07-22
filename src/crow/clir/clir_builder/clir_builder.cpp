@@ -179,17 +179,23 @@ auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
 
 auto ClirBuilder::visit(Call* t_call) -> Any
 {
+  // TODO: Implement.
+
   return {};
 }
 
 auto ClirBuilder::visit([[maybe_unused]] ReturnType* t_rt) -> Any
 {
+  // TODO: Do something with this?
+
   return {};
 }
 
 // Lvalue:
 auto ClirBuilder::visit(Let* t_let) -> Any
 {
+  // TODO: Cleanup messy.
+
   // The let and var keywords function the same in SSA.
   const auto name{t_let->identifier()};
   const auto type{t_let->get_type()};
@@ -211,6 +217,8 @@ auto ClirBuilder::visit(Let* t_let) -> Any
 
 auto ClirBuilder::visit(Var* t_var) -> Any
 {
+  // TODO: Cleanup messy.
+
   // The let and var keywords function the same in SSA.
   const auto name{t_var->identifier()};
   const auto type{t_var->get_type()};
@@ -568,6 +576,8 @@ auto ClirBuilder::visit(Not* t_not) -> Any
 {
   const auto left{t_not->left()};
   const auto source_line{t_not->position().m_line};
+
+  // TODO: Implement.
 
   return {};
 }
