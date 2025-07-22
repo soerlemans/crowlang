@@ -50,7 +50,7 @@ auto PrattParser::literal() -> NodePtr
 
   const auto token{get_token()};
   if(next_if(TokenType::FLOAT)) {
-    const auto val{token.double_()};
+    const auto val{token.float_()};
     PARSER_FOUND(TokenType::FLOAT, " literal: ", val);
     node = make_node<Float>(val);
 
