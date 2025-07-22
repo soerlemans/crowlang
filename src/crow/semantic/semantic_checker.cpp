@@ -34,17 +34,27 @@ SemanticChecker::SemanticChecker()
 // Control:
 auto SemanticChecker::visit(If* t_if) -> Any
 {
+  const auto init_expr{t_if->init_expr()};
+  const auto then{t_if->then()};
+  const auto alt{t_if->alt()};
+
   // Init expression must be evaluated before condition.
-  traverse(t_if->init_expr());
+  if(init_expr) {
+    traverse(init_expr);
+  }
 
+	// The condition is resolved to a type.
   const auto cond{get_symbol_data(t_if->condition())};
-
   DBG_INFO("Condition: ", cond);
 
   handle_condition(cond, t_if->position());
 
-  traverse(t_if->then());
-  traverse(t_if->alt());
+	// Branch traversal:
+  traverse(then);
+
+  if(alt) {
+    traverse(alt);
+  }
 
   return {};
 }

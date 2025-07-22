@@ -136,7 +136,7 @@ enum class Opcode : u32 {
   // clang-format on
 
   // Control Flow:
-  COND_JUMP, // cond_jmp <condition> <label_true> <label_false>
+  COND_JUMP, // cond_jmp <condition> <label_true>
   JUMP,      // jmp <label>
   CONTINUE,  // continue
   BREAK,     // break
@@ -229,6 +229,7 @@ struct BasicBlock {
   CfgSeq m_successors;
   CfgSeq m_predecessors;
 
+  BasicBlock() = default;
 
   virtual ~BasicBlock() = default;
 };
@@ -248,6 +249,8 @@ struct Function {
 struct Module {
   std::string m_name;
   FunctionSeq m_functions;
+
+  Module() = default;
 
   virtual ~Module() = default;
 };

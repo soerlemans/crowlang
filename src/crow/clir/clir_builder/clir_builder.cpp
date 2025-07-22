@@ -31,10 +31,12 @@ auto ClirBuilder::visit(If* t_if) -> Any
   const auto init_expr{t_if->init_expr()};
   const auto cond{t_if->condition()};
   const auto then{t_if->then()};
-  const auto alt{t_if->then()};
+  const auto alt{t_if->alt()};
 
   // Generate IR for init of another var.
-  traverse(init_expr);
+  if(init_expr) {
+    traverse(init_expr);
+  }
 
   // Resolve condition, should assign result of operation to a SSA var.
   traverse(cond);
@@ -51,18 +53,24 @@ auto ClirBuilder::visit(If* t_if) -> Any
   const auto then_jump{m_factory->create_instruction(Opcode::JUMP)};
 
   // Alt block:
-  auto& alt_block{m_factory->add_block("alt_block")};
-  if_instr.add_operand({&alt_block});
+  if(alt) {
+    auto& alt_block{m_factory->add_block("alt_block")};
+    if_instr.add_operand({&alt_block});
 
-  traverse(alt);
-  const auto alt_jump{m_factory->create_instruction(Opcode::JUMP)};
+    traverse(alt);
+    const auto alt_jump{m_factory->create_instruction(Opcode::JUMP)};
+  }
 
   // Final block after the if statement.
   auto& final_block{m_factory->add_block("final_block")};
 
   // Insert jumps at the end of the blocks.
   m_factory->insert_jump(then_jump, then_block, final_block);
-  m_factory->insert_jump(alt_jump, alt_block, final_block);
+
+  if(alt) {
+    // FIXME:
+    // m_factory->insert_jump(alt_jump, alt_block, final_block);
+  }
 
   return {};
 }
@@ -550,8 +558,8 @@ auto ClirBuilder::visit(UnaryPrefix* t_up) -> Any
 // Logical:
 auto ClirBuilder::visit(Not* t_not) -> Any
 {
-  const auto left{t_or->left()};
-  const auto source_line{t_or->position().m_line};
+  const auto left{t_not->left()};
+  const auto source_line{t_not->position().m_line};
 
   return {};
 }
@@ -561,9 +569,21 @@ auto ClirBuilder::visit(And* t_and) -> Any
   const auto left{t_and->left()};
   const auto right{t_and->right()};
 
+  auto& left_block{m_factory->add_block("left_term_and")};
+  traverse(left);
+  const auto left_var{m_factory->require_last_var()};
+
+  // Add a conditional jump skipping if left term is false.
+  auto& cond_jmp_instr{m_factory->add_instruction(Opcode::COND_JUMP)};
+  // cond_jmp_instr.
+
+  auto& right_block{m_factory->add_block("right_term_and")};
+  traverse(right);
+  const auto right_var{m_factory->require_last_var()};
+
   const auto source_line{t_and->position().m_line};
 
-  // TODO: Implement short circuiting.
+  auto& final_block{m_factory->add_block("final_block")};
 
   return {};
 }
