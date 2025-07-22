@@ -77,7 +77,7 @@ class ClirModuleFactory {
 
   // Instruction operations:
   [[nodiscard("Must use created instruction.")]]
-  auto create_instruction(Opcode t_opcode) const -> Instruction;
+  auto create_instruction(Opcode t_opcode) -> Instruction;
   auto add_instruction_to(Opcode t_opcode, BasicBlock& t_block) -> Instruction&;
   auto add_instruction(Opcode t_opcode) -> Instruction&;
   auto add_comment(std::string t_comment) -> void;
@@ -121,7 +121,7 @@ class ClirModuleFactory {
 
   // Block operations:
   [[nodiscard("Must use created block.")]]
-  auto create_block(std::string_view t_label) const -> BasicBlock;
+  auto create_block(std::string_view t_label) -> BasicBlock;
   auto append_block(const BasicBlock& t_block) -> BasicBlock&;
   auto add_block(std::string_view t_label) -> BasicBlock&;
 

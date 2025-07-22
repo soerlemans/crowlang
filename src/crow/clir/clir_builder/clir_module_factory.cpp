@@ -84,8 +84,7 @@ auto ClirModuleFactory::require_last_var() -> SsaVarPtr
   return var;
 }
 
-auto ClirModuleFactory::create_instruction(const Opcode t_opcode) const
-  -> Instruction
+auto ClirModuleFactory::create_instruction(const Opcode t_opcode) -> Instruction
 {
   // Cookie cutter the creation of an instruction.
   Instruction instr{};
@@ -260,7 +259,7 @@ auto ClirModuleFactory::last_instruction() -> Instruction&
   return instructions.back();
 }
 
-auto ClirModuleFactory::create_block(const std::string_view t_label) const
+auto ClirModuleFactory::create_block(const std::string_view t_label)
   -> BasicBlock
 {
   // Create basic block and set its label.
