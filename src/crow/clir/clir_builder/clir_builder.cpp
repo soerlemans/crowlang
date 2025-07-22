@@ -631,9 +631,9 @@ auto ClirBuilder::visit(Or* t_or) -> Any
 {
   // TODO: Refactor very messy.
 
-  const auto left{t_and->left()};
-  const auto right{t_and->right()};
-  const auto source_line{t_and->position().m_line};
+  const auto left{t_or->left()};
+  const auto right{t_or->right()};
+  const auto source_line{t_or->position().m_line};
 
   // Jump to enter and flow.
   auto& main_jump{m_factory->add_instruction(Opcode::JUMP)};
