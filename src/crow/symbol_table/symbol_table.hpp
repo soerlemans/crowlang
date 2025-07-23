@@ -11,12 +11,12 @@
 // STL Include:
 #include <expected>
 #include <map>
+#include <memory>
 #include <optional>
 #include <stack>
 #include <string>
 
 // Absolute includes:
-#include "crow/types/semantic/symbol_data.hpp"
 #include "lib/stdtypes.hpp"
 
 namespace symbol_table {
@@ -31,19 +31,14 @@ using SymbolMap = std::map<std::string, SymbolTableScope>;
 using SymbolMapOpt = std::optional<SymbolMap>;
 using SymbolMapEntry = SymbolMap::value_type;
 using SymbolMapIter = SymbolMap::iterator;
-using SymbolMapInsertResult = std::pair<SymbolMap::iterator, bool>;
-// using SymbolMapInsertResult = std::expected<SymbolMap::iterator,
-// SymbolTableError>;
-
-/*!
- * The global @ref SymbolTable can get quite large, better to copy a ptr.
- * When returning the result.
- */
+using SymbolTableResult = std::expected<SymbolMapIter, SymbolTableError>;
 using SymbolTablePtr = std::shared_ptr<SymbolTable>;
 
 // enums:
 enum class SymbolTableError {
-  SYMBOL_NOT_PRESENT,
+  UNIMPLEMENTED, // FIXME: Temporary.
+  INSERT_FAILED,
+  SYMBOL_NOT_FOUND,
 };
 
 // Structs:
@@ -73,13 +68,13 @@ class SymbolTable {
   SymbolTable();
 
   // TODO: Implement.
-  auto insert(SymbolMapEntry t_pair) -> SymbolMapInsertResult;
+  auto insert(SymbolMapEntry t_pair) -> SymbolTableResult;
   auto insert(SymbolMapIter t_parent, SymbolMapEntry t_pair)
-    -> SymbolMapInsertResult;
+    -> SymbolTableResult;
 
-  // auto lookup(std::string_view t_symbol_name) const -> SymbolData;
-  // auto lookup_toplevel(std::string_view t_symbol_name) const -> SymbolData;
-  // auto find_toplevel(std::string_view t_symbol_name) const -> ;
+  auto lookup(std::string_view t_symbol_name) const -> SymbolTableResult;
+  auto lookup_toplevel(std::string_view t_symbol_name) const
+    -> SymbolTableResult;
 
   auto table() const -> const SymbolMap&;
 
