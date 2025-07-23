@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CLIR_CLIR_BUILDER_CLIR_ENV_STATE_HPP
-#define CROW_CROW_CLIR_CLIR_BUILDER_CLIR_ENV_STATE_HPP
+#ifndef CROW_CROW_MIR_MIR_BUILDER_MIR_ENV_STATE_HPP
+#define CROW_CROW_MIR_MIR_BUILDER_MIR_ENV_STATE_HPP
 
 // STL Includes:
 #include <iomanip>
@@ -8,8 +8,8 @@
 #include <variant>
 
 // Absolute Includes:
-#include "crow/clir/clir.hpp"
 #include "crow/container/env_state.hpp"
+#include "crow/mir/mir.hpp"
 #include "crow/types/core/core.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
 
@@ -23,18 +23,18 @@
 // For now just leave as is as it works, and atm fixing this design mistake.
 // Is not pressing.
 
-namespace clir::clir_builder {
+namespace mir::mir_builder {
 // Classes:
 /*!
  * TODO: Document.
  */
 template<typename T>
-class ClirEnvState : public container::EnvState<T> {
+class MirEnvState : public container::EnvState<T> {
   private:
   using BaseEnvState = container::EnvState<T>;
 
   public:
-  ClirEnvState(): BaseEnvState{}
+  MirEnvState(): BaseEnvState{}
   {}
 
   auto lookup(const std::string_view t_key) -> BaseEnvState::Iter
@@ -69,8 +69,8 @@ class ClirEnvState : public container::EnvState<T> {
     iter->second = t_value;
   }
 
-  virtual ~ClirEnvState() = default;
+  virtual ~MirEnvState() = default;
 };
-} // namespace clir::clir_builder
+} // namespace mir::mir_builder
 
-#endif // CROW_CROW_CLIR_CLIR_BUILDER_CLIR_ENV_STATE_HPP
+#endif // CROW_CROW_MIR_MIR_BUILDER_MIR_ENV_STATE_HPP

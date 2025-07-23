@@ -1,4 +1,4 @@
-#include "clir.hpp"
+#include "mir.hpp"
 
 // STL Includes:
 #include <format>
@@ -33,7 +33,7 @@ constexpr inline auto to_string(const T& t_elem) -> std::string
 
 } // namespace
 
-namespace clir {
+namespace mir {
 // Methods:
 // TODO: Move somewhere else.
 auto Label::label() const -> std::string_view
@@ -144,16 +144,16 @@ auto opcode2str(const Opcode t_opcode) -> std::string_view
 
   return str;
 }
-} // namespace clir
+} // namespace mir
 
-auto operator<<(std::ostream& t_os, const clir::Opcode t_op) -> std::ostream&
+auto operator<<(std::ostream& t_os, const mir::Opcode t_op) -> std::ostream&
 {
-  t_os << clir::opcode2str(t_op);
+  t_os << mir::opcode2str(t_op);
 
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const clir::Literal& t_val) -> std::ostream&
+auto operator<<(std::ostream& t_os, const mir::Literal& t_val) -> std::ostream&
 {
   std::visit(
     [&](auto&& t_value) {
@@ -164,7 +164,7 @@ auto operator<<(std::ostream& t_os, const clir::Literal& t_val) -> std::ostream&
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const clir::SsaVar& t_var) -> std::ostream&
+auto operator<<(std::ostream& t_os, const mir::SsaVar& t_var) -> std::ostream&
 {
   // TODO: Think about conditional printing of the type as well?
 
@@ -173,7 +173,7 @@ auto operator<<(std::ostream& t_os, const clir::SsaVar& t_var) -> std::ostream&
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const clir::SsaVarPtr& t_ptr)
+auto operator<<(std::ostream& t_os, const mir::SsaVarPtr& t_ptr)
   -> std::ostream&
 {
   using lib::stdprint::detail::print_smart_ptr;
@@ -181,14 +181,14 @@ auto operator<<(std::ostream& t_os, const clir::SsaVarPtr& t_ptr)
   return print_smart_ptr(t_os, t_ptr);
 }
 
-auto operator<<(std::ostream& t_os, const clir::Label& t_label) -> std::ostream&
+auto operator<<(std::ostream& t_os, const mir::Label& t_label) -> std::ostream&
 {
   t_os << std::format("<{}>", t_label.label());
 
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const clir::Operand& t_operand)
+auto operator<<(std::ostream& t_os, const mir::Operand& t_operand)
   -> std::ostream&
 {
   auto print{[&](auto&& t_elem) {
@@ -200,11 +200,11 @@ auto operator<<(std::ostream& t_os, const clir::Operand& t_operand)
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)
+auto operator<<(std::ostream& t_os, const mir::Instruction& t_inst)
   -> std::ostream&
 {
-  using clir::opcode2str;
-  using clir::Operand;
+  using mir::opcode2str;
+  using mir::Operand;
 
   const auto& [id, opcode, operands, result, comment] = t_inst;
 
@@ -239,10 +239,10 @@ auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const clir::BasicBlock& t_bblock)
+auto operator<<(std::ostream& t_os, const mir::BasicBlock& t_bblock)
   -> std::ostream&
 {
-  using clir::Instruction;
+  using mir::Instruction;
 
   const auto& [label, instructions, _1, _2] = t_bblock;
 
@@ -255,10 +255,10 @@ auto operator<<(std::ostream& t_os, const clir::BasicBlock& t_bblock)
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const clir::Function& t_fn) -> std::ostream&
+auto operator<<(std::ostream& t_os, const mir::Function& t_fn) -> std::ostream&
 {
-  using clir::BasicBlock;
-  using clir::SsaVarPtr;
+  using mir::BasicBlock;
+  using mir::SsaVarPtr;
 
   const auto& [name, params, bblocks] = t_fn;
 
@@ -284,9 +284,9 @@ auto operator<<(std::ostream& t_os, const clir::Function& t_fn) -> std::ostream&
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const clir::Module& t_mod) -> std::ostream&
+auto operator<<(std::ostream& t_os, const mir::Module& t_mod) -> std::ostream&
 {
-  using clir::Function;
+  using mir::Function;
 
   const auto& [name, functions] = t_mod;
 
@@ -305,7 +305,7 @@ auto operator<<(std::ostream& t_os, const clir::Module& t_mod) -> std::ostream&
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const clir::ModulePtr& t_ptr)
+auto operator<<(std::ostream& t_os, const mir::ModulePtr& t_ptr)
   -> std::ostream&
 {
   using lib::stdprint::detail::print_smart_ptr;

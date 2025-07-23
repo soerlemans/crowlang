@@ -3,6 +3,7 @@
 
 // STL Includes:
 #include <cstdint>
+#include <stdfloat>
 
 /*!
  * @file
@@ -23,6 +24,17 @@ using i16 = std::int16_t;
 using i32 = std::int32_t;
 using i64 = std::int64_t;
 
-// TODO: add f32 and f64 when clang libc++ supports them.
+// Float type aliases:
+// TODO: Add f32 and f64 when clang libc++ supports them.
+// TODO: As well as the Cereal serilization library.
+// using f32 = std::float32_t;
+// using f64 = std::float64_t;
+
+using f32 = float;
+using f64 = double;
+
+// Make sure the fixed widths are enforced.
+static_assert(sizeof(f32) == 4, "f32 is not 32-bit on this platform!");
+static_assert(sizeof(f64) == 8, "f64 is not 64-bit on this platform!");
 
 #endif // CROW_LIB_STDTYPES_HPP

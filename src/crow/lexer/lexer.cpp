@@ -284,7 +284,7 @@ auto Lexer::handle_float(const std::string_view t_str) -> Token
   }
 
   LOG_TOKEN("FLOAT: ", ss.str());
-  const double number{std::stod(ss.str())};
+  const f64 number{std::stod(ss.str())};
 
   return Token{TokenType::FLOAT, number, position};
 }

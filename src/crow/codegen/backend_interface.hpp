@@ -41,6 +41,7 @@ enum class BackendType {
 struct CompileParams {
   NodePtr m_ast;
   SymbolTablePtr m_symbol_table;
+
   fs::path m_build_dir;
   fs::path m_source_path;
 };

@@ -7,9 +7,9 @@
 
 // Absolute Includes:
 #include "crow/ast/node/fdecl.hpp"
-#include "crow/clir/clir.hpp"
 #include "crow/codegen/backend_interface.hpp"
 #include "crow/container/text_buffer.hpp"
+#include "crow/mir/mir.hpp"
 #include "crow/semantic/symbol_table/symbol_table.hpp"
 #include "crow/token/token_stream.hpp"
 #include "crow/unit/build_unit.hpp"
@@ -17,9 +17,9 @@
 namespace unit {
 // Using Statements:
 using ast::node::NodePtr;
-using clir::ModulePtr;
 using codegen::CompileParams;
 using container::TextStreamPtr;
+using mir::ModulePtr;
 using semantic::symbol_table::SymbolTablePtr;
 using std::filesystem::path;
 using token::TokenStream;

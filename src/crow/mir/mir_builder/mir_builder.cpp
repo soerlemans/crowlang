@@ -1,4 +1,4 @@
-#include "clir_builder.hpp"
+#include "mir_builder.hpp"
 
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
@@ -7,22 +7,22 @@
 
 // Macros:
 #define STUB(t_type)                                              \
-  auto ClirBuilder::visit([[maybe_unused]] t_type* t_ptr) -> Any  \
+  auto MirBuilder::visit([[maybe_unused]] t_type* t_ptr) -> Any   \
   {                                                               \
     DBG_CRITICAL("Method for type ", #t_type, " not overriden!"); \
                                                                   \
     return {};                                                    \
   }
 
-namespace clir::clir_builder {
+namespace mir::mir_builder {
 // Using statements:
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-ClirBuilder::ClirBuilder(): m_factory{nullptr}
+MirBuilder::MirBuilder(): m_factory{nullptr}
 {}
 
-auto ClirBuilder::visit(If* t_if) -> Any
+auto MirBuilder::visit(If* t_if) -> Any
 {
   // We need to create two new blocks an if and else branch.
   auto& main_block{m_factory->last_block()};
@@ -75,14 +75,14 @@ auto ClirBuilder::visit(If* t_if) -> Any
   return {};
 }
 
-auto ClirBuilder::visit(Loop* t_loop) -> Any
+auto MirBuilder::visit(Loop* t_loop) -> Any
 {
 
 
   return {};
 }
 
-auto ClirBuilder::visit(Continue* t_continue) -> Any
+auto MirBuilder::visit(Continue* t_continue) -> Any
 {
   // TODO: Replace continue with JUMP?
   m_factory->add_instruction(Opcode::CONTINUE);
@@ -90,7 +90,7 @@ auto ClirBuilder::visit(Continue* t_continue) -> Any
   return {};
 }
 
-auto ClirBuilder::visit(Break* t_break) -> Any
+auto MirBuilder::visit(Break* t_break) -> Any
 {
   // TODO: Replace break with JUMP?
   m_factory->add_instruction(Opcode::BREAK);
@@ -98,7 +98,7 @@ auto ClirBuilder::visit(Break* t_break) -> Any
   return {};
 }
 
-auto ClirBuilder::visit(Defer* t_defer) -> Any
+auto MirBuilder::visit(Defer* t_defer) -> Any
 {
   // Defer statements are inserted at the end.
   // Before all return statements.
@@ -112,7 +112,7 @@ auto ClirBuilder::visit(Defer* t_defer) -> Any
   return {};
 }
 
-auto ClirBuilder::visit(Return* t_ret) -> Any
+auto MirBuilder::visit(Return* t_ret) -> Any
 {
   // An expression is optional for a return statement.
   auto expr{t_ret->expr()};
@@ -131,7 +131,7 @@ auto ClirBuilder::visit(Return* t_ret) -> Any
 }
 
 // Functions:
-auto ClirBuilder::visit(Parameter* t_param) -> Any
+auto MirBuilder::visit(Parameter* t_param) -> Any
 {
   const auto name{t_param->identifier()};
   const auto type{t_param->get_type()};
@@ -149,7 +149,7 @@ auto ClirBuilder::visit(Parameter* t_param) -> Any
   return {};
 }
 
-auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
+auto MirBuilder::visit(ast::node::function::Function* t_fn) -> Any
 {
   Function fn{};
 
@@ -177,14 +177,14 @@ auto ClirBuilder::visit(ast::node::function::Function* t_fn) -> Any
   return {};
 }
 
-auto ClirBuilder::visit(Call* t_call) -> Any
+auto MirBuilder::visit(Call* t_call) -> Any
 {
   // TODO: Implement.
 
   return {};
 }
 
-auto ClirBuilder::visit([[maybe_unused]] ReturnType* t_rt) -> Any
+auto MirBuilder::visit([[maybe_unused]] ReturnType* t_rt) -> Any
 {
   // TODO: Do something with this?
 
@@ -192,7 +192,7 @@ auto ClirBuilder::visit([[maybe_unused]] ReturnType* t_rt) -> Any
 }
 
 // Lvalue:
-auto ClirBuilder::visit(Let* t_let) -> Any
+auto MirBuilder::visit(Let* t_let) -> Any
 {
   // TODO: Cleanup messy.
 
@@ -215,7 +215,7 @@ auto ClirBuilder::visit(Let* t_let) -> Any
   return {};
 }
 
-auto ClirBuilder::visit(Var* t_var) -> Any
+auto MirBuilder::visit(Var* t_var) -> Any
 {
   // TODO: Cleanup messy.
 
@@ -238,7 +238,7 @@ auto ClirBuilder::visit(Var* t_var) -> Any
   return {};
 }
 
-auto ClirBuilder::visit(Variable* t_var) -> Any
+auto MirBuilder::visit(Variable* t_var) -> Any
 {
   const auto name{t_var->identifier()};
   const auto source_line{t_var->position().m_line};
@@ -253,7 +253,7 @@ auto ClirBuilder::visit(Variable* t_var) -> Any
 }
 
 // Operators:
-auto ClirBuilder::visit(Arithmetic* t_arith) -> Any
+auto MirBuilder::visit(Arithmetic* t_arith) -> Any
 {
   using types::core::is_float;
   using types::core::is_integer;
@@ -339,7 +339,7 @@ auto ClirBuilder::visit(Arithmetic* t_arith) -> Any
   return {};
 }
 
-auto ClirBuilder::visit(Assignment* t_assign) -> Any
+auto MirBuilder::visit(Assignment* t_assign) -> Any
 {
   using types::core::is_float;
   using types::core::is_integer;
@@ -432,7 +432,7 @@ auto ClirBuilder::visit(Assignment* t_assign) -> Any
   return {};
 }
 
-auto ClirBuilder::visit(Comparison* t_comp) -> Any
+auto MirBuilder::visit(Comparison* t_comp) -> Any
 {
   using types::core::is_float;
   using types::core::is_integer;
@@ -502,7 +502,7 @@ auto ClirBuilder::visit(Comparison* t_comp) -> Any
   return {};
 }
 
-auto ClirBuilder::visit(Increment* t_inc) -> Any
+auto MirBuilder::visit(Increment* t_inc) -> Any
 {
   // FIXME: Currently the addition does not update the bindings in
   // m_ssa_var_env.
@@ -522,7 +522,7 @@ auto ClirBuilder::visit(Increment* t_inc) -> Any
   return {};
 }
 
-auto ClirBuilder::visit(Decrement* t_dec) -> Any
+auto MirBuilder::visit(Decrement* t_dec) -> Any
 {
   // FIXME: Currently the subtraction does not update the bindings in
   // m_ssa_var_env.
@@ -543,7 +543,7 @@ auto ClirBuilder::visit(Decrement* t_dec) -> Any
   return {};
 }
 
-auto ClirBuilder::visit(UnaryPrefix* t_up) -> Any
+auto MirBuilder::visit(UnaryPrefix* t_up) -> Any
 {
   using ast::node::operators::UnaryPrefixOp;
 
@@ -572,7 +572,7 @@ auto ClirBuilder::visit(UnaryPrefix* t_up) -> Any
 }
 
 // Logical:
-auto ClirBuilder::visit(Not* t_not) -> Any
+auto MirBuilder::visit(Not* t_not) -> Any
 {
   const auto left{t_not->left()};
   const auto source_line{t_not->position().m_line};
@@ -582,7 +582,7 @@ auto ClirBuilder::visit(Not* t_not) -> Any
   return {};
 }
 
-auto ClirBuilder::visit(And* t_and) -> Any
+auto MirBuilder::visit(And* t_and) -> Any
 {
   // TODO: Refactor very messy.
 
@@ -636,7 +636,7 @@ auto ClirBuilder::visit(And* t_and) -> Any
   // Then the result is false.
   phi_instr.add_operand({cjmp_var});
   phi_instr.add_operand({right_var});
-  phi_instr.add_operand({false_var});
+  phi_instr.add_operand({false_var}); // Short-circuit false.
 
   // Insert jumps to merge into the block.
   m_factory->insert_jump(left_jump, left_block, merge_block);
@@ -645,7 +645,7 @@ auto ClirBuilder::visit(And* t_and) -> Any
   return {};
 }
 
-auto ClirBuilder::visit(Or* t_or) -> Any
+auto MirBuilder::visit(Or* t_or) -> Any
 {
   // TODO: Refactor very messy.
 
@@ -698,7 +698,7 @@ auto ClirBuilder::visit(Or* t_or) -> Any
   // If we short circuit and go directly to the merge block.
   // Then the result is false.
   phi_instr.add_operand({cjmp_var});
-  phi_instr.add_operand({true_var});
+  phi_instr.add_operand({true_var}); // Short-circuit true.
   phi_instr.add_operand({right_var});
 
   // Insert jumps to merge into the block.
@@ -708,7 +708,7 @@ auto ClirBuilder::visit(Or* t_or) -> Any
   return {};
 }
 
-auto ClirBuilder::visit([[maybe_unused]] Ternary* t_ternary) -> Any
+auto MirBuilder::visit([[maybe_unused]] Ternary* t_ternary) -> Any
 {
   return {};
 }
@@ -716,7 +716,7 @@ auto ClirBuilder::visit([[maybe_unused]] Ternary* t_ternary) -> Any
 // Packaging:
 STUB(Import)
 
-auto ClirBuilder::visit(ModuleDecl* t_module) -> Any
+auto MirBuilder::visit(ModuleDecl* t_module) -> Any
 {
   // For now we just assume there is only one.
   const auto module_name{t_module->identifier()};
@@ -728,17 +728,18 @@ auto ClirBuilder::visit(ModuleDecl* t_module) -> Any
 }
 
 // RValue:
-auto ClirBuilder::visit([[maybe_unused]] Float* t_float) -> Any
+auto MirBuilder::visit([[maybe_unused]] Float* t_float) -> Any
 {
-  // const auto value{t_int->get()};
+  // const auto value_f64{t_float->get()}; // Cereal does not support
+  const auto value{t_float->get()};
 
   // Add the literal, which assigns an SSA var for it.
-  // m_factory->add_literal(NativeType::F32, {value});
+  m_factory->add_literal(NativeType::F32, {value});
 
   return {};
 }
 
-auto ClirBuilder::visit(Integer* t_int) -> Any
+auto MirBuilder::visit(Integer* t_int) -> Any
 {
   const auto value_i64{t_int->get()};
 
@@ -752,7 +753,7 @@ auto ClirBuilder::visit(Integer* t_int) -> Any
   return {};
 }
 
-auto ClirBuilder::visit(String* t_str) -> Any
+auto MirBuilder::visit(String* t_str) -> Any
 {
   const std::string value{t_str->get()};
 
@@ -762,7 +763,7 @@ auto ClirBuilder::visit(String* t_str) -> Any
   return {};
 }
 
-auto ClirBuilder::visit(Boolean* t_bool) -> Any
+auto MirBuilder::visit(Boolean* t_bool) -> Any
 {
   const bool value{t_bool->get()};
 
@@ -781,7 +782,7 @@ STUB(Impl)
 STUB(DotExpr)
 
 // Misc:
-auto ClirBuilder::visit(List* t_list) -> Any
+auto MirBuilder::visit(List* t_list) -> Any
 {
   // Traverse all nodes.
   for(NodePtr& node : *t_list) {
@@ -792,7 +793,7 @@ auto ClirBuilder::visit(List* t_list) -> Any
 }
 
 // Implementation:
-auto ClirBuilder::get_call_args(ast::node::NodeListPtr t_list) -> SsaVarVec
+auto MirBuilder::get_call_args(ast::node::NodeListPtr t_list) -> SsaVarVec
 {
   SsaVarVec vec{};
 
@@ -808,12 +809,12 @@ auto ClirBuilder::get_call_args(ast::node::NodeListPtr t_list) -> SsaVarVec
   return vec;
 }
 
-auto ClirBuilder::translate(NodePtr t_ast) -> ModulePtr
+auto MirBuilder::translate(NodePtr t_ast) -> ModulePtr
 {
   ModulePtr ptr{nullptr};
 
   // Initialize the module factory.
-  m_factory = std::make_unique<ClirModuleFactory>();
+  m_factory = std::make_unique<MirModuleFactory>();
 
   // Traverse the AST using the module factory to create the CLIR module.
   traverse(t_ast);
@@ -829,4 +830,4 @@ auto ClirBuilder::translate(NodePtr t_ast) -> ModulePtr
 
   return ptr;
 }
-} // namespace clir::clir_builder
+} // namespace mir::mir_builder

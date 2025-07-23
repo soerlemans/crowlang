@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_CLIR_CLIR_HPP
-#define CROW_CROW_CLIR_CLIR_HPP
+#ifndef CROW_CROW_MIR_MIR_HPP
+#define CROW_CROW_MIR_MIR_HPP
 
 /*!
  * @file CLIR is short for CrowLang Intermediate Representation.
@@ -20,7 +20,7 @@
 #include "crow/types/core/core.hpp"
 #include "lib/stdtypes.hpp"
 
-namespace clir {
+namespace mir {
 // Using:
 using types::core::NativeType;
 using types::core::TypeVariant;
@@ -53,7 +53,7 @@ using SsaVarVec = std::vector<SsaVarPtr>;
 
 // TODO: Support more then just bool, add all other supported native_types.
 //! Variant containing all supported literal types.
-using LiteralValue = std::variant<uint, int, std::string, bool>;
+using LiteralValue = std::variant<uint, int, f64, std::string, bool>;
 
 using Operand = std::variant<SsaVarPtr, Literal, Label>;
 using OperandSeq = std::vector<Operand>;
@@ -255,38 +255,35 @@ struct Module {
 
 // Functions:
 auto opcode2str(Opcode t_opcode) -> std::string_view;
-} // namespace clir
+} // namespace mir
 
 // Functions:
-auto operator<<(std::ostream& t_os, const clir::Opcode t_op) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::Opcode t_op) -> std::ostream&;
 
-auto operator<<(std::ostream& t_os, const clir::Literal& t_lit)
+auto operator<<(std::ostream& t_os, const mir::Literal& t_lit) -> std::ostream&;
+
+auto operator<<(std::ostream& t_os, const mir::SsaVar& t_var) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::SsaVarPtr& t_ptr)
   -> std::ostream&;
 
-auto operator<<(std::ostream& t_os, const clir::SsaVar& t_var) -> std::ostream&;
-auto operator<<(std::ostream& t_os, const clir::SsaVarPtr& t_ptr)
+auto operator<<(std::ostream& t_os, const mir::Label& t_label) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::Operand& t_operand)
   -> std::ostream&;
-
-auto operator<<(std::ostream& t_os, const clir::Label& t_label)
+auto operator<<(std::ostream& t_os, const mir::Instruction& t_inst)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, const clir::Operand& t_operand)
+auto operator<<(std::ostream& t_os, const mir::BasicBlock& t_bblock)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, const clir::Instruction& t_inst)
-  -> std::ostream&;
-auto operator<<(std::ostream& t_os, const clir::BasicBlock& t_bblock)
-  -> std::ostream&;
-auto operator<<(std::ostream& t_os, const clir::Function& t_fn)
-  -> std::ostream&;
-auto operator<<(std::ostream& t_os, const clir::Module& t_mod) -> std::ostream&;
-auto operator<<(std::ostream& t_os, const clir::ModulePtr& t_mod)
+auto operator<<(std::ostream& t_os, const mir::Function& t_fn) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::Module& t_mod) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::ModulePtr& t_mod)
   -> std::ostream&;
 
 // Format specializations:
 template<>
-// struct std::formatter<clir::SsaVar> : std::formatter<std::string_view> {
-struct std::formatter<clir::SsaVar> {
+// struct std::formatter<mir::SsaVar> : std::formatter<std::string_view> {
+struct std::formatter<mir::SsaVar> {
   template<typename FormatContext>
-  auto format(const clir::SsaVar& t_var, FormatContext& ctx)
+  auto format(const mir::SsaVar& t_var, FormatContext& ctx)
     -> std::formatter<std::string_view>
   {
     // Reuse operator<<()
@@ -297,4 +294,4 @@ struct std::formatter<clir::SsaVar> {
   }
 };
 
-#endif // CROW_CROW_CLIR_CLIR_HPP
+#endif // CROW_CROW_MIR_MIR_HPP
