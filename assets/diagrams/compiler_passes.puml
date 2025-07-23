@@ -10,10 +10,10 @@ package "Frontend" as frontend {
 
     rectangle Lexer as lexer
 
-    token -l-> token_type : Which consists of.
-    tokenstream -l-> token : Which consists of a stream of.
+    token --> token_type : Which consists of.
+    tokenstream --> token : Which consists of a stream of.
 
-    lexer -l-> tokenstream : Produces.
+    lexer --> tokenstream : Produces.
   }
 
   package Parsing as parsing {
@@ -24,11 +24,11 @@ package "Frontend" as frontend {
     rectangle CrowParser as crow_parser
 
 
-    lexer -d-> parser : Tokenstream is passed for parsing.
+    lexer --> parser : Tokenstream is passed for parsing.
 
     parser --> ast : Produces.
-    pratt_parser -r-|> parser
-    crow_parser -r-|> pratt_parser
+    pratt_parser --|> parser
+    crow_parser --|> pratt_parser
   }
 
   package "Semantic analysis" as semantic_analysis {
@@ -36,11 +36,12 @@ package "Frontend" as frontend {
     rectangle "Symbol table" as symbol_table
 
 
-    parser -d-> semantic_checker : AST is passed for semantical analysis.
+    parser --> semantic_checker : AST is passed for semantical analysis.
+    semantic_checker --> symbol_table : Produces.
   }
 
-  lexing --d-> parsing
-  parsing --d-> semantic_analysis
+  lexing --> parsing
+  parsing --> semantic_analysis
 
 }
 
@@ -51,28 +52,60 @@ package "MIR generation" as mir_generation {
   rectangle MirBuilder as mir_builder
   rectangle MirPass as mir_pass
 
-  semantic_checker --d-> mir_builder : Type annotated AST and SymbolTable passed for MIR generation.
+  semantic_checker --> mir_builder : Type annotated AST and SymbolTable passed for MIR generation.
+  mir_builder --> mir : Produces.
+  mir_pass --> mir : Runs on.
 }
 }
 
 package "Backend" as backend {
   package "LLVM Backend" as pkg_llvm_backend {
     rectangle LlvmBackend as llvm_backend
+    rectangle "LLVM IR" as llvm_ir
+    rectangle "Binary" as llvm_binary
 
-    llvm_backend --u-|> mir_pass
+    llvm_backend ---|> mir_pass : Implements LLVM IR codegen from MIR.
+    llvm_backend --> llvm_ir : Generates LLVM IR.
+    llvm_ir --> llvm_binary : Compile LLVM IR using clang.
   }
 
   package "C++ Backend" as pkg_cpp_backend {
-    rectangle CppBackend as cpp_backend
+		package "C++ Interop Backend" as pkg_cpp_interop_backend {
+      rectangle "Python interop backend" as cpp_python_interop_backend
+    }
 
+    rectangle CppBackend as cpp_backend
+    rectangle ClangFrontendInvoker as clang_frontend_invoker
+    rectangle "Generated C++ code" as cpp_code
+    rectangle "Standard library for crow" as stdlibcrow
+		rectangle Gcc as gcc
+		rectangle Clang as clang
+		rectangle Binary as cpp_binary
+
+    cpp_backend --> cpp_python_interop_backend : Optionally generate Python bindings.
+    cpp_backend --> clang_frontend_invoker : Invoke compiler command.
+
+    cpp_python_interop_backend --> clang_frontend_invoker : Optionally toggle compiler settings.
+
+    cpp_backend --> cpp_code : Generate C++ code.
+    cpp_code --> stdlibcrow: Use standard library from.
+
+    clang_frontend_invoker --> gcc : Compile generated C++ code.
+    clang_frontend_invoker --> clang : Compile generated C++ code.
+
+    gcc --> cpp_code
+    clang --> cpp_code
+
+    gcc --> cpp_binary : Compiles to binary.
+    clang --> cpp_binary : Compiles to binary.
   }
 
-  mir_builder --d-> llvm_backend : LLVM backend uses MIR.
-  mir_builder --d-> cpp_backend : Cpp backend only uses AST.
+  mir_builder --> llvm_backend : LLVM backend uses MIR.
+  mir_builder --> cpp_backend : Cpp backend only uses AST.
 }
 
-frontend ---d-> middle_end
-middle_end ---d-> backend
+frontend ---> middle_end
+middle_end ---> backend
 
 /'
  ' note right of [Symbol Table]
