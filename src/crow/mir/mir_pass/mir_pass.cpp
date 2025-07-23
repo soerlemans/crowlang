@@ -5,7 +5,7 @@ auto MirPass::run(MirPassParams t_params) -> void
 {
   auto& [module_] = t_params;
 
-	// TODO: Set symboltable?
+  // TODO: Set symboltable?
 
   on_module(module_);
 };
