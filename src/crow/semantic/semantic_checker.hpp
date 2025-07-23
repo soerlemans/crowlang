@@ -4,8 +4,16 @@
 // STL Includes:
 #include <string_view>
 
-// Local includes:
-#include "semantic_checker_helper.hpp"
+// Absolute includes:
+#include "crow/ast/visitor/node_visitor.hpp"
+#include "crow/container/text_position.hpp"
+#include "crow/types/semantic/semantic.hpp"
+#include "crow/types/semantic/symbol.hpp"
+
+// Local Includes:
+#include "symbol_env_state.hpp"
+#include "symbol_table/symbol_table_factory.hpp"
+#include "type_promoter.hpp"
 
 /*!
  * @file
@@ -21,9 +29,17 @@ namespace semantic {
 using namespace ast;
 
 // Using Declarations:
+using ast::node::NodeListPtr;
 using ast::node::NodePtr;
 using ast::visitor::Any;
+using ast::visitor::NodeVisitor;
+using container::TextPosition;
 using semantic::symbol_table::SymbolTablePtr;
+using symbol::SymbolData;
+using symbol::SymbolDataList;
+using symbol_table::SymbolTable;
+using symbol_table::SymbolTableFactory;
+using symbol_table::SymbolTablePtr;
 using types::core::NativeType;
 using types::core::NativeTypeOpt;
 
@@ -43,7 +59,47 @@ using types::core::NativeTypeOpt;
  * We also create a symbol table after semantic analysis.
  * As we need to create it anyway when looking up symbols.
  */
-class SemanticChecker : public SemanticCheckerHelper {
+class SemanticChecker : public NodeVisitor {
+  private:
+  SymbolEnvState m_symbol_state;
+  SymbolTableFactory m_symbol_table_factory;
+  TypePromoter m_type_promoter;
+
+  protected:
+  // Environment related methods:
+  auto push_env() -> void;
+  auto pop_env() -> void;
+  auto clear_env() -> void;
+
+  /*!
+   * Add symbol to current @ref EnvSate.
+   * Also add the symbol to the global @ref SymbolTable.
+   *
+   * @return false means inserting the symbol failed.
+   */
+  [[nodiscard("Returned boolean indicates error value, must be checked.")]]
+  auto add_symbol(std::string_view t_id, const SymbolData& t_data) -> bool;
+  auto get_symbol(std::string_view t_id) const -> SymbolData;
+
+  auto retrieve_symbol_table() const -> SymbolTablePtr;
+
+  // Helper methods for type promotion:
+  //! Handle type conversion for conditionals.
+  auto handle_condition(const SymbolData& t_data,
+                        const TextPosition& t_pos) const -> void;
+
+  //! Handle type promotion between two different types.
+  auto promote(const SymbolData& t_lhs, const SymbolData& rhs,
+               bool enforce_lhs = false) const -> NativeTypeOpt;
+
+  // Helper methods for dealing with SymbolData:
+  // NodeVisitor visitation is not marked const so these methods cant be const.
+  auto get_symbol_data(NodePtr t_ptr) -> SymbolData;
+  auto get_resolved_type(NodePtr t_ptr) -> SymbolData;
+  auto get_native_type(NodePtr t_ptr) -> NativeTypeOpt;
+  auto get_type_list(NodeListPtr t_list) -> SymbolDataList;
+  auto get_resolved_type_list(NodeListPtr t_list) -> SymbolDataList;
+
   public:
   SemanticChecker();
 

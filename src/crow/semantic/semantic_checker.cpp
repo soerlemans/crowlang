@@ -13,7 +13,7 @@
 
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
-#include "crow/debug/log.hpp"
+#include "crow/debug/debug.hpp"
 #include "crow/types/semantic/symbol_data.hpp"
 
 namespace semantic {
@@ -27,8 +27,154 @@ using types::core::NativeType;
 
 NODE_USING_ALL_NAMESPACES()
 
-// Methods:
+// Protected methods:
+auto SemanticChecker::push_env() -> void
+{
+  m_symbol_state.push_env();
+  m_symbol_table_factory.push_scope();
+}
+
+auto SemanticChecker::pop_env() -> void
+{
+  m_symbol_state.pop_env();
+  m_symbol_table_factory.pop_scope();
+}
+
+auto SemanticChecker::clear_env() -> void
+{
+  // Reset/clear the construction object.
+  m_symbol_state.clear();
+  m_symbol_table_factory.clear();
+}
+
+// Environment state related methods:
+auto SemanticChecker::add_symbol(const std::string_view t_key,
+                                 const SymbolData& t_data) -> bool
+{
+  // If insertion in the environment fails, something is going wrong.
+  // Possibly a duplicate entry or similar.
+  const auto [iter, insertion_success] =
+    m_symbol_state.insert({std::string{t_key}, t_data});
+
+
+  DBG_VERBOSE("EnvState: ", m_symbol_state);
+
+  // Add symbol to global symbol table.
+  // Do not insert if insertion in environment failed.
+  if(insertion_success) {
+    m_symbol_table_factory.insert(t_key, t_data);
+  }
+
+  return insertion_success;
+}
+
+auto SemanticChecker::get_symbol(const std::string_view t_key) const
+  -> SymbolData
+{
+  return m_symbol_state.get(t_key);
+}
+
+auto SemanticChecker::retrieve_symbol_table() const -> SymbolTablePtr
+{
+  // Retrieve the construct global symbol table.
+  return m_symbol_table_factory.retrieve();
+}
+
+// Type promotion related methods:
+auto SemanticChecker::handle_condition(const SymbolData& t_data,
+                                       const TextPosition& t_pos) const -> void
+{
+  std::stringstream ss;
+
+  if(const auto opt{t_data.native_type()}; opt) {
+    if(!is_condition(opt.value())) {
+      ss << "Expected a pointer, integer or a boolean for a conditional "
+         << "expression.\n\n";
+
+      ss << t_pos;
+
+      throw_type_error(ss.str());
+    }
+  } else {
+    ss << "Non native types can not casted to " << std::quoted("bool")
+       << ".\n\n";
+
+    ss << t_pos;
+
+    throw_type_error(ss.str());
+  }
+}
+
+auto SemanticChecker::promote(const SymbolData& t_lhs, const SymbolData& t_rhs,
+                              const bool enforce_lhs) const -> NativeTypeOpt
+{
+  NativeTypeOpt opt{};
+
+  const auto lhs{t_lhs.native_type()};
+  const auto rhs{t_rhs.native_type()};
+
+  if(lhs && rhs) {
+    opt = m_type_promoter.promote(lhs.value(), rhs.value(), enforce_lhs);
+  }
+
+  return opt;
+}
+
+auto SemanticChecker::get_symbol_data(NodePtr t_ptr) -> SymbolData
+{
+  SymbolData data;
+
+  const auto any{traverse(t_ptr)};
+  if(any.has_value()) {
+    try {
+      data = std::any_cast<SymbolData>(any);
+    } catch(const std::bad_any_cast& e) {
+      DBG_CRITICAL(e.what());
+
+      // TODO: Print elegant error message and terminate.
+      throw e;
+    }
+  }
+
+  return data;
+}
+
+auto SemanticChecker::get_resolved_type(NodePtr t_ptr) -> SymbolData
+{
+  return get_symbol_data(t_ptr).resolve_type();
+}
+
+auto SemanticChecker::get_native_type(NodePtr t_ptr) -> NativeTypeOpt
+{
+  return get_symbol_data(t_ptr).native_type();
+}
+
+auto SemanticChecker::get_type_list(NodeListPtr t_list) -> SymbolDataList
+{
+  SymbolDataList list;
+
+  for(const auto& ptr : *t_list) {
+    list.push_back(get_symbol_data(ptr));
+  }
+
+  return list;
+}
+
+auto SemanticChecker::get_resolved_type_list(NodeListPtr t_list)
+  -> SymbolDataList
+{
+  SymbolDataList list;
+
+  for(const auto& ptr : *t_list) {
+    list.push_back(get_resolved_type(ptr));
+  }
+
+  return list;
+}
+
+// Public methods:
 SemanticChecker::SemanticChecker()
+  : m_symbol_state{}, m_symbol_table_factory{}, m_type_promoter{}
 {}
 
 // Control:
