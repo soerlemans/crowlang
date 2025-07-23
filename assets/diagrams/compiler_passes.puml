@@ -1,0 +1,84 @@
+@startuml
+skinparam componentStyle rectangle
+left to right direction
+
+package "Frontend" as frontend {
+  package Lexing as lexing {
+    rectangle TokenType as token_type
+    rectangle Token as token
+    rectangle Tokenstream as tokenstream
+
+    rectangle Lexer as lexer
+
+    token -l-> token_type : Which consists of.
+    tokenstream -l-> token : Which consists of a stream of.
+
+    lexer -l-> tokenstream : Produces.
+  }
+
+  package Parsing as parsing {
+    rectangle AST as ast
+
+    rectangle Parser as parser
+    rectangle PrattParser as pratt_parser
+    rectangle CrowParser as crow_parser
+
+
+    lexer -d-> parser : Tokenstream is passed for parsing.
+
+    parser --> ast : Produces.
+    pratt_parser -r-|> parser
+    crow_parser -r-|> pratt_parser
+  }
+
+  package "Semantic analysis" as semantic_analysis {
+    rectangle "Semantic checker" as semantic_checker
+    rectangle "Symbol table" as symbol_table
+
+
+    parser -d-> semantic_checker : AST is passed for semantical analysis.
+  }
+
+  lexing --d-> parsing
+  parsing --d-> semantic_analysis
+
+}
+
+package "Middle-End" as middle_end {
+package "MIR generation" as mir_generation {
+  rectangle Mir as mir
+
+  rectangle MirBuilder as mir_builder
+  rectangle MirPass as mir_pass
+
+  semantic_checker --d-> mir_builder : Type annotated AST and SymbolTable passed for MIR generation.
+}
+}
+
+package "Backend" as backend {
+  package "LLVM Backend" as pkg_llvm_backend {
+    rectangle LlvmBackend as llvm_backend
+
+    llvm_backend --u-|> mir_pass
+  }
+
+  package "C++ Backend" as pkg_cpp_backend {
+    rectangle CppBackend as cpp_backend
+
+  }
+
+  mir_builder --d-> llvm_backend : LLVM backend uses MIR.
+  mir_builder --d-> cpp_backend : Cpp backend only uses AST.
+}
+
+frontend ---d-> middle_end
+middle_end ---d-> backend
+
+/'
+ ' note right of [Symbol Table]
+ '   Tracks symbols across
+ '   scopes, types, and declarations
+ ' end note
+ '/
+
+@enduml

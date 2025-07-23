@@ -27,20 +27,20 @@ using types::core::NativeType;
 
 NODE_USING_ALL_NAMESPACES()
 
-// Methods:
-auto SemanticCheckerHelper::push_env() -> void
+// Protected methods:
+auto SemanticChecker::push_env() -> void
 {
   m_symbol_state.push_env();
   m_symbol_table_factory.push_scope();
 }
 
-auto SemanticCheckerHelper::pop_env() -> void
+auto SemanticChecker::pop_env() -> void
 {
   m_symbol_state.pop_env();
   m_symbol_table_factory.pop_scope();
 }
 
-auto SemanticCheckerHelper::clear_env() -> void
+auto SemanticChecker::clear_env() -> void
 {
   // Reset/clear the construction object.
   m_symbol_state.clear();
@@ -48,8 +48,8 @@ auto SemanticCheckerHelper::clear_env() -> void
 }
 
 // Environment state related methods:
-auto SemanticCheckerHelper::add_symbol(const std::string_view t_key,
-                                       const SymbolData& t_data) -> bool
+auto SemanticChecker::add_symbol(const std::string_view t_key,
+                                 const SymbolData& t_data) -> bool
 {
   // If insertion in the environment fails, something is going wrong.
   // Possibly a duplicate entry or similar.
@@ -68,22 +68,21 @@ auto SemanticCheckerHelper::add_symbol(const std::string_view t_key,
   return insertion_success;
 }
 
-auto SemanticCheckerHelper::get_symbol(const std::string_view t_key) const
+auto SemanticChecker::get_symbol(const std::string_view t_key) const
   -> SymbolData
 {
   return m_symbol_state.get(t_key);
 }
 
-auto SemanticCheckerHelper::retrieve_symbol_table() const -> SymbolTablePtr
+auto SemanticChecker::retrieve_symbol_table() const -> SymbolTablePtr
 {
   // Retrieve the construct global symbol table.
   return m_symbol_table_factory.retrieve();
 }
 
 // Type promotion related methods:
-auto SemanticCheckerHelper::handle_condition(const SymbolData& t_data,
-                                             const TextPosition& t_pos) const
-  -> void
+auto SemanticChecker::handle_condition(const SymbolData& t_data,
+                                       const TextPosition& t_pos) const -> void
 {
   std::stringstream ss;
 
@@ -106,10 +105,8 @@ auto SemanticCheckerHelper::handle_condition(const SymbolData& t_data,
   }
 }
 
-auto SemanticCheckerHelper::promote(const SymbolData& t_lhs,
-                                    const SymbolData& t_rhs,
-                                    const bool enforce_lhs) const
-  -> NativeTypeOpt
+auto SemanticChecker::promote(const SymbolData& t_lhs, const SymbolData& t_rhs,
+                              const bool enforce_lhs) const -> NativeTypeOpt
 {
   NativeTypeOpt opt{};
 
@@ -123,7 +120,7 @@ auto SemanticCheckerHelper::promote(const SymbolData& t_lhs,
   return opt;
 }
 
-auto SemanticCheckerHelper::get_symbol_data(NodePtr t_ptr) -> SymbolData
+auto SemanticChecker::get_symbol_data(NodePtr t_ptr) -> SymbolData
 {
   SymbolData data;
 
@@ -142,17 +139,17 @@ auto SemanticCheckerHelper::get_symbol_data(NodePtr t_ptr) -> SymbolData
   return data;
 }
 
-auto SemanticCheckerHelper::get_resolved_type(NodePtr t_ptr) -> SymbolData
+auto SemanticChecker::get_resolved_type(NodePtr t_ptr) -> SymbolData
 {
   return get_symbol_data(t_ptr).resolve_type();
 }
 
-auto SemanticCheckerHelper::get_native_type(NodePtr t_ptr) -> NativeTypeOpt
+auto SemanticChecker::get_native_type(NodePtr t_ptr) -> NativeTypeOpt
 {
   return get_symbol_data(t_ptr).native_type();
 }
 
-auto SemanticCheckerHelper::get_type_list(NodeListPtr t_list) -> SymbolDataList
+auto SemanticChecker::get_type_list(NodeListPtr t_list) -> SymbolDataList
 {
   SymbolDataList list;
 
@@ -163,7 +160,7 @@ auto SemanticCheckerHelper::get_type_list(NodeListPtr t_list) -> SymbolDataList
   return list;
 }
 
-auto SemanticCheckerHelper::get_resolved_type_list(NodeListPtr t_list)
+auto SemanticChecker::get_resolved_type_list(NodeListPtr t_list)
   -> SymbolDataList
 {
   SymbolDataList list;
@@ -175,7 +172,9 @@ auto SemanticCheckerHelper::get_resolved_type_list(NodeListPtr t_list)
   return list;
 }
 
+// Public methods:
 SemanticChecker::SemanticChecker()
+  : m_symbol_state{}, m_symbol_table_factory{}, m_type_promoter{}
 {}
 
 // Control:

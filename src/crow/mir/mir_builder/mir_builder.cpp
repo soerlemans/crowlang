@@ -180,6 +180,8 @@ auto MirBuilder::visit(ast::node::function::Function* t_fn) -> Any
 auto MirBuilder::visit(Call* t_call) -> Any
 {
   // TODO: Implement.
+  // TODO: Have the symboltable or a separate symboltable.
+  // Keep references to IR functions.
 
   return {};
 }

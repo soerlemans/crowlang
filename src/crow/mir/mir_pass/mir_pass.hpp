@@ -13,21 +13,16 @@ struct MirPassParams {
 
 // Classes:
 class MirPass {
-  protected:
-  ModulePtr m_module;
-
-  // clang-format off
-	// TODO: Add symbol table, containing references to MIR entities (functions, variables, structs).
-  // clang-format on
   public:
   MirPass() = default;
 
   // TODO: Think about this.
-  virtual auto on_function() -> void = 0;
-  virtual auto on_block() -> void = 0;
-  virtual auto on_instruction() -> void = 0;
+  virtual auto on_module(ModulePtr& t_module) -> void = 0;
+  virtual auto on_function(Function& t_fn) -> void = 0;
+  virtual auto on_block(BasicBlock& t_block) -> void = 0;
+  virtual auto on_instruction(Instruction& t_instr) -> void = 0;
 
-  virtual auto run(ModulePtr t_module) -> void = 0;
+  virtual auto run(MirPassParams t_params) -> void;
 
   virtual ~MirPass() = default;
 };
