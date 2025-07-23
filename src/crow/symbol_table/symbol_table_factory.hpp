@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_SEMANTIC_SYMBOL_TABLE_SYMBOL_TABLE_FACTORY_HPP
-#define CROW_CROW_SEMANTIC_SYMBOL_TABLE_SYMBOL_TABLE_FACTORY_HPP
+#ifndef CROW_CROW_SYMBOL_TABLE_SYMBOL_TABLE_FACTORY_HPP
+#define CROW_CROW_SYMBOL_TABLE_SYMBOL_TABLE_FACTORY_HPP
 
 // STL Includes:
 #include <memory>
@@ -22,7 +22,7 @@
  * Which keeps track of the current ID nesting.
  */
 
-namespace semantic::symbol_table {
+namespace symbol_table {
 // Aliases:
 /*!
  * Used to construct the nested structure of the @ref SymbolTable.
@@ -58,7 +58,7 @@ class SymbolTableFactory {
   virtual ~SymbolTableFactory() = default;
 };
 
-} // namespace semantic::symbol_table
+} // namespace symbol_table
 
 
-#endif // CROW_CROW_SEMANTIC_SYMBOL_TABLE_SYMBOL_TABLE_FACTORY_HPP
+#endif // CROW_CROW_SYMBOL_TABLE_SYMBOL_TABLE_FACTORY_HPP

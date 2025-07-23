@@ -7,7 +7,7 @@
 // Absolute Includes:
 #include "lib/stdprint.hpp"
 
-namespace semantic::symbol_table {
+namespace symbol_table {
 SymbolTable::SymbolTable(): m_table{}
 {}
 
@@ -63,7 +63,7 @@ auto SymbolTable::clear() -> void
 {
   m_table.clear();
 }
-} // namespace semantic::symbol_table
+} // namespace symbol_table
 
 // Functions:
 auto operator<<(std::ostream& t_os,

@@ -1,7 +1,15 @@
-#ifndef CROW_CROW_SEMANTIC_SYMBOL_TABLE_SYMBOL_TABLE_HPP
-#define CROW_CROW_SEMANTIC_SYMBOL_TABLE_SYMBOL_TABLE_HPP
+#ifndef CROW_CROW_SYMBOL_TABLE_SYMBOL_TABLE_HPP
+#define CROW_CROW_SYMBOL_TABLE_SYMBOL_TABLE_HPP
+
+/*!
+ * @file symbol_table.hpp
+ *
+ * In order to deal with a symbol that needs to looked up across.
+ * Multiple compiler passes.
+ */
 
 // STL Include:
+#include <expected>
 #include <map>
 #include <optional>
 #include <stack>
@@ -9,21 +17,23 @@
 
 // Absolute includes:
 #include "crow/types/semantic/symbol_data.hpp"
+#include "lib/stdtypes.hpp"
 
-namespace semantic::symbol_table {
-// Using Declarations:
-using symbol::SymbolData;
-
+namespace symbol_table {
 // Forward Declarations:
+enum class SymbolTableError;
 struct SymbolTableScope;
 class SymbolTable;
 
 // Aliases:
+using SymbolTableId = u64;
 using SymbolMap = std::map<std::string, SymbolTableScope>;
 using SymbolMapOpt = std::optional<SymbolMap>;
 using SymbolMapEntry = SymbolMap::value_type;
 using SymbolMapIter = SymbolMap::iterator;
 using SymbolMapInsertResult = std::pair<SymbolMap::iterator, bool>;
+// using SymbolMapInsertResult = std::expected<SymbolMap::iterator,
+// SymbolTableError>;
 
 /*!
  * The global @ref SymbolTable can get quite large, better to copy a ptr.
@@ -31,16 +41,22 @@ using SymbolMapInsertResult = std::pair<SymbolMap::iterator, bool>;
  */
 using SymbolTablePtr = std::shared_ptr<SymbolTable>;
 
+// enums:
+enum class SymbolTableError {
+  SYMBOL_NOT_PRESENT,
+};
+
 // Structs:
 /*!
  * Helper struct to add nested scope functionality.
- * On top of the @ref SymbolData class.
+ * The @ref SymbolTableId gives back an id which is an index.
+ * In a register
  * This way we can nest the @ref SymbolTable.
  * Without needing to change @ref SymbolData.
  * This way functions can optionaly
  */
 struct SymbolTableScope {
-  SymbolData m_data;
+  SymbolTableId m_symbol_id;
   SymbolMapOpt m_scope;
 };
 
@@ -74,20 +90,18 @@ class SymbolTable {
 
   virtual ~SymbolTable() = default;
 };
-} // namespace semantic::symbol_table
+} // namespace symbol_table
 
 // Functions:
 auto operator<<(std::ostream& t_os,
-                const semantic::symbol_table::SymbolTableScope& t_scope)
+                const ::symbol_table::SymbolTableScope& t_scope)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os, const ::symbol_table::SymbolMap& t_map)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os,
-                const semantic::symbol_table::SymbolMap& t_map)
+                const ::symbol_table::SymbolTable& t_symbol_table)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os,
-                const semantic::symbol_table::SymbolTable& t_symbol_table)
-  -> std::ostream&;
-auto operator<<(std::ostream& t_os,
-                const semantic::symbol_table::SymbolTablePtr& t_ptr)
+auto operator<<(std::ostream& t_os, const ::symbol_table::SymbolTablePtr& t_ptr)
   -> std::ostream&;
 
-#endif // CROW_CROW_SEMANTIC_SYMBOL_TABLE_SYMBOL_TABLE_HPP
+#endif // CROW_CROW_SYMBOL_TABLE_SYMBOL_TABLE_HPP
