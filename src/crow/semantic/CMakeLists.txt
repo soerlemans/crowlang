@@ -3,7 +3,6 @@ target_sources(${TARGET_CROW_LIB} PRIVATE
    type_promoter.cpp
    symbol_env_state.cpp
    semantic_checker.cpp
-   semantic_checker_helper.cpp
 )
 
 # Add subdirectories
