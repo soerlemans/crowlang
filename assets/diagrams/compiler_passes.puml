@@ -1,8 +1,29 @@
 @startuml
 skinparam componentStyle rectangle
-left to right direction
+'left to right direction
+
 
 package "Frontend" as frontend {
+  package "Compiler Settings" as compiler_settings {
+    rectangle "CLI args" as cli_args
+    rectangle "crow.toml" as crow_toml
+
+    rectangle "settings::get_settings()" as get_settings
+
+    get_settings --> cli_args
+    get_settings --> crow_toml
+  }
+
+  package "Compiler Instrumentation" as compiler_instrumentation {
+    rectangle "TranslationUnit" as translation_unit
+    rectangle "ModuleUnit" as module_unit
+    rectangle "BuildUnit" as build_unit
+
+    get_settings --> module_unit : Configured using.
+    module_unit --> translation_unit : Keeps track of multiple translation_units.
+    module_unit --> build_unit : Invokes codegeneration backend using (including build settings).
+  }
+
   package Lexing as lexing {
     rectangle TokenType as token_type
     rectangle Token as token
@@ -40,9 +61,17 @@ package "Frontend" as frontend {
     semantic_checker --> symbol_table : Produces.
   }
 
-  lexing --> parsing
-  parsing --> semantic_analysis
+  rectangle "main()" as main
 
+	main --> get_settings : Obtain compiler settings.
+	main --> translation_unit : Create separate TranslationUnits from source files.
+	main --> module_unit : Create ModuleUnit from separate TranslationUnits.
+
+  translation_unit ---> lexing
+
+  lexing --> parsing
+
+  module_unit ----> semantic_analysis
 }
 
 package "Middle-End" as middle_end {
@@ -100,8 +129,8 @@ package "Backend" as backend {
     clang --> cpp_binary : Compiles to binary.
   }
 
-  mir_builder --> llvm_backend : LLVM backend uses MIR.
-  mir_builder --> cpp_backend : Cpp backend only uses AST.
+  mir_builder ---> llvm_backend : LLVM backend uses MIR.
+  mir_builder ---> cpp_backend : Cpp backend only uses AST.
 }
 
 frontend ---> middle_end
