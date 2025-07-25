@@ -19,68 +19,58 @@
 // Absolute includes:
 #include "lib/stdtypes.hpp"
 
+
+// Local Includes:
+#include "symbol_register.hpp"
+#include "symbol_tree.hpp"
+
 namespace symbol_table {
 // Forward Declarations:
-enum class SymbolTableError;
-struct SymbolTableScope;
 class SymbolTable;
 
 // Aliases:
-using SymbolMap = std::map<std::string, SymbolTableScope>;
-using SymbolMapOpt = std::optional<SymbolMap>;
-using SymbolMapEntry = SymbolMap::value_type;
-using SymbolMapIter = SymbolMap::iterator;
-
-using SymbolTableId = u64;
-using SymbolTableResult = std::expected<SymbolMapIter, SymbolTableError>;
 using SymbolTablePtr = std::shared_ptr<SymbolTable>;
-
-// enums:
-enum class SymbolTableError {
-  UNIMPLEMENTED, // FIXME: Temporary.
-  INSERT_FAILED,
-  SYMBOL_NOT_FOUND,
-};
-
-// Structs:
-/*!
- * Helper struct to add nested scope functionality.
- * The @ref SymbolTableId gives back an id which is an index.
- * In a register
- * This way we can nest the @ref SymbolTable.
- * Without needing to change @ref SymbolData.
- * This way functions can optionaly
- */
-struct SymbolTableScope {
-  SymbolTableId m_id;
-  SymbolMapOpt m_scope;
-};
 
 // Classes:
 /*!
- * This classes stores the global symbol table.
- * This keeps track of all the symbols in a module.
+ * The @ref SymbolTable is a wrapper class of the @ref SymbolTree .
+ * And the @ref SymbolRegister .
+ * The @ref SymbolTree keeps track of the symbols.
+ * And their position in the nested scopes.
+ * And the registery is a direct index based lookup.
+ * This allows us to decouple the symbol structuring, of the associated type.
+ * Allowing us to reuse the @ref SymbolTree across different compiler passes.
  */
+template<typename RegisterType>
 class SymbolTable {
   private:
-  SymbolMap m_table;
+  using SymbolRegister = SymbolRegister<RegisterType>;
+
+  SymbolTreePtr m_tree;
+  SymbolRegister m_register;
 
   public:
-  SymbolTable();
+  explicit SymbolTable(SymbolTreePtr t_tree, SymbolRegister&& t_register)
+    : m_tree{t_tree}, m_register{std::move(t_register)}
+  {}
 
-  auto lookup(std::string_view t_symbol_name) const -> SymbolTableResult;
+  auto lookup(std::string_view t_symbol_name) const -> SymbolTableResult
+  {}
+
   auto lookup_toplevel(std::string_view t_symbol_name) const
-    -> SymbolTableResult;
+    -> SymbolTableResult
+  {}
+
+  auto tree() -> SymbolTreePtr
+  {
+    return m_tree;
+  }
 
   virtual ~SymbolTable() = default;
 };
 } // namespace symbol_table
 
 // Functions:
-auto operator<<(std::ostream& t_os,
-                const symbol_table::SymbolTableScope& t_scope) -> std::ostream&;
-auto operator<<(std::ostream& t_os, const symbol_table::SymbolMap& t_map)
-  -> std::ostream&;
 auto operator<<(std::ostream& t_os,
                 const symbol_table::SymbolTable& t_symbol_table)
   -> std::ostream&;

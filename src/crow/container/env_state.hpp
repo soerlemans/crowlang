@@ -16,6 +16,8 @@
 // Absolute Includes:
 #include "lib/stdexcept/stdexcept.hpp"
 
+// FIXME: Use std::expected for implementation.
+
 namespace container {
 // Forward Declarations:
 template<typename T>
@@ -39,9 +41,9 @@ struct IsVariant<std::variant<Args...>> : std::true_type {};
  * Keep track of the current state of the environment.
  * Functions, variables, structs, etc.
  * That are currently in scope when traversing the AST.
- * Used for lookup of temporary SSA vars and function signatures.
+ * So this data structure is only temporarily used/alive.
  *
- * @note the give @ref std::variant must be default constructible.
+ * @note The given @ref std::variant must be default constructible.
  */
 template<typename T>
 // requires IsVariant<T>::value
