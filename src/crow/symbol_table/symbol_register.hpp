@@ -11,18 +11,6 @@
 #include "lib/stdexcept/stdexcept.hpp"
 
 namespace symbol_table {
-// Forward declarations:
-enum class SymbolRegisterError;
-
-// Aliases:
-template<typename T>
-using SymbolRegisterResult = std::expected<T, SymbolRegisterError>;
-
-// Enums:
-enum class SymbolRegisterError {
-  UNINITIALIZED_ITEM,
-}
-
 // Classes:
 /*!
  * The symbol register maps a @ref SymbolId to a concrete value.
@@ -37,8 +25,8 @@ class SymbolRegister {
   using WeakPtr = std::weak_ptr<T>;
 
   //! We need to keep track if a registery entry was never assigned.
-  using DataOpt = std::optional<WeakPtr>;
-  using Register = std::unordered_map<SymbolTableId, DataOpt>;
+  using ValueOpt = std::optional<WeakPtr>;
+  using Register = std::unordered_map<SymbolTableId, ValueOpt>;
 
   Register m_register;
 
@@ -52,9 +40,16 @@ class SymbolRegister {
     m_register.reserve(t_size);
   }
 
-  auto retrieve(const std::size_t t_id) -> SharedPtr
+  /*!
+   * Retrieve the value associated with a
+   * @param t_id Id to resolve, and obtain @ref SharedPtr from.
+   *
+   * @remark Throws on invalid value state.
+   */
+  auto get_value(const std::size_t t_id) -> SharedPtr
   {
     using lib::stdexcept::throw_invalid_argument;
+    using lib::stdexcept::throw_unexpected_nullptr;
 
     const auto quoted_id{t_id};
 
@@ -71,25 +66,48 @@ class SymbolRegister {
     if(!opt) {
       // This should never happen, so we should throw.
       const auto error_msg{
-        std::format("Uninitialized entry for Symbol ID {}.", quoted_id)};
+        std::format("Uninitialized value for Symbol ID {}.", quoted_id)};
 
       throw_invalid_argument(error_msg);
     }
 
-    // If the WeakPtr expired, then an architectural mistake was made.
-    // So we should also throw.
     const auto& weak_ptr{opt.value()};
+    if(!weak_ptr) {
+      const auto error_msg{
+        std::format("WeakPtr for Symbol ID {} is nullptr.", quoted_id)};
+
+      throw_unexpected_nullptr(error_msg);
+    }
+
+    // If the WeakPtr expired, then an architectural design mistake was made.
+    // So we should throw and hopefully have this reported.
     if(weak_ptr.expired()) {
       const auto error_msg{std::format(
-        "Entry for Symbol ID {} is no longer in scope.", quoted_id)};
+        "Value for Symbol ID {} is no longer in scope.", quoted_id)};
 
       throw_invalid_argument(error_msg);
     }
 
-    return {weak_ptr.lock()};
+    // The SharedPtr is not allowed to be a nullptr either.
+    const auto shared_ptr{weak_ptr.lock()};
+    if(!shared_ptr) {
+      const auto error_msg{
+        std::format("SharedPtr for Symbol ID {} is nullptr.", quoted_id)};
+
+      throw_unexpected_nullptr(error_msg);
+    }
+
+    return {shared_ptr};
   }
 
-  auto insert_at(const std::size_t t_id, const SharedPtr& t_item) -> void
+  /*!
+   * Insert into the registery.
+   * @param t_id Symbol ID to associate value to.
+   * @param t_value Value to insert.
+   *
+   * @remark Throws if there is already an entry for the given Symbol ID.
+   */
+  auto insert(const std::size_t t_id, const SharedPtr& t_value) -> void
   {
     using lib::stdexcept::throw_invalid_argument;
 
@@ -97,13 +115,13 @@ class SymbolRegister {
     if(opt) {
       const auto quoted_id{std::quoted(id)};
       const auto error_msg{std::format(
-        "Cant insert Symbol ID {} already has an item associated.", quoted_id)};
+        "Cant insert Symbol ID {} already has a value associated.", quoted_id)};
 
       throw_invalid_argument(error_msg);
     }
 
     // Set register entry.
-    opt = WeakPtr{t_item};
+    opt = WeakPtr{t_value};
   }
 
   auto begin() -> Register::iterator

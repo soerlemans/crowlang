@@ -68,21 +68,9 @@ class SymbolTable {
   public:
   SymbolTable();
 
-  // TODO: Implement.
-  auto insert(SymbolMapEntry t_pair) -> SymbolTableResult;
-  auto insert(SymbolMapIter t_parent, SymbolMapEntry t_pair)
-    -> SymbolTableResult;
-
   auto lookup(std::string_view t_symbol_name) const -> SymbolTableResult;
   auto lookup_toplevel(std::string_view t_symbol_name) const
     -> SymbolTableResult;
-
-  auto table() const -> const SymbolMap&;
-
-  auto begin() -> SymbolMapIter;
-  auto end() -> SymbolMapIter;
-
-  auto clear() -> void;
 
   virtual ~SymbolTable() = default;
 };
