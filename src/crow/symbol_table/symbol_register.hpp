@@ -80,11 +80,13 @@ class SymbolRegister {
     // So we should also throw.
     const auto& weak_ptr{opt.value()};
     if(weak_ptr.expired()) {
-      const auto error_msg{
-        std::format("Uninitialized entry for Symbol ID {}.", quoted_id)};
+      const auto error_msg{std::format(
+        "Entry for Symbol ID {} is no longer in scope.", quoted_id)};
 
       throw_invalid_argument(error_msg);
     }
+
+    return {weak_ptr.lock()};
   }
 
   auto insert_at(const std::size_t t_id, const SharedPtr& t_item) -> void

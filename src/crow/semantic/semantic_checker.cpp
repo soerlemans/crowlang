@@ -68,10 +68,10 @@ auto SemanticChecker::add_symbol(const std::string_view t_key,
   return insertion_success;
 }
 
-auto SemanticChecker::get_symbol(const std::string_view t_key) const
-  -> SymbolData
+auto SemanticChecker::get_symbol_data_from_env(
+  const std::string_view t_key) const -> SymbolData
 {
-  return m_symbol_state.get(t_key);
+  return m_symbol_state.get_value(t_key);
 }
 
 auto SemanticChecker::retrieve_symbol_table() const -> SymbolTablePtr
@@ -305,10 +305,10 @@ auto SemanticChecker::visit(Call* t_fn_call) -> Any
     return {};
   }
 
-  const auto data{get_symbol(id)};
+  const auto fn_data{get_symbol_data_from_env(id)};
   const auto args{get_resolved_type_list(t_fn_call->args())};
 
-  const auto fn{data.function()};
+  const auto fn{fn_data.function()};
   const auto params{fn->m_params};
   const auto return_type{fn->m_return_type};
 
@@ -411,14 +411,14 @@ auto SemanticChecker::visit(Var* t_var) -> Any
 auto SemanticChecker::visit(Variable* t_var) -> Any
 {
   const auto id{t_var->identifier()};
-  const auto var{get_symbol(id)};
+  const auto var_data{get_symbol_data_from_env(id)};
 
-  DBG_INFO("Variable ", std::quoted(id), " of type ", var);
+  DBG_INFO("Variable ", std::quoted(id), " of type ", var_data);
 
   // Annotate AST.
-  t_var->set_type(var.type_variant());
+  t_var->set_type(var_data.type_variant());
 
-  return var;
+  return {var_data};
 }
 
 // Operators:

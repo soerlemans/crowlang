@@ -79,7 +79,9 @@ class SemanticChecker : public NodeVisitor {
    */
   [[nodiscard("Returned boolean indicates error value, must be checked.")]]
   auto add_symbol(std::string_view t_id, const SymbolData& t_data) -> bool;
-  auto get_symbol(std::string_view t_id) const -> SymbolData;
+
+  [[nodiscard("Pure method must use result.")]]
+  auto get_symbol_data_from_env(std::string_view t_id) const -> SymbolData;
 
   auto retrieve_symbol_table() const -> SymbolTablePtr;
 
@@ -92,7 +94,7 @@ class SemanticChecker : public NodeVisitor {
   auto promote(const SymbolData& t_lhs, const SymbolData& rhs,
                bool enforce_lhs = false) const -> NativeTypeOpt;
 
-  // Helper methods for dealing with SymbolData:
+  // Helper methods for dealing with resolving nodes to SymbolData:
   // NodeVisitor visitation is not marked const so these methods cant be const.
   auto get_symbol_data(NodePtr t_ptr) -> SymbolData;
   auto get_resolved_type(NodePtr t_ptr) -> SymbolData;

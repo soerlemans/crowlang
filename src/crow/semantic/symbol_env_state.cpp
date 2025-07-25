@@ -12,7 +12,7 @@ namespace semantic {
 SymbolEnvState::SymbolEnvState(): BaseEnvState{}
 {}
 
-auto SymbolEnvState::get(const std::string_view t_key) const -> SymbolData
+auto SymbolEnvState::get_value(const std::string_view t_key) const -> SymbolData
 {
   const auto [iter, found] = EnvState::find(t_key);
 
