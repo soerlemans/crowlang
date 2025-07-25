@@ -1,4 +1,5 @@
-#include "symbol_table.hpp"
+#include "symbol_tree.hpp"
+
 
 // STL Includes:
 #include <iomanip>
@@ -9,21 +10,21 @@
 #include "lib/stdprint.hpp"
 
 namespace symbol_table {
-SymbolTable::SymbolTable(): m_table{}
+SymbolTree::SymbolTree(): m_tree{}
 {}
 
-auto SymbolTable::insert(const SymbolMapEntry t_pair) -> SymbolTableResult
+auto SymbolTree::insert(const SymbolMapEntry t_pair) -> SymbolTreeResult
 {
-  const auto [iter, inserted] = m_table.insert(t_pair);
+  const auto [iter, inserted] = m_tree.insert(t_pair);
   if(!inserted) {
-    return std::unexpected{SymbolTableError::INSERT_FAILED};
+    return std::unexpected{SymbolTreeError::INSERT_FAILED};
   }
 
   return {iter};
 }
 
-auto SymbolTable::insert(SymbolMapIter t_parent, const SymbolMapEntry t_pair)
-  -> SymbolTableResult
+auto SymbolTree::insert(SymbolMapIter t_parent, const SymbolMapEntry t_pair)
+  -> SymbolTreeResult
 {
   // Get a reference to the scope of the parent.
   auto& scope_ref{t_parent->second};
@@ -37,52 +38,52 @@ auto SymbolTable::insert(SymbolMapIter t_parent, const SymbolMapEntry t_pair)
   auto& map{opt.value()};
   const auto [iter, inserted] = map.insert(t_pair);
   if(!inserted) {
-    return std::unexpected{SymbolTableError::INSERT_FAILED};
+    return std::unexpected{SymbolTreeError::INSERT_FAILED};
   }
 
   return {iter};
 }
 
-auto SymbolTable::lookup(const std::string_view t_symbol_name) const
-  -> SymbolTableResult
+auto SymbolTree::lookup(const std::string_view t_symbol_name) const
+  -> SymbolTreeResult
 {
   // TODO: Implement.
 
-  return std::unexpected{SymbolTableError::UNIMPLEMENTED};
+  return std::unexpected{SymbolTreeError::UNIMPLEMENTED};
 }
 
-auto SymbolTable::lookup_toplevel(const std::string_view t_symbol_name) const
-  -> SymbolTableResult
+auto SymbolTree::lookup_toplevel(const std::string_view t_symbol_name) const
+  -> SymbolTreeResult
 {
   // TODO: Implement.
 
-  return std::unexpected{SymbolTableError::UNIMPLEMENTED};
+  return std::unexpected{SymbolTreeError::UNIMPLEMENTED};
 }
 
-auto SymbolTable::table() const -> const SymbolMap&
+auto SymbolTree::tree() const -> const SymbolMap&
 {
-  return m_table;
+  return m_tree;
 }
 
-auto SymbolTable::begin() -> SymbolMapIter
+auto SymbolTree::begin() -> SymbolMapIter
 {
-  return m_table.begin();
+  return m_tree.begin();
 }
 
-auto SymbolTable::end() -> SymbolMapIter
+auto SymbolTree::end() -> SymbolMapIter
 {
-  return m_table.end();
+  return m_tree.end();
 }
 
-auto SymbolTable::clear() -> void
+auto SymbolTree::clear() -> void
 {
-  m_table.clear();
+  m_tree.clear();
 }
 } // namespace symbol_table
 
 // Functions:
 auto operator<<(std::ostream& t_os,
-                const symbol_table::SymbolTableScope& t_scope) -> std::ostream&
+                const symbol_table::SymbolTreeScope& t_scope) -> std::ostream&
 {
   const auto& [symbol_id, scope_opt] = t_scope;
 
@@ -120,16 +121,15 @@ auto operator<<(std::ostream& t_os, const symbol_table::SymbolMap& t_map)
 }
 
 auto operator<<(std::ostream& t_os,
-                const symbol_table::SymbolTable& t_symbol_table)
-  -> std::ostream&
+                const symbol_table::SymbolTree& t_symbol_tree) -> std::ostream&
 {
-  const auto& table{t_symbol_table.table()};
-  t_os << "SymbolTable{" << table << '}';
+  const auto& tree{t_symbol_tree.tree()};
+  t_os << "SymbolTree{" << tree << '}';
 
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const symbol_table::SymbolTablePtr& t_ptr)
+auto operator<<(std::ostream& t_os, const symbol_table::SymbolTreePtr& t_ptr)
   -> std::ostream&
 {
   using lib::stdprint::detail::print_smart_ptr;

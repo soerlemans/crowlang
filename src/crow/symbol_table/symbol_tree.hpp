@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_SYMBOL_TABLE_SYMBOL_TABLE_HPP
-#define CROW_CROW_SYMBOL_TABLE_SYMBOL_TABLE_HPP
+#ifndef CROW_CROW_SYMBOL_TABLE_SYMBOL_TREE_HPP
+#define CROW_CROW_SYMBOL_TABLE_SYMBOL_TREE_HPP
 
 /*!
  * @file symbol_table.hpp
@@ -21,22 +21,22 @@
 
 namespace symbol_table {
 // Forward Declarations:
-enum class SymbolTableError;
-struct SymbolTableScope;
-class SymbolTable;
+enum class SymbolTreeError;
+struct SymbolTreeScope;
+class SymbolTree;
 
 // Aliases:
-using SymbolMap = std::map<std::string, SymbolTableScope>;
+using SymbolMap = std::map<std::string, SymbolTreeScope>;
 using SymbolMapOpt = std::optional<SymbolMap>;
 using SymbolMapEntry = SymbolMap::value_type;
 using SymbolMapIter = SymbolMap::iterator;
 
-using SymbolTableId = u64;
-using SymbolTableResult = std::expected<SymbolMapIter, SymbolTableError>;
-using SymbolTablePtr = std::shared_ptr<SymbolTable>;
+using SymbolTreeId = u64;
+using SymbolTreeResult = std::expected<SymbolMapIter, SymbolTreeError>;
+using SymbolTreePtr = std::shared_ptr<SymbolTree>;
 
 // enums:
-enum class SymbolTableError {
+enum class SymbolTreeError {
   UNIMPLEMENTED, // FIXME: Temporary.
   INSERT_FAILED,
   SYMBOL_NOT_FOUND,
@@ -45,14 +45,14 @@ enum class SymbolTableError {
 // Structs:
 /*!
  * Helper struct to add nested scope functionality.
- * The @ref SymbolTableId gives back an id which is an index.
+ * The @ref SymbolTreeId gives back an id which is an index.
  * In a register
- * This way we can nest the @ref SymbolTable.
+ * This way we can nest the @ref SymbolTree.
  * Without needing to change @ref SymbolData.
  * This way functions can optionaly
  */
-struct SymbolTableScope {
-  SymbolTableId m_id;
+struct SymbolTreeScope {
+  SymbolTreeId m_id;
   SymbolMapOpt m_scope;
 };
 
@@ -61,43 +61,43 @@ struct SymbolTableScope {
  * This classes stores the global symbol table.
  * This keeps track of all the symbols in a module.
  */
-class SymbolTable {
+class SymbolTree {
   private:
-  SymbolMap m_table;
+  SymbolMap m_tree;
 
   public:
-  SymbolTable();
+  SymbolTree();
 
   // TODO: Implement.
-  auto insert(SymbolMapEntry t_pair) -> SymbolTableResult;
+  auto insert(SymbolMapEntry t_pair) -> SymbolTreeResult;
   auto insert(SymbolMapIter t_parent, SymbolMapEntry t_pair)
-    -> SymbolTableResult;
+    -> SymbolTreeResult;
 
-  auto lookup(std::string_view t_symbol_name) const -> SymbolTableResult;
+  auto lookup(std::string_view t_symbol_name) const -> SymbolTreeResult;
   auto lookup_toplevel(std::string_view t_symbol_name) const
-    -> SymbolTableResult;
+    -> SymbolTreeResult;
 
-  auto table() const -> const SymbolMap&;
+  auto tree() const -> const SymbolMap&;
 
   auto begin() -> SymbolMapIter;
   auto end() -> SymbolMapIter;
 
   auto clear() -> void;
 
-  virtual ~SymbolTable() = default;
+  virtual ~SymbolTree() = default;
 };
 } // namespace symbol_table
 
 // Functions:
 auto operator<<(std::ostream& t_os,
-                const symbol_table::SymbolTableScope& t_scope) -> std::ostream&;
+                const symbol_table::SymbolTreeScope& t_scope) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const symbol_table::SymbolMap& t_map)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os,
-                const symbol_table::SymbolTable& t_symbol_table)
+                const symbol_table::SymbolTree& t_symbol_table)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, const symbol_table::SymbolTablePtr& t_ptr)
+auto operator<<(std::ostream& t_os, const symbol_table::SymbolTreePtr& t_ptr)
   -> std::ostream&;
 
 
-#endif // CROW_CROW_SYMBOL_TABLE_SYMBOL_TABLE_HPP
+#endif // CROW_CROW_SYMBOL_TABLE_SYMBOL_TREE_HPP
