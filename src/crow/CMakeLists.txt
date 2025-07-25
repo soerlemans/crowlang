@@ -34,6 +34,9 @@ add_subdirectory(parser)
 # Type model for semantic, and codegen:
 add_subdirectory(types)
 
+# Symbol table and symbol registers:
+add_subdirectory(symbol_table)
+
 # Semantic analysis:
 add_subdirectory(semantic)
 

@@ -11,6 +11,7 @@
 // Local Includes:
 #include "crow/debug/log.hpp"
 #include "lib/stdtypes.hpp"
+#include "lib/string_util.hpp"
 
 namespace codegen::cpp_backend {
 // Using Statements:
@@ -28,10 +29,16 @@ ClangFrontendInvoker::ClangFrontendInvoker(): m_compiler_flags{}, m_out{}
 
 auto ClangFrontendInvoker::add_flags(const std::string_view t_str) -> void
 {
-  // Add spaces passed around the passed flags, automatically.
+  // TODO: Sanitize this one day as to prevent command injection?
+  // Or just dont care?
+  std::string str_buf{t_str};
 
-  // TODO: Sanitize this one day as to prevent command injection.
-  m_compiler_flags << std::format(" {} ", t_str);
+  // Strip any leading and trailing whitespace.
+  lib::strip_whitespace(str_buf);
+  lib::trim_whitespace(str_buf);
+
+  // Add spaces passed around the passed flags, automatically.
+  m_compiler_flags << std::format(" {} ", str_buf);
 }
 
 auto ClangFrontendInvoker::set_out(const std::string_view t_out) -> void

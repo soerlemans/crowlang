@@ -2,6 +2,7 @@
 #define CROW_CROW_MIR_MIR_BUILDER_MIR_ENV_STATE_HPP
 
 // STL Includes:
+#include <format>
 #include <iomanip>
 #include <ranges>
 #include <sstream>
@@ -37,7 +38,7 @@ class MirEnvState : public container::EnvState<T> {
   MirEnvState(): BaseEnvState{}
   {}
 
-  auto lookup(const std::string_view t_key) -> BaseEnvState::Iter
+  auto get_iter(const std::string_view t_key) -> BaseEnvState::Iter
   {
     const auto [iter, found] = BaseEnvState::find(t_key);
 
@@ -45,8 +46,10 @@ class MirEnvState : public container::EnvState<T> {
       using lib::stdexcept::throw_runtime_exception;
 
       // Should never happen so throw and report to user.
-      const auto str{std::quoted(t_key)};
-      throw_runtime_exception("Identifier ", str, " is not defined.");
+      const auto error_msg{
+        std::format(R"(Identifier "{}" is not defined.)", t_key)};
+
+      throw_runtime_exception(error_msg);
     }
 
     return {iter};
@@ -55,7 +58,7 @@ class MirEnvState : public container::EnvState<T> {
   //! Get means it is required and if we dont find it error.
   auto get_value(const std::string_view t_key) -> T
   {
-    const auto iter{lookup(t_key)};
+    const auto iter{get_iter(t_key)};
 
     return {iter->second};
   }
@@ -63,7 +66,7 @@ class MirEnvState : public container::EnvState<T> {
   //! Get means it is required and if we dont find it error.
   auto update(const std::string_view t_key, const T& t_value) -> void
   {
-    auto iter{lookup(t_key)};
+    auto iter{get_iter(t_key)};
 
     // Update the value in place.
     iter->second = t_value;
