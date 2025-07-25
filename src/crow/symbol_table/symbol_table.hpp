@@ -83,20 +83,19 @@ class SymbolTable {
 
   auto clear() -> void;
 
+  friend auto operator<<(std::ostream& t_os, const SymbolTable& t_symbol_table)
+    -> std::ostream&;
+
   virtual ~SymbolTable() = default;
 };
 } // namespace symbol_table
 
 // Functions:
 auto operator<<(std::ostream& t_os,
-                const ::symbol_table::SymbolTableScope& t_scope)
+                const symbol_table::SymbolTableScope& t_scope) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const symbol_table::SymbolMap& t_map)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, const ::symbol_table::SymbolMap& t_map)
-  -> std::ostream&;
-auto operator<<(std::ostream& t_os,
-                const ::symbol_table::SymbolTable& t_symbol_table)
-  -> std::ostream&;
-auto operator<<(std::ostream& t_os, const ::symbol_table::SymbolTablePtr& t_ptr)
+auto operator<<(std::ostream& t_os, const symbol_table::SymbolTablePtr& t_ptr)
   -> std::ostream&;
 
 #endif // CROW_CROW_SYMBOL_TABLE_SYMBOL_TABLE_HPP

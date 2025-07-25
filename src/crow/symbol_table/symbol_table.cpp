@@ -1,10 +1,11 @@
 #include "symbol_table.hpp"
 
 // STL Includes:
-#include <iomanip>
 #include <string_view>
+#include <iomanip>
 
 // Absolute Includes:
+#include "lib/iomanip/iomanip.hpp"
 #include "lib/stdprint.hpp"
 
 namespace symbol_table {
@@ -77,21 +78,33 @@ auto SymbolTable::clear() -> void
 {
   m_table.clear();
 }
+
+auto operator<<(std::ostream& t_os, const SymbolTable& t_symbol_table)
+  -> std::ostream&
+{
+  using lib::iomanip::cond_nl;
+
+  const auto& table{t_symbol_table.m_table};
+
+  t_os << "SymbolTable{" << table << '}';
+
+  return t_os;
+}
 } // namespace symbol_table
 
 // Functions:
 auto operator<<(std::ostream& t_os,
                 const symbol_table::SymbolTableScope& t_scope) -> std::ostream&
 {
-  const auto& [data, opt] = t_scope;
+  const auto& [symbol_id, scope_opt] = t_scope;
 
-  // Add
-  t_os << '"' << data << '"';
+  // Print symbol id.
+  t_os << '"' << symbol_id << '"';
 
   // Only show scope if it exists.
-  if(opt) {
+  if(scope_opt) {
     t_os << ", scope: {";
-    t_os << opt.value();
+    t_os << scope_opt.value();
     t_os << '}';
   }
 
@@ -112,20 +125,7 @@ auto operator<<(std::ostream& t_os, const symbol_table::SymbolMap& t_map)
     t_os << std::quoted(id) << ": " << scope;
     sep = ", ";
   }
-
-  return t_os;
-}
-
-auto operator<<(std::ostream& t_os,
-                const symbol_table::SymbolTable& t_symbol_table)
-  -> std::ostream&
-{
-  using lib::iomanip::cond_nl;
-
-  const auto table{t_symbol_table.table()};
-
-  t_os << '{' << table;
-  t_os << cond_nl << '}';
+  t_os << cond_nl;
 
   return t_os;
 }
