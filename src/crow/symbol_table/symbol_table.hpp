@@ -49,13 +49,14 @@ using SymbolTablePtr = std::shared_ptr<SymbolTable<RegisterType>>;
 template<typename RegisterType>
 class SymbolTable {
   private:
-  using SymbolRegister = SymbolRegister<RegisterType>;
+  using SymbolRegisterSpecialized = SymbolRegisterSpecialized<RegisterType>;
 
   SymbolTreePtr m_tree;
-  SymbolRegister m_register;
+  SymbolRegisterSpecialized m_register;
 
   public:
-  explicit SymbolTable(SymbolTreePtr t_tree, SymbolRegister&& t_register)
+  explicit SymbolTable(SymbolTreePtr t_tree,
+                       SymbolRegisterSpecialized&& t_register)
     : m_tree{t_tree}, m_register{std::move(t_register)}
   {}
 
@@ -76,7 +77,7 @@ class SymbolTable {
     return m_tree;
   }
 
-  auto register_() -> SymbolRegister
+  auto register_() -> SymbolRegisterSpecialized
   {
     return m_register;
   }

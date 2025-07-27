@@ -40,7 +40,8 @@ class SymbolTableFactory {
   SymbolMapIter m_last_elem;
   SymbolMapStack m_symbol_stack;
 
-  SymbolTablePtr m_symbol_table_ptr;
+  // SymbolTreePtr m_tree;
+  // SymbolTreePtr m_register;
 
   public:
   SymbolTableFactory() = default;
