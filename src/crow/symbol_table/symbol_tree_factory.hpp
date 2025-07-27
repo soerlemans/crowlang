@@ -39,13 +39,17 @@ using SymbolMapStack = std::stack<SymbolMap::iterator>;
  */
 class SymbolTreeFactory {
   private:
-  SymbolMapIter m_last_elem;
-  SymbolMapStack m_symbol_stack;
-
   SymbolTreePtr m_symbol_tree_ptr;
 
+  SymbolMapStack m_symbol_stack;
+  SymbolMapIter m_last_elem;
+
+  std::size_t m_id_count;
+
   public:
-  SymbolTreeFactory() = default;
+  SymbolTreeFactory();
+
+	auto init() -> void;
 
   //! Insert an entry for the current level of scope.
   auto insert(std::string_view t_id) -> bool;

@@ -88,10 +88,10 @@ class SymbolTree {
     -> SymbolTreeResult;
   auto insert_toplevel(SymbolMapEntry t_pair) -> SymbolTreeResult;
 
-  auto lookup(SymbolMapIter t_parent, std::string_view t_symbol_name) const
+  // TODO: Make new std::expected type so we can make these const methods.
+  auto lookup(SymbolMapIter t_parent, std::string_view t_symbol_name)
     -> SymbolTreeResult;
-  auto lookup_toplevel(std::string_view t_symbol_name) const
-    -> SymbolTreeResult;
+  auto lookup_toplevel(std::string_view t_symbol_name) -> SymbolTreeResult;
 
   auto tree() const -> const SymbolMap&;
 

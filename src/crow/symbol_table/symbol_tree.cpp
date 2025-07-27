@@ -46,7 +46,7 @@ auto SymbolTree::insert(SymbolMapIter t_parent, const SymbolMapEntry t_pair)
 }
 
 auto SymbolTree::lookup(SymbolMapIter t_parent,
-                        const std::string_view t_symbol_name) const
+                        const std::string_view t_symbol_name)
   -> SymbolTreeResult
 {
 
@@ -59,24 +59,25 @@ auto SymbolTree::lookup(SymbolMapIter t_parent,
     return std::unexpected{SymbolTreeError::PARENT_ITER_HAS_NO_SCOPE};
   }
 
+
   auto& map{opt.value()};
-  const auto iter{map.find({t_symbol_name})};
+  const auto iter{map.find(std::string{t_symbol_name})};
   if(iter == m_tree.end()) {
     std::unexpected{SymbolTreeError::SYMBOL_NOT_FOUND};
   }
 
-  return std::expected{iter};
+  return {iter};
 }
 
-auto SymbolTree::lookup_toplevel(const std::string_view t_symbol_name) const
+auto SymbolTree::lookup_toplevel(const std::string_view t_symbol_name)
   -> SymbolTreeResult
 {
-  const auto iter{m_tree.find(t_symbol_name)};
+  const auto iter{m_tree.find(std::string{t_symbol_name})};
   if(iter == m_tree.end()) {
     std::unexpected{SymbolTreeError::SYMBOL_NOT_FOUND_TOPLEVEL};
   }
 
-  return std::expected{iter};
+  return {iter};
 }
 
 auto SymbolTree::tree() const -> const SymbolMap&
@@ -94,7 +95,7 @@ auto SymbolTree::end() -> SymbolMapIter
   return m_tree.end();
 }
 
-auto SymbolTree::size() constn -> std::size_t
+auto SymbolTree::size() const -> std::size_t
 {
   return m_count;
 }
