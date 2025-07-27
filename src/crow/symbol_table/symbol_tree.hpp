@@ -19,6 +19,8 @@
 // Absolute includes:
 #include "lib/stdtypes.hpp"
 
+// TODO: Define a immutable interface for querying the symbol tree.
+
 namespace symbol_table {
 // Forward Declarations:
 enum class SymbolTreeError;
@@ -37,9 +39,13 @@ using SymbolTreePtr = std::shared_ptr<SymbolTree>;
 
 // enums:
 enum class SymbolTreeError {
-  UNIMPLEMENTED, // FIXME: Temporary.
+  UNIMPLEMENTED, // FIXME: Temporary remove soon.
   INSERT_FAILED,
+
+  PARENT_ITER_HAS_NO_SCOPE,
+
   SYMBOL_NOT_FOUND,
+  SYMBOL_NOT_FOUND_TOPLEVEL,
 };
 
 // Structs:
@@ -52,8 +58,11 @@ enum class SymbolTreeError {
  * This way functions can optionaly
  */
 struct SymbolTreeScope {
+  //! Symbol ID, resolvable to concrete symbol related metadatadata.
+  //! Stored in a @ref SymbolRegister.
   SymbolTreeId m_id;
-  SymbolMapOpt m_scope;
+
+  SymbolMapOpt m_scope; //!< Optional nested scope containing more symbols.
 };
 
 // Classes:
@@ -64,16 +73,23 @@ struct SymbolTreeScope {
 class SymbolTree {
   private:
   SymbolMap m_tree;
+  std::size_t m_count;
+
+  // TODO: In order to optimize performance.
+  // Define an unordered_multimap, which contains iterators to each symbol.
+  // This way we can perform lookups across the board performantly.
+  // Without needing to recursively find.
 
   public:
   SymbolTree();
 
   // TODO: Implement.
-  auto insert(SymbolMapEntry t_pair) -> SymbolTreeResult;
   auto insert(SymbolMapIter t_parent, SymbolMapEntry t_pair)
     -> SymbolTreeResult;
+  auto insert_toplevel(SymbolMapEntry t_pair) -> SymbolTreeResult;
 
-  auto lookup(std::string_view t_symbol_name) const -> SymbolTreeResult;
+  auto lookup(SymbolMapIter t_parent, std::string_view t_symbol_name) const
+    -> SymbolTreeResult;
   auto lookup_toplevel(std::string_view t_symbol_name) const
     -> SymbolTreeResult;
 
@@ -82,6 +98,7 @@ class SymbolTree {
   auto begin() -> SymbolMapIter;
   auto end() -> SymbolMapIter;
 
+  auto size() const -> std::size_t;
   auto clear() -> void;
 
   virtual ~SymbolTree() = default;

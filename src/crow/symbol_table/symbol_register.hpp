@@ -2,15 +2,26 @@
 #define CROW_CROW_SYMBOL_TABLE_SYMBOL_REGISTER_HPP
 
 // STL Includes:
+#include <iomanip>
 #include <memory>
 #include <type_traits>
 #include <unordered_map>
 
 // Absolute Includes:
-#include "crow/symbol_table/symbol_table.hpp"
+#include "crow/symbol_table/symbol_tree.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
 
+// TODO: Define a immutable interface for querying the symbol register.
+
 namespace symbol_table {
+// Forward Declarations:
+template<typename T>
+class SymbolRegister;
+
+// Aliases:
+template<typename T>
+using SymbolRegisterPtr = std::shared_ptr<SymbolRegister<T>>;
+
 // Classes:
 /*!
  * The symbol register maps a @ref SymbolId to a concrete value.
@@ -26,7 +37,7 @@ class SymbolRegister {
 
   //! We need to keep track if a registery entry was never assigned.
   using ValueOpt = std::optional<WeakPtr>;
-  using Register = std::unordered_map<SymbolTableId, ValueOpt>;
+  using Register = std::unordered_map<SymbolTreeId, ValueOpt>;
 
   Register m_register;
 
@@ -51,12 +62,11 @@ class SymbolRegister {
     using lib::stdexcept::throw_invalid_argument;
     using lib::stdexcept::throw_unexpected_nullptr;
 
-    const auto quoted_id{t_id};
+    const auto symbol_id_str{std::format(R"(for Symbol ID "{}")", t_id)};
 
     auto iter{m_register.find(t_id)};
     if(iter == m_register.end()) {
-      const auto error_msg{
-        std::format("No entry for Symbol ID {}.", quoted_id)};
+      const auto error_msg{std::format("No entry {}.", symbol_id_str)};
 
       throw_invalid_argument(error_msg);
     }
@@ -66,7 +76,7 @@ class SymbolRegister {
     if(!opt) {
       // This should never happen, so we should throw.
       const auto error_msg{
-        std::format("Uninitialized value for Symbol ID {}.", quoted_id)};
+        std::format("Uninitialized value {}.", symbol_id_str)};
 
       throw_invalid_argument(error_msg);
     }
@@ -74,7 +84,7 @@ class SymbolRegister {
     const auto& weak_ptr{opt.value()};
     if(!weak_ptr) {
       const auto error_msg{
-        std::format("WeakPtr for Symbol ID {} is nullptr.", quoted_id)};
+        std::format("WeakPtr {} is nullptr.", symbol_id_str)};
 
       throw_unexpected_nullptr(error_msg);
     }
@@ -82,8 +92,8 @@ class SymbolRegister {
     // If the WeakPtr expired, then an architectural design mistake was made.
     // So we should throw and hopefully have this reported.
     if(weak_ptr.expired()) {
-      const auto error_msg{std::format(
-        "Value for Symbol ID {} is no longer in scope.", quoted_id)};
+      const auto error_msg{
+        std::format("Value {} is no longer in scope.", symbol_id_str)};
 
       throw_invalid_argument(error_msg);
     }
@@ -92,7 +102,7 @@ class SymbolRegister {
     const auto shared_ptr{weak_ptr.lock()};
     if(!shared_ptr) {
       const auto error_msg{
-        std::format("SharedPtr for Symbol ID {} is nullptr.", quoted_id)};
+        std::format("SharedPtr {} is nullptr.", symbol_id_str)};
 
       throw_unexpected_nullptr(error_msg);
     }
@@ -113,9 +123,8 @@ class SymbolRegister {
 
     auto& opt{m_register[t_id]};
     if(opt) {
-      const auto quoted_id{std::quoted(id)};
       const auto error_msg{std::format(
-        "Cant insert Symbol ID {} already has a value associated.", quoted_id)};
+        R"(Cant insert Symbol ID "{}" already has a value associated.)", t_id)};
 
       throw_invalid_argument(error_msg);
     }

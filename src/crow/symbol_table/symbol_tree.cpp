@@ -10,10 +10,11 @@
 #include "lib/stdprint.hpp"
 
 namespace symbol_table {
-SymbolTree::SymbolTree(): m_tree{}
+SymbolTree::SymbolTree(): m_tree{}, m_count{0}
 {}
 
-auto SymbolTree::insert(const SymbolMapEntry t_pair) -> SymbolTreeResult
+auto SymbolTree::insert_toplevel(const SymbolMapEntry t_pair)
+  -> SymbolTreeResult
 {
   const auto [iter, inserted] = m_tree.insert(t_pair);
   if(!inserted) {
@@ -44,20 +45,38 @@ auto SymbolTree::insert(SymbolMapIter t_parent, const SymbolMapEntry t_pair)
   return {iter};
 }
 
-auto SymbolTree::lookup(const std::string_view t_symbol_name) const
+auto SymbolTree::lookup(SymbolMapIter t_parent,
+                        const std::string_view t_symbol_name) const
   -> SymbolTreeResult
 {
-  // TODO: Implement.
 
-  return std::unexpected{SymbolTreeError::UNIMPLEMENTED};
+  // Get a reference to the scope of the parent.
+  auto& scope_ref{t_parent->second};
+  auto& opt{scope_ref.m_scope};
+
+  // We cant perform a lookup from a parent if there is no scope.
+  if(!opt) {
+    return std::unexpected{SymbolTreeError::PARENT_ITER_HAS_NO_SCOPE};
+  }
+
+  auto& map{opt.value()};
+  const auto iter{map.find({t_symbol_name})};
+  if(iter == m_tree.end()) {
+    std::unexpected{SymbolTreeError::SYMBOL_NOT_FOUND};
+  }
+
+  return std::expected{iter};
 }
 
 auto SymbolTree::lookup_toplevel(const std::string_view t_symbol_name) const
   -> SymbolTreeResult
 {
-  // TODO: Implement.
+  const auto iter{m_tree.find(t_symbol_name)};
+  if(iter == m_tree.end()) {
+    std::unexpected{SymbolTreeError::SYMBOL_NOT_FOUND_TOPLEVEL};
+  }
 
-  return std::unexpected{SymbolTreeError::UNIMPLEMENTED};
+  return std::expected{iter};
 }
 
 auto SymbolTree::tree() const -> const SymbolMap&
@@ -75,9 +94,15 @@ auto SymbolTree::end() -> SymbolMapIter
   return m_tree.end();
 }
 
+auto SymbolTree::size() constn -> std::size_t
+{
+  return m_count;
+}
+
 auto SymbolTree::clear() -> void
 {
   m_tree.clear();
+  m_count = 0;
 }
 } // namespace symbol_table
 
