@@ -24,8 +24,8 @@
 #include "lib/stdtypes.hpp"
 
 // Local Includes:
-#include "symbol_register.hpp"
-#include "symbol_tree.hpp"
+#include "symbol_register/symbol_register.hpp"
+#include "symbol_tree/symbol_tree.hpp"
 
 namespace symbol_table {
 // Forward Declarations:
@@ -49,14 +49,14 @@ using SymbolTablePtr = std::shared_ptr<SymbolTable<RegisterType>>;
 template<typename RegisterType>
 class SymbolTable {
   private:
-  using SymbolRegisterSpecialized = SymbolRegisterSpecialized<RegisterType>;
+  using Register = symbol_register::SymbolRegister<RegisterType>;
+  using SymbolTreePtr = symbol_tree::SymbolTreePtr;
 
   SymbolTreePtr m_tree;
-  SymbolRegisterSpecialized m_register;
+  Register m_register;
 
   public:
-  explicit SymbolTable(SymbolTreePtr t_tree,
-                       SymbolRegisterSpecialized&& t_register)
+  explicit SymbolTable(SymbolTreePtr t_tree, Register&& t_register)
     : m_tree{t_tree}, m_register{std::move(t_register)}
   {}
 
@@ -77,7 +77,7 @@ class SymbolTable {
     return m_tree;
   }
 
-  auto register_() -> SymbolRegisterSpecialized
+  auto register_() -> Register
   {
     return m_register;
   }

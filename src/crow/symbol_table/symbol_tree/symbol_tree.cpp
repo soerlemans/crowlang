@@ -9,7 +9,7 @@
 #include "lib/iomanip/iomanip.hpp"
 #include "lib/stdprint.hpp"
 
-namespace symbol_table {
+namespace symbol_table::symbol_tree {
 SymbolTree::SymbolTree(): m_tree{}, m_count{0}
 {}
 
@@ -105,7 +105,7 @@ auto SymbolTree::clear() -> void
   m_tree.clear();
   m_count = 0;
 }
-} // namespace symbol_table
+} // namespace symbol_table::symbol_tree
 
 // Functions:
 auto operator<<(std::ostream& t_os,

@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_SYMBOL_TABLE_SYMBOL_REGISTER_HPP
-#define CROW_CROW_SYMBOL_TABLE_SYMBOL_REGISTER_HPP
+#ifndef CROW_CROW_SYMBOL_TABLE_SYMBOL_REGISTER_SYMBOL_REGISTER_HPP
+#define CROW_CROW_SYMBOL_TABLE_SYMBOL_REGISTER_SYMBOL_REGISTER_HPP
 
 // STL Includes:
 #include <iomanip>
@@ -8,12 +8,12 @@
 #include <unordered_map>
 
 // Absolute Includes:
-#include "crow/symbol_table/symbol_tree.hpp"
+#include "crow/symbol_table/symbol_tree/symbol_tree.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
 
 // TODO: Define a immutable interface for querying the symbol register.
 
-namespace symbol_table {
+namespace symbol_table::symbol_register {
 // Forward Declarations:
 template<typename T>
 class SymbolRegister;
@@ -31,6 +31,8 @@ using SymbolRegisterPtr = std::shared_ptr<SymbolRegister<T>>;
 template<typename T>
 class SymbolRegister {
   private:
+  using SymbolTreeId = symbol_tree::SymbolTreeId;
+
   //! We use a weak_ptr so we can catch if an item is expired.
   using SharedPtr = std::shared_ptr<T>;
   using WeakPtr = std::weak_ptr<T>;
@@ -150,6 +152,6 @@ class SymbolRegister {
 
   virtual ~SymbolRegister() = default;
 };
-} // namespace symbol_table
+} // namespace symbol_table::symbol_register
 
-#endif // CROW_CROW_SYMBOL_TABLE_SYMBOL_REGISTER_HPP
+#endif // CROW_CROW_SYMBOL_TABLE_SYMBOL_REGISTER_SYMBOL_REGISTER_HPP

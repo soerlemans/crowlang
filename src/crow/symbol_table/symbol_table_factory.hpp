@@ -5,6 +5,9 @@
 #include <memory>
 #include <stack>
 
+// Absolute Includes:
+#include "crow/debug/log.hpp"
+
 // Local includes:
 #include "symbol_table.hpp"
 
@@ -30,7 +33,7 @@ namespace symbol_table {
  * But the goal is to not depend on @ref EnvStack.
  * A better construction should be possible, reconsider soon.
  */
-using SymbolMapStack = std::stack<SymbolMap::iterator>;
+using SymbolMapStack = std::stack<symbol_tree::SymbolMap::iterator>;
 
 // Classes:
 /*!
@@ -38,6 +41,10 @@ using SymbolMapStack = std::stack<SymbolMap::iterator>;
 template<typename RegisterType>
 class SymbolTableFactory {
   private:
+  using SymbolMapIter = symbol_tree::SymbolMapIter;
+  using SymbolTreePtr = symbol_tree::SymbolTreePtr;
+  using SymbolTablePtr = SymbolTablePtr<RegisterType>;
+
   SymbolMapIter m_last_elem;
   SymbolMapStack m_symbol_stack;
 
@@ -50,7 +57,6 @@ class SymbolTableFactory {
 
   //! Insert symbol to the current level of scoping.
   auto insert(std::string_view t_id, const T& t_value) -> bool
-
   {
     using symbol_table::SymbolMapEntry;
     using symbol_table::SymbolMapInsertResult;
@@ -112,12 +118,10 @@ class SymbolTableFactory {
 };
 
 // Methods:
-auto SymbolTablePtr::init() -> void
+auto SymbolTableFactory::init() -> void
 {
   clear();
 }
-
-
 } // namespace symbol_table
 
 

@@ -3,8 +3,7 @@
 // Absolute Includes:
 #include "crow/debug/log.hpp"
 
-namespace symbol_table {
-
+namespace symbol_table::symbol_tree {
 SymbolTreeFactory::SymbolTreeFactory()
   : m_symbol_tree_ptr{}, m_symbol_stack{}, m_last_elem{}, m_id_count{0}
 {}
@@ -77,4 +76,4 @@ auto SymbolTreeFactory::retrieve() const -> SymbolTreePtr
 {
   return m_symbol_tree_ptr;
 }
-} // namespace symbol_table
+} // namespace symbol_table::symbol_tree

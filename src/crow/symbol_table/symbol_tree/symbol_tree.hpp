@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_SYMBOL_TABLE_SYMBOL_TREE_HPP
-#define CROW_CROW_SYMBOL_TABLE_SYMBOL_TREE_HPP
+#ifndef CROW_CROW_SYMBOL_TABLE_SYMBOL_TREE_SYMBOL_TREE_HPP
+#define CROW_CROW_SYMBOL_TABLE_SYMBOL_TREE_SYMBOL_TREE_HPP
 
 /*!
  * @file symbol_table.hpp
@@ -21,7 +21,7 @@
 
 // TODO: Define a immutable interface for querying the symbol tree.
 
-namespace symbol_table {
+namespace symbol_table::symbol_tree {
 // Forward Declarations:
 enum class SymbolTreeError;
 struct SymbolTreeScope;
@@ -33,7 +33,11 @@ using SymbolMapOpt = std::optional<SymbolMap>;
 using SymbolMapEntry = SymbolMap::value_type;
 using SymbolMapIter = SymbolMap::iterator;
 
+// TODO: Consider making this a struct, with a possible enum tag for the type.
+// That the symbol entails, (roughly if its a function, struct, variable,
+// global, etc).
 using SymbolTreeId = u64;
+
 using SymbolTreeResult = std::expected<SymbolMapIter, SymbolTreeError>;
 using SymbolTreePtr = std::shared_ptr<SymbolTree>;
 
@@ -103,7 +107,7 @@ class SymbolTree {
 
   virtual ~SymbolTree() = default;
 };
-} // namespace symbol_table
+} // namespace symbol_table::symbol_tree
 
 // Functions:
 auto operator<<(std::ostream& t_os,
@@ -117,4 +121,4 @@ auto operator<<(std::ostream& t_os, const symbol_table::SymbolTreePtr& t_ptr)
   -> std::ostream&;
 
 
-#endif // CROW_CROW_SYMBOL_TABLE_SYMBOL_TREE_HPP
+#endif // CROW_CROW_SYMBOL_TABLE_SYMBOL_TREE_SYMBOL_TREE_HPP

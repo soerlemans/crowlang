@@ -35,6 +35,7 @@ using SymbolMapStack = std::stack<SymbolMap::iterator>;
 // Classes:
 /*!
  */
+template<typename T>
 class SymbolTableFactory {
   private:
   SymbolMapIter m_last_elem;
@@ -42,6 +43,7 @@ class SymbolTableFactory {
 
   // SymbolTreePtr m_tree;
   // SymbolTreePtr m_register;
+
 
   public:
   SymbolTableFactory() = default;
@@ -54,7 +56,7 @@ class SymbolTableFactory {
   auto pop_scope() -> void;
 
   auto clear() -> void;
-  auto retrieve() const -> SymbolTablePtr;
+  auto retrieve() const -> SymbolTablePtr<T>;
 
   virtual ~SymbolTableFactory() = default;
 };

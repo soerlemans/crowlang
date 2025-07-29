@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_SYMBOL_TABLE_SYMBOL_TREE_FACTORY_HPP
-#define CROW_CROW_SYMBOL_TABLE_SYMBOL_TREE_FACTORY_HPP
+#ifndef CROW_CROW_SYMBOL_TABLE_SYMBOL_TREE_SYMBOL_TREE_FACTORY_HPP
+#define CROW_CROW_SYMBOL_TABLE_SYMBOL_TREE_SYMBOL_TREE_FACTORY_HPP
 
 // STL Includes:
 #include <memory>
@@ -22,7 +22,7 @@
  * Which keeps track of the current ID nesting.
  */
 
-namespace symbol_table {
+namespace symbol_table::symbol_tree {
 // Aliases:
 /*!
  * Used to construct the nested structure of the @ref SymbolTree.
@@ -49,7 +49,7 @@ class SymbolTreeFactory {
   public:
   SymbolTreeFactory();
 
-	auto init() -> void;
+  auto init() -> void;
 
   //! Insert an entry for the current level of scope.
   auto insert(std::string_view t_id) -> bool;
@@ -64,6 +64,6 @@ class SymbolTreeFactory {
   virtual ~SymbolTreeFactory() = default;
 };
 
-} // namespace symbol_table
+} // namespace symbol_table::symbol_tree
 
-#endif // CROW_CROW_SYMBOL_TABLE_SYMBOL_TREE_FACTORY_HPP
+#endif // CROW_CROW_SYMBOL_TABLE_SYMBOL_TREE_SYMBOL_TREE_FACTORY_HPP
