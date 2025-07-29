@@ -77,7 +77,7 @@ class SymbolTable {
     return m_tree;
   }
 
-  auto register_() -> Register
+  auto register_() -> Register&
   {
     return m_register;
   }

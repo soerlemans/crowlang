@@ -10,6 +10,7 @@
 
 // Local includes:
 #include "symbol_table.hpp"
+#include "symbol_tree/symbol_tree_factory.hpp"
 
 /*!
  * @file
@@ -53,7 +54,12 @@ class SymbolTableFactory {
   public:
   SymbolTableFactory() = default;
 
-  auto init() -> void;
+  auto init() -> void
+  {
+    if(!m_symbol_tree_ptr) {
+      m_symbol_tree_ptr = std::make_shared<SymbolTree>();
+    }
+  }
 
   //! Insert symbol to the current level of scoping.
   auto insert(std::string_view t_id, const T& t_value) -> bool
@@ -61,20 +67,20 @@ class SymbolTableFactory {
     using symbol_table::SymbolMapEntry;
     using symbol_table::SymbolMapInsertResult;
 
-    if(!m_symbol_tree_ptr) {
-      m_symbol_tree_ptr = std::make_shared<SymbolTree>();
-    }
+    // Make the symbol_tree was inserted.
+    init();
 
     const SymbolMapEntry entry{
       std::string{t_id},
       {t_data, {}}
     };
 
-    // Return result of insertion.
     SymbolMapInsertResult result{};
     if(m_symbol_stack.empty()) {
+      // Insert regularly at toplevel.
       result = m_symbol_tree_ptr->insert(entry);
     } else {
+      // Insert at the last iterator inserted on the scope stack.
       auto& top_iter{m_symbol_stack.top()};
 
       result = m_symbol_tree_ptr->insert(top_iter, entry);
@@ -116,13 +122,6 @@ class SymbolTableFactory {
 
   virtual ~SymbolTableFactory() = default;
 };
-
-// Methods:
-auto SymbolTableFactory::init() -> void
-{
-  clear();
-}
 } // namespace symbol_table
-
 
 #endif // CROW_CROW_SYMBOL_TABLE_SYMBOL_TABLE_FACTORY_HPP

@@ -6,7 +6,7 @@
 #include <stack>
 
 // Local includes:
-#include "symbol_table.hpp"
+#include "symbol_tree.hpp"
 
 /*!
  * @file
@@ -23,7 +23,14 @@
  */
 
 namespace symbol_table::symbol_tree {
+// Forward Declarations:
+enum class SymbolTreeFactoryError;
+
 // Aliases:
+using SymbolTreeFactoryResult =
+  std::expected<SymbolTreeId, SymbolTreeFactoryError>;
+
+
 /*!
  * Used to construct the nested structure of the @ref SymbolTree.
  * Very similar to @ref EnvState.
@@ -33,6 +40,10 @@ namespace symbol_table::symbol_tree {
  * A better construction should be possible, reconsider soon.
  */
 using SymbolMapStack = std::stack<SymbolMap::iterator>;
+
+// Enums:
+enum class SymbolTreeFactoryError {
+}
 
 // Classes:
 /*!
@@ -52,7 +63,7 @@ class SymbolTreeFactory {
   auto init() -> void;
 
   //! Insert an entry for the current level of scope.
-  auto insert(std::string_view t_id) -> bool;
+  auto insert(std::string_view t_id) -> SymbolTreeId;
 
   // Manage nesting of symbols:
   auto push_scope() -> void;
@@ -63,7 +74,6 @@ class SymbolTreeFactory {
 
   virtual ~SymbolTreeFactory() = default;
 };
-
 } // namespace symbol_table::symbol_tree
 
 #endif // CROW_CROW_SYMBOL_TABLE_SYMBOL_TREE_SYMBOL_TREE_FACTORY_HPP

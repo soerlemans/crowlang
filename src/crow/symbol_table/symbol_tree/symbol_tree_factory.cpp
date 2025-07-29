@@ -15,7 +15,7 @@ auto SymbolTreeFactory::init() -> void
   }
 }
 
-auto SymbolTreeFactory::insert(const std::string_view t_id) -> bool
+auto SymbolTreeFactory::insert(const std::string_view t_id) -> SymbolTreeId
 {
   using symbol_table::SymbolMapEntry;
   using symbol_table::SymbolMapInsertResult;
@@ -23,6 +23,7 @@ auto SymbolTreeFactory::insert(const std::string_view t_id) -> bool
   // Ensure that the symbol tree ptr exists.
   init();
 
+  const auto new_id{m_id_count};
   const SymbolMapEntry entry{
     std::string{t_id},
     {m_id_count, {}}
@@ -44,10 +45,7 @@ auto SymbolTreeFactory::insert(const std::string_view t_id) -> bool
   m_last_elem = result.first;
   m_id_count++;
 
-  // FIXME: Remove debug line.
-  // DBG_NOTICE("SymbolTree: ", *m_symbol_tree_ptr);
-
-  return result.second;
+  return new_id;
 }
 
 auto SymbolTreeFactory::push_scope() -> void
