@@ -109,7 +109,8 @@ auto SymbolTree::clear() -> void
 
 // Functions:
 auto operator<<(std::ostream& t_os,
-                const symbol_table::SymbolTreeScope& t_scope) -> std::ostream&
+                const symbol_table::symbol_tree::SymbolTreeScope& t_scope)
+  -> std::ostream&
 {
   const auto& [symbol_id, scope_opt] = t_scope;
 
@@ -126,7 +127,8 @@ auto operator<<(std::ostream& t_os,
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const symbol_table::SymbolMap& t_map)
+auto operator<<(std::ostream& t_os,
+                const symbol_table::symbol_tree::SymbolMap& t_map)
   -> std::ostream&
 {
   using namespace std::literals::string_view_literals;
@@ -147,7 +149,8 @@ auto operator<<(std::ostream& t_os, const symbol_table::SymbolMap& t_map)
 }
 
 auto operator<<(std::ostream& t_os,
-                const symbol_table::SymbolTree& t_symbol_tree) -> std::ostream&
+                const symbol_table::symbol_tree::SymbolTree& t_symbol_tree)
+  -> std::ostream&
 {
   const auto& tree{t_symbol_tree.tree()};
   t_os << "SymbolTree{" << tree << '}';
@@ -155,7 +158,8 @@ auto operator<<(std::ostream& t_os,
   return t_os;
 }
 
-auto operator<<(std::ostream& t_os, const symbol_table::SymbolTreePtr& t_ptr)
+auto operator<<(std::ostream& t_os,
+                const symbol_table::symbol_tree::SymbolTreePtr& t_ptr)
   -> std::ostream&
 {
   using lib::stdprint::detail::print_smart_ptr;

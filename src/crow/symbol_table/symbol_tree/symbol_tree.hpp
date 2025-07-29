@@ -111,13 +111,16 @@ class SymbolTree {
 
 // Functions:
 auto operator<<(std::ostream& t_os,
-                const symbol_table::SymbolTreeScope& t_scope) -> std::ostream&;
-auto operator<<(std::ostream& t_os, const symbol_table::SymbolMap& t_map)
+                const symbol_table::symbol_tree::SymbolTreeScope& t_scope)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os,
-                const symbol_table::SymbolTree& t_symbol_table)
+                const symbol_table::symbol_tree::SymbolMap& t_map)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, const symbol_table::SymbolTreePtr& t_ptr)
+auto operator<<(std::ostream& t_os,
+                const symbol_table::symbol_tree::SymbolTree& t_symbol_table)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os,
+                const symbol_table::symbol_tree::SymbolTreePtr& t_ptr)
   -> std::ostream&;
 
 
