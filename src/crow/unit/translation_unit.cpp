@@ -105,7 +105,7 @@ auto TranslationUnit::print_ast([[maybe_unused]] const NodePtr t_ast) const
 #endif // DEBUG
 }
 
-auto TranslationUnit::semantic(NodePtr t_ast) -> SymbolTablePtr
+auto TranslationUnit::semantic(NodePtr t_ast) -> void
 {
   using semantic::SemanticChecker;
 
@@ -115,15 +115,11 @@ auto TranslationUnit::semantic(NodePtr t_ast) -> SymbolTablePtr
 
   // Check the semantics of the written program.
   SemanticChecker checker{};
-  // const auto symbol_table{checker.check(t_ast)};
   checker.check(t_ast);
 
   // DBG_INFO(symbol_table);
 
   DBG_PRINTLN("</semantic>");
-
-  // TEMP.
-  return nullptr;
 }
 
 auto TranslationUnit::ir(NodePtr t_ast) -> ModulePtr
@@ -178,7 +174,7 @@ auto TranslationUnit::execute() -> void
   m_ast = parse(ts);
   print_ast(m_ast);
 
-  m_symbol_table = semantic(m_ast);
+  semantic(m_ast);
   print_ast(m_ast);
 
   // Perform Ir generation:
@@ -186,8 +182,7 @@ auto TranslationUnit::execute() -> void
   // m_ir = ir(m_ast); // TODO: Add m_ir field.
 
   // Perform compilation:
-  CompileParams params{m_ast, m_symbol_table, m_build_unit->build_dir(),
-                       m_source_file};
+  CompileParams params{m_ast, m_build_unit->build_dir(), m_source_file};
   backend(params);
 }
 } // namespace unit

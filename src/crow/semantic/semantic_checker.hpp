@@ -10,9 +10,6 @@
 #include "crow/types/semantic/semantic.hpp"
 #include "crow/types/semantic/symbol.hpp"
 
-// TODO: Replace with new symbol_table module.
-#include "crow/semantic/symbol_table/symbol_table_factory.hpp"
-
 // Local Includes:
 #include "symbol_env_state.hpp"
 #include "type_promoter.hpp"

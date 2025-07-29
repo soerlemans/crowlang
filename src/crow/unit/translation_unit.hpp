@@ -10,7 +10,6 @@
 #include "crow/codegen/backend_interface.hpp"
 #include "crow/container/text_buffer.hpp"
 #include "crow/mir/mir.hpp"
-#include "crow/semantic/symbol_table/symbol_table.hpp"
 #include "crow/token/token_stream.hpp"
 #include "crow/unit/build_unit.hpp"
 
@@ -20,7 +19,6 @@ using ast::node::NodePtr;
 using codegen::CompileParams;
 using container::TextStreamPtr;
 using mir::ModulePtr;
-using semantic::symbol_table::SymbolTablePtr;
 using std::filesystem::path;
 using token::TokenStream;
 
@@ -61,7 +59,6 @@ class TranslationUnit {
   TextStreamPtr m_text_stream;
   TokenStream m_token_stream;
   NodePtr m_ast;
-  SymbolTablePtr m_symbol_table;
 
   public:
   TranslationUnit(BuildUnitPtr t_build_unit, path t_source_file);
@@ -76,7 +73,7 @@ class TranslationUnit {
   virtual auto print_ast(NodePtr t_ast) const -> void;
 
   //! Analyse the semantics of the AST.
-  virtual auto semantic(NodePtr t_ast) -> SymbolTablePtr;
+  virtual auto semantic(NodePtr t_ast) -> void;
 
   //! Translate the AST to CLIR.
   virtual auto ir(NodePtr t_ast) -> ModulePtr;
