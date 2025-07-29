@@ -31,20 +31,20 @@ NODE_USING_ALL_NAMESPACES()
 auto SemanticChecker::push_env() -> void
 {
   m_symbol_state.push_env();
-  m_symbol_table_factory.push_scope();
+  // m_symbol_table_factory.push_scope();
 }
 
 auto SemanticChecker::pop_env() -> void
 {
   m_symbol_state.pop_env();
-  m_symbol_table_factory.pop_scope();
+  // m_symbol_table_factory.pop_scope();
 }
 
 auto SemanticChecker::clear_env() -> void
 {
   // Reset/clear the construction object.
   m_symbol_state.clear();
-  m_symbol_table_factory.clear();
+  // m_symbol_table_factory.clear();
 }
 
 // Environment state related methods:
@@ -62,7 +62,7 @@ auto SemanticChecker::add_symbol(const std::string_view t_key,
   // Add symbol to global symbol table.
   // Do not insert if insertion in environment failed.
   if(insertion_success) {
-    m_symbol_table_factory.insert(t_key, t_data);
+    // m_symbol_table_factory.insert(t_key, t_data);
   }
 
   return insertion_success;
@@ -74,11 +74,11 @@ auto SemanticChecker::get_symbol_data_from_env(
   return m_symbol_state.get_value(t_key);
 }
 
-auto SemanticChecker::retrieve_symbol_table() const -> SymbolTablePtr
-{
-  // Retrieve the construct global symbol table.
-  return m_symbol_table_factory.retrieve();
-}
+// auto SemanticChecker::retrieve_symbol_table() const -> void
+// {
+//   // Retrieve the construct global symbol table.
+//   return m_symbol_table_factory.retrieve();
+// }
 
 // Type promotion related methods:
 auto SemanticChecker::handle_condition(const SymbolData& t_data,
@@ -173,8 +173,7 @@ auto SemanticChecker::get_resolved_type_list(NodeListPtr t_list)
 }
 
 // Public methods:
-SemanticChecker::SemanticChecker()
-  : m_symbol_state{}, m_symbol_table_factory{}, m_type_promoter{}
+SemanticChecker::SemanticChecker(): m_symbol_state{}, m_type_promoter{}
 {}
 
 // Control:
@@ -649,18 +648,18 @@ AST_VISITOR_STUB(SemanticChecker, Struct)
 AST_VISITOR_STUB(SemanticChecker, Impl)
 AST_VISITOR_STUB(SemanticChecker, DotExpr)
 
-auto SemanticChecker::check(NodePtr t_ast) -> SymbolTablePtr
+auto SemanticChecker::check(NodePtr t_ast) -> void
 {
   // Semantically check the AST for correctness.
   // This also constructs the global symbol table.
   traverse(t_ast);
 
   // Create the return value containing the AST and the global SymbolTable.
-  const auto ptr{retrieve_symbol_table()};
+  // const auto ptr{retrieve_symbol_table()};
 
   // Clear EnvState and release old SymbolTable ptr.
   clear_env();
 
-  return ptr;
+  // return ptr;
 }
 } // namespace semantic

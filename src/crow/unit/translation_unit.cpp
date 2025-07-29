@@ -115,13 +115,15 @@ auto TranslationUnit::semantic(NodePtr t_ast) -> SymbolTablePtr
 
   // Check the semantics of the written program.
   SemanticChecker checker{};
-  const auto symbol_table{checker.check(t_ast)};
+  // const auto symbol_table{checker.check(t_ast)};
+  checker.check(t_ast);
 
-  DBG_INFO(symbol_table);
+  // DBG_INFO(symbol_table);
 
   DBG_PRINTLN("</semantic>");
 
-  return symbol_table;
+  // TEMP.
+  return nullptr;
 }
 
 auto TranslationUnit::ir(NodePtr t_ast) -> ModulePtr

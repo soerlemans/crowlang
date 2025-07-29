@@ -4,6 +4,3 @@ target_sources(${TARGET_CROW_LIB} PRIVATE
    symbol_env_state.cpp
    semantic_checker.cpp
 )
-
-# Add subdirectories
-add_subdirectory(symbol_table)
