@@ -7,6 +7,7 @@
 
 // Absolute Includes:
 #include "lib/iomanip/iomanip.hpp"
+#include "lib/stdexcept/stdexcept.hpp"
 #include "lib/stdprint.hpp"
 
 namespace symbol_table::symbol_tree {
@@ -108,6 +109,42 @@ auto SymbolTree::clear() -> void
 } // namespace symbol_table::symbol_tree
 
 // Functions:
+auto symbol_tree_error2str(
+  const symbol_table::symbol_tree::SymbolTreeError t_error) -> std::string_view
+{
+  using symbol_table::symbol_tree::SymbolTreeError;
+
+  switch(t_error) {
+    case SymbolTreeError::INSERT_FAILED:
+      return {"Insertion into SymbolTree failed."};
+
+    case SymbolTreeError::PARENT_ITER_HAS_NO_SCOPE:
+      return {
+        "Performing a lookup into a parent, which has no scope is illegal."};
+
+    case SymbolTreeError::SYMBOL_NOT_FOUND:
+      return {"Symbol could no be found in SymbolTree."};
+
+    case SymbolTreeError::SYMBOL_NOT_FOUND_TOPLEVEL:
+      return {"Toplevel symbol could no be found in SymbolTree."};
+
+    default:
+      lib::stdexcept::throw_invalid_argument(
+        "Cant convert given SymbolTreeError to a string.");
+  }
+
+  return {};
+}
+
+auto operator<<(std::ostream& t_os,
+                const symbol_table::symbol_tree::SymbolTreeError& t_error)
+  -> std::ostream&
+{
+  t_os << symbol_tree_error2str(t_error);
+
+  return t_os;
+}
+
 auto operator<<(std::ostream& t_os,
                 const symbol_table::symbol_tree::SymbolTreeScope& t_scope)
   -> std::ostream&

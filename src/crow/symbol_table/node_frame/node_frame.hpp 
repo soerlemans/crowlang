@@ -14,7 +14,8 @@ using ast::node::NodePtr;
  * From the AST, this is a frame/view which maps the @ref SymbolTree.
  * To accompanying AST nodes.
  */
-using SymbolNodeFrame = SymbolTable<NodePtr>;
+using NodeFrame = SymbolTable<NodePtr>;
+using NodeFramePtr = SymbolTablePtr<NodePtr>;
 } // namespace symbol_table::symbol_node_frame
 
 #endif // SYMBOL_NODE_FRAME_HPP

@@ -43,7 +43,6 @@ using SymbolTreePtr = std::shared_ptr<SymbolTree>;
 
 // enums:
 enum class SymbolTreeError {
-  UNIMPLEMENTED, // FIXME: Temporary remove soon.
   INSERT_FAILED,
 
   PARENT_ITER_HAS_NO_SCOPE,
@@ -110,6 +109,12 @@ class SymbolTree {
 } // namespace symbol_table::symbol_tree
 
 // Functions:
+auto symbol_tree_error2str(symbol_table::symbol_tree::SymbolTreeError t_error)
+  -> std::string_view;
+
+auto operator<<(std::ostream& t_os,
+                const symbol_table::symbol_tree::SymbolTreeError& t_error)
+  -> std::ostream&;
 auto operator<<(std::ostream& t_os,
                 const symbol_table::symbol_tree::SymbolTreeScope& t_scope)
   -> std::ostream&;

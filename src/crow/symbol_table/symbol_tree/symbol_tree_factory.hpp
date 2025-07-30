@@ -43,7 +43,7 @@ using SymbolMapStack = std::stack<SymbolMap::iterator>;
 
 // Enums:
 enum class SymbolTreeFactoryError {
-}
+};
 
 // Classes:
 /*!

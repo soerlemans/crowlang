@@ -1,7 +1,11 @@
 #include "symbol_tree_factory.hpp"
 
+// STL Includes:
+#include <sstream>
+
 // Absolute Includes:
 #include "crow/debug/log.hpp"
+#include "lib/stdexcept/stdexcept.hpp"
 
 namespace symbol_table::symbol_tree {
 SymbolTreeFactory::SymbolTreeFactory()
@@ -17,23 +21,20 @@ auto SymbolTreeFactory::init() -> void
 
 auto SymbolTreeFactory::insert(const std::string_view t_id) -> SymbolTreeId
 {
-  using symbol_table::SymbolMapEntry;
-  using symbol_table::SymbolMapInsertResult;
-
   // Ensure that the symbol tree ptr exists.
   init();
 
-  const auto new_id{m_id_count};
+  const auto symbol_id{m_id_count};
   const SymbolMapEntry entry{
     std::string{t_id},
-    {m_id_count, {}}
+    {symbol_id, {}}
   };
 
   // Return result of insertion.
-  SymbolMapInsertResult result{};
+  SymbolTreeResult result{};
   if(m_symbol_stack.empty()) {
     // Check if insertion failed and throw.
-    result = m_symbol_tree_ptr->insert(entry);
+    result = m_symbol_tree_ptr->insert_toplevel(entry);
   } else {
     auto& top_iter{m_symbol_stack.top()};
 
@@ -41,11 +42,21 @@ auto SymbolTreeFactory::insert(const std::string_view t_id) -> SymbolTreeId
     result = m_symbol_tree_ptr->insert(top_iter, entry);
   }
 
-  // Perform post insertion updates.
-  m_last_elem = result.first;
-  m_id_count++;
+  if(result) {
+    // Perform post insertion updates.
+    m_last_elem = result.value();
+    m_id_count++;
+  } else {
+    using lib::stdexcept::throw_invalid_argument;
 
-  return new_id;
+    std::stringstream ss{};
+    ss << std::format(R"(Insertion failed for id "{}" error: )", t_id);
+    ss << result.error();
+
+    throw_invalid_argument(ss.str());
+  }
+
+  return symbol_id;
 }
 
 auto SymbolTreeFactory::push_scope() -> void
