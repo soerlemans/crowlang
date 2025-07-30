@@ -6,7 +6,7 @@
 #include "crow/symbol_table/symbol_tree/symbol_tree_factory.hpp"
 
 // Local Includes:
-#include "symbol_node_frame.hpp"
+#include "node_frame.hpp"
 
 namespace symbol_table::node_frame {
 // Using Declarations:
@@ -78,8 +78,8 @@ class NodeFrameFactory : public NodeVisitor {
   auto visit(node::typing::Impl* t_impl) -> Any override;
   auto visit(node::typing::DotExpr* t_dot_expr) -> Any override;
 
-	auto push_scope() -> void;
-	auto pop_scope() -> void;
+  auto push_scope() -> void;
+  auto pop_scope() -> void;
 
   auto construct_frame(NodePtr t_ast) -> NodeFramePtr;
 

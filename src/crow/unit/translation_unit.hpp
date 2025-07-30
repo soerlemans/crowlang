@@ -10,6 +10,7 @@
 #include "crow/codegen/backend_interface.hpp"
 #include "crow/container/text_buffer.hpp"
 #include "crow/mir/mir.hpp"
+#include "crow/symbol_table/node_frame/node_frame_factory.hpp"
 #include "crow/token/token_stream.hpp"
 #include "crow/unit/build_unit.hpp"
 
