@@ -15,6 +15,7 @@ using ast::visitor::NodeVisitor;
 using symbol_register::SymbolRegister;
 using symbol_register::SymbolRegisterPtr;
 using symbol_tree::SymbolTreePtr;
+using symbol_tree::SymbolTreeResult;
 
 // Aliases:
 namespace node = ast::node;

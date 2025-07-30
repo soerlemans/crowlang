@@ -32,6 +32,9 @@ namespace symbol_table {
 template<typename RegisterType>
 class SymbolTable;
 
+// Using Declarations:
+using symbol_tree::SymbolTreeResult;
+
 // Aliases:
 template<typename RegisterType>
 using SymbolTablePtr = std::shared_ptr<SymbolTable<RegisterType>>;
