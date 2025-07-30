@@ -14,6 +14,7 @@ using ast::visitor::Any;
 using ast::visitor::NodeVisitor;
 using symbol_register::SymbolRegister;
 using symbol_register::SymbolRegisterPtr;
+using symbol_tree::SymbolTreeFactory;
 using symbol_tree::SymbolTreePtr;
 using symbol_tree::SymbolTreeResult;
 
@@ -35,7 +36,7 @@ class NodeFrameFactory : public NodeVisitor {
   SymbolRegister<NodePtr> m_register;
 
   public:
-  NodeFrameFactory() = default;
+  NodeFrameFactory();
 
   // Control:
   auto visit(node::control::If* t_if) -> Any override;
@@ -98,7 +99,6 @@ class NodeFrameFactory : public NodeVisitor {
 
   virtual ~NodeFrameFactory() = default;
 };
-
 } // namespace symbol_table::node_frame
 
 #endif // CROW_CROW_SYMBOL_TABLE_NODE_FRAME_NODE_FRAME_FACTORY_HPP

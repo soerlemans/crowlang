@@ -4,7 +4,9 @@ namespace symbol_table::node_frame {
 NODE_USING_ALL_NAMESPACES()
 
 // Public methods:
-NodeFrameFactory::NodeFrameFactory(): m_tree_factory{}, m_register{}
+// FIXME: We just lazily reserve 100 entries for now in the register.
+NodeFrameFactory::NodeFrameFactory()
+  : NodeVisitor{}, m_tree_factory{}, m_register{100}
 {}
 
 // Control:
