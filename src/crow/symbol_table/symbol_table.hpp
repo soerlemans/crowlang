@@ -64,16 +64,15 @@ class SymbolTable {
   {}
 
   //! Regular recursive lookup of a symbol name.
-  auto lookup(std::string_view t_symbol_name) const -> SymbolTreeResult
-  {
-    return std::unexpected(SymbolTreeError::UNIMPLEMENTED);
-  }
+  // auto lookup(std::string_view t_symbol_name) const -> SymbolTreeResult
+  // {
+  // }
 
   //! Toplevel lookup of a symbol name.
-  auto lookup_toplevel(std::string_view t_symbol_name) const -> SymbolTreeResult
-  {
-    return std::unexpected(SymbolTreeError::UNIMPLEMENTED);
-  }
+  // auto lookup_toplevel(std::string_view t_symbol_name) const ->
+  // SymbolTreeResult
+  // {
+  // }
 
   auto tree() -> SymbolTreePtr
   {
