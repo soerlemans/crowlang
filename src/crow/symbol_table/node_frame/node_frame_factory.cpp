@@ -1,5 +1,8 @@
 #include "node_frame_factory.hpp"
 
+// Absolute Includes:
+#include "crow/ast/node/include_nodes.hpp"
+
 namespace symbol_table::node_frame {
 NODE_USING_ALL_NAMESPACES()
 
@@ -48,7 +51,7 @@ auto NodeFrameFactory::visit(Function* t_fn) -> Any
   const auto body{t_fn->body()};
 
   const auto symbol_id{m_tree_factory.insert(id)};
-  m_register.insert(symbol_id, t_param);
+  m_register.insert(symbol_id, t_fn);
 
   push_scope();
   // Add parameters to nested scope.
@@ -70,7 +73,7 @@ auto NodeFrameFactory::visit(Let* t_let) -> Any
   const auto id{t_let->identifier()};
 
   const auto symbol_id{m_tree_factory.insert(id)};
-  m_register.insert(symbol_id, t_param);
+  m_register.insert(symbol_id, t_let);
 
   return {};
 }
@@ -80,7 +83,7 @@ auto NodeFrameFactory::visit(Var* t_var) -> Any
   const auto id{t_var->identifier()};
 
   const auto symbol_id{m_tree_factory.insert(id)};
-  m_register.insert(symbol_id, t_param);
+  m_register.insert(symbol_id, t_var);
 
   return {};
 }
