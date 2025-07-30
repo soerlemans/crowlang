@@ -15,9 +15,16 @@ NodeFrameFactory::NodeFrameFactory()
 // Control:
 auto NodeFrameFactory::visit(If* t_if) -> Any
 {
-  const auto body{t_if->body()};
+  const auto then{t_if->then()};
+  const auto alt{t_if->alt()};
 
-  traverse(body);
+  traverse(then);
+
+  if(alt) {
+    traverse(alt);
+  }
+
+  return {};
 }
 
 auto NodeFrameFactory::visit(Loop* t_loop) -> Any
@@ -25,6 +32,8 @@ auto NodeFrameFactory::visit(Loop* t_loop) -> Any
   const auto body{t_loop->body()};
 
   traverse(body);
+
+  return {};
 }
 
 AST_VISITOR_STUB(NodeFrameFactory, Continue)
@@ -37,8 +46,8 @@ auto NodeFrameFactory::visit(Parameter* t_param) -> Any
 {
   const auto id{t_param->identifier()};
 
-  const auto symbol_id{m_tree_factory.insert(id)};
-  m_register.insert(symbol_id, t_param);
+  // const auto symbol_id{m_tree_factory.insert(id)};
+  // m_register.insert(symbol_id, t_param);
 
   return {};
 }
@@ -50,8 +59,8 @@ auto NodeFrameFactory::visit(Function* t_fn) -> Any
   const auto params{t_fn->params()};
   const auto body{t_fn->body()};
 
-  const auto symbol_id{m_tree_factory.insert(id)};
-  m_register.insert(symbol_id, t_fn);
+  // const auto symbol_id{m_tree_factory.insert(id)};
+  // m_register.insert(symbol_id, t_fn);
 
   push_scope();
   // Add parameters to nested scope.
@@ -72,8 +81,8 @@ auto NodeFrameFactory::visit(Let* t_let) -> Any
 {
   const auto id{t_let->identifier()};
 
-  const auto symbol_id{m_tree_factory.insert(id)};
-  m_register.insert(symbol_id, t_let);
+  // const auto symbol_id{m_tree_factory.insert(id)};
+  // m_register.insert(symbol_id, t_let);
 
   return {};
 }
@@ -82,8 +91,8 @@ auto NodeFrameFactory::visit(Var* t_var) -> Any
 {
   const auto id{t_var->identifier()};
 
-  const auto symbol_id{m_tree_factory.insert(id)};
-  m_register.insert(symbol_id, t_var);
+  // const auto symbol_id{m_tree_factory.insert(id)};
+  // m_register.insert(symbol_id, t_var);
 
   return {};
 }
@@ -122,6 +131,43 @@ AST_VISITOR_STUB(NodeFrameFactory, MemberDecl)
 AST_VISITOR_STUB(NodeFrameFactory, Struct)
 AST_VISITOR_STUB(NodeFrameFactory, Impl)
 AST_VISITOR_STUB(NodeFrameFactory, DotExpr)
+
+auto NodeFrameFactory::visit(node::List* t_list) -> Any
+{
+  // TODO: Consider using std::enable_shared_from_this.
+
+  const auto insert{[&](const std::string_view t_id, const NodePtr& t_node) {
+    const auto symbol_id{m_tree_factory.insert(t_id)};
+    m_register.insert(symbol_id, t_node);
+  }};
+
+  // Extract shared_ptr's prematurely, before visitation.
+  for(NodePtr& node : *t_list) {
+    if(auto ptr{std::dynamic_pointer_cast<Parameter>(node)}; ptr) {
+      const auto id{ptr->identifier()};
+
+      insert(id, ptr);
+    } else if(auto ptr{std::dynamic_pointer_cast<Function>(node)}; ptr) {
+      const auto id{ptr->identifier()};
+
+      insert(id, ptr);
+
+      // TODO: Traverse body.
+    } else if(auto ptr{std::dynamic_pointer_cast<Let>(node)}; ptr) {
+      const auto id{ptr->identifier()};
+
+      insert(id, ptr);
+    } else if(auto ptr{std::dynamic_pointer_cast<Var>(node)}; ptr) {
+      const auto id{ptr->identifier()};
+
+      insert(id, ptr);
+    } else {
+      traverse(node);
+    }
+  }
+
+  return {};
+}
 
 auto NodeFrameFactory::push_scope() -> void
 {

@@ -9,6 +9,7 @@
 
 namespace symbol_table::node_frame {
 // Using Declarations:
+using ast::node::NodeInterface;
 using ast::node::NodePtr;
 using ast::visitor::Any;
 using ast::visitor::NodeVisitor;
@@ -26,14 +27,14 @@ namespace node = ast::node;
  * From the AST, this is a frame/view which maps the @ref SymbolTree.
  * To accompanying AST nodes.
  */
-using NodeFrame = SymbolTable<NodePtr>;
-using NodeFramePtr = SymbolTablePtr<NodePtr>;
+using NodeFrame = SymbolTable<NodeInterface>;
+using NodeFramePtr = SymbolTablePtr<NodeInterface>;
 
 // Classes:
 class NodeFrameFactory : public NodeVisitor {
   private:
   SymbolTreeFactory m_tree_factory;
-  SymbolRegister<NodePtr> m_register;
+  SymbolRegister<NodeInterface> m_register;
 
   public:
   NodeFrameFactory();
@@ -91,6 +92,9 @@ class NodeFrameFactory : public NodeVisitor {
   auto visit(node::typing::Struct* t_struct) -> Any override;
   auto visit(node::typing::Impl* t_impl) -> Any override;
   auto visit(node::typing::DotExpr* t_dot_expr) -> Any override;
+
+  // Misc:
+  virtual auto visit(node::List* t_list) -> Any override;
 
   auto push_scope() -> void;
   auto pop_scope() -> void;
