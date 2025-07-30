@@ -9,10 +9,18 @@ NodeFrameFactory::NodeFrameFactory(): m_tree_factory{}, m_register{}
 
 // Control:
 auto NodeFrameFactory::visit(If* t_if) -> Any
-{}
+{
+  const auto body{t_if->body()};
+
+  traverse(body);
+}
 
 auto NodeFrameFactory::visit(Loop* t_loop) -> Any
-{}
+{
+  const auto body{t_loop->body()};
+
+  traverse(body);
+}
 
 AST_VISITOR_STUB(NodeFrameFactory, Continue)
 AST_VISITOR_STUB(NodeFrameFactory, Break)
@@ -22,11 +30,10 @@ AST_VISITOR_STUB(NodeFrameFactory, Return)
 // Function:
 auto NodeFrameFactory::visit(Parameter* t_param) -> Any
 {
-  // const auto type{str2nativetype(t_param->type())};
+  const auto id{t_param->identifier()};
 
-  // t_param->set_type({type});
-
-  // return SymbolData{type};
+  const auto symbol_id{m_tree_factory.insert(id)};
+  m_register.insert(symbol_id, t_param);
 
   return {};
 }
@@ -38,7 +45,8 @@ auto NodeFrameFactory::visit(Function* t_fn) -> Any
   const auto params{t_fn->params()};
   const auto body{t_fn->body()};
 
-  m_tree_factory.insert(id);
+  const auto symbol_id{m_tree_factory.insert(id)};
+  m_register.insert(symbol_id, t_param);
 
   push_scope();
   // Add parameters to nested scope.
@@ -51,67 +59,16 @@ auto NodeFrameFactory::visit(Function* t_fn) -> Any
   return {};
 }
 
-auto NodeFrameFactory::visit(Call* t_fn_call) -> Any
-{
-  const auto id{t_fn_call->identifier()};
-
-  const auto fn_data{get_symbol_data_from_env(id)};
-  const auto args{get_resolved_type_list(t_fn_call->args())};
-
-  const auto fn{fn_data.function()};
-  const auto params{fn->m_params};
-  const auto return_type{fn->m_return_type};
-
-  // if(args != params) {
-  //   std::stringstream ss;
-
-  //   ss << "Arguments passed to " << std::quoted(id)
-  //      << " do not match parameters.\n";
-
-  //   ss << "Function signature: fn " << id << "(" << params << ") -> "
-  //      << return_type << " { ... }\n";
-
-  //   ss << "Call signature: " << id << "(" << args << ")";
-
-  //   throw_type_error(ss.str());
-  // }
-
-  // return fn->m_return_type;
-
-  return {};
-}
-
-auto NodeFrameFactory::visit(ReturnType* t_rt) -> Any
-{
-  // return SymbolData{str2nativetype(t_rt->type())};
-  return {};
-}
+AST_VISITOR_STUB(NodeFrameFactory, Call)
+AST_VISITOR_STUB(NodeFrameFactory, ReturnType)
 
 // Lvalue:
-// TODO: Account for when init expr is a nullptr
-// TODO: Add TypeData annotation.
-auto NodeFrameFactory::decl_expr(DeclExpr* t_decl) -> void
-{
-  auto expr{get_symbol_data(t_decl->init_expr())};
-
-  const auto position{t_decl->position()};
-  const auto type{t_decl->type()};
-
-  const auto id{t_decl->identifier()};
-}
-
-// TODO: FIXME Disallow redeclaration of variables.
 auto NodeFrameFactory::visit(Let* t_let) -> Any
 {
   const auto id{t_let->identifier()};
 
-  decl_expr(t_let);
-
-  // // Create the SymbolData for a variable.
-  // const SymbolData data{symbol::make_variable(true, expr_data)};
-  // if(!add_symbol(id, data)) {
-  //   // TODO: Throw!
-  // }
+  const auto symbol_id{m_tree_factory.insert(id)};
+  m_register.insert(symbol_id, t_param);
 
   return {};
 }
@@ -120,13 +77,8 @@ auto NodeFrameFactory::visit(Var* t_var) -> Any
 {
   const auto id{t_var->identifier()};
 
-  decl_expr(t_var);
-
-  // Create the SymbolData for a variable.
-  // const SymbolData data{symbol::make_variable(false, expr_data)};
-  // if(!add_symbol(id, data)) {
-  //   // TODO: Throw!
-  // }
+  const auto symbol_id{m_tree_factory.insert(id)};
+  m_register.insert(symbol_id, t_param);
 
   return {};
 }

@@ -78,15 +78,9 @@ class SymbolTree {
   SymbolMap m_tree;
   std::size_t m_count;
 
-  // TODO: In order to optimize performance.
-  // Define an unordered_multimap, which contains iterators to each symbol.
-  // This way we can perform lookups across the board performantly.
-  // Without needing to recursively find.
-
   public:
   SymbolTree();
 
-  // TODO: Implement.
   auto insert(SymbolMapIter t_parent, SymbolMapEntry t_pair)
     -> SymbolTreeResult;
   auto insert_toplevel(SymbolMapEntry t_pair) -> SymbolTreeResult;

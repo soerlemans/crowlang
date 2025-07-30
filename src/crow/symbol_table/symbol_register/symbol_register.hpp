@@ -59,7 +59,7 @@ class SymbolRegister {
    *
    * @remark Throws on invalid value state.
    */
-  auto get_value(const std::size_t t_id) -> SharedPtr
+  auto lookup(const std::size_t t_id) -> SharedPtr
   {
     using lib::stdexcept::throw_invalid_argument;
     using lib::stdexcept::throw_unexpected_nullptr;
