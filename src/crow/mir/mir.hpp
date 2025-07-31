@@ -47,7 +47,7 @@ using FunctionPtr = std::shared_ptr<Function>;
 using CfgSeq = std::list<BasicBlock*>;
 using InstructionSeq = std::list<Instruction>;
 using BasicBlockSeq = std::list<BasicBlock>;
-using FunctionSeq = std::list<Function>;
+using FunctionSeq = std::list<FunctionPtr>;
 using ModuleSeq = std::list<Module>;
 using SsaVarVec = std::vector<SsaVarPtr>;
 
@@ -236,8 +236,7 @@ struct Function {
   std::string m_name;
   SsaVarVec m_params;
   BasicBlockSeq m_blocks;
-
-  // TODO: Include return type.
+  TypeVariant m_return_type;
 
   Function() = default;
 
@@ -274,6 +273,8 @@ auto operator<<(std::ostream& t_os, const mir::Instruction& t_inst)
 auto operator<<(std::ostream& t_os, const mir::BasicBlock& t_bblock)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::Function& t_fn) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::FunctionPtr& t_ptr)
+  -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::Module& t_mod) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::ModulePtr& t_mod)
   -> std::ostream&;

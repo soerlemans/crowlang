@@ -16,7 +16,7 @@ class MirModuleFactory;
 using MirModuleFactoryPtr = std::unique_ptr<MirModuleFactory>;
 
 using SsaVarEnvState = MirEnvState<SsaVarPtr>;
-using FunctionEnvState = MirEnvState<Function*>;
+using FunctionEnvState = MirEnvState<FunctionPtr>;
 
 // Classes:
 /*!
@@ -132,7 +132,7 @@ class MirModuleFactory {
   auto last_block() -> BasicBlock&;
 
   // Function operations:
-  auto add_function(Function&& t_fn) -> void;
+  auto add_function(FunctionPtr t_fn) -> void;
 
   /*!
    * Get a function by name.
@@ -142,7 +142,7 @@ class MirModuleFactory {
    */
   // auto get_function(std::string_view t_key) -> Function&;
 
-  auto last_function() -> Function&;
+  auto last_function() -> FunctionPtr&;
 
   // Module operations:
   auto set_module_name(std::string_view t_name) -> void;

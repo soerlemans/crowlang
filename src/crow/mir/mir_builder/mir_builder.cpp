@@ -137,11 +137,10 @@ auto MirBuilder::visit(Parameter* t_param) -> Any
   const auto type{t_param->get_type()};
 
   auto param_var{m_factory->create_var(type)};
-
   auto& current_fn{m_factory->last_function()};
 
   // Add the just created ssa var to the param list.
-  current_fn.m_params.push_back(param_var);
+  current_fn->m_params.push_back(param_var);
 
   // Insert an update statement for debugging.
   m_factory->create_var_binding(name, param_var);
@@ -151,22 +150,22 @@ auto MirBuilder::visit(Parameter* t_param) -> Any
 
 auto MirBuilder::visit(ast::node::function::Function* t_fn) -> Any
 {
-  Function fn{};
+  FunctionPtr fn{std::make_shared<Function>()};
 
   const auto id{t_fn->identifier()};
   const auto params{t_fn->params()};
 
-  // const auto return_type{t_fn->m_return_type()};
+  const auto return_type{t_fn->get_type()};
   const auto body{t_fn->identifier()};
 
-  fn.m_name = id;
-
   // Add the function to the current module.
-  m_factory->add_function(std::move(fn));
+  fn->m_name = id;
+  fn->m_return_type = return_type;
+
+  m_factory->add_function(fn);
   m_factory->add_block("main");
 
   m_factory->push_env();
-
   // Visit all the parameters, to add to the parameter list.
   traverse(params);
 

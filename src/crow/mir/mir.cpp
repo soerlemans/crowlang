@@ -260,7 +260,7 @@ auto operator<<(std::ostream& t_os, const mir::Function& t_fn) -> std::ostream&
   using mir::BasicBlock;
   using mir::SsaVarPtr;
 
-  const auto& [name, params, bblocks] = t_fn;
+  const auto& [name, params, bblocks, return_type] = t_fn;
 
   t_os << std::format("function {}", name);
 
@@ -271,7 +271,7 @@ auto operator<<(std::ostream& t_os, const mir::Function& t_fn) -> std::ostream&
 
     sep = ", ";
   }
-  t_os << ") {\n";
+  t_os << ") -> " << return_type << '\n';
 
   // TODO: Print return type.
 
@@ -284,9 +284,17 @@ auto operator<<(std::ostream& t_os, const mir::Function& t_fn) -> std::ostream&
   return t_os;
 }
 
+auto operator<<(std::ostream& t_os, const mir::FunctionPtr& t_ptr)
+  -> std::ostream&
+{
+  using lib::stdprint::detail::print_smart_ptr;
+
+  return print_smart_ptr(t_os, t_ptr);
+}
+
 auto operator<<(std::ostream& t_os, const mir::Module& t_mod) -> std::ostream&
 {
-  using mir::Function;
+  using mir::FunctionPtr;
 
   const auto& [name, functions] = t_mod;
 
@@ -295,7 +303,7 @@ auto operator<<(std::ostream& t_os, const mir::Module& t_mod) -> std::ostream&
 
   // Print the functions part of the module.
   std::string_view sep{};
-  for(const Function& fn : functions) {
+  for(const FunctionPtr& fn : functions) {
     t_os << sep << fn;
 
     // Add a newline between functions.
