@@ -117,8 +117,6 @@ auto TranslationUnit::semantic(NodePtr t_ast) -> void
   using symbol_table::node_frame::NodeFrameFactory;
   NodeFrameFactory factory{};
 
-  factory.construct_frame(t_ast);
-
   // Check the semantics of the written program.
   SemanticChecker checker{};
   checker.check(t_ast);

@@ -155,12 +155,14 @@ auto MirBuilder::visit(ast::node::function::Function* t_fn) -> Any
   const auto id{t_fn->identifier()};
   const auto params{t_fn->params()};
 
-  const auto return_type{t_fn->get_type()};
+  const auto fn_type{t_fn->get_type()};
   const auto body{t_fn->identifier()};
 
   // Add the function to the current module.
   fn->m_name = id;
-  fn->m_return_type = return_type;
+
+  // TODO: Obtain return_type and set it.
+  // fn->m_return_type = return_type;
 
   m_factory->add_function(fn);
   m_factory->add_block("main");

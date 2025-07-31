@@ -59,7 +59,7 @@ class SymbolTable {
   Register m_register;
 
   public:
-  explicit SymbolTable(SymbolTreePtr t_tree, Register&& t_register)
+  explicit SymbolTable(SymbolTreePtr t_tree, Register t_register)
     : m_tree{t_tree}, m_register{std::move(t_register)}
   {}
 
@@ -95,8 +95,9 @@ inline auto operator<<(
   const symbol_table::SymbolTable<RegisterType>& t_symbol_table)
   -> std::ostream&
 {
-  const auto& table{t_symbol_table.table()};
-  t_os << "SymbolTable{" << table << '}';
+  const auto& tree{t_symbol_table.tree()};
+  const auto& register_{t_symbol_table.register_()};
+  t_os << "SymbolTable{ tree: " << tree << ", register: " << register_ << '}';
 
   return t_os;
 }
@@ -110,6 +111,5 @@ inline auto operator<<(std::ostream& t_os,
 
   return print_smart_ptr(t_os, t_ptr);
 }
-
 
 #endif // CROW_CROW_SYMBOL_TABLE_SYMBOL_TABLE_HPP

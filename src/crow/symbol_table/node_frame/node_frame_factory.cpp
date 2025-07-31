@@ -183,8 +183,12 @@ auto NodeFrameFactory::construct_frame(NodePtr t_ast) -> NodeFramePtr
 {
   m_tree_factory.clear();
 
+  // Construct the frame.
   traverse(t_ast);
 
-  return {};
+  const auto tree{m_tree_factory.retrieve()};
+  const auto node_frame{std::make_shared<NodeFrame>(tree, m_register)};
+
+  return node_frame;
 }
 } // namespace symbol_table::node_frame
