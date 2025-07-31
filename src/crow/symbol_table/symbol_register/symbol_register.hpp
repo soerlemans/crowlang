@@ -44,6 +44,8 @@ class SymbolRegister {
   Register m_register;
 
   public:
+  using EntryType = Register::value_type;
+
   explicit SymbolRegister(const std::size_t t_size): m_register{}
   {
     // TODO: Optimize later, cause now we just reserve the full size.

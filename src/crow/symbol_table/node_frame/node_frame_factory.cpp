@@ -152,7 +152,8 @@ auto NodeFrameFactory::visit(node::List* t_list) -> Any
 
       insert(id, ptr);
 
-      // TODO: Traverse body.
+      const auto body{ptr->body()};
+      traverse(body);
     } else if(auto ptr{std::dynamic_pointer_cast<Let>(node)}; ptr) {
       const auto id{ptr->identifier()};
 

@@ -1,20 +1,17 @@
 #ifndef CROW_CROW_SYMBOL_TABLE_NODE_FRAME_NODE_FRAME_FACTORY_HPP
 #define CROW_CROW_SYMBOL_TABLE_NODE_FRAME_NODE_FRAME_FACTORY_HPP
 
-// Absolute includes:
-#include "crow/ast/node/include.hpp"
-#include "crow/ast/visitor/node_visitor.hpp"
-#include "crow/symbol_table/symbol_table.hpp"
+// Absolute Includes:
 #include "crow/symbol_table/symbol_tree/symbol_tree_factory.hpp"
+
+// Local Includes:
+#include "node_frame.hpp"
 
 namespace symbol_table::node_frame {
 // Using Declarations:
-using ast::node::NodeInterface;
 using ast::node::NodePtr;
 using ast::visitor::Any;
 using ast::visitor::NodeVisitor;
-using symbol_register::SymbolRegister;
-using symbol_register::SymbolRegisterPtr;
 using symbol_tree::SymbolTreeFactory;
 using symbol_tree::SymbolTreePtr;
 using symbol_tree::SymbolTreeResult;
@@ -22,19 +19,11 @@ using symbol_tree::SymbolTreeResult;
 // Aliases:
 namespace node = ast::node;
 
-/*!
- * Different specializiations of @ref SymbolTable are usually, constructed.
- * From the AST, this is a frame/view which maps the @ref SymbolTree.
- * To accompanying AST nodes.
- */
-using NodeFrame = SymbolTable<NodeInterface>;
-using NodeFramePtr = SymbolTablePtr<NodeInterface>;
-
 // Classes:
 class NodeFrameFactory : public NodeVisitor {
   private:
   SymbolTreeFactory m_tree_factory;
-  SymbolRegister<NodeInterface> m_register;
+  NodeRegister m_register;
 
   public:
   NodeFrameFactory();
