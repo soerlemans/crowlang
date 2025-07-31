@@ -117,6 +117,14 @@ class MirModuleFactory {
   auto add_update(std::string_view t_name, SsaVarPtr t_prev_var)
     -> Instruction&;
 
+  /*!
+   * Create a call instruction.
+   * @param t_name Name of the function to call.
+   * @param t_args Arguments to pass to the function.
+   */
+  auto add_call(std::string_view t_name, const SsaVarVec& t_args)
+    -> Instruction&;
+
   auto last_instruction() -> Instruction&;
 
   // Block operations:

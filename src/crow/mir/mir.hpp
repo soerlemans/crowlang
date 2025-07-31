@@ -29,6 +29,7 @@ using types::core::TypeVariant;
 struct Literal;
 struct SsaVar;
 struct Label;
+struct FunctionLabel;
 struct Instruction;
 struct BasicBlock;
 struct Function;
@@ -55,7 +56,13 @@ using SsaVarVec = std::vector<SsaVarPtr>;
 //! Variant containing all supported literal types.
 using LiteralValue = std::variant<uint, int, f64, std::string, bool>;
 
-using Operand = std::variant<SsaVarPtr, Literal, Label>;
+/*!
+ * The @ref FunctionPtr is needed for resolving function calls.
+ * The @ref SsaVarPtr is needed for obtaining references to SSA variables.
+ * The @ref Literal is needed for obtaining references to literals.
+ * The @ref Label is needed for obtaining references to basic blocks.
+ */
+using Operand = std::variant<SsaVarPtr, Literal, Label, FunctionLabel>;
 using OperandSeq = std::vector<Operand>;
 
 using BasicBlockIter = BasicBlockSeq::iterator;
@@ -202,6 +209,17 @@ struct Label {
   virtual ~Label() = default;
 };
 
+struct FunctionLabel {
+  FunctionPtr m_target;
+
+  FunctionLabel(FunctionPtr t_target): m_target{t_target}
+  {}
+
+  auto label() const -> std::string_view;
+
+  virtual ~FunctionLabel() = default;
+};
+
 struct Instruction {
   u64 m_id;
   Opcode m_opcode;
@@ -258,14 +276,13 @@ auto opcode2str(Opcode t_opcode) -> std::string_view;
 
 // Functions:
 auto operator<<(std::ostream& t_os, const mir::Opcode t_op) -> std::ostream&;
-
 auto operator<<(std::ostream& t_os, const mir::Literal& t_lit) -> std::ostream&;
-
 auto operator<<(std::ostream& t_os, const mir::SsaVar& t_var) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::SsaVarPtr& t_ptr)
   -> std::ostream&;
-
 auto operator<<(std::ostream& t_os, const mir::Label& t_label) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::FunctionLabel& t_label)
+  -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::Operand& t_operand)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::Instruction& t_inst)

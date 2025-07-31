@@ -39,7 +39,21 @@ namespace mir {
 auto Label::label() const -> std::string_view
 {
   if(!m_target) {
-    throw std::runtime_error{"Label points to nullptr"};
+    using lib::stdexcept::throw_unexpected_nullptr;
+
+    throw_unexpected_nullptr("Label points to nullptr");
+  }
+
+  return m_target->m_label;
+}
+
+// TODO: Move somewhere else.
+auto FunctionLabel::label() const -> std::string_view
+{
+  if(!m_target) {
+    using lib::stdexcept::throw_unexpected_nullptr;
+
+    throw_unexpected_nullptr("FunctionLabel points to nullptr");
   }
 
   return m_target->m_label;
@@ -182,6 +196,14 @@ auto operator<<(std::ostream& t_os, const mir::SsaVarPtr& t_ptr)
 }
 
 auto operator<<(std::ostream& t_os, const mir::Label& t_label) -> std::ostream&
+{
+  t_os << std::format("<{}>", t_label.label());
+
+  return t_os;
+}
+
+auto operator<<(std::ostream& t_os, const mir::FunctionLabel& t_label)
+  -> std::ostream&
 {
   t_os << std::format("<{}>", t_label.label());
 
