@@ -335,7 +335,7 @@ auto LlvmBackend::compile(CompileParams& t_params) -> void
   using namespace llvm;
   using namespace llvm::sys::fs;
 
-  const auto& [ast, build_dir, source_path] = t_params;
+  const auto& [ast, mir, build_dir, source_path] = t_params;
 
   configure_target();
 

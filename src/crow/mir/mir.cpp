@@ -56,7 +56,7 @@ auto FunctionLabel::label() const -> std::string_view
     throw_unexpected_nullptr("FunctionLabel points to nullptr");
   }
 
-  return m_target->m_label;
+  return m_target->m_name;
 }
 
 // Functions:
@@ -266,7 +266,7 @@ auto operator<<(std::ostream& t_os, const mir::BasicBlock& t_bblock)
 {
   using mir::Instruction;
 
-  const auto& [label, instructions, _1, _2] = t_bblock;
+  const auto& [label, instructions] = t_bblock;
 
   t_os << std::format("{}:\n", label);
 

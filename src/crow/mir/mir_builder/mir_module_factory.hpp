@@ -19,6 +19,7 @@ using SsaVarEnvState = MirEnvState<SsaVarPtr>;
 using FunctionEnvState = MirEnvState<FunctionPtr>;
 
 // Classes:
+// TODO: Implement a functionality similar to LLVM's SetInsertPoint.
 /*!
  * Utility class to aid building a CLIR module.
  * When walking the AST.

@@ -24,6 +24,8 @@ MirBuilder::MirBuilder(): m_factory{nullptr}
 
 auto MirBuilder::visit(If* t_if) -> Any
 {
+  // TODO: We need support for phi, instruction marking later down the line.
+
   // We need to create two new blocks an if and else branch.
   auto& main_block{m_factory->last_block()};
 

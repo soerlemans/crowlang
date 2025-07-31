@@ -17,12 +17,12 @@ class MirPass {
   MirPass() = default;
 
   // TODO: Think about this.
-  virtual auto on_module(ModulePtr& t_module) -> void = 0;
-  virtual auto on_function(Function& t_fn) -> void = 0;
-  virtual auto on_block(BasicBlock& t_block) -> void = 0;
+  virtual auto on_module(ModulePtr& t_module) -> void;
+  virtual auto on_function(FunctionPtr& t_fn) -> void;
+  virtual auto on_block(BasicBlock& t_block) -> void;
   virtual auto on_instruction(Instruction& t_instr) -> void = 0;
 
-  virtual auto run(MirPassParams t_params) -> void;
+  virtual auto process(MirPassParams t_params) -> void;
 
   virtual ~MirPass() = default;
 };

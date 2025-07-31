@@ -556,7 +556,7 @@ auto CppBackend::codegen(NodePtr t_ast, const fs::path& t_out) -> void
 
 auto CppBackend::compile(CompileParams& t_params) -> void
 {
-  const auto& [ast, build_dir, source_path] = t_params;
+  const auto& [ast, mir, build_dir, source_path] = t_params;
 
   fs::path stem{source_path.stem()};
   const fs::path tmp_src{build_dir / stem.concat(".cpp")};

@@ -50,7 +50,12 @@ namespace unit {
 // Methods:
 TranslationUnit::TranslationUnit(BuildUnitPtr t_build_unit,
                                  const path t_source_file)
-  : m_build_unit{std::move(t_build_unit)}, m_source_file{t_source_file}
+  : m_build_unit{std::move(t_build_unit)},
+    m_source_file{t_source_file},
+    m_text_stream{},
+    m_token_stream{},
+    m_ast{},
+    m_mir{}
 {}
 
 auto TranslationUnit::lex(const TextStreamPtr& t_text_stream) -> TokenStream
@@ -126,11 +131,11 @@ auto TranslationUnit::semantic(NodePtr t_ast) -> void
   DBG_PRINTLN("</semantic>");
 }
 
-auto TranslationUnit::ir(NodePtr t_ast) -> ModulePtr
+auto TranslationUnit::mir(NodePtr t_ast) -> ModulePtr
 {
   using mir::mir_builder::MirBuilder;
 
-  m_phase = TranslationUnitPhase::IR_GENERATION;
+  m_phase = TranslationUnitPhase::MIR_GENERATION;
 
   DBG_PRINTLN("<ir_generation>");
 
@@ -182,11 +187,11 @@ auto TranslationUnit::execute() -> void
   print_ast(m_ast);
 
   // Perform Ir generation:
-  ir(m_ast);
-  // m_ir = ir(m_ast); // TODO: Add m_ir field.
+  m_mir = mir(m_ast);
 
   // Perform compilation:
-  CompileParams params{m_ast, m_build_unit->build_dir(), m_source_file};
+  const auto build_dir{m_build_unit->build_dir()};
+  CompileParams params{m_ast, m_mir, build_dir, m_source_file};
   backend(params);
 }
 } // namespace unit

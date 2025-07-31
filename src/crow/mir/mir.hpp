@@ -40,17 +40,20 @@ using ModulePtr = std::shared_ptr<Module>;
 
 using SsaVarPtr = std::shared_ptr<SsaVar>;
 using FunctionPtr = std::shared_ptr<Function>;
+using BasicBlockPtr = std::shared_ptr<BasicBlock>;
 
 // We use lists for instructions and basic blocks.
 // This is to prevent any iterator or reference invalidation.
 // During the building of the IR.
 // Or the modifying of it afterwards.
-using CfgSeq = std::list<BasicBlock*>;
-using InstructionSeq = std::list<Instruction>;
-using BasicBlockSeq = std::list<BasicBlock>;
-using FunctionSeq = std::list<FunctionPtr>;
 using ModuleSeq = std::list<Module>;
+using FunctionSeq = std::list<FunctionPtr>;
+
+using BasicBlockSeq = std::list<BasicBlock>;
+using InstructionSeq = std::list<Instruction>;
+
 using SsaVarVec = std::vector<SsaVarPtr>;
+using CfgSeq = std::list<BasicBlock*>;
 
 // TODO: Support more then just bool, add all other supported native_types.
 //! Variant containing all supported literal types.
@@ -242,8 +245,8 @@ struct BasicBlock {
   InstructionSeq m_instructions;
 
   // TODO: The control flow graphs, should maybe be a map keyed by label?
-  CfgSeq m_successors;
-  CfgSeq m_predecessors;
+  // CfgSeq m_successors;
+  // CfgSeq m_predecessors;
 
   BasicBlock() = default;
 
