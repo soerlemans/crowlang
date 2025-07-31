@@ -4,6 +4,9 @@
 // STL Includes:
 #include <memory>
 
+// Absolute Includes:
+#include "crow/types/core/core.hpp"
+
 // Local Includes:
 // Forward declarations for all Node classes:
 #include "control/fdecl.hpp"

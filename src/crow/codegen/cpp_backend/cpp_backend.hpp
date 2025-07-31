@@ -9,7 +9,6 @@
 #include "crow/codegen/backend_interface.hpp"
 #include "crow/codegen/cpp_backend/clang_frontend_invoker.hpp"
 #include "crow/codegen/cpp_backend/interop/cpp_interop_backend_interface.hpp"
-#include "crow/semantic/symbol_table/symbol_table.hpp"
 #include "lib/filesystem.hpp"
 #include "lib/stdtypes.hpp"
 
@@ -21,7 +20,6 @@ namespace fs = std::filesystem;
 
 using interop::CppInteropBackendPtr;
 using node::NodePtr;
-using semantic::symbol_table::SymbolTablePtr;
 using visitor::Any;
 
 using InteropBackends = std::vector<CppInteropBackendPtr>;
@@ -41,7 +39,7 @@ class CppBackend : public BackendInterface {
 
   // Global symbol table used for quick symbol lookup.
   // Currently unused as the idea was to use it for interop.
-  SymbolTablePtr m_symbol_table;
+  // SymbolTablePtr m_symbol_table;
 
   InteropBackends m_interop_backends;
 

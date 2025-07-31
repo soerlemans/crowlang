@@ -23,6 +23,7 @@ using PathOpt = std::optional<fs::path>;
 constexpr auto settings_toml{"crow.toml"sv};
 
 // Functions:
+// TODO: Use an std::expected here.
 auto find_settings_toml(const std::string_view t_filename = settings_toml)
   -> PathOpt;
 auto read_settings_toml(const fs::path t_filepath, Settings& t_settings)

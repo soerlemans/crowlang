@@ -12,7 +12,6 @@
 
 // Local Includes:
 #include "symbol_env_state.hpp"
-#include "symbol_table/symbol_table_factory.hpp"
 #include "type_promoter.hpp"
 
 /*!
@@ -34,12 +33,8 @@ using ast::node::NodePtr;
 using ast::visitor::Any;
 using ast::visitor::NodeVisitor;
 using container::TextPosition;
-using semantic::symbol_table::SymbolTablePtr;
 using symbol::SymbolData;
 using symbol::SymbolDataList;
-using symbol_table::SymbolTable;
-using symbol_table::SymbolTableFactory;
-using symbol_table::SymbolTablePtr;
 using types::core::NativeType;
 using types::core::NativeTypeOpt;
 
@@ -62,7 +57,7 @@ using types::core::NativeTypeOpt;
 class SemanticChecker : public NodeVisitor {
   private:
   SymbolEnvState m_symbol_state;
-  SymbolTableFactory m_symbol_table_factory;
+  // SymbolTableFactory m_symbol_table_factory;
   TypePromoter m_type_promoter;
 
   protected:
@@ -79,9 +74,11 @@ class SemanticChecker : public NodeVisitor {
    */
   [[nodiscard("Returned boolean indicates error value, must be checked.")]]
   auto add_symbol(std::string_view t_id, const SymbolData& t_data) -> bool;
-  auto get_symbol(std::string_view t_id) const -> SymbolData;
 
-  auto retrieve_symbol_table() const -> SymbolTablePtr;
+  [[nodiscard("Pure method must use result.")]]
+  auto get_symbol_data_from_env(std::string_view t_id) const -> SymbolData;
+
+  // auto retrieve_symbol_table() const -> SymbolTablePtr;
 
   // Helper methods for type promotion:
   //! Handle type conversion for conditionals.
@@ -92,7 +89,7 @@ class SemanticChecker : public NodeVisitor {
   auto promote(const SymbolData& t_lhs, const SymbolData& rhs,
                bool enforce_lhs = false) const -> NativeTypeOpt;
 
-  // Helper methods for dealing with SymbolData:
+  // Helper methods for dealing with resolving nodes to SymbolData:
   // NodeVisitor visitation is not marked const so these methods cant be const.
   auto get_symbol_data(NodePtr t_ptr) -> SymbolData;
   auto get_resolved_type(NodePtr t_ptr) -> SymbolData;
@@ -158,7 +155,7 @@ class SemanticChecker : public NodeVisitor {
   auto visit(node::typing::Impl* t_impl) -> Any override;
   auto visit(node::typing::DotExpr* t_dot_expr) -> Any override;
 
-  auto check(NodePtr t_ast) -> SymbolTablePtr;
+  auto check(NodePtr t_ast) -> void;
 
   virtual ~SemanticChecker() = default;
 };

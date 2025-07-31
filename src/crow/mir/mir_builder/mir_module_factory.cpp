@@ -279,7 +279,7 @@ auto MirModuleFactory::create_block(const std::string_view t_label)
 auto MirModuleFactory::append_block(const BasicBlock& t_block) -> BasicBlock&
 {
   auto& fn{last_function()};
-  auto& blocks{fn.m_blocks};
+  auto& blocks{fn->m_blocks};
 
   // Add the new block to the last function.
   blocks.push_back(t_block);
@@ -300,7 +300,7 @@ auto MirModuleFactory::find_block(const std::string_view t_label) -> BasicBlock*
   BasicBlock* ptr{nullptr};
 
   auto& fn{last_function()};
-  auto& blocks{fn.m_blocks};
+  auto& blocks{fn->m_blocks};
 
   for(BasicBlock& block : blocks) {
     if(block.m_label == t_label) {
@@ -316,7 +316,7 @@ auto MirModuleFactory::last_block() -> BasicBlock&
 {
   auto& fn{last_function()};
 
-  if(fn.m_blocks.empty()) {
+  if(fn->m_blocks.empty()) {
     using lib::stdexcept::throw_runtime_exception;
 
     throw_runtime_exception(
@@ -324,19 +324,22 @@ auto MirModuleFactory::last_block() -> BasicBlock&
       "basic block.");
   }
 
-  return fn.m_blocks.back();
+  return fn->m_blocks.back();
 }
 
-auto MirModuleFactory::add_function(Function&& t_fn) -> void
+auto MirModuleFactory::add_function(FunctionPtr t_fn) -> void
 {
   auto& functions{m_module->m_functions};
 
-  // TODO: Add environment registration for function.
+
+  const auto fn_name{t_fn->m_name};
+
+  m_fn_env.insert({fn_name, t_fn});
 
   functions.push_back(t_fn);
 }
 
-auto MirModuleFactory::last_function() -> Function&
+auto MirModuleFactory::last_function() -> FunctionPtr&
 {
   auto& functions{m_module->m_functions};
 

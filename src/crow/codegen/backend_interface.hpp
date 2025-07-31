@@ -7,7 +7,6 @@
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
 #include "crow/codegen/interop_backend_interface.hpp"
-#include "crow/semantic/symbol_table/symbol_table.hpp"
 #include "lib/filesystem.hpp"
 
 namespace codegen {
@@ -16,7 +15,6 @@ using namespace ast;
 
 // Using Declarations:
 using node::NodePtr;
-using semantic::symbol_table::SymbolTablePtr;
 
 namespace fs = std::filesystem;
 
@@ -40,7 +38,6 @@ enum class BackendType {
  */
 struct CompileParams {
   NodePtr m_ast;
-  SymbolTablePtr m_symbol_table;
 
   fs::path m_build_dir;
   fs::path m_source_path;

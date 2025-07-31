@@ -116,11 +116,7 @@ auto CppBackend::resolve(NodePtr t_ptr, const bool t_terminate) -> std::string
 
 // Public:
 CppBackend::CppBackend()
-  : m_inv{},
-    m_symbol_table{},
-    m_interop_backends{},
-    m_terminate{},
-    m_id_defer_count{0}
+  : m_inv{}, m_interop_backends{}, m_terminate{}, m_id_defer_count{0}
 {}
 
 // Control:
@@ -560,12 +556,11 @@ auto CppBackend::codegen(NodePtr t_ast, const fs::path& t_out) -> void
 
 auto CppBackend::compile(CompileParams& t_params) -> void
 {
-  const auto& [ast, symbol_table, build_dir, source_path] = t_params;
+  const auto& [ast, build_dir, source_path] = t_params;
 
   fs::path stem{source_path.stem()};
   const fs::path tmp_src{build_dir / stem.concat(".cpp")};
 
-  m_symbol_table = symbol_table;
 
   // Log filepath's:
   DBG_INFO("build_dir: ", build_dir);
@@ -578,7 +573,6 @@ auto CppBackend::compile(CompileParams& t_params) -> void
   m_inv.compile(tmp_src);
 
   // Clear members, for next compilation.
-  m_symbol_table.reset();
   m_terminate = {};
   m_id_defer_count = 0;
 }
