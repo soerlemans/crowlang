@@ -14,7 +14,7 @@ using types::core::TypeVariant;
 /*!
  * Convert the @ref TypeVariant to an actual C++ type.
  */
-auto type_variant2cpp_type(const TypeVariant& t_variant) -> std::string_view;
+auto type_variant2cpp(const TypeVariant& t_variant) -> std::string_view;
 } // namespace codegen::cpp_backend
 
 #endif // CROW_CROW_CODEGEN_CPP_BACKEND_TYPE2CPP_HPP

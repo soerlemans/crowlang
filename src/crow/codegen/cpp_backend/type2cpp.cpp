@@ -23,7 +23,7 @@ using types::core::nativetype2str;
 /*!
  * @warning Make sure that <cstdint> is included for the fixed width integers.
  */
-auto native_type2cpp_type(const NativeType t_type) -> std::string_view
+auto native_type2cpp(const NativeType t_type) -> std::string_view
 {
   std::string_view str{};
 
@@ -70,7 +70,7 @@ auto native_type2cpp_type(const NativeType t_type) -> std::string_view
  * Resolving parameter types
  */
 template<typename T>
-auto user_type2cpp_type(const std::shared_ptr<T>& t_data) -> std::string_view
+auto user_type2cpp(const std::shared_ptr<T>& t_data) -> std::string_view
 {
   return {};
 }
@@ -80,14 +80,14 @@ namespace codegen::cpp_backend {
 // Using Statements:
 NODE_USING_ALL_NAMESPACES()
 
-auto type_variant2cpp_type(const TypeVariant& t_variant) -> std::string_view
+auto type_variant2cpp(const TypeVariant& t_variant) -> std::string_view
 {
   using lib::Overload;
 
   std::string_view str{};
 
   if(const auto opt{t_variant.native_type()}; opt) {
-    str = native_type2cpp_type(opt.value());
+    str = native_type2cpp(opt.value());
   }
 
   return str;

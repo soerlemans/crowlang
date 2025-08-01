@@ -208,7 +208,7 @@ auto CppBackend::visit(Function* t_fn) -> Any
   const auto identifier{t_fn->identifier()};
 
   const auto fn_type{t_fn->get_type().function()};
-  const auto ret_type{type_variant2cpp_type(fn_type->m_return_type)};
+  const auto ret_type{type_variant2cpp(fn_type->m_return_type)};
 
   std::stringstream param_ss{};
 
@@ -279,7 +279,7 @@ auto CppBackend::visit(Call* t_call) -> Any
 auto CppBackend::visit([[maybe_unused]] ReturnType* t_rt) -> Any
 {
   // Currently we do not dynamically compute return types.
-  // So for now converting a type_variant2cpp_type() is good enough.
+  // So for now converting a type_variant2cpp() is good enough.
 
   return {};
 }
@@ -292,7 +292,7 @@ auto CppBackend::visit(Let* t_let) -> Any
   const auto init_expr{resolve(t_let->init_expr())};
 
   const auto type_variant{t_let->get_type()};
-  const auto type{type_variant2cpp_type(type_variant)};
+  const auto type{type_variant2cpp(type_variant)};
 
   const auto terminate_str{terminate()};
 
@@ -306,7 +306,7 @@ auto CppBackend::visit(Var* t_var) -> Any
   const auto init_expr{resolve(t_var->init_expr())};
 
   const auto type_variant{t_var->get_type()};
-  const auto type{type_variant2cpp_type(type_variant)};
+  const auto type{type_variant2cpp(type_variant)};
 
   const auto terminate_str{terminate()};
 
