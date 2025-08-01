@@ -32,7 +32,7 @@ using TerminateStack = std::stack<bool>;
  * This generated C++ code is lated compiled using clang.
  * Or any compiler of choice.
  */
-class CppBackend : public BackendInterface, public NodeVisitor {
+class CppBackend : public NodeVisitor, public BackendInterface {
   private:
   // CXX compiler front end.
   ClangFrontendInvoker m_inv;
