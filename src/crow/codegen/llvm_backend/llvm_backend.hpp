@@ -29,6 +29,7 @@ using namespace ast;
 // Using Declarations:
 using ast::node::NodePtr;
 using ast::visitor::Any;
+using ast::visitor::NodeVisitor;
 using std::filesystem::path;
 
 // Aliases:
@@ -40,7 +41,7 @@ using ModulePtr = std::shared_ptr<llvm::Module>;
 namespace fs = std::filesystem;
 
 // Classes:
-class LlvmBackend : public BackendInterface {
+class LlvmBackend : public BackendInterface, public NodeVisitor {
   private:
   ContextPtr m_context;
   IrBuilderPtr m_builder;

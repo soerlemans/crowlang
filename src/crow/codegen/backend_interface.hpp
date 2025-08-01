@@ -12,10 +12,10 @@
 
 namespace codegen {
 // Using:
-using namespace ast;
+namespace node = ast::node;
 
+using ast::node::NodePtr;
 using mir::ModulePtr;
-using node::NodePtr;
 
 // Forward Declarations:
 class BackendInterface;
@@ -49,7 +49,7 @@ struct CompileParams {
 /*!
  * This is an interface for communicating with backends in a generic way.
  */
-class BackendInterface : public ast::visitor::NodeVisitor {
+class BackendInterface {
   public:
   BackendInterface() = default;
 

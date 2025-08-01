@@ -14,12 +14,12 @@
 
 namespace codegen::cpp_backend {
 // Aliases:
-using namespace ast;
-
+namespace node = ast::node;
 namespace fs = std::filesystem;
 
+using ast::node::NodePtr;
+using ast::visitor::NodeVisitor;
 using interop::CppInteropBackendPtr;
-using node::NodePtr;
 using visitor::Any;
 
 using InteropBackends = std::vector<CppInteropBackendPtr>;
@@ -32,7 +32,7 @@ using TerminateStack = std::stack<bool>;
  * This generated C++ code is lated compiled using clang.
  * Or any compiler of choice.
  */
-class CppBackend : public BackendInterface {
+class CppBackend : public BackendInterface, public NodeVisitor {
   private:
   // CXX compiler front end.
   ClangFrontendInvoker m_inv;
