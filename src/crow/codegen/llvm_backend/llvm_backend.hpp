@@ -13,6 +13,7 @@
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
 #include "crow/codegen/backend_interface.hpp"
+#include "crow/mir/mir.hpp"
 #include "crow/mir/mir_pass/mir_pass.hpp"
 
 /*!
@@ -27,21 +28,30 @@ namespace codegen::llvm_backend {
 // Aliases:
 namespace fs = std::filesystem;
 
+using mir::BasicBlock;
+using mir::FunctionPtr;
+using mir::Instruction;
+using mir::ModulePtr;
 using mir::mir_pass::MirPass;
 
-using ContextPtr = std::shared_ptr<llvm::LLVMContext>;
-using IrBuilderPtr = std::shared_ptr<llvm::IRBuilder<>>;
-using ModulePtr = std::shared_ptr<llvm::Module>;
+using LlvmContextPtr = std::shared_ptr<llvm::LLVMContext>;
+using LlvmIrBuilderPtr = std::shared_ptr<llvm::IRBuilder<>>;
+using LlvmModulePtr = std::shared_ptr<llvm::Module>;
 
 // Classes:
 class LlvmBackend : public MirPass, public BackendInterface {
   private:
-  ContextPtr m_context;
-  IrBuilderPtr m_builder;
-  ModulePtr m_module;
+  LlvmContextPtr m_context;
+  LlvmIrBuilderPtr m_builder;
+  LlvmModulePtr m_module;
 
   public:
   LlvmBackend();
+
+  auto on_module(ModulePtr& t_module) -> void override;
+  auto on_function(FunctionPtr& t_fn) -> void override;
+  auto on_block(BasicBlock& t_block) -> void override;
+  auto on_instruction(Instruction& t_instr) -> void override;
 
   // Util:
   auto configure_target() -> void;

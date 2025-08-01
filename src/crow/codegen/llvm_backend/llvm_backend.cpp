@@ -25,7 +25,7 @@
 
 namespace codegen::llvm_backend {
 // Using:
-using llvm::Value;
+// using llvm::Value;
 
 NODE_USING_ALL_NAMESPACES()
 
@@ -34,6 +34,18 @@ LlvmBackend::LlvmBackend()
   : m_context{std::make_shared<llvm::LLVMContext>()},
     m_builder{std::make_shared<llvm::IRBuilder<>>(*m_context)},
     m_module{std::make_shared<llvm::Module>("Module", *m_context)}
+{}
+
+auto LlvmBackend::on_module(ModulePtr& t_module) -> void
+{}
+
+auto LlvmBackend::on_function(FunctionPtr& t_fn) -> void
+{}
+
+auto LlvmBackend::on_block(BasicBlock& t_block) -> void
+{}
+
+auto LlvmBackend::on_instruction(Instruction& t_instr) -> void
 {}
 
 auto LlvmBackend::configure_target() -> void
