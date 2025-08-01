@@ -129,6 +129,8 @@ auto MirModuleFactory::add_comment(std::string t_comment) -> void
 auto MirModuleFactory::add_literal(NativeType t_type, LiteralValue t_value)
   -> Instruction&
 {
+  using types::core::nativetype2str;
+
   Opcode opcode{};
 
   // Translate native type to literal opcode.
@@ -150,10 +152,17 @@ auto MirModuleFactory::add_literal(NativeType t_type, LiteralValue t_value)
       opcode = Opcode::CONST_BOOL;
       break;
 
-    default:
-      lib::stdexcept::throw_invalid_argument(
-        "Given native type is unsupported.");
+    default: {
+      using lib::stdexcept::throw_invalid_argument;
+
+      // Be aware nativetyp2str() can also fail for the given type.
+      std::stringstream ss{};
+      ss << std::format(R"(Given native type is unsupported "{}".)",
+                        nativetype2str(t_type));
+
+      throw_invalid_argument(ss.str());
       break;
+    }
   }
 
   // Instruction insertion:
@@ -243,6 +252,25 @@ auto MirModuleFactory::add_update(std::string_view t_name, SsaVarPtr t_prev_var)
   m_var_env.update(t_name, result_var);
 
   return update_instr;
+}
+
+auto MirModuleFactory::add_call(const std::string_view t_name,
+                                const SsaVarVec& t_args) -> Instruction&
+{
+  auto& call_instr{add_instruction(Opcode::CALL)};
+
+  // Insert a reference to the function as operand.
+  auto fn{m_fn_env.get_value(t_name)};
+
+  FunctionLabel label{fn};
+  call_instr.add_operand({label});
+
+  // The rest of the args.
+  for(const SsaVarPtr& var : t_args) {
+    call_instr.add_operand({var});
+  }
+
+  return last_instruction();
 }
 
 auto MirModuleFactory::last_instruction() -> Instruction&

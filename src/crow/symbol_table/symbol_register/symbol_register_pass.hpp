@@ -5,7 +5,7 @@
 #include "symbol_register.hpp"
 
 namespace symbol_table::symbol_register {
-template<typename RegisterType, typename ResultType = void>
+template<typename RegisterType>
 class SymbolRegisterPass {
   protected:
   using Register = SymbolRegister<RegisterType>;
@@ -14,16 +14,14 @@ class SymbolRegisterPass {
   public:
   SymbolRegisterPass() = default;
 
-  virtual auto process_entry(EntryType& t_entry) -> void = 0;
+  virtual auto on_entry(EntryType& t_entry) -> void = 0;
 
-  virtual auto process(Register& t_register) -> void
+  virtual auto run_pass(Register& t_register) -> void
   {
     for(auto& entry : t_register) {
-      process_entry(entry);
+      on_entry(entry);
     }
   }
-
-  virtual auto run(Register& t_register) -> ResultType = 0;
 
   virtual ~SymbolRegisterPass() = default;
 };

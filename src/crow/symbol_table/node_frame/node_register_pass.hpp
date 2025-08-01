@@ -23,7 +23,7 @@ class NodeRegisterPass : public SymbolRegisterPass<NodeInterface> {
   virtual auto on_let(ast::node::lvalue::Let* t_let) -> void = 0;
   virtual auto on_var(ast::node::lvalue::Var* t_var) -> void = 0;
 
-  auto process_entry(EntryType& t_entry) -> void override
+  auto on_entry(EntryType& t_entry) -> void override
   {
     using ast::node::function::Function;
     using ast::node::function::Parameter;
@@ -52,11 +52,6 @@ class NodeRegisterPass : public SymbolRegisterPass<NodeInterface> {
       // TODO: Throw, unexpected state.
     }
   };
-
-  auto run(Register& t_register) -> void override
-  {
-    process(t_register);
-  }
 
   virtual ~NodeRegisterPass() = default;
 };

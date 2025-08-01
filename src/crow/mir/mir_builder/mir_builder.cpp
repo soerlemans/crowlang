@@ -24,6 +24,8 @@ MirBuilder::MirBuilder(): m_factory{nullptr}
 
 auto MirBuilder::visit(If* t_if) -> Any
 {
+  // TODO: We need support for phi, instruction marking later down the line.
+
   // We need to create two new blocks an if and else branch.
   auto& main_block{m_factory->last_block()};
 
@@ -180,9 +182,12 @@ auto MirBuilder::visit(ast::node::function::Function* t_fn) -> Any
 
 auto MirBuilder::visit(Call* t_call) -> Any
 {
-  // TODO: Implement.
-  // TODO: Have the symboltable or a separate symboltable.
-  // Keep references to IR functions.
+  const auto fn_name{t_call->identifier()};
+  const auto fn_args{t_call->args()};
+
+  const auto args{get_call_args(fn_args)};
+
+  m_factory->add_call(fn_name, args);
 
   return {};
 }

@@ -24,299 +24,79 @@
 #include "lib/stdtypes.hpp"
 
 namespace codegen::llvm_backend {
-// Using Statements:
-using namespace ast::visitor;
-
-using llvm::Value;
+// Using:
+// using llvm::Value;
 
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-auto LlvmBackend::get_value(NodePtr t_ptr) -> llvm::Value*
-{
-  using namespace llvm;
-
-  Value* val{nullptr};
-
-  auto any{traverse(t_ptr)};
-  if(any.has_value()) {
-    try {
-      val = std::any_cast<Value*>(any);
-    } catch(const std::bad_any_cast& e) {
-      DBG_CRITICAL(e.what());
-    }
-  }
-
-  return val;
-}
-
 LlvmBackend::LlvmBackend()
   : m_context{std::make_shared<llvm::LLVMContext>()},
     m_builder{std::make_shared<llvm::IRBuilder<>>(*m_context)},
     m_module{std::make_shared<llvm::Module>("Module", *m_context)}
 {}
 
-// Control:
-auto LlvmBackend::visit(If* t_if) -> Any
+auto LlvmBackend::on_module(ModulePtr& t_module) -> void
 {
-  using namespace llvm;
-
-  llvm::Function* fn{m_builder->GetInsertBlock()->getParent()};
-
-  // Generate branch selection logic
-  auto* condv{get_value(t_if->condition())};
-  auto* constant{ConstantInt::get(*m_context, APInt(8, 0, true))};
-  condv = m_builder->CreateICmpNE(condv, constant, "cond");
-
-  // Define blocks
-  auto* then{BasicBlock::Create(*m_context, "then")};
-  auto* alt{BasicBlock::Create(*m_context, "alt")};
-  auto* merge{BasicBlock::Create(*m_context, "merge")};
-
-  m_builder->CreateCondBr(condv, then, alt);
-
-  const auto block{[&](auto* t_block, auto t_lambda) {
-    fn->insert(fn->end(), t_block);
-    m_builder->SetInsertPoint(t_block);
-
-    t_lambda();
-
-    m_builder->CreateBr(merge);
-    t_block = m_builder->GetInsertBlock();
-  }};
-
-  block(then, [&] {
-    traverse(t_if->then());
-  });
-
-  block(alt, [&] {
-    traverse(t_if->alt());
-  });
-
-  fn->insert(fn->end(), merge);
-  m_builder->SetInsertPoint(merge);
-  [[maybe_unused]]
-  auto* pn{
-    m_builder->CreatePHI(llvm::Type::getDoubleTy(*m_context), 2, "iftmp")};
-
-  // Figure this out?
-  // pn->addIncoming(ThenV, ThenBB);
-  // pn->addIncoming(ElseV, ElseBB);
-
-  return {};
+  for(FunctionPtr& fn : t_module->m_functions) {
+    on_function(fn);
+  }
 }
 
-auto LlvmBackend::visit([[maybe_unused]] Loop* t_loop) -> Any
+auto LlvmBackend::on_function(FunctionPtr& t_fn) -> void
 {
-  using llvm::BasicBlock;
-
-  // llvm::Function* fn{m_builder->GetInsertBlock()->getParent()};
-
-  // get_value(t_loop->condition())
-
-  // Define blocks
-  // auto* loop{BasicBlock::Create(*m_context, "loop")};
-  // auto* loop{BasicBlock::Create(*m_context, "")};
-
-  /*
-  const auto block{[&](auto* t_block, auto t_lambda) {
-    fn->insert(fn->end(), t_block);
-    m_builder->SetInsertPoint(t_block);
-
-    t_lambda();
-
-    m_builder->CreateBr(merge);
-    t_block = m_builder->GetInsertBlock();
-  }};
-  */
-
-  return {};
-}
-
-AST_VISITOR_STUB(LlvmBackend, Continue)
-AST_VISITOR_STUB(LlvmBackend, Break)
-
-auto LlvmBackend::visit(Return* t_ret) -> Any
-{
-  using namespace llvm;
-
-  auto* val{get_value(t_ret->expr())};
-  m_builder->CreateRet(val);
-
-  return {};
-}
-
-// Functions:
-auto LlvmBackend::visit([[maybe_unused]] Parameter* t_param) -> Any
-{
-  return {};
-}
-
-auto LlvmBackend::visit(Function* t_fn) -> Any
-{
-  using namespace llvm;
+  const auto fn_name{t_fn->m_name};
 
   auto params{std::vector<llvm::Type*>()};
-  auto* fn_type{
-    FunctionType::get(IntegerType::getInt32Ty(*m_context), params, false)};
+  auto* fn_type{llvm::FunctionType::get(
+    llvm::IntegerType::getInt32Ty(*m_context), params, false)};
 
   auto* fn{llvm::Function::Create(fn_type, llvm::Function::ExternalLinkage,
-                                  t_fn->identifier(), m_module.get())};
+                                  fn_name, m_module.get())};
 
-  auto* body{BasicBlock::Create(*m_context, "entry", fn)};
-  m_builder->SetInsertPoint(body);
+  auto* main_block{llvm::BasicBlock::Create(*m_context, "main", fn)};
+  m_builder->SetInsertPoint(main_block);
 
   // Codegen for the body
-  traverse(t_fn->body());
+  for(BasicBlock& block : t_fn->m_blocks) {
+    on_block(block);
+  }
 
   llvm::verifyFunction(*fn);
-
-  return {t_fn};
 }
 
-AST_VISITOR_STUB(LlvmBackend, Call)
-AST_VISITOR_STUB(LlvmBackend, ReturnType)
-
-// Lvalue:
-AST_VISITOR_STUB(LlvmBackend, Let)
-AST_VISITOR_STUB(LlvmBackend, Var)
-AST_VISITOR_STUB(LlvmBackend, Variable)
-
-// Operators:
-auto LlvmBackend::visit(Arithmetic* t_arith) -> Any
+auto LlvmBackend::on_block(BasicBlock& t_block) -> void
 {
-  using namespace llvm;
+  for(Instruction& instr : t_block.m_instructions) {
+    on_instruction(instr);
+  }
+}
 
-  Value* expr{nullptr};
-  auto* lhs{get_value(t_arith->left())};
-  auto* rhs{get_value(t_arith->right())};
+auto LlvmBackend::on_instruction(Instruction& t_instr) -> void
+{
 
-  switch(t_arith->op()) {
-    case ArithmeticOp::MULTIPLY:
-      expr = m_builder->CreateMul(lhs, rhs, "mul_tmp");
-      break;
+  const auto& [id, opcode, operands, result, comment] = t_instr;
 
-    case ArithmeticOp::DIVIDE:
-      expr = m_builder->CreateSDiv(lhs, rhs, "div_tmp");
-      break;
-
-    case ArithmeticOp::MODULO:
-      // expr = m_builder->CreateDiv(lhs, rhs, "mod_tmp");
-      break;
-
-    case ArithmeticOp::ADD:
-      expr = m_builder->CreateAdd(lhs, rhs, "add_tmp");
-      break;
-
-    case ArithmeticOp::SUBTRACT:
-      expr = m_builder->CreateSub(lhs, rhs, "sub_tmp");
-      break;
-
+  switch(opcode) {
     default:
-      throw; // TODO: Throw something
+      // For now we log as we are still implementing the IR.
+      DBG_ERROR("Unhandled opcode: ", opcode);
       break;
   }
-
-  return std::make_any<Value*>(expr);
 }
 
-AST_VISITOR_STUB(LlvmBackend, Assignment)
-
-auto LlvmBackend::visit(Comparison* t_comp) -> Any
-{
-  Value* expr{nullptr};
-  auto* lhs{get_value(t_comp->left())};
-  auto* rhs{get_value(t_comp->right())};
-
-  switch(t_comp->op()) {
-    case ComparisonOp::EQUAL:
-      expr = m_builder->CreateICmpEQ(lhs, rhs, "eq_tmp");
-      break;
-
-    case ComparisonOp::NOT_EQUAL:
-      expr = m_builder->CreateICmpNE(lhs, rhs, "ne_tmp");
-      break;
-
-    default:
-      throw; // TODO: Throw something
-      break;
-  }
-
-  return std::make_any<Value*>(expr);
-}
-
-AST_VISITOR_STUB(LlvmBackend, Increment)
-AST_VISITOR_STUB(LlvmBackend, Decrement)
-AST_VISITOR_STUB(LlvmBackend, UnaryPrefix)
-
-// Logical:
-AST_VISITOR_STUB(LlvmBackend, Not)
-AST_VISITOR_STUB(LlvmBackend, And)
-
-auto LlvmBackend::visit([[maybe_unused]] Or* t_or) -> Any
-{
-  return {};
-}
-
-AST_VISITOR_STUB(LlvmBackend, Ternary)
-
-// Packaging:
-AST_VISITOR_STUB(LlvmBackend, Import)
-AST_VISITOR_STUB(LlvmBackend, ModuleDecl)
-
-// RValue:
-auto LlvmBackend::visit(Float* t_float) -> Any
-{
-  using namespace llvm;
-
-  APFloat num{t_float->get()};
-  auto* constant{ConstantFP::get(*m_context, num)};
-
-  return std::make_any<Value*>(constant);
-}
-
-auto LlvmBackend::visit(Integer* t_int) -> Any
-{
-  using namespace llvm;
-
-  const auto result{static_cast<u64>(t_int->get())};
-  const APInt num{32, result, true};
-  auto* constant{ConstantInt::get(*m_context, num)};
-
-  return std::make_any<Value*>(constant);
-}
-
-// TODO: Implement
-auto LlvmBackend::visit([[maybe_unused]] String* t_str) -> Any
-{
-  return {};
-}
-
-auto LlvmBackend::visit(Boolean* t_bool) -> Any
-{
-  using namespace llvm;
-
-  const auto result{static_cast<u64>((t_bool->get()) ? 1 : 0)};
-  const APInt num{8, result, false};
-  auto* constant{ConstantInt::get(*m_context, num)};
-
-  return std::make_any<Value*>(constant);
-}
-
-// Typing:
-AST_VISITOR_STUB(LlvmBackend, MethodDecl)
-AST_VISITOR_STUB(LlvmBackend, Interface)
-AST_VISITOR_STUB(LlvmBackend, MemberDecl)
-AST_VISITOR_STUB(LlvmBackend, Struct)
-AST_VISITOR_STUB(LlvmBackend, Impl)
-AST_VISITOR_STUB(LlvmBackend, DotExpr)
-
-// Util:
-auto LlvmBackend::configure_target() -> void
+auto LlvmBackend::initialize_target() -> void
 {
   const auto target{llvm::sys::getDefaultTargetTriple()};
 
   m_module->setTargetTriple(target);
+
+  // Initialize all target stuff:
+  llvm::InitializeAllTargetInfos();
+  llvm::InitializeAllTargets();
+  llvm::InitializeAllTargetMCs();
+  llvm::InitializeAllAsmParsers();
+  llvm::InitializeAllAsmPrinters();
 }
 
 auto LlvmBackend::dump_ir(std::ostream& t_os) -> void
@@ -335,9 +115,9 @@ auto LlvmBackend::compile(CompileParams& t_params) -> void
   using namespace llvm;
   using namespace llvm::sys::fs;
 
-  const auto& [ast, build_dir, source_path] = t_params;
+  using mir::mir_pass::MirPassParams;
 
-  configure_target();
+  const auto& [ast, mir_module, build_dir, source_path] = t_params;
 
   fs::path stem{source_path.stem()};
   const fs::path tmp_src{build_dir / stem.concat(".ll")};
@@ -346,12 +126,8 @@ auto LlvmBackend::compile(CompileParams& t_params) -> void
   DBG_INFO("build_dir: ", build_dir);
   DBG_INFO("tmp_src: ", tmp_src);
 
-  // Initialize all target stuff:
-  InitializeAllTargetInfos();
-  InitializeAllTargets();
-  InitializeAllTargetMCs();
-  InitializeAllAsmParsers();
-  InitializeAllAsmPrinters();
+  // Initialize the LLVM target.
+  initialize_target();
 
   // Obtain filehandle to destination file
   const auto filename{tmp_src.c_str()};
@@ -360,11 +136,14 @@ auto LlvmBackend::compile(CompileParams& t_params) -> void
 
   if(err_code) {
     errs() << "Could not open file: " << err_code.message();
+    return;
   }
 
   // Resolve target:
   const auto target_str{m_module->getTargetTriple()};
-  std::string err;
+  DBG_INFO("LLVM target: ", target_str);
+
+  std::string err{};
   auto target{TargetRegistry::lookupTarget(target_str, err)};
   if(!target) {
     errs() << err << '\n';
@@ -390,7 +169,9 @@ auto LlvmBackend::compile(CompileParams& t_params) -> void
   }
 
   // Traverse ast to generate LLVM IR:
-  traverse(ast);
+  MirPassParams params{mir_module};
+  run_pass(params);
+
   dump_ir(std::cout);
 
   if(llvm::verifyModule(*m_module, &llvm::errs())) {

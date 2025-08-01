@@ -7,22 +7,23 @@
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
 #include "crow/codegen/interop_backend_interface.hpp"
+#include "crow/mir/mir.hpp"
 #include "lib/filesystem.hpp"
 
 namespace codegen {
-// Using Statements:
-using namespace ast;
+// Using:
+namespace node = ast::node;
 
-// Using Declarations:
-using node::NodePtr;
-
-namespace fs = std::filesystem;
+using ast::node::NodePtr;
+using mir::ModulePtr;
 
 // Forward Declarations:
 class BackendInterface;
 
 // Aliases:
 using BackendPtr = std::shared_ptr<BackendInterface>;
+
+namespace fs = std::filesystem;
 
 // Enums:
 enum class BackendType {
@@ -38,6 +39,7 @@ enum class BackendType {
  */
 struct CompileParams {
   NodePtr m_ast;
+  ModulePtr m_mir;
 
   fs::path m_build_dir;
   fs::path m_source_path;
@@ -47,7 +49,7 @@ struct CompileParams {
 /*!
  * This is an interface for communicating with backends in a generic way.
  */
-class BackendInterface : public ast::visitor::NodeVisitor {
+class BackendInterface {
   public:
   BackendInterface() = default;
 
