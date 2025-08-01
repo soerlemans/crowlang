@@ -45,9 +45,24 @@ auto LlvmBackend::on_module(ModulePtr& t_module) -> void
 
 auto LlvmBackend::on_function(FunctionPtr& t_fn) -> void
 {
+  const auto fn_name{t_fn->m_name};
+
+  auto params{std::vector<llvm::Type*>()};
+  auto* fn_type{llvm::FunctionType::get(
+    llvm::IntegerType::getInt32Ty(*m_context), params, false)};
+
+  auto* fn{llvm::Function::Create(fn_type, llvm::Function::ExternalLinkage,
+                                  fn_name, m_module.get())};
+
+  auto* main_block{llvm::BasicBlock::Create(*m_context, "main", fn)};
+  m_builder->SetInsertPoint(main_block);
+
+  // Codegen for the body
   for(BasicBlock& block : t_fn->m_blocks) {
     on_block(block);
   }
+
+  llvm::verifyFunction(*fn);
 }
 
 auto LlvmBackend::on_block(BasicBlock& t_block) -> void
@@ -58,7 +73,17 @@ auto LlvmBackend::on_block(BasicBlock& t_block) -> void
 }
 
 auto LlvmBackend::on_instruction(Instruction& t_instr) -> void
-{}
+{
+
+  const auto& [id, opcode, operands, result, comment] = t_instr;
+
+  switch(opcode) {
+    default:
+      // For now we log as we are still implementing the IR.
+      DBG_ERROR("Unhandled opcode: ", opcode);
+      break;
+  }
+}
 
 auto LlvmBackend::initialize_target() -> void
 {

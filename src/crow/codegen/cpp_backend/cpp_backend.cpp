@@ -16,7 +16,7 @@
 // Local Includes:
 #include "clang_frontend_invoker.hpp"
 #include "prototype_generator.hpp"
-#include "type_variant2cpp_type.hpp"
+#include "type2cpp.hpp"
 
 namespace codegen::cpp_backend {
 // Using Statements:
