@@ -54,7 +54,7 @@ class LlvmBackend : public MirPass, public BackendInterface {
   auto on_instruction(Instruction& t_instr) -> void override;
 
   // Util:
-  auto configure_target() -> void;
+  auto initialize_target() -> void;
   auto dump_ir(std::ostream& t_os) -> void;
 
   //! LLVM backend as of writing supports no interop.

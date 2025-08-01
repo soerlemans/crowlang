@@ -22,7 +22,7 @@ class MirPass {
   virtual auto on_block(BasicBlock& t_block) -> void;
   virtual auto on_instruction(Instruction& t_instr) -> void = 0;
 
-  virtual auto process(MirPassParams t_params) -> void;
+  virtual auto run_pass(MirPassParams t_params) -> void;
 
   virtual ~MirPass() = default;
 };

@@ -37,22 +37,41 @@ LlvmBackend::LlvmBackend()
 {}
 
 auto LlvmBackend::on_module(ModulePtr& t_module) -> void
-{}
+{
+  for(FunctionPtr& fn : t_module->m_functions) {
+    on_function(fn);
+  }
+}
 
 auto LlvmBackend::on_function(FunctionPtr& t_fn) -> void
-{}
+{
+  for(BasicBlock& block : t_fn->m_blocks) {
+    on_block(block);
+  }
+}
 
 auto LlvmBackend::on_block(BasicBlock& t_block) -> void
-{}
+{
+  for(Instruction& instr : t_block.m_instructions) {
+    on_instruction(instr);
+  }
+}
 
 auto LlvmBackend::on_instruction(Instruction& t_instr) -> void
 {}
 
-auto LlvmBackend::configure_target() -> void
+auto LlvmBackend::initialize_target() -> void
 {
   const auto target{llvm::sys::getDefaultTargetTriple()};
 
   m_module->setTargetTriple(target);
+
+  // Initialize all target stuff:
+  llvm::InitializeAllTargetInfos();
+  llvm::InitializeAllTargets();
+  llvm::InitializeAllTargetMCs();
+  llvm::InitializeAllAsmParsers();
+  llvm::InitializeAllAsmPrinters();
 }
 
 auto LlvmBackend::dump_ir(std::ostream& t_os) -> void
@@ -71,9 +90,9 @@ auto LlvmBackend::compile(CompileParams& t_params) -> void
   using namespace llvm;
   using namespace llvm::sys::fs;
 
-  const auto& [ast, mir, build_dir, source_path] = t_params;
+  using mir::mir_pass::MirPassParams;
 
-  configure_target();
+  const auto& [ast, mir_module, build_dir, source_path] = t_params;
 
   fs::path stem{source_path.stem()};
   const fs::path tmp_src{build_dir / stem.concat(".ll")};
@@ -82,12 +101,8 @@ auto LlvmBackend::compile(CompileParams& t_params) -> void
   DBG_INFO("build_dir: ", build_dir);
   DBG_INFO("tmp_src: ", tmp_src);
 
-  // Initialize all target stuff:
-  InitializeAllTargetInfos();
-  InitializeAllTargets();
-  InitializeAllTargetMCs();
-  InitializeAllAsmParsers();
-  InitializeAllAsmPrinters();
+  // Initialize the LLVM target.
+  initialize_target();
 
   // Obtain filehandle to destination file
   const auto filename{tmp_src.c_str()};
@@ -96,11 +111,14 @@ auto LlvmBackend::compile(CompileParams& t_params) -> void
 
   if(err_code) {
     errs() << "Could not open file: " << err_code.message();
+    return;
   }
 
   // Resolve target:
   const auto target_str{m_module->getTargetTriple()};
-  std::string err;
+  DBG_INFO("LLVM target: ", target_str);
+
+  std::string err{};
   auto target{TargetRegistry::lookupTarget(target_str, err)};
   if(!target) {
     errs() << err << '\n';
@@ -126,7 +144,9 @@ auto LlvmBackend::compile(CompileParams& t_params) -> void
   }
 
   // Traverse ast to generate LLVM IR:
-  // traverse(ast);
+  MirPassParams params{mir_module};
+  run_pass(params);
+
   dump_ir(std::cout);
 
   if(llvm::verifyModule(*m_module, &llvm::errs())) {

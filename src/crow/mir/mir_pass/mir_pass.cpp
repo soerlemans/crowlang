@@ -23,7 +23,7 @@ auto MirPass::on_block(BasicBlock& t_block) -> void
   }
 }
 
-auto MirPass::process(MirPassParams t_params) -> void
+auto MirPass::run_pass(MirPassParams t_params) -> void
 {
   auto& [module_] = t_params;
 
