@@ -18,17 +18,15 @@
 #include <llvm/Target/TargetMachine.h>
 
 // Absolute Includes:
-#include "crow/ast/node/include_nodes.hpp"
 #include "crow/debug/log.hpp"
+#include "crow/mir/mir.hpp"
 #include "lib/filesystem.hpp"
 #include "lib/stdtypes.hpp"
 
+// Local Includes:
+#include "type2llvm.hpp"
+
 namespace codegen::llvm_backend {
-// Using:
-// using llvm::Value;
-
-NODE_USING_ALL_NAMESPACES()
-
 // Methods:
 LlvmBackend::LlvmBackend()
   : m_context{std::make_shared<llvm::LLVMContext>()},
@@ -48,8 +46,19 @@ auto LlvmBackend::on_function(FunctionPtr& t_fn) -> void
   const auto fn_name{t_fn->m_name};
 
   auto params{std::vector<llvm::Type*>()};
-  auto* fn_type{llvm::FunctionType::get(
-    llvm::IntegerType::getInt32Ty(*m_context), params, false)};
+
+  // FIXME: We only support native types right now.
+  auto return_type{t_fn->m_return_type};
+  const auto opt{return_type.native_type()};
+  if(!opt) {
+    DBG_ERROR("Cancelling function LLVM IR generation, cause return type is "
+              "note resolvalbe to native type.");
+    return;
+  }
+  const auto native_type{opt.value()};
+  auto* llvm_return_type{native_type2llvm(m_context, native_type)};
+
+  auto* fn_type{llvm::FunctionType::get(llvm_return_type, params, false)};
 
   auto* fn{llvm::Function::Create(fn_type, llvm::Function::ExternalLinkage,
                                   fn_name, m_module.get())};
@@ -74,10 +83,98 @@ auto LlvmBackend::on_block(BasicBlock& t_block) -> void
 
 auto LlvmBackend::on_instruction(Instruction& t_instr) -> void
 {
+  using mir::Opcode;
 
   const auto& [id, opcode, operands, result, comment] = t_instr;
 
   switch(opcode) {
+    case Opcode::CONST_F32:
+      break;
+    case Opcode::CONST_F64:
+      break;
+    case Opcode::CONST_INT:
+      break;
+    case Opcode::CONST_STRING:
+      break;
+    case Opcode::CONST_BOOL:
+      break;
+    case Opcode::IADD:
+      break;
+    case Opcode::ISUB:
+      break;
+    case Opcode::IMUL:
+      break;
+    case Opcode::IDIV:
+      break;
+    case Opcode::IMOD:
+      break;
+    case Opcode::INEG:
+      break;
+    case Opcode::ICMP_LT:
+      break;
+    case Opcode::ICMP_LTE:
+      break;
+    case Opcode::ICMP_EQ:
+      break;
+    case Opcode::ICMP_NQ:
+      break;
+    case Opcode::ICMP_GT:
+      break;
+    case Opcode::ICMP_GTE:
+      break;
+    case Opcode::FADD:
+      break;
+    case Opcode::FSUB:
+      break;
+    case Opcode::FMUL:
+      break;
+    case Opcode::FDIV:
+      break;
+    case Opcode::FNEG:
+      break;
+    case Opcode::FCMP_LT:
+      break;
+    case Opcode::FCMP_LTE:
+      break;
+    case Opcode::FCMP_EQ:
+      break;
+    case Opcode::FCMP_NQ:
+      break;
+    case Opcode::FCMP_GT:
+      break;
+    case Opcode::FCMP_GTE:
+      break;
+    case Opcode::INIT:
+      break;
+    case Opcode::UPDATE:
+      break;
+    case Opcode::LOAD:
+      break;
+    case Opcode::STORE:
+      break;
+    case Opcode::ALLOCA:
+      break;
+    case Opcode::LEA:
+      break;
+    case Opcode::COND_JUMP:
+      break;
+    case Opcode::JUMP:
+      break;
+    case Opcode::CONTINUE:
+      break;
+    case Opcode::BREAK:
+      break;
+    case Opcode::RETURN:
+      break;
+    case Opcode::PHI:
+      break;
+    case Opcode::LOOP:
+      break;
+    case Opcode::CALL:
+      break;
+    case Opcode::NOP:
+      break;
+
     default:
       // For now we log as we are still implementing the IR.
       DBG_ERROR("Unhandled opcode: ", opcode);
