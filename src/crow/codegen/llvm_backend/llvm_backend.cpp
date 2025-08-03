@@ -45,10 +45,25 @@ auto LlvmBackend::on_function(FunctionPtr& t_fn) -> void
 {
   const auto fn_name{t_fn->m_name};
 
-  auto params{std::vector<llvm::Type*>()};
+  auto llvm_params{std::vector<llvm::Type*>()};
+  const auto params{t_fn->m_params};
+  for(const auto& param : params) {
+    const auto opt{param->m_type.native_type()};
+    if(!opt) {
+      DBG_ERROR("Cancelling function LLVM IR generation, cause return type is "
+                "note resolvalbe to native type.");
+      return;
+    }
+    const auto native_type{opt.value()};
+    auto* llvm_type{native_type2llvm(m_context, native_type)};
+
+    llvm_params.push_back(llvm_type);
+  }
 
   // FIXME: We only support native types right now.
   auto return_type{t_fn->m_return_type};
+
+  // TODO: make a function for this.
   const auto opt{return_type.native_type()};
   if(!opt) {
     DBG_ERROR("Cancelling function LLVM IR generation, cause return type is "
@@ -58,7 +73,7 @@ auto LlvmBackend::on_function(FunctionPtr& t_fn) -> void
   const auto native_type{opt.value()};
   auto* llvm_return_type{native_type2llvm(m_context, native_type)};
 
-  auto* fn_type{llvm::FunctionType::get(llvm_return_type, params, false)};
+  auto* fn_type{llvm::FunctionType::get(llvm_return_type, llvm_params, false)};
 
   auto* fn{llvm::Function::Create(fn_type, llvm::Function::ExternalLinkage,
                                   fn_name, m_module.get())};

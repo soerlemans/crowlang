@@ -190,11 +190,7 @@ struct SsaVar {
   u64 m_id;
   TypeVariant m_type;
 
-  // TODO: Embed typing information from, aggregate types.
-  std::string m_name;
-
-  SsaVar(u64 t_id, TypeVariant t_type, std::string_view t_name = "")
-    : m_id{t_id}, m_type{t_type}, m_name{t_name}
+  SsaVar(u64 t_id, TypeVariant t_type): m_id{t_id}, m_type{t_type}
   {}
 
   virtual ~SsaVar() = default;

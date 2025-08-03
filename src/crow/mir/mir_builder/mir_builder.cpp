@@ -79,12 +79,31 @@ auto MirBuilder::visit(If* t_if) -> Any
 
 auto MirBuilder::visit(Loop* t_loop) -> Any
 {
+  auto init_expr{t_loop->init_expr()};
+  auto cond{t_loop->condition()};
+  auto expr{t_loop->expr()};
+  auto body{t_loop->body()};
 
+  // Make
+  traverse(init_expr);
+  // TODO: Jump to conditional block.
+
+  // TODO: Put in own basic block for looping.
+  traverse(cond);
+  // TODO: Check condition and quit, if condition fails, else to go expr block.
+
+  // TODO: Put in own basic block for looping.
+  traverse(expr);
+  // TODO: Jump to start of body block.
+
+  // TODO: Put in own basic block for looping.
+  traverse(body);
+  // TODO: Go to conditional basic block check.
 
   return {};
 }
 
-auto MirBuilder::visit(Continue* t_continue) -> Any
+auto MirBuilder::visit([[maybe_unused]] Continue* t_continue) -> Any
 {
   // TODO: Replace continue with JUMP?
   m_factory->add_instruction(Opcode::CONTINUE);
@@ -92,7 +111,7 @@ auto MirBuilder::visit(Continue* t_continue) -> Any
   return {};
 }
 
-auto MirBuilder::visit(Break* t_break) -> Any
+auto MirBuilder::visit([[maybe_unused]] Break* t_break) -> Any
 {
   // TODO: Replace break with JUMP?
   m_factory->add_instruction(Opcode::BREAK);
@@ -100,7 +119,7 @@ auto MirBuilder::visit(Break* t_break) -> Any
   return {};
 }
 
-auto MirBuilder::visit(Defer* t_defer) -> Any
+auto MirBuilder::visit([[maybe_unused]] Defer* t_defer) -> Any
 {
   // Defer statements are inserted at the end.
   // Before all return statements.
