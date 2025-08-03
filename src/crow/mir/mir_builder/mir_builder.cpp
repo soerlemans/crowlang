@@ -55,7 +55,7 @@ auto MirBuilder::visit(If* t_if) -> Any
   const auto then_jump{m_factory->create_instruction(Opcode::JUMP)};
 
   // Alt block:
-	// TODO: Potentially cleanup?
+  // TODO: Potentially cleanup?
   if(alt) {
     auto& alt_block{m_factory->add_block("if_alt")};
     if_instr.add_operand({&alt_block});
