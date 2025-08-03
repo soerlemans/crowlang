@@ -29,6 +29,7 @@ using types::core::TypeVariant;
 struct Literal;
 struct SsaVar;
 struct Label;
+struct FunctionLabel;
 struct Instruction;
 struct BasicBlock;
 struct Function;
@@ -39,23 +40,32 @@ using ModulePtr = std::shared_ptr<Module>;
 
 using SsaVarPtr = std::shared_ptr<SsaVar>;
 using FunctionPtr = std::shared_ptr<Function>;
+using BasicBlockPtr = std::shared_ptr<BasicBlock>;
 
 // We use lists for instructions and basic blocks.
 // This is to prevent any iterator or reference invalidation.
 // During the building of the IR.
 // Or the modifying of it afterwards.
-using CfgSeq = std::list<BasicBlock*>;
-using InstructionSeq = std::list<Instruction>;
-using BasicBlockSeq = std::list<BasicBlock>;
-using FunctionSeq = std::list<FunctionPtr>;
 using ModuleSeq = std::list<Module>;
+using FunctionSeq = std::list<FunctionPtr>;
+
+using BasicBlockSeq = std::list<BasicBlock>;
+using InstructionSeq = std::list<Instruction>;
+
 using SsaVarVec = std::vector<SsaVarPtr>;
+using CfgSeq = std::list<BasicBlock*>;
 
 // TODO: Support more then just bool, add all other supported native_types.
 //! Variant containing all supported literal types.
 using LiteralValue = std::variant<uint, int, f64, std::string, bool>;
 
-using Operand = std::variant<SsaVarPtr, Literal, Label>;
+/*!
+ * The @ref FunctionPtr is needed for resolving function calls.
+ * The @ref SsaVarPtr is needed for obtaining references to SSA variables.
+ * The @ref Literal is needed for obtaining references to literals.
+ * The @ref Label is needed for obtaining references to basic blocks.
+ */
+using Operand = std::variant<SsaVarPtr, Literal, Label, FunctionLabel>;
 using OperandSeq = std::vector<Operand>;
 
 using BasicBlockIter = BasicBlockSeq::iterator;
@@ -180,11 +190,7 @@ struct SsaVar {
   u64 m_id;
   TypeVariant m_type;
 
-  // TODO: Embed typing information from, aggregate types.
-  std::string m_name;
-
-  SsaVar(u64 t_id, TypeVariant t_type, std::string_view t_name = "")
-    : m_id{t_id}, m_type{t_type}, m_name{t_name}
+  SsaVar(u64 t_id, TypeVariant t_type): m_id{t_id}, m_type{t_type}
   {}
 
   virtual ~SsaVar() = default;
@@ -200,6 +206,17 @@ struct Label {
   auto label() const -> std::string_view;
 
   virtual ~Label() = default;
+};
+
+struct FunctionLabel {
+  FunctionPtr m_target;
+
+  FunctionLabel(FunctionPtr t_target): m_target{t_target}
+  {}
+
+  auto label() const -> std::string_view;
+
+  virtual ~FunctionLabel() = default;
 };
 
 struct Instruction {
@@ -224,8 +241,8 @@ struct BasicBlock {
   InstructionSeq m_instructions;
 
   // TODO: The control flow graphs, should maybe be a map keyed by label?
-  CfgSeq m_successors;
-  CfgSeq m_predecessors;
+  // CfgSeq m_successors;
+  // CfgSeq m_predecessors;
 
   BasicBlock() = default;
 
@@ -258,14 +275,13 @@ auto opcode2str(Opcode t_opcode) -> std::string_view;
 
 // Functions:
 auto operator<<(std::ostream& t_os, const mir::Opcode t_op) -> std::ostream&;
-
 auto operator<<(std::ostream& t_os, const mir::Literal& t_lit) -> std::ostream&;
-
 auto operator<<(std::ostream& t_os, const mir::SsaVar& t_var) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::SsaVarPtr& t_ptr)
   -> std::ostream&;
-
 auto operator<<(std::ostream& t_os, const mir::Label& t_label) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::FunctionLabel& t_label)
+  -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::Operand& t_operand)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::Instruction& t_inst)

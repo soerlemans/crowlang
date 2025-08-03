@@ -8,7 +8,7 @@
 #include "lib/stdexcept/stdexcept.hpp"
 
 // Local Includes:
-#include "type_variant2cpp_type.hpp"
+#include "type2cpp.hpp"
 
 namespace codegen::cpp_backend {
 // Using Statements:
@@ -51,7 +51,7 @@ auto PrototypeGenerator::visit(Function* t_fn) -> Any
   const auto identifier{t_fn->identifier()};
 
   const auto fn_type{t_fn->get_type().function()};
-  const auto ret_type{type_variant2cpp_type(fn_type->m_return_type)};
+  const auto ret_type{type_variant2cpp(fn_type->m_return_type)};
 
   std::stringstream ss{};
 

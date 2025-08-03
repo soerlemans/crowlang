@@ -33,7 +33,7 @@ enum class TranslationUnitPhase {
   LEXING,
   PARSING,
   SEMANTIC_ANALYSIS,
-  IR_GENERATION,
+  MIR_GENERATION,
   CODE_GENERATION,
   COMPLETED,
   FAILED
@@ -60,6 +60,7 @@ class TranslationUnit {
   TextStreamPtr m_text_stream;
   TokenStream m_token_stream;
   NodePtr m_ast;
+  ModulePtr m_mir;
 
   public:
   TranslationUnit(BuildUnitPtr t_build_unit, path t_source_file);
@@ -77,7 +78,7 @@ class TranslationUnit {
   virtual auto semantic(NodePtr t_ast) -> void;
 
   //! Translate the AST to CLIR.
-  virtual auto ir(NodePtr t_ast) -> ModulePtr;
+  virtual auto mir(NodePtr t_ast) -> ModulePtr;
 
   //! Execute the codegeneration backend.
   virtual auto backend(CompileParams& t_params) -> void;

@@ -24,6 +24,8 @@ MirBuilder::MirBuilder(): m_factory{nullptr}
 
 auto MirBuilder::visit(If* t_if) -> Any
 {
+  // TODO: We need support for phi, instruction marking later down the line.
+
   // We need to create two new blocks an if and else branch.
   auto& main_block{m_factory->last_block()};
 
@@ -53,23 +55,26 @@ auto MirBuilder::visit(If* t_if) -> Any
   const auto then_jump{m_factory->create_instruction(Opcode::JUMP)};
 
   // Alt block:
+  // TODO: Potentially cleanup?
   if(alt) {
     auto& alt_block{m_factory->add_block("if_alt")};
     if_instr.add_operand({&alt_block});
 
     traverse(alt);
     const auto alt_jump{m_factory->create_instruction(Opcode::JUMP)};
-  }
 
-  // Final block after the if statement.
-  auto& merge_block{m_factory->add_block("if_merge")};
+    // Final block after the if statement.
+    auto& merge_block{m_factory->add_block("if_merge")};
 
-  // Insert jumps at the end of the blocks.
-  m_factory->insert_jump(then_jump, then_block, merge_block);
+    // Insert jumps at the end of the blocks.
+    m_factory->insert_jump(then_jump, then_block, merge_block);
+    m_factory->insert_jump(alt_jump, alt_block, merge_block);
+  } else {
+    // Final block after the if statement.
+    auto& merge_block{m_factory->add_block("if_merge")};
 
-  if(alt) {
-    // FIXME:
-    // m_factory->insert_jump(alt_jump, alt_block, merge_block);
+    // Insert jumps at the end of the blocks.
+    m_factory->insert_jump(then_jump, then_block, merge_block);
   }
 
   return {};
@@ -77,12 +82,33 @@ auto MirBuilder::visit(If* t_if) -> Any
 
 auto MirBuilder::visit(Loop* t_loop) -> Any
 {
+  auto init_expr{t_loop->init_expr()};
+  auto cond{t_loop->condition()};
+  auto expr{t_loop->expr()};
+  auto body{t_loop->body()};
 
+  // Make
+  traverse(init_expr);
+  // TODO: Jump to conditional block.
+
+  // TODO: Put in own basic block for looping.
+  traverse(cond);
+  // TODO: Check condition and quit, if condition fails, else to go expr block.
+
+  // TODO: Put in own basic block for looping.
+  traverse(expr);
+  // TODO: Jump to start of body block.
+
+  // TODO: Put in own basic block for looping.
+  traverse(body);
+  // TODO: Go to conditional basic block check.
+
+  // TODO: Insert post loop basic block.
 
   return {};
 }
 
-auto MirBuilder::visit(Continue* t_continue) -> Any
+auto MirBuilder::visit([[maybe_unused]] Continue* t_continue) -> Any
 {
   // TODO: Replace continue with JUMP?
   m_factory->add_instruction(Opcode::CONTINUE);
@@ -90,7 +116,7 @@ auto MirBuilder::visit(Continue* t_continue) -> Any
   return {};
 }
 
-auto MirBuilder::visit(Break* t_break) -> Any
+auto MirBuilder::visit([[maybe_unused]] Break* t_break) -> Any
 {
   // TODO: Replace break with JUMP?
   m_factory->add_instruction(Opcode::BREAK);
@@ -98,7 +124,7 @@ auto MirBuilder::visit(Break* t_break) -> Any
   return {};
 }
 
-auto MirBuilder::visit(Defer* t_defer) -> Any
+auto MirBuilder::visit([[maybe_unused]] Defer* t_defer) -> Any
 {
   // Defer statements are inserted at the end.
   // Before all return statements.
@@ -180,9 +206,12 @@ auto MirBuilder::visit(ast::node::function::Function* t_fn) -> Any
 
 auto MirBuilder::visit(Call* t_call) -> Any
 {
-  // TODO: Implement.
-  // TODO: Have the symboltable or a separate symboltable.
-  // Keep references to IR functions.
+  const auto fn_name{t_call->identifier()};
+  const auto fn_args{t_call->args()};
+
+  const auto args{get_call_args(fn_args)};
+
+  m_factory->add_call(fn_name, args);
 
   return {};
 }

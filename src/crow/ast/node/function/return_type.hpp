@@ -10,9 +10,10 @@
 namespace ast::node::function {
 // Using Statements:
 using node_traits::TypeAnnotation;
+using node_traits::TypeData;
 
 // Classes:
-class ReturnType : public TypeAnnotation {
+class ReturnType : public TypeAnnotation, public TypeData {
   public:
   ReturnType(std::string_view t_type);
 
