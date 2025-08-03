@@ -128,7 +128,7 @@ auto CppBackend::visit(If* t_if) -> Any
   const auto then{resolve(t_if->then())};
   const auto alt{resolve(t_if->alt())};
 
-  std::stringstream ss;
+  std::stringstream ss{};
 
   ss << std::format("if({} {}) {{\n", init_expr, cond) << then;
 

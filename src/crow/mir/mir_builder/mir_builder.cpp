@@ -55,23 +55,26 @@ auto MirBuilder::visit(If* t_if) -> Any
   const auto then_jump{m_factory->create_instruction(Opcode::JUMP)};
 
   // Alt block:
+	// TODO: Potentially cleanup?
   if(alt) {
     auto& alt_block{m_factory->add_block("if_alt")};
     if_instr.add_operand({&alt_block});
 
     traverse(alt);
     const auto alt_jump{m_factory->create_instruction(Opcode::JUMP)};
-  }
 
-  // Final block after the if statement.
-  auto& merge_block{m_factory->add_block("if_merge")};
+    // Final block after the if statement.
+    auto& merge_block{m_factory->add_block("if_merge")};
 
-  // Insert jumps at the end of the blocks.
-  m_factory->insert_jump(then_jump, then_block, merge_block);
+    // Insert jumps at the end of the blocks.
+    m_factory->insert_jump(then_jump, then_block, merge_block);
+    m_factory->insert_jump(alt_jump, alt_block, merge_block);
+  } else {
+    // Final block after the if statement.
+    auto& merge_block{m_factory->add_block("if_merge")};
 
-  if(alt) {
-    // FIXME:
-    // m_factory->insert_jump(alt_jump, alt_block, merge_block);
+    // Insert jumps at the end of the blocks.
+    m_factory->insert_jump(then_jump, then_block, merge_block);
   }
 
   return {};
