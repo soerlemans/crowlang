@@ -18,9 +18,7 @@ using node_traits::TypeData;
 class FunctionDecl : public Identifier,
                      public Params,
                      public TypeAnnotation,
-                     public TypeData
-
-{
+                     public TypeData {
   public:
   FunctionDecl(std::string_view t_identifier, NodeListPtr&& t_params,
                std::string_view t_type);
