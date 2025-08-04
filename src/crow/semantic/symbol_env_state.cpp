@@ -7,12 +7,19 @@
 
 // Absolute Includes:
 #include "crow/debug/log.hpp"
+#include "lib/stdexcept/stdexcept.hpp"
+
+// Macros:
+#define MATCH(t_key, t_value) \
+  case SymbolStatus::t_key:   \
+    str = t_value;            \
+    break
 
 namespace semantic {
 SymbolEnvState::SymbolEnvState(): BaseEnvState{}
 {}
 
-auto SymbolEnvState::get_value(const std::string_view t_key) const -> SymbolData
+auto SymbolEnvState::get_value(const std::string_view t_key) const -> Symbol
 {
   const auto [iter, found] = EnvState::find(t_key);
 
@@ -24,9 +31,55 @@ auto SymbolEnvState::get_value(const std::string_view t_key) const -> SymbolData
     throw_type_error("Identifier ", str, " is not defined.");
   }
 
-  // Return the found SymbolData.
-  SymbolData data{iter->second};
-  DBG_INFO("Found Symbol ", str, " of type ", data, " in SymbolEnv!");
-  return {data};
+  // Return the found Symbol.
+  return {iter->second};
+}
+
+auto SymbolEnvState::get_status(const std::string_view t_key) const
+  -> SymbolStatus
+{
+  const auto symbol{get_value(t_key)};
+
+  return symbol.m_status;
+}
+
+auto SymbolEnvState::get_data(const std::string_view t_key) const -> SymbolData
+{
+  const auto symbol{get_value(t_key)};
+
+  return symbol.m_data;
+}
+
+// Functions:
+auto symbol_status2str(const SymbolStatus t_status) -> std::string_view
+{
+  using lib::stdexcept::throw_invalid_argument;
+
+  std::string_view str{};
+
+  switch(t_status) {
+    MATCH(DECLARED, "declared");
+    MATCH(DEFINED, "defined");
+
+    default:
+      throw_invalid_argument(
+        "SymbolStatus could not be converted to std::string_view.");
+      break;
+  }
+
+  return str;
 }
 } // namespace semantic
+
+// Functions:
+auto operator<<(std::ostream& t_os, const semantic::Symbol& t_symbol)
+  -> std::ostream&
+{
+  using semantic::symbol_status2str;
+
+  const auto status{symbol_status2str(t_symbol.m_status)};
+
+  t_os << "Symbol{ status: " << status << ", data: " << t_symbol.m_data << "}";
+
+  return t_os;
+}

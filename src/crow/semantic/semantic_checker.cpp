@@ -31,60 +31,112 @@ NODE_USING_ALL_NAMESPACES()
 auto SemanticChecker::push_env() -> void
 {
   m_symbol_state.push_env();
-  // m_symbol_table_factory.push_scope();
 }
 
 auto SemanticChecker::pop_env() -> void
 {
   m_symbol_state.pop_env();
-  // m_symbol_table_factory.pop_scope();
 }
 
 auto SemanticChecker::clear_env() -> void
 {
   // Reset/clear the construction object.
   m_symbol_state.clear();
-  // m_symbol_table_factory.clear();
 }
 
 // Environment state related methods:
-auto SemanticChecker::add_symbol(const std::string_view t_key,
-                                 const SymbolData& t_data) -> bool
+auto SemanticChecker::add_symbol_declaration(const std::string_view t_key,
+                                             const SymbolData& t_data) -> void
 {
-  // If insertion in the environment fails, something is going wrong.
-  // Possibly a duplicate entry or similar.
-  const auto [iter, insertion_success] =
-    m_symbol_state.insert({std::string{t_key}, t_data});
+  // First check if the entry exists.
+  const auto [iter, exists] = m_symbol_state.find(t_key);
+  if(exists) {
+    const auto& symbol{iter->second};
 
+    std::stringstream ss{};
+    switch(symbol.m_status) {
+      case SymbolStatus::DECLARED:
+        [[fallthrough]];
+      case SymbolStatus::DEFINED: {
+        // Check for conflicting.
+        if(t_data != symbol.m_data) {
+          ss << "Conflicting declarations and definitions for "
+             << std::quoted(t_key) << ".";
 
-  DBG_VERBOSE("EnvState: ", m_symbol_state);
+          throw_type_error(ss.str());
+        }
+        break;
+      }
 
-  // Add symbol to global symbol table.
-  // Do not insert if insertion in environment failed.
-  if(insertion_success) {
-    // m_symbol_table_factory.insert(t_key, t_data);
+      default: {
+        using lib::stdexcept::throw_invalid_argument;
+
+        throw_invalid_argument("Unhandled SymbolStatus case.");
+        break;
+      }
+    }
+  } else {
+    Symbol symbol{SymbolStatus::DECLARED, t_data};
+    m_symbol_state.insert({std::string{t_key}, symbol});
   }
+}
 
-  return insertion_success;
+auto SemanticChecker::add_symbol_definition(const std::string_view t_key,
+                                            const SymbolData& t_data) -> void
+{
+  // First check if the entry exists.
+  const auto [iter, exists] = m_symbol_state.find(t_key);
+  if(exists) {
+    auto& symbol{iter->second};
+
+    std::stringstream ss{};
+    switch(symbol.m_status) {
+      case SymbolStatus::DECLARED: {
+        // Check symbolData equality.
+        if(t_data == symbol.m_data) {
+          // Change from declaration to definition.
+          symbol.m_status = SymbolStatus::DEFINED;
+        } else {
+          ss << "Conflicting declaration and definition for "
+             << std::quoted(t_key) << ".";
+
+          throw_type_error(ss.str());
+        }
+        break;
+      }
+
+      case SymbolStatus::DEFINED: {
+        // Redefinition is not allowed so throw.
+        ss << "Redefining " << std::quoted(t_key) << " is not allowed.";
+
+        throw_type_error(ss.str());
+        break;
+      }
+
+      default: {
+        using lib::stdexcept::throw_invalid_argument;
+
+        throw_invalid_argument("Unhandled SymbolStatus case.");
+        break;
+      }
+    }
+  } else {
+    Symbol symbol{SymbolStatus::DEFINED, t_data};
+    m_symbol_state.insert({std::string{t_key}, symbol});
+  }
 }
 
 auto SemanticChecker::get_symbol_data_from_env(
   const std::string_view t_key) const -> SymbolData
 {
-  return m_symbol_state.get_value(t_key);
+  return m_symbol_state.get_data(t_key);
 }
-
-// auto SemanticChecker::retrieve_symbol_table() const -> void
-// {
-//   // Retrieve the construct global symbol table.
-//   return m_symbol_table_factory.retrieve();
-// }
 
 // Type promotion related methods:
 auto SemanticChecker::handle_condition(const SymbolData& t_data,
                                        const TextPosition& t_pos) const -> void
 {
-  std::stringstream ss;
+  std::stringstream ss{};
 
   if(const auto opt{t_data.native_type()}; opt) {
     if(!is_condition(opt.value())) {
@@ -258,9 +310,7 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
   const SymbolData data{symbol::make_function(params_type_list, ret_type)};
 
   // Add the function and ID to the environment.
-  if(!add_symbol(id, data)) {
-    // TODO: Throw.
-  }
+  add_symbol_definition(id, data);
   DBG_INFO("Function: ", id, "(", params_type_list, ") -> ", ret_type);
 
   // Annotate AST.
@@ -281,9 +331,7 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
     const SymbolData data{symbol::make_variable(false, type)};
 
     // Add parameter to environment.
-    if(!add_symbol(id, data)) {
-      // TODO: Throw!
-    }
+    add_symbol_definition(id, data);
   }
 
   // Run type checking on the function body.
@@ -295,8 +343,8 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
 
 auto SemanticChecker::visit(Call* t_fn_call) -> Any
 {
-  // TODO: Improve this code to be more generic and clean, error if this is not
-  // a function name
+  // TODO: Improve this code to be more generic and clean, error if this is
+  // not a function name
   const auto id{t_fn_call->identifier()};
 
   // FIXME: Temporary whitelist for standard lib print and println:
@@ -386,9 +434,7 @@ auto SemanticChecker::visit(Let* t_let) -> Any
 
   // Create the SymbolData for a variable.
   const SymbolData data{symbol::make_variable(true, expr_data)};
-  if(!add_symbol(id, data)) {
-    // TODO: Throw!
-  }
+  add_symbol_definition(id, data);
 
   return {};
 }
@@ -400,9 +446,7 @@ auto SemanticChecker::visit(Var* t_var) -> Any
 
   // Create the SymbolData for a variable.
   const SymbolData data{symbol::make_variable(false, expr_data)};
-  if(!add_symbol(id, data)) {
-    // TODO: Throw!
-  }
+  add_symbol_definition(id, data);
 
   return {};
 }
@@ -431,11 +475,7 @@ auto SemanticChecker::visit(FunctionDecl* t_fdecl) -> Any
   const auto params_type_list{get_type_list(params)};
   const SymbolData data{symbol::make_function(params_type_list, ret_type)};
 
-  // Add the function and ID to the environment.
-  // Check if existing definition exists.
-  if(!add_symbol(id, data)) {
-    // TODO: Throw.
-  }
+  add_symbol_declaration(id, data);
   DBG_INFO("FunctionDecl: ", id, "(", params_type_list, ") -> ", ret_type);
 
   // Annotate AST.
@@ -451,10 +491,7 @@ auto SemanticChecker::visit(LetDecl* t_ldecl) -> Any
 
   // Create the SymbolData for a variable.
   const SymbolData data{symbol::make_variable(true, type_data)};
-  // Check if existing definition exists.
-  if(!add_symbol(id, data)) {
-    // TODO: Throw!
-  }
+  add_symbol_declaration(id, data);
 
   return {};
 }
@@ -466,10 +503,7 @@ auto SemanticChecker::visit(VarDecl* t_vdecl) -> Any
 
   // Create the SymbolData for a variable.
   const SymbolData data{symbol::make_variable(false, type_data)};
-  // Check if existing definition exists.
-  if(!add_symbol(id, data)) {
-    // TODO: Throw!
-  }
+  add_symbol_declaration(id, data);
 
   return {};
 }

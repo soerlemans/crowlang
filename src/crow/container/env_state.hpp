@@ -128,6 +128,18 @@ class EnvState {
     return ConstFindResult{pair_iter, found};
   }
 
+  auto contains(std::string_view t_key) const -> bool
+  {
+    for(const auto& env : m_envs | std::views::reverse) {
+      const auto found{env.contains(std::string{t_key})};
+      if(found) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   virtual auto push_env() -> void
   {
     m_envs.emplace_back();

@@ -57,7 +57,6 @@ using types::core::NativeTypeOpt;
 class SemanticChecker : public NodeVisitor {
   private:
   SymbolEnvState m_symbol_state;
-  // SymbolTableFactory m_symbol_table_factory;
   TypePromoter m_type_promoter;
 
   protected:
@@ -66,19 +65,20 @@ class SemanticChecker : public NodeVisitor {
   auto pop_env() -> void;
   auto clear_env() -> void;
 
+  auto add_symbol_declaration(std::string_view t_id, const SymbolData& t_data)
+    -> void;
+
   /*!
    * Add symbol to current @ref EnvSate.
    * Also add the symbol to the global @ref SymbolTable.
    *
    * @return false means inserting the symbol failed.
    */
-  [[nodiscard("Returned boolean indicates error value, must be checked.")]]
-  auto add_symbol(std::string_view t_id, const SymbolData& t_data) -> bool;
+  auto add_symbol_definition(std::string_view t_id, const SymbolData& t_data)
+    -> void;
 
   [[nodiscard("Pure method must use result.")]]
   auto get_symbol_data_from_env(std::string_view t_id) const -> SymbolData;
-
-  // auto retrieve_symbol_table() const -> SymbolTablePtr;
 
   // Helper methods for type promotion:
   //! Handle type conversion for conditionals.
