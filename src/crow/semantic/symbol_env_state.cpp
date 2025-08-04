@@ -79,7 +79,12 @@ auto operator<<(std::ostream& t_os, const semantic::Symbol& t_symbol)
 
   const auto status{symbol_status2str(t_symbol.m_status)};
 
-  t_os << "Symbol{ status: " << status << ", data: " << t_symbol.m_data << "}";
+  // clang-format off
+  t_os << "Symbol{"
+			 << "status: " << status << ", "
+			 << "data: " << t_symbol.m_data
+			 << "}";
+  // clang-format on
 
   return t_os;
 }
