@@ -72,8 +72,7 @@ auto CppBackend::prototypes(NodePtr t_ast) -> std::string
 {
   PrototypeGenerator generator{};
 
-  // return generator.generate(t_ast);
-  return {};
+  return generator.generate(t_ast);
 }
 
 auto CppBackend::should_terminate() -> bool

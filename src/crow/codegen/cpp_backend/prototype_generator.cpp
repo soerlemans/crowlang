@@ -66,6 +66,34 @@ auto PrototypeGenerator::visit(Function* t_fn) -> Any
   return std::format("auto {}({}) -> {};\n", identifier, ss.str(), ret_type);
 }
 
+// Lvalue:
+auto PrototypeGenerator::visit(Let* t_let) -> Any
+{
+  return std::string{};
+}
+
+auto PrototypeGenerator::visit(Var* t_var) -> Any
+{
+  return std::string{};
+}
+
+// Meta:
+auto PrototypeGenerator::visit(FunctionDecl* t_fdecl) -> Any
+{
+  return std::string{};
+}
+
+auto PrototypeGenerator::visit(LetDecl* t_ldecl) -> Any
+{
+  return std::string{};
+}
+
+auto PrototypeGenerator::visit(VarDecl* t_vdecl) -> Any
+{
+  return std::string{};
+}
+
+// Module:
 auto PrototypeGenerator::visit([[maybe_unused]] ModuleDecl* t_module) -> Any
 {
   // TODO: Do something with this.

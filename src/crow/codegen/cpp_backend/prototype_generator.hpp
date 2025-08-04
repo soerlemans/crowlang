@@ -40,6 +40,15 @@ class PrototypeGenerator : public NodeVisitor {
   auto visit(node::function::Parameter* t_param) -> Any override;
   auto visit(node::function::Function* t_fn) -> Any override;
 
+  // Lvalue:
+  auto visit(node::lvalue::Let* t_let) -> Any override;
+  auto visit(node::lvalue::Var* t_var) -> Any override;
+
+  // Meta:
+  auto visit(node::meta::FunctionDecl* t_fdecl) -> Any override;
+  auto visit(node::meta::LetDecl* t_ldecl) -> Any override;
+  auto visit(node::meta::VarDecl* t_vdecl) -> Any override;
+
   // Module:
   auto visit(node::packaging::ModuleDecl* t_module) -> Any override;
 
