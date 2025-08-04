@@ -193,4 +193,3 @@ auto operator<<(std::ostream& t_os, const semantic::symbol::SymbolData& t_data)
 
   return t_os;
 }
-

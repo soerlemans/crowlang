@@ -6,7 +6,9 @@
 #include "crow/mir/mir_builder/mir_module_factory.hpp"
 
 namespace mir::mir_builder {
-// Using:
+// Aliases:
+namespace node = ast::node;
+
 using ast::node::NodePtr;
 using ast::visitor::Any;
 using ast::visitor::NodeVisitor;
@@ -32,65 +34,70 @@ class MirBuilder : public NodeVisitor {
   MirBuilder();
 
   // Control:
-  virtual auto visit(ast::node::control::If* t_if) -> Any;
-  virtual auto visit(ast::node::control::Loop* t_loop) -> Any;
-  virtual auto visit(ast::node::control::Continue* t_continue) -> Any;
-  virtual auto visit(ast::node::control::Break* t_break) -> Any;
-  virtual auto visit(ast::node::control::Defer* t_defer) -> Any;
-  virtual auto visit(ast::node::control::Return* t_return) -> Any;
+  auto visit(node::control::If* t_if) -> Any override;
+  auto visit(node::control::Loop* t_loop) -> Any override;
+  auto visit(node::control::Continue* t_continue) -> Any override;
+  auto visit(node::control::Break* t_break) -> Any override;
+  auto visit(node::control::Defer* t_defer) -> Any override;
+  auto visit(node::control::Return* t_return) -> Any override;
 
   // Function:
-  virtual auto visit(ast::node::function::Parameter* t_param) -> Any;
-  virtual auto visit(ast::node::function::Function* t_fn) -> Any;
-  virtual auto visit(ast::node::function::Call* t_fn_call) -> Any;
-  virtual auto visit(ast::node::function::ReturnType* t_rt) -> Any;
+  auto visit(node::function::Parameter* t_param) -> Any override;
+  auto visit(node::function::Function* t_fn) -> Any override;
+  auto visit(node::function::Call* t_fn_call) -> Any override;
+  auto visit(node::function::ReturnType* t_rt) -> Any override;
 
   // Lvalue:
-  virtual auto visit(ast::node::lvalue::Let* t_let) -> Any;
-  virtual auto visit(ast::node::lvalue::Var* t_var) -> Any;
-  virtual auto visit(ast::node::lvalue::Variable* t_var) -> Any;
+  auto visit(node::lvalue::Let* t_let) -> Any override;
+  auto visit(node::lvalue::Var* t_var) -> Any override;
+  auto visit(node::lvalue::Variable* t_var) -> Any override;
+
+  // Meta:
+  auto visit(node::meta::FunctionDecl* t_fdecl) -> Any override;
+  auto visit(node::meta::LetDecl* t_ldecl) -> Any override;
+  auto visit(node::meta::VarDecl* t_vdecl) -> Any override;
 
   // Operators:
-  virtual auto visit(ast::node::operators::Arithmetic* t_arith) -> Any;
-  virtual auto visit(ast::node::operators::Assignment* t_assign) -> Any;
-  virtual auto visit(ast::node::operators::Comparison* t_comp) -> Any;
+  auto visit(node::operators::Arithmetic* t_arith) -> Any override;
+  auto visit(node::operators::Assignment* t_assign) -> Any override;
+  auto visit(node::operators::Comparison* t_comp) -> Any override;
 
-  virtual auto visit(ast::node::operators::Increment* t_inc) -> Any;
-  virtual auto visit(ast::node::operators::Decrement* t_dec) -> Any;
+  auto visit(node::operators::Increment* t_inc) -> Any override;
+  auto visit(node::operators::Decrement* t_dec) -> Any override;
 
-  virtual auto visit(ast::node::operators::UnaryPrefix* t_up) -> Any;
+  auto visit(node::operators::UnaryPrefix* t_up) -> Any override;
 
   // Logical:
-  virtual auto visit(ast::node::operators::Not* t_not) -> Any;
-  virtual auto visit(ast::node::operators::And* t_and) -> Any;
-  virtual auto visit(ast::node::operators::Or* t_or) -> Any;
+  auto visit(node::operators::Not* t_not) -> Any override;
+  auto visit(node::operators::And* t_and) -> Any override;
+  auto visit(node::operators::Or* t_or) -> Any override;
 
-  virtual auto visit(ast::node::operators::Ternary* t_ternary) -> Any;
+  auto visit(node::operators::Ternary* t_ternary) -> Any override;
 
   // Packaging:
-  virtual auto visit(ast::node::packaging::Import* t_import) -> Any;
-  virtual auto visit(ast::node::packaging::ModuleDecl* t_mod) -> Any;
+  auto visit(node::packaging::Import* t_import) -> Any override;
+  auto visit(node::packaging::ModuleDecl* t_mod) -> Any override;
 
   // Rvalue:
-  virtual auto visit(ast::node::rvalue::Float* t_float) -> Any;
-  virtual auto visit(ast::node::rvalue::Integer* t_int) -> Any;
-  virtual auto visit(ast::node::rvalue::String* t_str) -> Any;
-  virtual auto visit(ast::node::rvalue::Boolean* t_bool) -> Any;
+  auto visit(node::rvalue::Float* t_float) -> Any override;
+  auto visit(node::rvalue::Integer* t_int) -> Any override;
+  auto visit(node::rvalue::String* t_str) -> Any override;
+  auto visit(node::rvalue::Boolean* t_bool) -> Any override;
 
   // Typing:
-  virtual auto visit(ast::node::typing::MethodDecl* t_md) -> Any;
-  virtual auto visit(ast::node::typing::Interface* t_ifc) -> Any;
-  virtual auto visit(ast::node::typing::MemberDecl* t_md) -> Any;
-  virtual auto visit(ast::node::typing::Struct* t_struct) -> Any;
-  virtual auto visit(ast::node::typing::Impl* t_impl) -> Any;
-  virtual auto visit(ast::node::typing::DotExpr* t_dot_expr) -> Any;
+  auto visit(node::typing::MethodDecl* t_md) -> Any override;
+  auto visit(node::typing::Interface* t_ifc) -> Any override;
+  auto visit(node::typing::MemberDecl* t_md) -> Any override;
+  auto visit(node::typing::Struct* t_struct) -> Any override;
+  auto visit(node::typing::Impl* t_impl) -> Any override;
+  auto visit(node::typing::DotExpr* t_dot_expr) -> Any override;
 
   // Misc:
-  virtual auto visit(ast::node::List* t_list) -> Any;
+  auto visit(node::List* t_list) -> Any override;
 
   // Implementation:
   //! Return all the SSA vars that are needed for a call.
-  auto get_call_args(ast::node::NodeListPtr t_list) -> SsaVarVec;
+  auto get_call_args(node::NodeListPtr t_list) -> SsaVarVec;
 
   //! Translate the AST to a CLIR module.
   auto translate(NodePtr t_ast) -> ModulePtr;

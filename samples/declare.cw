@@ -3,7 +3,7 @@ module declare_module
 declare func fwd_func() -> int
 
 func fwd_func() -> int {
-  return -1
+  return 0
 }
 
 func main() -> int {

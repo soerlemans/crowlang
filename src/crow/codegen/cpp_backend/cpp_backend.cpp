@@ -72,7 +72,8 @@ auto CppBackend::prototypes(NodePtr t_ast) -> std::string
 {
   PrototypeGenerator generator{};
 
-  return generator.generate(t_ast);
+  // return generator.generate(t_ast);
+  return {};
 }
 
 auto CppBackend::should_terminate() -> bool
@@ -319,6 +320,48 @@ auto CppBackend::visit(Variable* t_var) -> Any
   const auto identifier{t_var->identifier()};
 
   return std::format("{}", identifier);
+}
+
+// Meta:
+auto CppBackend::visit(FunctionDecl* t_fdecl) -> Any
+{
+  const auto identifier{t_fdecl->identifier()};
+
+  const auto fn_type{t_fdecl->get_type().function()};
+  const auto ret_type{type_variant2cpp(fn_type->m_return_type)};
+
+  std::stringstream param_ss{};
+
+  auto sep{""sv};
+  const auto params{t_fdecl->params()};
+  for(const auto& param : *params) {
+    param_ss << sep << resolve(param);
+
+    sep = ", ";
+  }
+
+  return std::format("auto {}({}) -> {};\n", identifier, param_ss.str(),
+                     ret_type);
+}
+
+auto CppBackend::visit(LetDecl* t_ldecl) -> Any
+{
+  const auto identifier{t_ldecl->identifier()};
+
+  const auto type_variant{t_ldecl->get_type()};
+  const auto type{type_variant2cpp(type_variant)};
+
+  return std::format("const {} {}{{}};", type, identifier);
+}
+
+auto CppBackend::visit(VarDecl* t_vdecl) -> Any
+{
+  const auto identifier{t_vdecl->identifier()};
+
+  const auto type_variant{t_vdecl->get_type()};
+  const auto type{type_variant2cpp(type_variant)};
+
+  return std::format("{} {}{{}};", type, identifier);
 }
 
 // Operators:

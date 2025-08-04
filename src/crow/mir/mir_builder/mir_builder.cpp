@@ -284,6 +284,28 @@ auto MirBuilder::visit(Variable* t_var) -> Any
   return {};
 }
 
+// Meta:
+auto MirBuilder::visit(FunctionDecl* t_fdecl) -> Any
+{
+  // TODO: Implement forward declarations.
+
+  return {};
+}
+
+auto MirBuilder::visit(LetDecl* t_ldecl) -> Any
+{
+  // TODO: Implement forward declarations.
+
+  return {};
+}
+
+auto MirBuilder::visit(VarDecl* t_vdecl) -> Any
+{
+  // TODO: Implement forward declarations.
+
+  return {};
+}
+
 // Operators:
 auto MirBuilder::visit(Arithmetic* t_arith) -> Any
 {
@@ -590,7 +612,7 @@ auto MirBuilder::visit(UnaryPrefix* t_up) -> Any
 
     case UnaryPrefixOp::MINUS:
       // TODO: Determine if float or integer.
-      m_factory->add_instruction(Opcode::ISUB);
+      // m_factory->add_instruction(Opcode::ISUB);
 
       // TODO: Traverse left.
       break;

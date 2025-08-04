@@ -736,6 +736,7 @@ auto CrowParser::declare() -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::DECLARE)) {
+    PARSER_FOUND(TokenType::DECLARE);
     std::string id{};
     std::string type{};
     std::string ret_type{};
