@@ -154,6 +154,11 @@ class AstPrinter : public NodeVisitor {
   auto visit(node::lvalue::Var* t_var) -> Any override;
   auto visit(node::lvalue::Variable* t_var) -> Any override;
 
+  // Meta:
+  auto visit(node::meta::FunctionDecl* t_fdecl) -> Any override;
+  auto visit(node::meta::LetDecl* t_ldecl) -> Any override;
+  auto visit(node::meta::VarDecl* t_vdecl) -> Any override;
+
   // Operators:
   auto visit(node::operators::Arithmetic* t_arith) -> Any override;
   auto visit(node::operators::Assignment* t_assign) -> Any override;
