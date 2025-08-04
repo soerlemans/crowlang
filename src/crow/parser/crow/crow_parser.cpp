@@ -678,7 +678,7 @@ auto CrowParser::return_type() -> std::string
 auto CrowParser::return_type_opt() -> std::string
 {
   DBG_TRACE_FN(VERBOSE);
-  std::string type;
+  std::string type{};
 
   if(after_newlines(TokenType::ARROW)) {
     expect(TokenType::ARROW);
@@ -736,11 +736,34 @@ auto CrowParser::declare() -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::DECLARE)) {
-    // if(next_if(TokenType::LET)) {
-    // }
+    if(next_if(TokenType::FUNCTION)) {
+      const auto tt_id{expect(TokenType::IDENTIFIER)};
+      const auto id{tt_id.str()};
 
-    // node =
-    //   make_node<Function>(id, std::move(params), type, std::move(body_ptr));
+      auto params{parens([this] {
+        return this->param_list_opt();
+      })};
+
+      const auto type{return_type()};
+
+      node = make_node<FunctionDecl>(id, params, type);
+    } else if(next_if(TokenType::LET)) {
+      const auto tt_id{expect(TokenType::IDENTIFIER)};
+      const auto id{tt_id.str()};
+      expect(TokenType::COLON);
+      type = expect(TokenType::IDENTIFIER).str();
+
+      node = make_node<LetDecl>(id, type);
+    } else if(next_if(TokenType::VAR)) {
+      const auto tt_id{expect(TokenType::IDENTIFIER)};
+      const auto id{tt_id.str()};
+      expect(TokenType::COLON);
+      type = expect(TokenType::IDENTIFIER).str();
+
+      node = make_node<VarDecl>(id, type);
+    } else {
+      // TODO: Error handle.
+    }
   }
 
   return node;
