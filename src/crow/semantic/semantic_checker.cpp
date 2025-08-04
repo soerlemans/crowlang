@@ -420,6 +420,60 @@ auto SemanticChecker::visit(Variable* t_var) -> Any
   return {var_data};
 }
 
+// Meta:
+auto SemanticChecker::visit(FunctionDecl* t_fdecl) -> Any
+{
+  const auto id{t_fn->identifier()};
+  const auto ret_type{str2nativetype(t_fn->type())};
+  const auto params{t_fn->params()};
+
+  // Register function type signature to environment.
+  const auto params_type_list{get_type_list(params)};
+  const SymbolData data{symbol::make_function(params_type_list, ret_type)};
+
+  // Add the function and ID to the environment.
+  // Check if existing definition exists.
+  if(!add_symbol(id, data)) {
+    // TODO: Throw.
+  }
+  DBG_INFO("FunctionDecl: ", id, "(", params_type_list, ") -> ", ret_type);
+
+  // Annotate AST.
+  t_fn->set_type(data.type_variant());
+
+  return {};
+}
+
+auto SemanticChecker::visit(LetDecl* t_ldecl) -> Any
+{
+  const auto id{t_ldecl->identifier()};
+  const auto expr_data{decl_expr(t_ldecl)};
+
+  // Create the SymbolData for a variable.
+  const SymbolData data{symbol::make_variable(true, expr_data)};
+  // Check if existing definition exists.
+  if(!add_symbol(id, data)) {
+    // TODO: Throw!
+  }
+
+  return {};
+}
+
+auto SemanticChecker::visit(VarDecl* t_vdecl) -> Any
+{
+  const auto id{t_vdecl->identifier()};
+  const auto expr_data{decl_expr(t_vdecl)};
+
+  // Create the SymbolData for a variable.
+  const SymbolData data{symbol::make_variable(false, expr_data)};
+  // Check if existing definition exists.
+  if(!add_symbol(id, data)) {
+    // TODO: Throw!
+  }
+
+  return {};
+}
+
 // Operators:
 auto SemanticChecker::visit(Arithmetic* t_arith) -> Any
 {
