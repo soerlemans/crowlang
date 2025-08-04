@@ -738,6 +738,7 @@ auto CrowParser::declare() -> NodePtr
   if(next_if(TokenType::DECLARE)) {
     std::string id{};
     std::string type{};
+    std::string ret_type{};
 
     if(next_if(TokenType::FUNCTION)) {
       id = expect(TokenType::IDENTIFIER).str();
@@ -746,9 +747,9 @@ auto CrowParser::declare() -> NodePtr
         return this->param_list_opt();
       })};
 
-      const auto return_type_node{return_type()};
+      ret_type = return_type();
 
-      node = make_node<FunctionDecl>(id, std::move(params), return_type_node);
+      node = make_node<FunctionDecl>(id, std::move(params), ret_type);
     } else if(next_if(TokenType::LET)) {
       id = expect(TokenType::IDENTIFIER).str();
       expect(TokenType::COLON);
