@@ -4,5 +4,5 @@ target_sources(${TARGET_CROW_LIB} PRIVATE
 	unexpected_nullptr.cpp
 	bad_any_cast.cpp
 	invalid_argument.cpp
-	runtime_exception.cpp
+	runtime_error.cpp
 )

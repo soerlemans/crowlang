@@ -136,9 +136,9 @@ class EnvState {
   virtual auto pop_env() -> void
   {
     if(m_envs.empty()) {
-      using lib::stdexcept::throw_runtime_exception;
+      using lib::stdexcept::throw_runtime_error;
 
-      throw_runtime_exception("Tried to call pop_back on empty list.");
+      throw_runtime_error("Tried to call pop_back on empty list.");
     }
 
     m_envs.pop_back();
