@@ -7,6 +7,7 @@
 #include "control/include.hpp"
 #include "function/include.hpp"
 #include "lvalue/include.hpp"
+#include "meta/include.hpp"
 #include "node_traits/include.hpp"
 #include "operators/include.hpp"
 #include "packaging/include.hpp"

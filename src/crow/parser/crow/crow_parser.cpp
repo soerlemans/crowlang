@@ -730,6 +730,22 @@ auto CrowParser::function() -> NodePtr
   return node;
 }
 
+auto CrowParser::declare() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  if(next_if(TokenType::DECLARE)) {
+    // if(next_if(TokenType::LET)) {
+    // }
+
+    // node =
+    //   make_node<Function>(id, std::move(params), type, std::move(body_ptr));
+  }
+
+  return node;
+}
+
 auto CrowParser::import_expr(Import& t_import) -> bool
 {
   DBG_TRACE_FN(VERBOSE);
@@ -834,6 +850,8 @@ auto CrowParser::item() -> NodePtr
   NodePtr node;
 
   if(auto ptr{import_()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{declare()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{type_def()}; ptr) {
     node = std::move(ptr);

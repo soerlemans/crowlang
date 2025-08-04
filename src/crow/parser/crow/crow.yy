@@ -112,11 +112,11 @@ logical          : expr newline_opt AND expr
 // FIXME: We should handle postcrement like Go where it is a statement not an expression.
 
 expr             : lvalue
-		 | literal
+		             | literal
                  | grouping
                  | unary_prefix
                  | negation
-		 | function_call
+		             | function_call
                  | arithmetic
                  | comparison
                  | logical
@@ -237,7 +237,7 @@ body             : newline_opt '{' newline_opt '}'
 
 // Attributes:
 attribute        : Private
-		 | Public
+		             | Public
                  ;
 
 // Typing:
@@ -268,7 +268,7 @@ member_decl      : IDENTIFIER ':' IDENTIFIER terminator
 
 member_decl_list : // empty
                  | member_decl
-		 | member_decl_list member_decl
+		             | member_decl_list member_decl
                  ;
 
 struct_def       : Struct IDENTIFIER newline_opt
@@ -307,16 +307,21 @@ return_type_opt  : // empty
                  | return_type
                  ;
 
-lambda           : Fn '(' param_list_opt ')' return_type_opt body
-                 | Fn return_type_opt body
+lambda           : Func '(' param_list_opt ')' return_type_opt body
+                 | Func return_type_opt body
                  ;
 
-function         : Fn IDENTIFIER '(' param_list_opt ')' return_type_opt body
-                 | Fn IDENTIFIER return_type_opt body
+function         : Func IDENTIFIER '(' param_list_opt ')' return_type_opt body
+                 | Func IDENTIFIER return_type_opt body
 				         ;
 
 function_call    : chain_expr '(' expr_list_opt')'
                  ;
+
+declare          : Declare Let IDENTIFIER : IDENTIFIER newline_opt
+                 | Declare Var IDENTIFIER : IDENTIFIER newline_opt
+                 | Declare Func IDENTIFIER '(' param_list_opt ')' return_type_opt newline_opt
+								 ;
 
 // Import:
 import_expr      : STRING
@@ -342,6 +347,7 @@ module_decl      : Module IDENTIFIER
 // Items:
 item             : module_decl
 				         | import
+								 | declare
 				         | type_def
 				         | decl_expr
                  | function
