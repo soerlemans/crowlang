@@ -1,6 +1,10 @@
 #ifndef CROW_CROW_TYPES_SEMANTIC_SYMBOL_DATA_HPP
 #define CROW_CROW_TYPES_SEMANTIC_SYMBOL_DATA_HPP
 
+// STL Includes:
+#include <memory>
+#include <type_traits>
+
 // Absolute Includes:
 #include "crow/types/core/core.hpp"
 
@@ -69,6 +73,9 @@ class SymbolData : public Variant {
    * So this information is stripped.
    */
   auto type_variant() const -> TypeVariant;
+
+  auto operator==(const SymbolData& t_rhs) const -> bool;
+  auto operator!=(const SymbolData& t_rhs) const -> bool;
 
   virtual ~SymbolData() = default;
 };

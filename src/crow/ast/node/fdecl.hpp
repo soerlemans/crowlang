@@ -12,6 +12,7 @@
 #include "control/fdecl.hpp"
 #include "function/fdecl.hpp"
 #include "lvalue/fdecl.hpp"
+#include "meta/fdecl.hpp"
 #include "node_traits/fdecl.hpp"
 #include "operators/fdecl.hpp"
 #include "packaging/fdecl.hpp"
@@ -25,6 +26,7 @@
   using namespace ast::node::control;     \
   using namespace ast::node::function;    \
   using namespace ast::node::lvalue;      \
+  using namespace ast::node::meta;        \
   using namespace ast::node::operators;   \
   using namespace ast::node::packaging;   \
   using namespace ast::node::rvalue;      \

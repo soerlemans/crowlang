@@ -13,7 +13,7 @@
 #include "lib/stdtypes.hpp"
 
 namespace codegen::cpp_backend {
-// Aliases:
+// Using:
 namespace node = ast::node;
 namespace fs = std::filesystem;
 
@@ -108,6 +108,11 @@ class CppBackend : public NodeVisitor, public BackendInterface {
   auto visit(node::lvalue::Let* t_let) -> Any override;
   auto visit(node::lvalue::Var* t_var) -> Any override;
   auto visit(node::lvalue::Variable* t_var) -> Any override;
+
+  // Meta:
+  auto visit(node::meta::FunctionDecl* t_fdecl) -> Any override;
+  auto visit(node::meta::LetDecl* t_ldecl) -> Any override;
+  auto visit(node::meta::VarDecl* t_vdecl) -> Any override;
 
   // Operators:
   auto visit(node::operators::Arithmetic* t_arith) -> Any override;

@@ -6,6 +6,7 @@
 
 // Absolute Includes:
 #include "crow/debug/log.hpp"
+#include "lib/is_any_of.hpp"
 #include "lib/overload.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
 
@@ -14,6 +15,11 @@
 
 // Internal:
 namespace {
+// TODO: Move somewhere proper.
+// Used to guarentee evaluation in else branches, to trigger static_assert().
+template<typename T>
+inline constexpr bool always_false = false;
+
 /*!
  * Check if a @ref std::shared_ptr is a nullptr or not.
  * If the given ptr is a nullptr we should throw.
@@ -128,6 +134,50 @@ auto SymbolData::type_variant() const -> TypeVariant
   variant = std::visit(Overload{native, rest}, *this);
 
   return variant;
+}
+
+auto SymbolData::operator==(const SymbolData& t_rhs) const -> bool
+{
+  bool equal{false};
+  const auto& lhs{*this};
+
+  equal = std::visit(
+    [](const auto& t_l, const auto& t_r) -> bool {
+      using L = std::decay_t<decltype(t_l)>;
+      using R = std::decay_t<decltype(t_r)>;
+
+      // Make sure the types are the same.
+      if constexpr(std::is_same_v<L, R>) {
+        if constexpr(std::is_same_v<L, NativeType>) {
+          // NativeType is just a simple compare.
+          return t_l == t_r;
+        } else if constexpr(lib::IsAnyOf<L, StructTypePtr, FnTypePtr,
+                                         VarTypePtr>) {
+          // Return
+          if(t_l && t_r) {
+            // Compare resolved pointers.
+            return (*t_l == *t_r);
+          } else {
+            return false;
+          }
+        } else {
+          static_assert(always_false<L>, "Unhandled type.");
+        }
+      }
+
+      return false;
+    },
+    lhs, t_rhs);
+
+  return equal;
+}
+
+auto SymbolData::operator!=(const SymbolData& t_rhs) const -> bool
+{
+  const auto& lhs{*this};
+
+  // Use ==.
+  return !(lhs == t_rhs);
 }
 } // namespace semantic::symbol
 

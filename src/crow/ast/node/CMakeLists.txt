@@ -5,8 +5,9 @@ target_sources(${TARGET_CROW_LIB} PRIVATE
 
 # Add subdirectories:
 add_subdirectory(control)
-add_subdirectory(function)
+add_subdirectory("function")
 add_subdirectory(lvalue)
+add_subdirectory(meta)
 add_subdirectory(node_traits)
 add_subdirectory(operators)
 add_subdirectory(packaging)

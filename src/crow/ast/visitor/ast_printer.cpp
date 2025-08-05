@@ -107,6 +107,37 @@ auto AstPrinter::visit(Variable* t_var) -> Any
   return {};
 }
 
+// Meta:
+auto AstPrinter::visit(FunctionDecl* t_fdecl) -> Any
+{
+  COUNTG_INIT();
+
+  print("FunctionDecl: ", t_fdecl->identifier());
+  print_traits(t_fdecl);
+
+  return {};
+}
+
+auto AstPrinter::visit(LetDecl* t_ldecl) -> Any
+{
+  COUNTG_INIT();
+
+  print("LetDecl: ", t_ldecl->identifier());
+  print_traits(t_ldecl);
+
+  return {};
+}
+
+auto AstPrinter::visit(VarDecl* t_vdecl) -> Any
+{
+  COUNTG_INIT();
+
+  print("VarDecl: ", t_vdecl->identifier());
+  print_traits(t_vdecl);
+
+  return {};
+}
+
 // Operators:
 auto AstPrinter::visit(Arithmetic* t_arith) -> Any
 {

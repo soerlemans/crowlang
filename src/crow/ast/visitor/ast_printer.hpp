@@ -7,7 +7,9 @@
 #include <ostream>
 #include <sstream>
 #include <string_view>
-#include <type_traits>
+
+// Absolute Includes:
+#include "lib/is_any_of.hpp"
 
 // Relative AST Includes:
 #include "../node/include_nodes.hpp"
@@ -16,10 +18,6 @@
 #include "node_visitor.hpp"
 
 namespace ast::visitor {
-// Concepts:
-template<typename Type, typename... Args>
-concept IsAnyOf = (std::same_as<Args, Type> || ...);
-
 // Classes:
 /*!
  * Visitor made for printing the AST Node per node.
@@ -76,7 +74,7 @@ class AstPrinter : public NodeVisitor {
       std::stringstream ss;
       ss << "| " << t_vw << ": ";
 
-      if constexpr(IsAnyOf<Type, NodePtr, NodeListPtr>) {
+      if constexpr(lib::IsAnyOf<Type, NodePtr, NodeListPtr>) {
         print_if(ss.str(), t_any);
       } else {
         print(ss.str(), t_any);
@@ -153,6 +151,11 @@ class AstPrinter : public NodeVisitor {
   auto visit(node::lvalue::Let* t_let) -> Any override;
   auto visit(node::lvalue::Var* t_var) -> Any override;
   auto visit(node::lvalue::Variable* t_var) -> Any override;
+
+  // Meta:
+  auto visit(node::meta::FunctionDecl* t_fdecl) -> Any override;
+  auto visit(node::meta::LetDecl* t_ldecl) -> Any override;
+  auto visit(node::meta::VarDecl* t_vdecl) -> Any override;
 
   // Operators:
   auto visit(node::operators::Arithmetic* t_arith) -> Any override;

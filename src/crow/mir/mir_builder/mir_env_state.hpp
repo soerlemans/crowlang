@@ -43,13 +43,13 @@ class MirEnvState : public container::EnvState<T> {
     const auto [iter, found] = BaseEnvState::find(t_key);
 
     if(!found) {
-      using lib::stdexcept::throw_runtime_exception;
+      using lib::stdexcept::throw_runtime_error;
 
       // Should never happen so throw and report to user.
       const auto error_msg{
         std::format(R"(Identifier "{}" is not defined.)", t_key)};
 
-      throw_runtime_exception(error_msg);
+      throw_runtime_error(error_msg);
     }
 
     return {iter};

@@ -108,6 +108,8 @@ class CrowParser : public pratt::PrattParser {
   virtual auto lambda() -> NodePtr;
   virtual auto function() -> NodePtr;
 
+  virtual auto declare() -> NodePtr;
+
   // Import:
   virtual auto import_expr(Import& t_import) -> bool;
   virtual auto import_list(Import& t_import) -> void;

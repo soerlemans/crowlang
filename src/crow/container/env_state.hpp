@@ -128,6 +128,18 @@ class EnvState {
     return ConstFindResult{pair_iter, found};
   }
 
+  auto contains(std::string_view t_key) const -> bool
+  {
+    for(const auto& env : m_envs | std::views::reverse) {
+      const auto found{env.contains(std::string{t_key})};
+      if(found) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   virtual auto push_env() -> void
   {
     m_envs.emplace_back();
@@ -136,9 +148,9 @@ class EnvState {
   virtual auto pop_env() -> void
   {
     if(m_envs.empty()) {
-      using lib::stdexcept::throw_runtime_exception;
+      using lib::stdexcept::throw_runtime_error;
 
-      throw_runtime_exception("Tried to call pop_back on empty list.");
+      throw_runtime_error("Tried to call pop_back on empty list.");
     }
 
     m_envs.pop_back();

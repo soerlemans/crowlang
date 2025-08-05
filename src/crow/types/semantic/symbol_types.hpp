@@ -19,6 +19,8 @@ struct StructType {
 
   auto native_type() const -> NativeTypeOpt;
   auto type_variant() const -> TypeVariant;
+
+  auto operator==(const StructType&) const -> bool = default;
 };
 
 // TODO: Add utilities for verifying if parameters and their types line up.
@@ -28,6 +30,8 @@ struct FnType {
 
   auto native_type() const -> NativeTypeOpt;
   auto type_variant() const -> TypeVariant;
+
+  auto operator==(const FnType&) const -> bool = default;
 };
 
 // TODO: Ignore m_const value when comparing
@@ -37,6 +41,8 @@ struct VarType {
 
   auto native_type() const -> NativeTypeOpt;
   auto type_variant() const -> TypeVariant;
+
+  auto operator==(const VarType&) const -> bool = default;
 };
 
 // Functions:

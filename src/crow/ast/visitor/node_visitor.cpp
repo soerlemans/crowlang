@@ -55,9 +55,18 @@ STUB(Parameter)
 STUB(Function)
 STUB(Call)
 STUB(ReturnType)
+
+// LValue:
 STUB(Let)
 STUB(Var)
 STUB(Variable)
+
+// Meta:
+STUB(LetDecl)
+STUB(VarDecl)
+STUB(FunctionDecl)
+
+// Arithmetic:
 STUB(Arithmetic)
 STUB(Assignment)
 STUB(Comparison)

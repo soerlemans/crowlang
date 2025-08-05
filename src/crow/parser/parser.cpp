@@ -30,7 +30,7 @@ auto Parser::throw_syntax_error(const std::string_view t_msg) const -> void
 auto Parser::throw_if_eos(const std::string_view t_msg) const -> void
 {
   if(m_token_stream.eos()) {
-    using lib::stdexcept::throw_runtime_exception;
+    using lib::stdexcept::throw_runtime_error;
 
     std::stringstream ss{};
     ss << "EOS reached!\n";
@@ -38,7 +38,7 @@ auto Parser::throw_if_eos(const std::string_view t_msg) const -> void
     ss << t_msg;
 
     // TODO: Replace with a diagnostic error.
-    throw_runtime_exception(ss.str());
+    throw_runtime_error(ss.str());
   }
 }
 

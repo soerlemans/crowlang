@@ -43,9 +43,9 @@ auto MirModuleFactory::create_var(types::core::TypeVariant t_type) -> SsaVarPtr
   const auto key{std::to_string(ptr->m_id)};
   auto [iter, inserted] = m_var_env.insert({key, ptr});
   if(!inserted) {
-    using lib::stdexcept::throw_runtime_exception;
+    using lib::stdexcept::throw_runtime_error;
 
-    throw_runtime_exception("Can not insert duplicate variable name.");
+    throw_runtime_error("Can not insert duplicate variable name.");
   }
 
   m_var_id++;
@@ -77,7 +77,7 @@ auto MirModuleFactory::require_last_var() -> SsaVarPtr
 {
   auto var{last_var()};
   if(!var) {
-    lib::stdexcept::throw_runtime_exception(
+    lib::stdexcept::throw_runtime_error(
       "Expected last IR instruction to produce an SSA var.");
   }
 
@@ -210,9 +210,9 @@ auto MirModuleFactory::create_var_binding(std::string_view t_name,
   // TODO: Check for errors.
   const auto [iter, inserted] = m_var_env.insert({std::string{t_name}, t_var});
   if(!inserted) {
-    using lib::stdexcept::throw_runtime_exception;
+    using lib::stdexcept::throw_runtime_error;
 
-    throw_runtime_exception("Could not insert ", std::quoted(t_name), ".");
+    throw_runtime_error("Could not insert ", std::quoted(t_name), ".");
   }
 }
 
@@ -279,9 +279,9 @@ auto MirModuleFactory::last_instruction() -> Instruction&
   auto& instructions{block.m_instructions};
 
   if(instructions.empty()) {
-    using lib::stdexcept::throw_runtime_exception;
+    using lib::stdexcept::throw_runtime_error;
 
-    throw_runtime_exception(
+    throw_runtime_error(
       "There are no instructions in the last basic block, cant retrieve "
       "last instruction.");
   }
@@ -345,9 +345,9 @@ auto MirModuleFactory::last_block() -> BasicBlock&
   auto& fn{last_function()};
 
   if(fn->m_blocks.empty()) {
-    using lib::stdexcept::throw_runtime_exception;
+    using lib::stdexcept::throw_runtime_error;
 
-    throw_runtime_exception(
+    throw_runtime_error(
       "There are no basic blocks in the last function, cant retrieve last "
       "basic block.");
   }
@@ -372,10 +372,10 @@ auto MirModuleFactory::last_function() -> FunctionPtr&
   auto& functions{m_module->m_functions};
 
   if(functions.empty()) {
-    using lib::stdexcept::throw_runtime_exception;
+    using lib::stdexcept::throw_runtime_error;
 
-    throw_runtime_exception("There are no functions in the CLIR "
-                            "module, cant retrieve last function.");
+    throw_runtime_error("There are no functions in the CLIR "
+                        "module, cant retrieve last function.");
   }
 
   return functions.back();
