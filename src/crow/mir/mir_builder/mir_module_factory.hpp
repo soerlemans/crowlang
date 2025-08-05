@@ -81,6 +81,11 @@ class MirModuleFactory {
   auto clear_env() -> void;
 
   // SsaVar operations:
+  // Forward declarations for variables, is only allowed for globals.
+  // TODO: Implement.
+  // auto add_global_var_declaration() -> void;
+  // auto add_global_var_definition() -> void;
+
   [[nodiscard("Must use created ssa var.")]]
   auto create_var(types::core::TypeVariant t_type) -> SsaVarPtr;
   auto add_result_var(types::core::TypeVariant t_type) -> SsaVarPtr;

@@ -39,13 +39,12 @@ namespace keywords {
   DEFINE_TERMINAL(g_priv,    "priv",   PRIVATE);
   DEFINE_TERMINAL(g_pub,     "pub",    PUBLIC);
 
-  // Object oriented:
-  DEFINE_TERMINAL(g_struct,    "struct",    STRUCT);
-  DEFINE_TERMINAL(g_interface, "interface", INTERFACE);
-  DEFINE_TERMINAL(g_impl,      "impl",      IMPL);
+  // Typing:
+  DEFINE_TERMINAL(g_enum,   "enum",   ENUM);
+  DEFINE_TERMINAL(g_struct, "struct", STRUCT);
 
   // Control statements:
-  DEFINE_TERMINAL(g_declare, "declare", DECLARE);
+  DEFINE_TERMINAL(g_declare, "declare", DECLARE); // TODO: Consider renaming to just decl.
   DEFINE_TERMINAL(g_macro,   "macro",   MACRO);
   DEFINE_TERMINAL(g_func,    "func",    FUNCTION);
   DEFINE_TERMINAL(g_match,   "match",   MATCH);
@@ -81,7 +80,7 @@ namespace keywords {
   const std::map g_keywords {
     g_let.pair(), g_var.pair(),
     g_module.pair(), g_import.pair(), g_priv.pair(), g_pub.pair(),
-    g_struct.pair(), g_interface.pair(), g_impl.pair(),
+    g_enum.pair(), g_struct.pair(),
     g_declare.pair(), g_macro.pair(),
     g_func.pair(),
     g_match.pair(),
