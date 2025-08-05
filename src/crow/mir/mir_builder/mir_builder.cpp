@@ -293,7 +293,7 @@ auto MirBuilder::visit(FunctionDecl* t_fdecl) -> Any
 
   // We only need to add the name for the declaration.
   // During semantic analysis we confirm, that the declaration.
-	// Matches the definition.
+  // Matches the definition.
   fn->m_name = id;
 
   m_factory->add_function_declaration(fn);
