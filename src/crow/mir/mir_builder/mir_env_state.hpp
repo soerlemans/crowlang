@@ -56,7 +56,7 @@ class MirEnvState : public container::EnvState<T> {
   }
 
   //! Get means it is required and if we dont find it error.
-  auto get_value(const std::string_view t_key) -> T
+  auto get_value(const std::string_view t_key) -> const T&
   {
     const auto iter{get_iter(t_key)};
 

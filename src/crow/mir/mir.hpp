@@ -40,7 +40,9 @@ using ModulePtr = std::shared_ptr<Module>;
 
 using SsaVarPtr = std::shared_ptr<SsaVar>;
 using FunctionPtr = std::shared_ptr<Function>;
-using BasicBlockPtr = std::shared_ptr<BasicBlock>;
+using FunctionWeakPtr = std::weak_ptr<Function>;
+// using BasicBlockPtr = std::shared_ptr<BasicBlock>;
+// using BasicBlockWeakPtr = std::shared_ptr<BasicBlock>;
 
 // We use lists for instructions and basic blocks.
 // This is to prevent any iterator or reference invalidation.
@@ -209,12 +211,13 @@ struct Label {
 };
 
 struct FunctionLabel {
-  FunctionPtr m_target;
+  FunctionWeakPtr m_target;
 
-  FunctionLabel(FunctionPtr t_target): m_target{t_target}
+  FunctionLabel(FunctionWeakPtr t_target): m_target{t_target}
   {}
 
   auto label() const -> std::string_view;
+  auto handle() -> FunctionPtr;
 
   virtual ~FunctionLabel() = default;
 };
@@ -290,6 +293,8 @@ auto operator<<(std::ostream& t_os, const mir::BasicBlock& t_bblock)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::Function& t_fn) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::FunctionPtr& t_ptr)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::FunctionWeakPtr& t_ptr)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::Module& t_mod) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::ModulePtr& t_mod)

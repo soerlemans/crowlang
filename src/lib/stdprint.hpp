@@ -75,6 +75,28 @@ inline auto print_smart_ptr(std::ostream& t_os, const T& t_ptr) -> std::ostream&
 
   return t_os;
 }
+
+template<typename T>
+inline auto print_weak_ptr(std::ostream& t_os, const std::weak_ptr<T>& t_wk_ptr)
+  -> std::ostream&
+{
+  // Guard clause.
+  if(t_wk_ptr.expired()) {
+    t_os << "<*expired>";
+
+    return t_os;
+  }
+
+  const auto ptr{t_wk_ptr.lock()};
+  if(ptr) {
+    t_os << *ptr;
+  } else {
+    t_os << "<*nil>";
+  }
+
+  return t_os;
+}
+
 } // namespace detail
 
 namespace vector {

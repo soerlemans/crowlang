@@ -10,13 +10,36 @@
 
 namespace mir::mir_builder {
 // Forward Declarations:
+template<typename T>
+struct MirEntity;
 class MirModuleFactory;
 
 // Aliases:
 using MirModuleFactoryPtr = std::unique_ptr<MirModuleFactory>;
 
+using FunctionMirEntity = MirEntity<FunctionPtr>;
+
 using SsaVarEnvState = MirEnvState<SsaVarPtr>;
-using FunctionEnvState = MirEnvState<FunctionPtr>;
+using FunctionEnvState = MirEnvState<FunctionMirEntity>;
+
+// Enums:
+// TODO: Similar to @ref SymbolStatus maybe unify?
+//! Keep track if a MIR item has only been declared, or defined.
+enum class EntityStatus {
+  DECLARED,
+  DEFINED,
+};
+
+// Structs:
+/*!
+ * Functions or structs could be forward declared.
+ * For these kind of MirEntities we need something inbetween.
+ */
+template<typename T>
+struct MirEntity {
+  EntityStatus m_status;
+  T m_entity;
+};
 
 // Classes:
 // TODO: Implement a functionality similar to LLVM's SetInsertPoint.
@@ -141,7 +164,8 @@ class MirModuleFactory {
   auto last_block() -> BasicBlock&;
 
   // Function operations:
-  auto add_function(FunctionPtr t_fn) -> void;
+  auto add_function_declaration(FunctionPtr t_fn) -> void;
+  auto add_function_definition(FunctionPtr t_fn) -> void;
 
   /*!
    * Get a function by name.

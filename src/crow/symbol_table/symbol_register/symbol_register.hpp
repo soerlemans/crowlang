@@ -95,18 +95,10 @@ class SymbolRegister {
 
     // If the WeakPtr expired, then an architectural design mistake was made.
     // So we should throw and hopefully have this reported.
-    if(weak_ptr.expired()) {
-      const auto error_msg{
-        std::format("Value {} is no longer in scope.", symbol_id_str)};
-
-      throw_invalid_argument(error_msg);
-    }
-
-    // The SharedPtr is not allowed to be a nullptr either.
     const auto shared_ptr{weak_ptr.lock()};
     if(!shared_ptr) {
       const auto error_msg{
-        std::format("SharedPtr {} is nullptr.", symbol_id_str)};
+        std::format(R"(Entry "{}" gives nullptr.)", symbol_id_str)};
 
       throw_unexpected_nullptr(error_msg);
     }

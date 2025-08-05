@@ -5,6 +5,7 @@
 #include <memory>
 
 // Absolute Includes:
+#include "lib/check_nullptr.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
 #include "lib/string_util.hpp"
 
@@ -259,10 +260,11 @@ auto MirModuleFactory::add_call(const std::string_view t_name,
 {
   auto& call_instr{add_instruction(Opcode::CALL)};
 
-  // Insert a reference to the function as operand.
-  auto fn{m_fn_env.get_value(t_name)};
+  // Get a handle to the function.
+  const FunctionMirEntity& entity{m_fn_env.get_value(t_name)};
 
-  FunctionLabel label{fn};
+  // Insert a weak reference to the function as operand.
+  FunctionLabel label{FunctionWeakPtr{entity.m_entity}};
   call_instr.add_operand({label});
 
   // The rest of the args.
@@ -355,16 +357,55 @@ auto MirModuleFactory::last_block() -> BasicBlock&
   return fn->m_blocks.back();
 }
 
-auto MirModuleFactory::add_function(FunctionPtr t_fn) -> void
+auto MirModuleFactory::add_function_declaration(FunctionPtr t_fn) -> void
+{
+  const auto fn_name{t_fn->m_name};
+
+  // TODO: Maybe double check semantics?
+
+  // Only insert if the function name if an entry does not already exist.
+  // Semantic checking should guarentee proper semantics.
+  const auto [iter, exists] = m_fn_env.find(fn_name);
+  if(!exists) {
+    // Add the placeholder for later declaration.
+    // This way we can reference it before, the complete definition.
+    FunctionMirEntity entity{EntityStatus::DECLARED, t_fn};
+    m_fn_env.insert({fn_name, entity});
+  }
+}
+
+auto MirModuleFactory::add_function_definition(FunctionPtr t_new_fn) -> void
 {
   auto& functions{m_module->m_functions};
 
+  FunctionPtr fn_def{t_new_fn};
 
-  const auto fn_name{t_fn->m_name};
+  const auto fn_name{t_new_fn->m_name};
+  const auto [iter, exists] = m_fn_env.find(fn_name);
+  if(exists) {
+    // TODO: Maybe double check semantics.
+    // TODO: This is brittle, depends on not modifying the inplace FunctionPtr.
+    // As it would invalidate any calls that depend on the forward declaration.
+    auto& [fn_status, fn_ptr] = iter->second;
 
-  m_fn_env.insert({fn_name, t_fn});
+    // Change the status inplace to not invalidate any call statements.
+    // That reference the current FunctionPtr.
+    fn_status = EntityStatus::DEFINED;
 
-  functions.push_back(t_fn);
+    CHECK_NULLPTR(fn_ptr);
+    CHECK_NULLPTR(t_new_fn);
+
+    // Copy over contents, as to not invalidate any references.
+    *fn_ptr = *t_new_fn;
+
+    // Set the definition to the inplace entry.
+    fn_def = fn_ptr;
+  } else {
+    FunctionMirEntity entity{EntityStatus::DEFINED, t_new_fn};
+    m_fn_env.insert({fn_name, entity});
+  }
+
+  functions.push_back(fn_def);
 }
 
 auto MirModuleFactory::last_function() -> FunctionPtr&

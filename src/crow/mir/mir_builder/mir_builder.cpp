@@ -174,27 +174,27 @@ auto MirBuilder::visit(Parameter* t_param) -> Any
   return {};
 }
 
-auto MirBuilder::visit(ast::node::function::Function* t_fn) -> Any
+auto MirBuilder::visit(node::function::Function* t_fn) -> Any
 {
   FunctionPtr fn{std::make_shared<Function>()};
 
   const auto id{t_fn->identifier()};
   const auto params{t_fn->params()};
 
-  const auto fn_type{t_fn->get_type()};
+  const auto fn_type{t_fn->get_type().function()};
   const auto body{t_fn->identifier()};
 
   // Add the function to the current module.
   fn->m_name = id;
 
-  // TODO: Obtain return_type and set it.
-  // fn->m_return_type = return_type;
+  // Set return type from FnTypePtr.
+  fn->m_return_type = fn_type->m_return_type;
 
-  m_factory->add_function(fn);
+  m_factory->add_function_definition(fn);
   m_factory->add_block("main");
 
   m_factory->push_env();
-  // Visit all the parameters, to add to the parameter list.
+  // Visit all the parameters, this adds them to the parameter list.
   traverse(params);
 
   // Traverse the body.
@@ -287,7 +287,16 @@ auto MirBuilder::visit(Variable* t_var) -> Any
 // Meta:
 auto MirBuilder::visit(FunctionDecl* t_fdecl) -> Any
 {
-  // TODO: Implement forward declarations.
+  FunctionPtr fn{std::make_shared<Function>()};
+
+  const auto id{t_fdecl->identifier()};
+
+  // We only need to add the name for the declaration.
+  // During semantic analysis we confirm, that the declaration.
+	// Matches the definition.
+  fn->m_name = id;
+
+  m_factory->add_function_declaration(fn);
 
   return {};
 }
@@ -847,7 +856,7 @@ auto MirBuilder::visit(List* t_list) -> Any
 }
 
 // Implementation:
-auto MirBuilder::get_call_args(ast::node::NodeListPtr t_list) -> SsaVarVec
+auto MirBuilder::get_call_args(NodeListPtr t_list) -> SsaVarVec
 {
   SsaVarVec vec{};
 
