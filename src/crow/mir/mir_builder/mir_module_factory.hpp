@@ -18,8 +18,10 @@ class MirModuleFactory;
 using MirModuleFactoryPtr = std::unique_ptr<MirModuleFactory>;
 
 using FunctionMirEntity = MirEntity<FunctionPtr>;
+using VarMirEntity = MirEntity<SsaVarPtr>;
 
-using SsaVarEnvState = MirEnvState<SsaVarPtr>;
+// using TypeEnvState = MirEnvState<TODO:>;
+using SsaVarEnvState = MirEnvState<VarMirEntity>;
 using FunctionEnvState = MirEnvState<FunctionMirEntity>;
 
 // Enums:
@@ -129,12 +131,18 @@ class MirModuleFactory {
   auto create_var_binding(std::string_view t_name, SsaVarPtr t_var) -> void;
 
   /*!
-   * Add an init for a variable.
+   * Add a placeholder variable pointer, for later definition.
+   */
+  auto add_variable_declaration(std::string_view t_name,
+                                types::core::TypeVariant t_type) -> void;
+
+  /*!
+   * Add the init opcode tied to a variable name.
    *
    * @note this binds a source variable name to an ssa var.
    */
-  auto add_init(std::string_view t_name, types::core::TypeVariant t_type)
-    -> Instruction&;
+  auto add_variable_definition(std::string_view t_name,
+                               types::core::TypeVariant t_type) -> Instruction&;
 
   /*!
    * Variables need to be referenced to an SSA var.

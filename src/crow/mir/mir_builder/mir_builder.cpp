@@ -239,7 +239,7 @@ auto MirBuilder::visit(Let* t_let) -> Any
   traverse(init_expr);
   const auto last_var{m_factory->require_last_var()};
 
-  auto& init_instr{m_factory->add_init(name, type)};
+  auto& init_instr{m_factory->add_variable_definition(name, type)};
   m_factory->add_comment(source_line);
 
   init_instr.add_operand({last_var});
@@ -262,7 +262,7 @@ auto MirBuilder::visit(Var* t_var) -> Any
   traverse(init_expr);
   const auto last_var{m_factory->require_last_var()};
 
-  auto& init_instr{m_factory->add_init(name, type)};
+  auto& init_instr{m_factory->add_variable_definition(name, type)};
   m_factory->add_comment(source_line);
 
   init_instr.add_operand({last_var});

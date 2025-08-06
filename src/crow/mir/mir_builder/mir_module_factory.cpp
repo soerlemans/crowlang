@@ -217,14 +217,31 @@ auto MirModuleFactory::create_var_binding(std::string_view t_name,
   }
 }
 
-auto MirModuleFactory::add_init(const std::string_view t_name,
-                                types::core::TypeVariant t_type) -> Instruction&
+auto MirModuleFactory::add_variable_declaration(const std::string_view t_name,
+                                                types::core::TypeVariant t_type)
+  -> void
 {
   auto& assign_instr{add_instruction(Opcode::INIT)};
   auto result_var{add_result_var(t_type)};
 
   // Bind the source variable name to the ssa var.
-  create_var_binding(t_name, result_var);
+  // create_var_binding(t_name, result_var);
+}
+
+auto MirModuleFactory::add_variable_definition(const std::string_view t_name,
+                                               types::core::TypeVariant t_type)
+  -> Instruction&
+{
+  auto& assign_instr{add_instruction(Opcode::INIT)};
+  auto result_var{add_result_var(t_type)};
+
+  if(m_var_env.is_toplevel()) {
+    // Instantiate global.
+  } else {
+    // TODO: Check for existing entry, by that name.
+    // Bind the source variable name to the ssa var.
+    create_var_binding(t_name, result_var);
+  }
 
   return assign_instr;
 }

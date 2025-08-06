@@ -265,6 +265,8 @@ struct Function {
 
 struct Module {
   std::string m_name;
+  // TODO: Add a field for struct definitions, and type aliases.
+  SsaVarVec m_globals;
   FunctionSeq m_functions;
 
   Module() = default;

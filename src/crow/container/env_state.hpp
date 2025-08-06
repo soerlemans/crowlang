@@ -140,6 +140,12 @@ class EnvState {
     return false;
   }
 
+  auto is_toplevel() -> bool
+  {
+    // If there is only one scope left its the toplevel.
+    return (m_envs.size() == 1);
+  }
+
   virtual auto push_env() -> void
   {
     m_envs.emplace_back();
@@ -147,7 +153,8 @@ class EnvState {
 
   virtual auto pop_env() -> void
   {
-    if(m_envs.empty()) {
+    // We should never deallocate the toplevel scope.
+    if(is_toplevel()) {
       using lib::stdexcept::throw_runtime_error;
 
       throw_runtime_error("Tried to call pop_back on empty list.");
@@ -160,7 +167,7 @@ class EnvState {
   {
     m_envs.clear();
 
-    // Always make sure the Global scope exists
+    // Always make sure the global/toplevel scope is present..
     m_envs.emplace_back();
   }
 
