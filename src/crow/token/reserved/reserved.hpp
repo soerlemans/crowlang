@@ -34,10 +34,9 @@ namespace keywords {
   DEFINE_TERMINAL(g_var, "var", VAR);
 
   // Package:
-  DEFINE_TERMINAL(g_module,  "module", MODULE);
-  DEFINE_TERMINAL(g_import,  "import", IMPORT);
-  DEFINE_TERMINAL(g_priv,    "priv",   PRIVATE);
-  DEFINE_TERMINAL(g_pub,     "pub",    PUBLIC);
+  DEFINE_TERMINAL(g_module, "module", MODULE);
+  DEFINE_TERMINAL(g_import, "import", IMPORT);
+  DEFINE_TERMINAL(g_export, "export", EXPORT);
 
   // Typing:
   DEFINE_TERMINAL(g_enum,   "enum",   ENUM);
@@ -79,7 +78,7 @@ namespace keywords {
 
   const std::map g_keywords {
     g_let.pair(), g_var.pair(),
-    g_module.pair(), g_import.pair(), g_priv.pair(), g_pub.pair(),
+    g_module.pair(), g_import.pair(), g_export.pair(),
     g_enum.pair(), g_struct.pair(),
     g_declare.pair(), g_macro.pair(),
     g_func.pair(),

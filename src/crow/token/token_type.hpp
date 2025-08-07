@@ -21,9 +21,7 @@ enum class TokenType {
   // Package:
   MODULE,
   IMPORT,
-  USE,
-  PRIVATE,
-  PUBLIC,
+  EXPORT,
 
   // Typing:
   ENUM,

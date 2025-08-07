@@ -18,7 +18,7 @@
 #include "type2cpp.hpp"
 
 namespace codegen::cpp_backend {
-// Using Statements:
+// Using:
 using namespace ast::visitor;
 using namespace std::literals::string_view_literals;
 
