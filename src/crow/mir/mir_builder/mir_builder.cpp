@@ -620,18 +620,30 @@ auto MirBuilder::visit(UnaryPrefix* t_up) -> Any
   const auto op{t_up->op()};
   const auto left{t_up->left()};
 
+  traverse(left);
+  const auto last_var{m_factory->require_last_var()};
+  const auto type{last_var->m_type};
+
   switch(op) {
-    case UnaryPrefixOp::PLUS:
+    case UnaryPrefixOp::PLUS: {
       // TODO: Determine if float or integer.
       // TODO: No op.
       break;
+    }
 
-    case UnaryPrefixOp::MINUS:
-      // TODO: Determine if float or integer.
-      // m_factory->add_instruction(Opcode::ISUB);
+    case UnaryPrefixOp::MINUS: {
+      // TODO: Determine if float or integer, dont allow unsigned integers.
+      auto& sub_instr{m_factory->add_instruction(Opcode::ISUB)};
+
+      Literal lit{NativeType::INT, 0};
+      sub_instr.add_operand(lit);
+      sub_instr.add_operand(last_var);
+
+      m_factory->add_result_var(type);
 
       // TODO: Traverse left.
       break;
+    }
 
     default:
       // TODO: THROW!

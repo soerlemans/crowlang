@@ -313,7 +313,7 @@ attribute_item_list : attribute_item newline_opt
                     ;
 
 attribute_body   : attribute_item
-                 | '{' attribute_item_list'}'
+                 | '{' newline_opt attribute_item_list'}'
 								 ;
 
 attribute        : ATTRIBUTE_OPEN identifier ATTRIBUTE_CLOSE newline_opt attribute_body

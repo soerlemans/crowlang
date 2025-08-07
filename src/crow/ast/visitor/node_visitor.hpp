@@ -57,9 +57,10 @@ class NodeVisitor {
   virtual auto visit(node::lvalue::Variable* t_var) -> Any;
 
   // Meta:
-  virtual auto visit(node::meta::FunctionDecl* t_fdecl) -> Any;
+  virtual auto visit(node::meta::Attribute* t_attr) -> Any;
   virtual auto visit(node::meta::LetDecl* t_ldecl) -> Any;
   virtual auto visit(node::meta::VarDecl* t_vdecl) -> Any;
+  virtual auto visit(node::meta::FunctionDecl* t_fdecl) -> Any;
 
   // Operators:
   virtual auto visit(node::operators::Arithmetic* t_arith) -> Any;

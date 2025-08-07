@@ -709,7 +709,9 @@ auto CrowParser::attribute_body() -> NodeListPtr
   DBG_TRACE_FN(VERBOSE);
   auto nodes{make_node<List>()};
 
-  if(check(TokenType::ACCOLADE_OPEN)) {
+  if(next_if(TokenType::ACCOLADE_OPEN)) {
+    PARSER_FOUND(TokenType::ACCOLADE_OPEN);
+    newline_opt();
     nodes = attribute_item_list();
     newline_opt();
     expect(TokenType::ACCOLADE_CLOSE);

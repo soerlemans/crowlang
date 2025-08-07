@@ -104,9 +104,20 @@ DEFINE_SERIALIZE_METHOD(Var);
 DEFINE_SERIALIZE_METHOD(Variable);
 
 // Meta:
-DEFINE_SERIALIZE_METHOD(FunctionDecl);
+auto AstArchive::visit([[maybe_unused]] Attribute* t_attr) -> Any
+{
+  // archive(*t_ptr);
+
+  // TODO: Implement.
+  RUNTIME_ERROR("Attribute node not supported for serialization yet.");
+
+  return {};
+}
+
+// DEFINE_SERIALIZE_METHOD(Attribute);
 DEFINE_SERIALIZE_METHOD(LetDecl);
 DEFINE_SERIALIZE_METHOD(VarDecl);
+DEFINE_SERIALIZE_METHOD(FunctionDecl);
 
 // Operators:
 DEFINE_SERIALIZE_METHOD(Arithmetic);

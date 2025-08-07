@@ -88,7 +88,7 @@ auto CppBackend::terminate() -> std::string_view
 // TODO: Add inline option for direct resolution.
 auto CppBackend::resolve(NodePtr t_ptr, const bool t_terminate) -> std::string
 {
-  std::stringstream ss;
+  std::stringstream ss{};
 
   if(t_ptr) {
     // Keep track of if the current node we are traversing should be terminated.
@@ -142,7 +142,7 @@ auto CppBackend::visit(Loop* t_loop) -> Any
   const auto post_expr{resolve(t_loop->expr(), false)};
   const auto body{resolve(t_loop->body())};
 
-  std::stringstream ss;
+  std::stringstream ss{};
 
   // clang-format off
   ss << std::format("for({};{}; {} )", init_expr, cond, post_expr)
@@ -166,7 +166,7 @@ auto CppBackend::visit([[maybe_unused]] Break* t_break) -> Any
 
 auto CppBackend::visit(Defer* t_defer) -> Any
 {
-  std::stringstream ss;
+  std::stringstream ss{};
 
   const auto body{resolve(t_defer->body())};
 
@@ -270,10 +270,12 @@ auto CppBackend::visit(Call* t_call) -> Any
 
 auto CppBackend::visit([[maybe_unused]] ReturnType* t_rt) -> Any
 {
+  std::stringstream ss{};
+
   // Currently we do not dynamically compute return types.
   // So for now converting a type_variant2cpp() is good enough.
 
-  return {};
+  return ss.str();
 }
 
 // Lvalue:
@@ -314,25 +316,11 @@ auto CppBackend::visit(Variable* t_var) -> Any
 }
 
 // Meta:
-auto CppBackend::visit(FunctionDecl* t_fdecl) -> Any
+auto CppBackend::visit(Attribute* t_attr) -> Any
 {
-  const auto identifier{t_fdecl->identifier()};
+  std::stringstream ss{};
 
-  const auto fn_type{t_fdecl->get_type().function()};
-  const auto ret_type{type_variant2cpp(fn_type->m_return_type)};
-
-  std::stringstream param_ss{};
-
-  auto sep{""sv};
-  const auto params{t_fdecl->params()};
-  for(const auto& param : *params) {
-    param_ss << sep << resolve(param);
-
-    sep = ", ";
-  }
-
-  return std::format("auto {}({}) -> {};\n", identifier, param_ss.str(),
-                     ret_type);
+  return ss.str();
 }
 
 auto CppBackend::visit(LetDecl* t_ldecl) -> Any
@@ -353,6 +341,27 @@ auto CppBackend::visit(VarDecl* t_vdecl) -> Any
   const auto type{type_variant2cpp(type_variant)};
 
   return std::format("extern {} {};\n", type, identifier);
+}
+
+auto CppBackend::visit(FunctionDecl* t_fdecl) -> Any
+{
+  const auto identifier{t_fdecl->identifier()};
+
+  const auto fn_type{t_fdecl->get_type().function()};
+  const auto ret_type{type_variant2cpp(fn_type->m_return_type)};
+
+  std::stringstream param_ss{};
+
+  auto sep{""sv};
+  const auto params{t_fdecl->params()};
+  for(const auto& param : *params) {
+    param_ss << sep << resolve(param);
+
+    sep = ", ";
+  }
+
+  return std::format("auto {}({}) -> {};\n", identifier, param_ss.str(),
+                     ret_type);
 }
 
 // Operators:
@@ -504,13 +513,22 @@ AST_VISITOR_STUB(CppBackend, DotExpr)
 // Misc:
 auto CppBackend::visit(List* t_list) -> Any
 {
-  std::stringstream ss;
+  std::stringstream ss{};
 
   for(NodePtr& node : *t_list) {
     ss << resolve(node);
   }
 
   return ss.str();
+}
+
+auto CppBackend::visit(NodeInterface* t_t_node) -> Any
+{
+  // We only call this method if we have not overriden.
+  // The visit method for that AST node.
+  RUNTIME_ERROR("Unimplemented visit() method for AST node.");
+
+  return {};
 }
 
 // Util:
@@ -594,7 +612,6 @@ auto CppBackend::compile(CompileParams& t_params) -> void
 
   fs::path stem{source_path.stem()};
   const fs::path tmp_src{build_dir / stem.concat(".cpp")};
-
 
   // Log filepath's:
   DBG_INFO("build_dir: ", build_dir);

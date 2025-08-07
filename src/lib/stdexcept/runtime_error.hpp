@@ -4,7 +4,11 @@
 // Local Includes:
 #include "exception.hpp"
 
+// Macros:
+#define RUNTIME_ERROR(...) lib::stdexcept::throw_runtime_error(__VA_ARGS__)
+
 namespace lib::stdexcept {
+// Classes:
 class RuntimeError : public Exception {
   public:
   RuntimeError(std::string_view t_msg);

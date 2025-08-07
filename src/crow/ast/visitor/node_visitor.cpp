@@ -62,6 +62,7 @@ STUB(Var)
 STUB(Variable)
 
 // Meta:
+STUB(Attribute)
 STUB(LetDecl)
 STUB(VarDecl)
 STUB(FunctionDecl)

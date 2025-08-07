@@ -465,21 +465,13 @@ auto SemanticChecker::visit(Variable* t_var) -> Any
 }
 
 // Meta:
-auto SemanticChecker::visit(FunctionDecl* t_fdecl) -> Any
+auto SemanticChecker::visit(Attribute* t_attr) -> Any
 {
-  const auto id{t_fdecl->identifier()};
-  const auto ret_type{str2nativetype(t_fdecl->type())};
-  const auto params{t_fdecl->params()};
+  const auto id{t_attr->identifier()};
+  const auto params{t_attr->params()};
+  const auto body{t_attr->body()};
 
-  // Register function type signature to environment.
-  const auto params_type_list{get_type_list(params)};
-  const SymbolData data{symbol::make_function(params_type_list, ret_type)};
-
-  add_symbol_declaration(id, data);
-  DBG_INFO("FunctionDecl: ", id, "(", params_type_list, ") -> ", ret_type);
-
-  // Annotate AST.
-  t_fdecl->set_type(data.type_variant());
+  traverse(body);
 
   return {};
 }
@@ -510,6 +502,25 @@ auto SemanticChecker::visit(VarDecl* t_vdecl) -> Any
 
   // Annotate AST.
   t_vdecl->set_type(type_data);
+
+  return {};
+}
+
+auto SemanticChecker::visit(FunctionDecl* t_fdecl) -> Any
+{
+  const auto id{t_fdecl->identifier()};
+  const auto ret_type{str2nativetype(t_fdecl->type())};
+  const auto params{t_fdecl->params()};
+
+  // Register function type signature to environment.
+  const auto params_type_list{get_type_list(params)};
+  const SymbolData data{symbol::make_function(params_type_list, ret_type)};
+
+  add_symbol_declaration(id, data);
+  DBG_INFO("FunctionDecl: ", id, "(", params_type_list, ") -> ", ret_type);
+
+  // Annotate AST.
+  t_fdecl->set_type(data.type_variant());
 
   return {};
 }
