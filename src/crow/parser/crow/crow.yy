@@ -303,10 +303,10 @@ function_call    : chain_expr '(' expr_list_opt')'
                  ;
 
 // Meta:
-attribute_item : declare
-               | decl_expr
-               | function
-               ;
+attribute_item   : declare
+                 | decl_expr
+                 | function
+                 ;
 
 attribute_item_list : attribute_item newline_opt
                     | attribute_item_list newline_opt attribute_item
@@ -316,8 +316,8 @@ attribute_body   : attribute_item
                  | '{' attribute_item_list'}'
 								 ;
 
-attribute        : ATTRIBUTE_OPEN identifier ATTRIBUTE_CLOSE attribute_body
-		             | ATTRIBUTE_OPEN identifier '(' literal_list ')' ATTRIBUTE_CLOSE attribute_body
+attribute        : ATTRIBUTE_OPEN identifier ATTRIBUTE_CLOSE newline_opt attribute_body
+		             | ATTRIBUTE_OPEN identifier '(' literal_list ')' ATTRIBUTE_CLOSE newline_opt attribute_body
                  ;
 
 

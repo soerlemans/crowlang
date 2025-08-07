@@ -711,11 +711,13 @@ auto CrowParser::attribute_body() -> NodeListPtr
 
   if(check(TokenType::ACCOLADE_OPEN)) {
     nodes = attribute_item_list();
+    newline_opt();
     expect(TokenType::ACCOLADE_CLOSE);
   } else if(auto ptr{attribute_item()}; ptr) {
     nodes->push_back(std::move(ptr));
+    newline_opt();
   } else {
-    throw_syntax_error("Expected an attribute item.");
+    throw_syntax_error("Expected an attribute item or body.");
   }
 
   return nodes;
@@ -727,6 +729,7 @@ auto CrowParser::attribute() -> NodePtr
   NodePtr node{};
 
   if(next_if(TokenType::ATTRIBUTE_OPEN)) {
+    PARSER_FOUND(TokenType::ATTRIBUTE_OPEN);
     const auto id{expect(TokenType::IDENTIFIER).str()};
     NodeListPtr params_ptr{};
     NodeListPtr body_ptr{make_node<List>()};
@@ -740,6 +743,7 @@ auto CrowParser::attribute() -> NodePtr
     expect(TokenType::ATTRIBUTE_CLOSE);
 
     // Get the item or body.
+    newline_opt();
     body_ptr = attribute_body();
 
     node = make_node<Attribute>(id, std::move(params_ptr), std::move(body_ptr));
