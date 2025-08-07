@@ -493,7 +493,7 @@ auto SemanticChecker::visit(LetDecl* t_ldecl) -> Any
   const SymbolData data{symbol::make_variable(true, type_data)};
   add_symbol_declaration(id, data);
 
-	// Annotate AST.
+  // Annotate AST.
   t_ldecl->set_type(type_data);
 
   return {};
@@ -508,7 +508,7 @@ auto SemanticChecker::visit(VarDecl* t_vdecl) -> Any
   const SymbolData data{symbol::make_variable(false, type_data)};
   add_symbol_declaration(id, data);
 
-	// Annotate AST.
+  // Annotate AST.
   t_vdecl->set_type(type_data);
 
   return {};
