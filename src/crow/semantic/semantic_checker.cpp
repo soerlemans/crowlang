@@ -493,6 +493,9 @@ auto SemanticChecker::visit(LetDecl* t_ldecl) -> Any
   const SymbolData data{symbol::make_variable(true, type_data)};
   add_symbol_declaration(id, data);
 
+  // Annotate AST.
+  t_ldecl->set_type(type_data);
+
   return {};
 }
 
@@ -504,6 +507,9 @@ auto SemanticChecker::visit(VarDecl* t_vdecl) -> Any
   // Create the SymbolData for a variable.
   const SymbolData data{symbol::make_variable(false, type_data)};
   add_symbol_declaration(id, data);
+
+  // Annotate AST.
+  t_vdecl->set_type(type_data);
 
   return {};
 }
@@ -582,7 +588,8 @@ auto SemanticChecker::visit(Assignment* t_assign) -> Any
     throw_type_error(ss.str());
   }
 
-  // TODO: Annotate types.
+  // Annotate AST.
+  t_assign->set_type(var.type_variant());
 
   return var;
 }

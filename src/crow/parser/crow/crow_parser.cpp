@@ -464,60 +464,6 @@ auto CrowParser::body() -> NodeListPtr
   return nodes;
 }
 
-// Interface:
-auto CrowParser::method_decl() -> NodePtr
-{
-  DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
-
-  if(next_if(TokenType::FUNCTION)) {
-    const auto id{expect(TokenType::IDENTIFIER).str()};
-
-    // NodeListPtr params;
-    auto params{parens([this] {
-      return this->param_list_opt();
-    })};
-
-    const auto type{return_type()};
-
-    terminator();
-
-    node = make_node<MethodDecl>(id, std::move(params), type);
-  }
-
-  return node;
-}
-
-auto CrowParser::method_decl_list() -> NodeListPtr
-{
-  DBG_TRACE_FN(VERBOSE);
-
-  return list_of([this] {
-    return method_decl();
-  });
-}
-
-auto CrowParser::interface_def() -> NodePtr
-{
-  DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
-
-  if(next_if(TokenType::INTERFACE)) {
-    const auto id{expect(TokenType::IDENTIFIER).str()};
-    newline_opt();
-
-    auto methods{accolades([this] {
-      newline_opt();
-
-      return method_decl_list();
-    })};
-
-    node = make_node<Interface>(id, std::move(methods));
-  }
-
-  return node;
-}
-
 // Struct:
 auto CrowParser::member_decl() -> NodePtr
 {
@@ -575,41 +521,8 @@ auto CrowParser::type_def() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  if(auto ptr{interface_def()}; ptr) {
+  if(auto ptr{struct_def()}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{struct_def()}; ptr) {
-    node = std::move(ptr);
-  }
-
-  return node;
-}
-
-// Impl:
-auto CrowParser::def_list() -> NodeListPtr
-{
-  DBG_TRACE_FN(VERBOSE);
-
-  return list_of([this] {
-    newline_opt();
-
-    return function();
-  });
-}
-
-auto CrowParser::def_block() -> NodePtr
-{
-  DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
-
-  if(next_if(TokenType::IMPL)) {
-    const auto id{expect(TokenType::IDENTIFIER).str()};
-    newline_opt();
-
-    auto functions{accolades([this] {
-      return def_list();
-    })};
-
-    node = make_node<Impl>(id, std::move(functions));
   }
 
   return node;
@@ -883,8 +796,6 @@ auto CrowParser::item() -> NodePtr
   } else if(auto ptr{decl_expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{function()}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{def_block()}; ptr) {
     node = std::move(ptr);
   }
 

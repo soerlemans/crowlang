@@ -5,6 +5,7 @@
 #include "exception.hpp"
 
 namespace lib::stdexcept {
+// Classes:
 class UnexpectedNullptr : public Exception {
   public:
   UnexpectedNullptr(std::string_view t_msg);

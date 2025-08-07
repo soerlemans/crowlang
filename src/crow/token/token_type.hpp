@@ -26,9 +26,8 @@ enum class TokenType {
   PUBLIC,
 
   // Typing:
+  ENUM,
   STRUCT,
-  INTERFACE,
-  IMPL,
 
   // Meta:
   ATTRIBUTE_OPEN,

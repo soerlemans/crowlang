@@ -9,6 +9,7 @@
 
 
 // Absolute Includes:
+#include "lib/check_nullptr.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
 #include "lib/stdprint.hpp"
 
@@ -38,25 +39,27 @@ namespace mir {
 // TODO: Move somewhere else.
 auto Label::label() const -> std::string_view
 {
-  if(!m_target) {
-    using lib::stdexcept::throw_unexpected_nullptr;
-
-    throw_unexpected_nullptr("Label points to nullptr");
-  }
+  CHECK_NULLPTR(m_target);
 
   return m_target->m_label;
 }
 
 // TODO: Move somewhere else.
+
+auto FunctionLabel::handle() -> FunctionPtr
+{
+  const FunctionPtr target{m_target.lock()};
+  CHECK_NULLPTR(target);
+
+  return target;
+}
+
 auto FunctionLabel::label() const -> std::string_view
 {
-  if(!m_target) {
-    using lib::stdexcept::throw_unexpected_nullptr;
+  const FunctionPtr target{m_target.lock()};
+  CHECK_NULLPTR(target);
 
-    throw_unexpected_nullptr("FunctionLabel points to nullptr");
-  }
-
-  return m_target->m_name;
+  return target->m_name;
 }
 
 // Functions:
@@ -178,6 +181,22 @@ auto operator<<(std::ostream& t_os, const mir::Literal& t_val) -> std::ostream&
   return t_os;
 }
 
+auto operator<<(std::ostream& t_os, const mir::GlobalVar& t_var)
+  -> std::ostream&
+{
+  t_os << std::format("@{}", t_var.m_name);
+
+  return t_os;
+}
+
+auto operator<<(std::ostream& t_os, const mir::GlobalVarPtr& t_ptr)
+  -> std::ostream&
+{
+  using lib::stdprint::detail::print_smart_ptr;
+
+  return print_smart_ptr(t_os, t_ptr);
+}
+
 auto operator<<(std::ostream& t_os, const mir::SsaVar& t_var) -> std::ostream&
 {
   // TODO: Think about conditional printing of the type as well?
@@ -197,7 +216,7 @@ auto operator<<(std::ostream& t_os, const mir::SsaVarPtr& t_ptr)
 
 auto operator<<(std::ostream& t_os, const mir::Label& t_label) -> std::ostream&
 {
-  t_os << std::format("<{}>", t_label.label());
+  t_os << std::format("<l:{}>", t_label.label());
 
   return t_os;
 }
@@ -205,7 +224,7 @@ auto operator<<(std::ostream& t_os, const mir::Label& t_label) -> std::ostream&
 auto operator<<(std::ostream& t_os, const mir::FunctionLabel& t_label)
   -> std::ostream&
 {
-  t_os << std::format("<{}>", t_label.label());
+  t_os << std::format("<f:{}>", t_label.label());
 
   return t_os;
 }
@@ -314,11 +333,19 @@ auto operator<<(std::ostream& t_os, const mir::FunctionPtr& t_ptr)
   return print_smart_ptr(t_os, t_ptr);
 }
 
+auto operator<<(std::ostream& t_os, const mir::FunctionWeakPtr& t_ptr)
+  -> std::ostream&
+{
+  using lib::stdprint::detail::print_weak_ptr;
+
+  return print_weak_ptr(t_os, t_ptr);
+}
+
 auto operator<<(std::ostream& t_os, const mir::Module& t_mod) -> std::ostream&
 {
   using mir::FunctionPtr;
 
-  const auto& [name, functions] = t_mod;
+  const auto& [name, globals, functions] = t_mod;
 
   // Module declaration header.
   t_os << std::format("module {}\n\n", name);

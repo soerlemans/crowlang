@@ -3,20 +3,50 @@
 
 // STL Includes:
 #include <memory>
+#include <unordered_map>
 
 // Absolute Includes:
 #include "crow/mir/mir.hpp"
 #include "crow/mir/mir_builder/mir_env_state.hpp"
 
 namespace mir::mir_builder {
+// Using:
+using types::core::TypeVariant;
+
 // Forward Declarations:
+template<typename T>
+struct MirEntity;
 class MirModuleFactory;
 
 // Aliases:
 using MirModuleFactoryPtr = std::unique_ptr<MirModuleFactory>;
 
+using FunctionMirEntity = MirEntity<FunctionPtr>;
+using GlobalMirEntity = MirEntity<GlobalVarPtr>;
+
+//! Globals can be forward declared, regular variables not.
+using GlobalVarMap = std::unordered_map<std::string, GlobalMirEntity>;
 using SsaVarEnvState = MirEnvState<SsaVarPtr>;
-using FunctionEnvState = MirEnvState<FunctionPtr>;
+using FunctionEnvState = MirEnvState<FunctionMirEntity>;
+
+// Enums:
+// TODO: Similar to @ref SymbolStatus maybe unify?
+//! Keep track if a MIR item has only been declared, or defined.
+enum class EntityStatus {
+  DECLARED,
+  DEFINED,
+};
+
+// Structs:
+/*!
+ * Functions or structs could be forward declared.
+ * For these kind of MirEntities we need something inbetween.
+ */
+template<typename T>
+struct MirEntity {
+  EntityStatus m_status;
+  T m_entity;
+};
 
 // Classes:
 // TODO: Implement a functionality similar to LLVM's SetInsertPoint.
@@ -39,14 +69,18 @@ class MirModuleFactory {
   private:
   ModulePtr m_module;
 
+  // Environment for referencing globals.
+  GlobalVarMap m_global_map;
+
   // We need two separate environments to prevent IR temporaries from clashing.
   // Semantic pass should prevent any variables and functions from conflicting.
-  SsaVarEnvState m_var_env;
   FunctionEnvState m_fn_env;
+  SsaVarEnvState m_var_env;
 
   // We need to increment these to prevent collisions.
   u64 m_block_id;
   u64 m_instr_id;
+  u64 m_global_id;
   u64 m_var_id;
 
   public:
@@ -58,9 +92,14 @@ class MirModuleFactory {
   auto clear_env() -> void;
 
   // SsaVar operations:
+  // Forward declarations for variables, is only allowed for globals.
+  // TODO: Implement.
+  // auto add_global_var_declaration() -> void;
+  // auto add_global_var_definition() -> void;
+
   [[nodiscard("Must use created ssa var.")]]
-  auto create_var(types::core::TypeVariant t_type) -> SsaVarPtr;
-  auto add_result_var(types::core::TypeVariant t_type) -> SsaVarPtr;
+  auto create_var(TypeVariant t_type) -> SsaVarPtr;
+  auto add_result_var(TypeVariant t_type) -> SsaVarPtr;
 
   /*!
    * Returns the result @ref SsaVarPtr from the last @ref Instruction.
@@ -100,21 +139,41 @@ class MirModuleFactory {
    */
   auto create_var_binding(std::string_view t_name, SsaVarPtr t_var) -> void;
 
+  auto create_global(std::string_view t_name, TypeVariant t_type)
+    -> GlobalVarPtr;
+
   /*!
-   * Add an init for a variable.
+   * Check if a variable name is a global.
+   */
+  auto is_global(std::string_view t_name) -> bool;
+
+  /*!
+   * Add a placeholder variable pointer, for later definition.
+   * Variables, are only allowed to be declared if they are globals.
+   */
+  auto add_global_declaration(std::string_view t_name, TypeVariant t_type)
+    -> void;
+
+  /*!
+   * Add the init opcode tied to a variable name.
    *
    * @note this binds a source variable name to an ssa var.
    */
-  auto add_init(std::string_view t_name, types::core::TypeVariant t_type)
+  auto add_variable_definition(std::string_view t_name, TypeVariant t_type)
     -> Instruction&;
 
   /*!
-   * Variables need to be referenced to an SSA var.
-   * An update statement creates a new statement.
-   * Which assigns the old ssa variable, to a new ssa variable.
+   * Adds an instruction, which returns a result to reference the variable by.
+   * This is used to reference a source variable name.
+   * This method can load either a global or insert an update statement.
+   */
+  auto add_variable_ref(std::string_view t_name) -> Instruction&;
+
+  /*!
+   * Adds an instruction, which returns a result to reference the variable by.
+   * This instruction is always an update instruction.
    * So we can reference the last SSA var.
    */
-  auto add_update(std::string_view t_name) -> Instruction&;
   auto add_update(std::string_view t_name, SsaVarPtr t_prev_var)
     -> Instruction&;
 
@@ -141,7 +200,8 @@ class MirModuleFactory {
   auto last_block() -> BasicBlock&;
 
   // Function operations:
-  auto add_function(FunctionPtr t_fn) -> void;
+  auto add_function_declaration(FunctionPtr t_fn) -> void;
+  auto add_function_definition(FunctionPtr t_fn) -> void;
 
   /*!
    * Get a function by name.

@@ -5,16 +5,24 @@
 #include <memory>
 
 // Absolute Includes:
+#include "lib/check_nullptr.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
 #include "lib/string_util.hpp"
 
 namespace mir::mir_builder {
+// Methods:
 MirModuleFactory::MirModuleFactory()
   : m_module{std::make_shared<Module>()},
-    m_var_env{},
+
+    // Environments:
+    m_global_map{},
     m_fn_env{},
+    m_var_env{},
+
+    // IDs:
     m_block_id{0},
     m_instr_id{0},
+    m_global_id{0},
     m_var_id{0}
 {}
 
@@ -32,11 +40,12 @@ auto MirModuleFactory::pop_env() -> void
 
 auto MirModuleFactory::clear_env() -> void
 {
+  m_global_map.clear();
   m_var_env.clear();
   m_fn_env.clear();
 }
 
-auto MirModuleFactory::create_var(types::core::TypeVariant t_type) -> SsaVarPtr
+auto MirModuleFactory::create_var(TypeVariant t_type) -> SsaVarPtr
 {
   auto ptr{std::make_shared<SsaVar>(m_var_id, t_type)};
 
@@ -54,8 +63,7 @@ auto MirModuleFactory::create_var(types::core::TypeVariant t_type) -> SsaVarPtr
   return ptr;
 }
 
-auto MirModuleFactory::add_result_var(types::core::TypeVariant t_type)
-  -> SsaVarPtr
+auto MirModuleFactory::add_result_var(TypeVariant t_type) -> SsaVarPtr
 {
   auto ssa_var{create_var(t_type)};
   auto& instr{last_instruction()};
@@ -216,24 +224,86 @@ auto MirModuleFactory::create_var_binding(std::string_view t_name,
   }
 }
 
-auto MirModuleFactory::add_init(const std::string_view t_name,
-                                types::core::TypeVariant t_type) -> Instruction&
+auto MirModuleFactory::create_global(std::string_view t_name,
+                                     TypeVariant t_type) -> GlobalVarPtr
+{
+  const auto global_var{
+    std::make_shared<GlobalVar>(m_global_id, t_name, t_type)};
+
+  // Update ID value.
+  m_global_id++;
+
+  return global_var;
+}
+
+auto MirModuleFactory::is_global(const std::string_view t_name) -> bool
+{
+  if(m_global_map.contains(std::string{t_name})) {
+    // We dont allow shadowing variables.
+    // TODO: Maybe double check if we have no duplicate variable names.
+
+    return true;
+  }
+
+  return false;
+}
+
+auto MirModuleFactory::add_global_declaration(const std::string_view t_name,
+                                              TypeVariant t_type) -> void
+{
+  const std::string name{t_name};
+  const auto iter{m_global_map.find(name)};
+
+  // Only insert if no already present.
+  if(iter == m_global_map.end()) {
+    const auto global_var{create_global(t_name, t_type)};
+
+    // Add placeholder for current referencing.
+    GlobalMirEntity entity{EntityStatus::DECLARED, global_var};
+    m_global_map.insert({std::string{t_name}, entity});
+  }
+}
+
+auto MirModuleFactory::add_variable_definition(const std::string_view t_name,
+                                               TypeVariant t_type)
+  -> Instruction&
 {
   auto& assign_instr{add_instruction(Opcode::INIT)};
   auto result_var{add_result_var(t_type)};
 
-  // Bind the source variable name to the ssa var.
-  create_var_binding(t_name, result_var);
+  if(m_var_env.is_toplevel()) {
+    const auto global_var{create_global(t_name, t_type)};
+
+    GlobalMirEntity entity{EntityStatus::DEFINED, global_var};
+    m_global_map.insert({std::string{t_name}, entity});
+  } else {
+    // Bind the source variable name to the ssa var.
+    create_var_binding(t_name, result_var);
+  }
 
   return assign_instr;
 }
 
-auto MirModuleFactory::add_update(const std::string_view t_name) -> Instruction&
+auto MirModuleFactory::add_variable_ref(const std::string_view t_name)
+  -> Instruction&
 {
-  // Get the previous ssa variable associated with the name.
-  auto prev_var{m_var_env.get_value(t_name)};
+  if(is_global(t_name)) {
+    auto iter{m_global_map.find(std::string{t_name})};
+    const auto global_var{iter->second.m_entity};
+    const auto type{global_var->m_type};
 
-  return add_update(t_name, prev_var);
+    // Construct load instruction.
+    auto& load_instr{add_instruction(Opcode::LOAD)};
+    load_instr.add_operand(global_var);
+    add_result_var(type);
+
+    return load_instr;
+  } else {
+    // Get the previous ssa variable associated with the name.
+    auto prev_var{m_var_env.get_value(t_name)};
+
+    return add_update(t_name, prev_var);
+  }
 }
 
 auto MirModuleFactory::add_update(std::string_view t_name, SsaVarPtr t_prev_var)
@@ -259,10 +329,11 @@ auto MirModuleFactory::add_call(const std::string_view t_name,
 {
   auto& call_instr{add_instruction(Opcode::CALL)};
 
-  // Insert a reference to the function as operand.
-  auto fn{m_fn_env.get_value(t_name)};
+  // Get a handle to the function.
+  const FunctionMirEntity& entity{m_fn_env.get_value(t_name)};
 
-  FunctionLabel label{fn};
+  // Insert a weak reference to the function as operand.
+  FunctionLabel label{FunctionWeakPtr{entity.m_entity}};
   call_instr.add_operand({label});
 
   // The rest of the args.
@@ -355,16 +426,55 @@ auto MirModuleFactory::last_block() -> BasicBlock&
   return fn->m_blocks.back();
 }
 
-auto MirModuleFactory::add_function(FunctionPtr t_fn) -> void
+auto MirModuleFactory::add_function_declaration(FunctionPtr t_fn) -> void
+{
+  const auto fn_name{t_fn->m_name};
+
+  // TODO: Maybe double check semantics?
+
+  // Only insert if the function name if an entry does not already exist.
+  // Semantic checking should guarentee proper semantics.
+  const auto [iter, exists] = m_fn_env.find(fn_name);
+  if(!exists) {
+    // Add the placeholder for later declaration.
+    // This way we can reference it before, the complete definition.
+    FunctionMirEntity entity{EntityStatus::DECLARED, t_fn};
+    m_fn_env.insert({fn_name, entity});
+  }
+}
+
+auto MirModuleFactory::add_function_definition(FunctionPtr t_new_fn) -> void
 {
   auto& functions{m_module->m_functions};
 
+  FunctionPtr fn_def{t_new_fn};
 
-  const auto fn_name{t_fn->m_name};
+  const auto fn_name{t_new_fn->m_name};
+  const auto [iter, exists] = m_fn_env.find(fn_name);
+  if(exists) {
+    // TODO: Maybe double check semantics.
+    // TODO: This is brittle, depends on not modifying the inplace FunctionPtr.
+    // As it would invalidate any calls that depend on the forward declaration.
+    auto& [fn_status, fn_ptr] = iter->second;
 
-  m_fn_env.insert({fn_name, t_fn});
+    // Change the status inplace to not invalidate any call statements.
+    // That reference the current FunctionPtr.
+    fn_status = EntityStatus::DEFINED;
 
-  functions.push_back(t_fn);
+    CHECK_NULLPTR(fn_ptr);
+    CHECK_NULLPTR(t_new_fn);
+
+    // Copy over contents, as to not invalidate any references.
+    *fn_ptr = *t_new_fn;
+
+    // Set the definition to the inplace entry.
+    fn_def = fn_ptr;
+  } else {
+    FunctionMirEntity entity{EntityStatus::DEFINED, t_new_fn};
+    m_fn_env.insert({fn_name, entity});
+  }
+
+  functions.push_back(fn_def);
 }
 
 auto MirModuleFactory::last_function() -> FunctionPtr&

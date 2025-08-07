@@ -8,7 +8,7 @@
 %token Module Import Private Public
 
 // Typing:
-%token Enum Struct Interface Impl
+%token Enum Struct
 
 // Control Statements:
 %token Fn Match Case If Else ElIf Loop
@@ -126,7 +126,8 @@ expr_opt         : // empty
 				         | expr
                  ;
 
-// TODO: Refactor Var and Let to be more elegant
+// TODO: Refactor Var and Let to be more elegant.
+// TODO: Add block definitions like in Golang (using parenthesis).
 let_expr         : Let IDENTIFIER '=' newline_opt expr
                  | Let IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
                  ;
@@ -243,23 +244,11 @@ attribute        : Private
 // Typing:
 // TODO: Figure out how to name aliases?
 /* alias_def     : Alias? */
+/* type_specifier     : IDENTIFIER | *IDENTIFIER */
 
 // Enum:
 enum_def         : Enum IDENTIFIER newline_opt
                      '{' newline_opt '}'
-                 ;
-// Interface:
-method_decl      : Fn IDENTIFIER '(' param_list_opt ')' return_type terminator
-                 ;
-
-
-method_decl_list : // empty
-		 | method_decl
-		 | fn_decl_list method_decl
-                 ;
-
-interface_def    : Interface IDENTIFIER newline_opt
-                     '{' newline_opt method_decl_list '}'
                  ;
 
 // Struct:
@@ -276,19 +265,7 @@ struct_def       : Struct IDENTIFIER newline_opt
                  ;
 
 type_def         : enum_def
-				         | interface_def
 				         | struct_def
-                 ;
-
-// Implementation:
-def_list         : newline_opt function
-                 | impl_list newline_opt function
-                 ;
-
-def_block        : Define IDENTIFIER newline_opt
-                   '{' impl_list '}'
-                 | Define IDENTIFIER newline_opt
-                   '{' impl_list '}'
                  ;
 
 // Function:

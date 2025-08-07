@@ -15,7 +15,6 @@
 
 // Local Includes:
 #include "clang_frontend_invoker.hpp"
-#include "prototype_generator.hpp"
 #include "type2cpp.hpp"
 
 namespace codegen::cpp_backend {
@@ -29,7 +28,7 @@ NODE_USING_ALL_NAMESPACES()
 // Protected:
 auto CppBackend::prologue() -> std::string
 {
-  std::stringstream ss;
+  std::stringstream ss{};
 
   // Crow's native types often translate.
   // To C++ fixed width integers and floats.
@@ -58,7 +57,7 @@ auto CppBackend::prologue() -> std::string
 
 auto CppBackend::epilogue() -> std::string
 {
-  std::stringstream ss;
+  std::stringstream ss{};
 
   // Loop through the interop backends and add the epilogue.
   for(auto& ptr : m_interop_backends) {
@@ -66,13 +65,6 @@ auto CppBackend::epilogue() -> std::string
   }
 
   return ss.str();
-}
-
-auto CppBackend::prototypes(NodePtr t_ast) -> std::string
-{
-  PrototypeGenerator generator{};
-
-  return generator.generate(t_ast);
 }
 
 auto CppBackend::should_terminate() -> bool
@@ -350,7 +342,7 @@ auto CppBackend::visit(LetDecl* t_ldecl) -> Any
   const auto type_variant{t_ldecl->get_type()};
   const auto type{type_variant2cpp(type_variant)};
 
-  return std::format("const {} {}{{}};", type, identifier);
+  return std::format("extern const {} {};\n", type, identifier);
 }
 
 auto CppBackend::visit(VarDecl* t_vdecl) -> Any
@@ -360,7 +352,7 @@ auto CppBackend::visit(VarDecl* t_vdecl) -> Any
   const auto type_variant{t_vdecl->get_type()};
   const auto type{type_variant2cpp(type_variant)};
 
-  return std::format("{} {}{{}};", type, identifier);
+  return std::format("extern {} {};\n", type, identifier);
 }
 
 // Operators:
@@ -585,8 +577,8 @@ auto CppBackend::codegen(NodePtr t_ast, const fs::path& t_out) -> void
   ofs << prologue() << '\n';
 
   // Generate forward declarations, to make code position independent.
-  ofs << "// Protoypes:\n";
-  ofs << prototypes(t_ast) << '\n';
+  // ofs << "// Protoypes:\n";
+  // ofs << "// TODO: Implement." << '\n';
 
   // Generate C++ code.
   ofs << "// C++ code:\n";

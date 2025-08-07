@@ -62,16 +62,13 @@ class CppBackend : public NodeVisitor, public BackendInterface {
   auto epilogue() -> std::string;
 
   /*!
-   * Generate function and type prototypes, so the code can be written position
-   * independently.
-   */
-  auto prototypes(NodePtr t_ast) -> std::string;
-
-  /*!
+   * Determines if we are currently nested inside an expression.
+   * Indicating if a semicolon should be inserted or not.
    */
   auto should_terminate() -> bool;
 
   /*!
+   * Conditionally add a semicolon.
    */
   [[nodiscard("Pure method must use results")]]
   auto terminate() -> std::string_view;
