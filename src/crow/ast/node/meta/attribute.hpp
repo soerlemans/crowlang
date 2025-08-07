@@ -1,5 +1,5 @@
-#ifndef ATTRIBUTE_HPP
-#define ATTRIBUTE_HPP
+#ifndef CROW_CROW_AST_NODE_META_ATTRIBUTE_HPP
+#define CROW_CROW_AST_NODE_META_ATTRIBUTE_HPP
 
 // Relative Includes:
 #include "../node_traits/include.hpp"
@@ -29,4 +29,4 @@ class Attribute : public Identifier, public Params, public Body {
 // Cereal type registration:
 REGISTER_ARCHIVEABLE_TYPE(ast::node::meta, Attribute);
 
-#endif // ATTRIBUTE_HPP
+#endif // CROW_CROW_AST_NODE_META_ATTRIBUTE_HPP

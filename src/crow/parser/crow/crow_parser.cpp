@@ -678,9 +678,9 @@ auto CrowParser::attribute_item() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
 
-  // TODO: Maybe also make declarations attributable?
-
-  if(auto ptr{decl_expr()}; ptr) {
+  if(auto ptr{declare()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{decl_expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{function()}; ptr) {
     node = std::move(ptr);

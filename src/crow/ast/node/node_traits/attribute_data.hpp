@@ -1,5 +1,5 @@
-#ifndef ATTRIBUTE_DATA_HPP
-#define ATTRIBUTE_DATA_HPP
+#ifndef CROW_CROW_AST_NODE_NODE_TRAITS_ATTRIBUTE_DATA_HPP
+#define CROW_CROW_AST_NODE_NODE_TRAITS_ATTRIBUTE_DATA_HPP
 
 // STL Include:
 #include <string>
@@ -45,4 +45,4 @@ class AttributeData : virtual public NodeInterface {
 // Cereal register type:
 // REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits, AttributeData);
 
-#endif // ATTRIBUTE_DATA_HPP
+#endif // CROW_CROW_AST_NODE_NODE_TRAITS_ATTRIBUTE_DATA_HPP

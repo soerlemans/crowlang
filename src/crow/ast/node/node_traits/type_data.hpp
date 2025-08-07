@@ -26,7 +26,7 @@ class TypeData : virtual public NodeInterface {
   virtual auto set_type(TypeVariant t_data) -> void;
   virtual auto get_type() const -> const TypeVariant&;
 
-	// TODO: Fix serialization.
+  // TODO: Fix serialization.
   // AST_ARCHIVE_MAKE_ARCHIVEABLE(TypeData)
   // {
   //    t_archive(CEREAL_NVP(m_data));
