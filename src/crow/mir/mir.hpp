@@ -27,6 +27,7 @@ using types::core::TypeVariant;
 
 // Forward Declarations:
 struct Literal;
+struct GlobalVar;
 struct SsaVar;
 struct Label;
 struct FunctionLabel;
@@ -38,6 +39,7 @@ struct Module;
 // Aliases:
 using ModulePtr = std::shared_ptr<Module>;
 
+using GlobalVarPtr = std::shared_ptr<GlobalVar>;
 using SsaVarPtr = std::shared_ptr<SsaVar>;
 using FunctionPtr = std::shared_ptr<Function>;
 using FunctionWeakPtr = std::weak_ptr<Function>;
@@ -67,7 +69,8 @@ using LiteralValue = std::variant<uint, int, f64, std::string, bool>;
  * The @ref Literal is needed for obtaining references to literals.
  * The @ref Label is needed for obtaining references to basic blocks.
  */
-using Operand = std::variant<SsaVarPtr, Literal, Label, FunctionLabel>;
+using Operand =
+  std::variant<GlobalVarPtr, SsaVarPtr, Literal, Label, FunctionLabel>;
 using OperandSeq = std::vector<Operand>;
 
 using BasicBlockIter = BasicBlockSeq::iterator;
@@ -188,6 +191,19 @@ struct Literal {
   virtual ~Literal() = default;
 };
 
+// TODO: Figure this out.
+struct GlobalVar {
+  u64 m_id;
+  std::string m_name;
+  TypeVariant m_type;
+
+  GlobalVar(u64 t_id, const std::string_view t_name, TypeVariant t_type)
+    : m_id{t_id}, m_name{t_name}, m_type{t_type}
+  {}
+
+  virtual ~GlobalVar() = default;
+};
+
 struct SsaVar {
   u64 m_id;
   TypeVariant m_type;
@@ -281,6 +297,9 @@ auto opcode2str(Opcode t_opcode) -> std::string_view;
 // Functions:
 auto operator<<(std::ostream& t_os, const mir::Opcode t_op) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::Literal& t_lit) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::GlobalVar& t_var) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::GlobalVarPtr& t_ptr)
+  -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::SsaVar& t_var) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::SsaVarPtr& t_ptr)
   -> std::ostream&;

@@ -582,7 +582,8 @@ auto SemanticChecker::visit(Assignment* t_assign) -> Any
     throw_type_error(ss.str());
   }
 
-  // TODO: Annotate types.
+  // Annotate AST.
+  t_assign->set_type(var.type_variant());
 
   return var;
 }

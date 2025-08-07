@@ -10,10 +10,12 @@
 #include "lib/string_util.hpp"
 
 namespace mir::mir_builder {
+// Methods:
 MirModuleFactory::MirModuleFactory()
   : m_module{std::make_shared<Module>()},
-    m_var_env{},
+    m_global_map{},
     m_fn_env{},
+    m_var_env{},
     m_block_id{0},
     m_instr_id{0},
     m_var_id{0}
@@ -37,7 +39,7 @@ auto MirModuleFactory::clear_env() -> void
   m_fn_env.clear();
 }
 
-auto MirModuleFactory::create_var(types::core::TypeVariant t_type) -> SsaVarPtr
+auto MirModuleFactory::create_var(TypeVariant t_type) -> SsaVarPtr
 {
   auto ptr{std::make_shared<SsaVar>(m_var_id, t_type)};
 
@@ -55,8 +57,7 @@ auto MirModuleFactory::create_var(types::core::TypeVariant t_type) -> SsaVarPtr
   return ptr;
 }
 
-auto MirModuleFactory::add_result_var(types::core::TypeVariant t_type)
-  -> SsaVarPtr
+auto MirModuleFactory::add_result_var(TypeVariant t_type) -> SsaVarPtr
 {
   auto ssa_var{create_var(t_type)};
   auto& instr{last_instruction()};
@@ -217,19 +218,24 @@ auto MirModuleFactory::create_var_binding(std::string_view t_name,
   }
 }
 
-auto MirModuleFactory::add_variable_declaration(const std::string_view t_name,
-                                                types::core::TypeVariant t_type)
-  -> void
+auto MirModuleFactory::add_global_declaration(const std::string_view t_name,
+                                              TypeVariant t_type) -> void
 {
-  auto& assign_instr{add_instruction(Opcode::INIT)};
-  auto result_var{add_result_var(t_type)};
+  const std::string name{t_name};
+  const auto iter{m_global_map.find(name)};
 
-  // Bind the source variable name to the ssa var.
-  // create_var_binding(t_name, result_var);
+  // Only insert if no already present.
+  if(iter == m_global_map.end()) {
+    auto var{create_var(t_type)};
+
+    // Add placeholder for current referencing.
+    GlobalMirEntity entity{EntityStatus::DECLARED, var};
+    m_global_map.insert({std::string{t_name}, entity});
+  }
 }
 
 auto MirModuleFactory::add_variable_definition(const std::string_view t_name,
-                                               types::core::TypeVariant t_type)
+                                               TypeVariant t_type)
   -> Instruction&
 {
   auto& assign_instr{add_instruction(Opcode::INIT)};
@@ -246,16 +252,17 @@ auto MirModuleFactory::add_variable_definition(const std::string_view t_name,
   return assign_instr;
 }
 
-auto MirModuleFactory::add_update(const std::string_view t_name) -> Instruction&
+auto MirModuleFactory::add_variable_ref(const std::string_view t_name)
+  -> Instruction&
 {
   // Get the previous ssa variable associated with the name.
   auto prev_var{m_var_env.get_value(t_name)};
 
-  return add_update(t_name, prev_var);
+  return add_variable_ref(t_name, prev_var);
 }
 
-auto MirModuleFactory::add_update(std::string_view t_name, SsaVarPtr t_prev_var)
-  -> Instruction&
+auto MirModuleFactory::add_variable_ref(std::string_view t_name,
+                                        SsaVarPtr t_prev_var) -> Instruction&
 {
   auto& update_instr{add_instruction(Opcode::UPDATE)};
 

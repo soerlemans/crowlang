@@ -278,7 +278,7 @@ auto MirBuilder::visit(Variable* t_var) -> Any
   // TODO: add casting of a variable if it differs from.
   // The source type.
 
-  m_factory->add_update(name);
+  m_factory->add_variable_ref(name);
   m_factory->add_comment(source_line);
 
   return {};
@@ -303,14 +303,20 @@ auto MirBuilder::visit(FunctionDecl* t_fdecl) -> Any
 
 auto MirBuilder::visit(LetDecl* t_ldecl) -> Any
 {
-  // TODO: Implement forward declarations.
+  const auto name{t_ldecl->identifier()};
+  const auto type{t_ldecl->get_type()};
+
+  m_factory->add_global_declaration(name, type);
 
   return {};
 }
 
 auto MirBuilder::visit(VarDecl* t_vdecl) -> Any
 {
-  // TODO: Implement forward declarations.
+  const auto name{t_vdecl->identifier()};
+  const auto type{t_vdecl->get_type()};
+
+  m_factory->add_global_declaration(name, type);
 
   return {};
 }
@@ -409,6 +415,7 @@ auto MirBuilder::visit(Assignment* t_assign) -> Any
 
   const auto left{t_assign->left()};
   const auto right{t_assign->right()};
+  const auto type{t_assign->get_type()};
   const auto source_line{t_assign->position().m_line};
 
   // For now we need a dynamic_cast.
@@ -420,7 +427,6 @@ auto MirBuilder::visit(Assignment* t_assign) -> Any
   }
 
   const auto name{lhs->identifier()};
-  const auto type{lhs->get_type()};
   const auto result_var{m_factory->create_var(type)};
 
   // TODO: Unify with arithmetic, assignment and comparison implementation.
@@ -448,7 +454,7 @@ auto MirBuilder::visit(Assignment* t_assign) -> Any
     add_instr(t_iop);
 
     // Add the final update, for the variable name and comment.
-    m_factory->add_update(name, result_var);
+    m_factory->add_variable_ref(name, result_var);
     m_factory->add_comment(source_line);
   }};
 
@@ -480,7 +486,7 @@ auto MirBuilder::visit(Assignment* t_assign) -> Any
       const auto right_var{m_factory->require_last_var()};
 
       // For a regular assignment just update the ssa env state.
-      m_factory->add_update(name, right_var);
+      m_factory->add_variable_ref(name, right_var);
       m_factory->add_comment(source_line);
       break;
     }

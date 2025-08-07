@@ -181,6 +181,22 @@ auto operator<<(std::ostream& t_os, const mir::Literal& t_val) -> std::ostream&
   return t_os;
 }
 
+auto operator<<(std::ostream& t_os, const mir::GlobalVar& t_var)
+  -> std::ostream&
+{
+  t_os << std::format("@{}", t_var.m_name);
+
+  return t_os;
+}
+
+auto operator<<(std::ostream& t_os, const mir::GlobalVarPtr& t_ptr)
+  -> std::ostream&
+{
+  using lib::stdprint::detail::print_smart_ptr;
+
+  return print_smart_ptr(t_os, t_ptr);
+}
+
 auto operator<<(std::ostream& t_os, const mir::SsaVar& t_var) -> std::ostream&
 {
   // TODO: Think about conditional printing of the type as well?
@@ -329,7 +345,7 @@ auto operator<<(std::ostream& t_os, const mir::Module& t_mod) -> std::ostream&
 {
   using mir::FunctionPtr;
 
-  const auto& [name, functions] = t_mod;
+  const auto& [name, globals, functions] = t_mod;
 
   // Module declaration header.
   t_os << std::format("module {}\n\n", name);

@@ -22,6 +22,7 @@ struct MirTranslateParams {
 };
 
 // Classes:
+// TODO: Globals should be implemented as a .
 /*!
  * So we convert the AST to the IR that we defined.
  * Our strategy involves assuming that every given

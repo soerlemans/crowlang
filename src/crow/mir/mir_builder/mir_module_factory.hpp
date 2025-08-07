@@ -3,12 +3,16 @@
 
 // STL Includes:
 #include <memory>
+#include <unordered_map>
 
 // Absolute Includes:
 #include "crow/mir/mir.hpp"
 #include "crow/mir/mir_builder/mir_env_state.hpp"
 
 namespace mir::mir_builder {
+// Using:
+using types::core::TypeVariant;
+
 // Forward Declarations:
 template<typename T>
 struct MirEntity;
@@ -18,10 +22,11 @@ class MirModuleFactory;
 using MirModuleFactoryPtr = std::unique_ptr<MirModuleFactory>;
 
 using FunctionMirEntity = MirEntity<FunctionPtr>;
-using VarMirEntity = MirEntity<SsaVarPtr>;
+using GlobalMirEntity = MirEntity<SsaVarPtr>;
 
-// using TypeEnvState = MirEnvState<TODO:>;
-using SsaVarEnvState = MirEnvState<VarMirEntity>;
+//! Globals can be forward declared, regular variables not.
+using GlobalVarMap = std::unordered_map<std::string, GlobalMirEntity>;
+using SsaVarEnvState = MirEnvState<SsaVarPtr>;
 using FunctionEnvState = MirEnvState<FunctionMirEntity>;
 
 // Enums:
@@ -64,10 +69,13 @@ class MirModuleFactory {
   private:
   ModulePtr m_module;
 
+  // Environment for referencing globals.
+  GlobalVarMap m_global_map;
+
   // We need two separate environments to prevent IR temporaries from clashing.
   // Semantic pass should prevent any variables and functions from conflicting.
-  SsaVarEnvState m_var_env;
   FunctionEnvState m_fn_env;
+  SsaVarEnvState m_var_env;
 
   // We need to increment these to prevent collisions.
   u64 m_block_id;
@@ -89,8 +97,8 @@ class MirModuleFactory {
   // auto add_global_var_definition() -> void;
 
   [[nodiscard("Must use created ssa var.")]]
-  auto create_var(types::core::TypeVariant t_type) -> SsaVarPtr;
-  auto add_result_var(types::core::TypeVariant t_type) -> SsaVarPtr;
+  auto create_var(TypeVariant t_type) -> SsaVarPtr;
+  auto add_result_var(TypeVariant t_type) -> SsaVarPtr;
 
   /*!
    * Returns the result @ref SsaVarPtr from the last @ref Instruction.
@@ -133,16 +141,16 @@ class MirModuleFactory {
   /*!
    * Add a placeholder variable pointer, for later definition.
    */
-  auto add_variable_declaration(std::string_view t_name,
-                                types::core::TypeVariant t_type) -> void;
+  auto add_global_declaration(std::string_view t_name, TypeVariant t_type)
+    -> void;
 
   /*!
    * Add the init opcode tied to a variable name.
    *
    * @note this binds a source variable name to an ssa var.
    */
-  auto add_variable_definition(std::string_view t_name,
-                               types::core::TypeVariant t_type) -> Instruction&;
+  auto add_variable_definition(std::string_view t_name, TypeVariant t_type)
+    -> Instruction&;
 
   /*!
    * Variables need to be referenced to an SSA var.
@@ -150,8 +158,8 @@ class MirModuleFactory {
    * Which assigns the old ssa variable, to a new ssa variable.
    * So we can reference the last SSA var.
    */
-  auto add_update(std::string_view t_name) -> Instruction&;
-  auto add_update(std::string_view t_name, SsaVarPtr t_prev_var)
+  auto add_variable_ref(std::string_view t_name) -> Instruction&;
+  auto add_variable_ref(std::string_view t_name, SsaVarPtr t_prev_var)
     -> Instruction&;
 
   /*!

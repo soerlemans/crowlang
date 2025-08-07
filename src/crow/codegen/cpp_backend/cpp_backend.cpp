@@ -28,7 +28,7 @@ NODE_USING_ALL_NAMESPACES()
 // Protected:
 auto CppBackend::prologue() -> std::string
 {
-  std::stringstream ss;
+  std::stringstream ss{};
 
   // Crow's native types often translate.
   // To C++ fixed width integers and floats.
@@ -57,7 +57,7 @@ auto CppBackend::prologue() -> std::string
 
 auto CppBackend::epilogue() -> std::string
 {
-  std::stringstream ss;
+  std::stringstream ss{};
 
   // Loop through the interop backends and add the epilogue.
   for(auto& ptr : m_interop_backends) {
@@ -342,7 +342,7 @@ auto CppBackend::visit(LetDecl* t_ldecl) -> Any
   const auto type_variant{t_ldecl->get_type()};
   const auto type{type_variant2cpp(type_variant)};
 
-  return std::format("const {} {}{{}};", type, identifier);
+  return std::format("extern const {} {}{{}};", type, identifier);
 }
 
 auto CppBackend::visit(VarDecl* t_vdecl) -> Any
@@ -352,7 +352,7 @@ auto CppBackend::visit(VarDecl* t_vdecl) -> Any
   const auto type_variant{t_vdecl->get_type()};
   const auto type{type_variant2cpp(type_variant)};
 
-  return std::format("{} {}{{}};", type, identifier);
+  return std::format("extern {} {}{{}};", type, identifier);
 }
 
 // Operators:

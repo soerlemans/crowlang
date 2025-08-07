@@ -13,6 +13,7 @@ using container::TextPosition;
 using node_traits::BinaryOperator;
 using node_traits::NodePosition;
 using node_traits::Op;
+using node_traits::TypeData;
 
 // Enums:
 enum AssignmentOp {
@@ -29,7 +30,8 @@ enum AssignmentOp {
 // Classes:
 class Assignment : public NodePosition,
                    public Op<AssignmentOp>,
-                   public BinaryOperator {
+                   public BinaryOperator,
+                   public TypeData {
   public:
   Assignment(TextPosition t_pos, AssignmentOp t_op, NodePtr&& t_left,
              NodePtr&& t_right);
