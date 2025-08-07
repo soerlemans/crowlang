@@ -426,6 +426,7 @@ auto MirBuilder::visit(Assignment* t_assign) -> Any
     throw_unexpected_nullptr("Failed to dynamic_cast to Variable*.");
   }
 
+  // TODO: Distinguish between globals and ssa var's.
   const auto name{lhs->identifier()};
   const auto result_var{m_factory->create_var(type)};
 

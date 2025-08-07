@@ -342,7 +342,7 @@ auto CppBackend::visit(LetDecl* t_ldecl) -> Any
   const auto type_variant{t_ldecl->get_type()};
   const auto type{type_variant2cpp(type_variant)};
 
-  return std::format("extern const {} {}{{}};", type, identifier);
+  return std::format("extern const {} {};\n", type, identifier);
 }
 
 auto CppBackend::visit(VarDecl* t_vdecl) -> Any
@@ -352,7 +352,7 @@ auto CppBackend::visit(VarDecl* t_vdecl) -> Any
   const auto type_variant{t_vdecl->get_type()};
   const auto type{type_variant2cpp(type_variant)};
 
-  return std::format("extern {} {}{{}};", type, identifier);
+  return std::format("extern {} {};\n", type, identifier);
 }
 
 // Operators:

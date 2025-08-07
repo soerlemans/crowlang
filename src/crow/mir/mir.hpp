@@ -56,6 +56,7 @@ using FunctionSeq = std::list<FunctionPtr>;
 using BasicBlockSeq = std::list<BasicBlock>;
 using InstructionSeq = std::list<Instruction>;
 
+using GlobalVarVec = std::vector<GlobalVarPtr>;
 using SsaVarVec = std::vector<SsaVarPtr>;
 using CfgSeq = std::list<BasicBlock*>;
 
@@ -282,7 +283,7 @@ struct Function {
 struct Module {
   std::string m_name;
   // TODO: Add a field for struct definitions, and type aliases.
-  SsaVarVec m_globals;
+  GlobalVarVec m_globals;
   FunctionSeq m_functions;
 
   Module() = default;
