@@ -6,6 +6,8 @@ namespace ast::node::meta {
 class FunctionDecl;
 class LetDecl;
 class VarDecl;
+
+class Attribute;
 } // namespace ast::node::meta
 
 #endif // CROW_CROW_AST_NODE_META_FDECL_HPP

@@ -15,4 +15,5 @@ target_sources(${TARGET_CROW_LIB} PRIVATE
 	unary_operator.cpp
 	binary_operator.cpp
 	type_data.cpp
+	attribute_data.cpp
 )

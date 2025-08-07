@@ -8,7 +8,7 @@
 #include "fdecl.hpp"
 
 namespace ast::node::meta {
-// Using Statements:
+// Using:
 using node_traits::Identifier;
 using node_traits::Params;
 using node_traits::TypeAnnotation;
