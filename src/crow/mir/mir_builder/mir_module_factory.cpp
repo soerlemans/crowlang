@@ -13,11 +13,16 @@ namespace mir::mir_builder {
 // Methods:
 MirModuleFactory::MirModuleFactory()
   : m_module{std::make_shared<Module>()},
+
+    // Environments:
     m_global_map{},
     m_fn_env{},
     m_var_env{},
+
+    // IDs:
     m_block_id{0},
     m_instr_id{0},
+    m_global_id{0},
     m_var_id{0}
 {}
 
@@ -35,6 +40,7 @@ auto MirModuleFactory::pop_env() -> void
 
 auto MirModuleFactory::clear_env() -> void
 {
+  m_global_map.clear();
   m_var_env.clear();
   m_fn_env.clear();
 }
@@ -218,6 +224,30 @@ auto MirModuleFactory::create_var_binding(std::string_view t_name,
   }
 }
 
+auto MirModuleFactory::create_global(std::string_view t_name,
+                                     TypeVariant t_type) -> GlobalVarPtr
+{
+  const auto global_var{
+    std::make_shared<GlobalVar>(m_global_id, t_name, t_type)};
+
+  // Update ID value.
+  m_global_id++;
+
+  return global_var;
+}
+
+auto MirModuleFactory::is_global(const std::string_view t_name) -> bool
+{
+  if(m_global_map.contains(std::string{t_name})) {
+    // We dont allow shadowing variables.
+    // TODO: Maybe double check if we have no duplicate variable names.
+
+    return true;
+  }
+
+  return false;
+}
+
 auto MirModuleFactory::add_global_declaration(const std::string_view t_name,
                                               TypeVariant t_type) -> void
 {
@@ -226,10 +256,10 @@ auto MirModuleFactory::add_global_declaration(const std::string_view t_name,
 
   // Only insert if no already present.
   if(iter == m_global_map.end()) {
-    auto var{create_var(t_type)};
+    const auto global_var{create_global(t_name, t_type)};
 
     // Add placeholder for current referencing.
-    GlobalMirEntity entity{EntityStatus::DECLARED, var};
+    GlobalMirEntity entity{EntityStatus::DECLARED, global_var};
     m_global_map.insert({std::string{t_name}, entity});
   }
 }
@@ -242,9 +272,11 @@ auto MirModuleFactory::add_variable_definition(const std::string_view t_name,
   auto result_var{add_result_var(t_type)};
 
   if(m_var_env.is_toplevel()) {
-    // Instantiate global.
+    const auto global_var{create_global(t_name, t_type)};
+
+    GlobalMirEntity entity{EntityStatus::DEFINED, global_var};
+    m_global_map.insert({std::string{t_name}, entity});
   } else {
-    // TODO: Check for existing entry, by that name.
     // Bind the source variable name to the ssa var.
     create_var_binding(t_name, result_var);
   }
@@ -255,14 +287,27 @@ auto MirModuleFactory::add_variable_definition(const std::string_view t_name,
 auto MirModuleFactory::add_variable_ref(const std::string_view t_name)
   -> Instruction&
 {
-  // Get the previous ssa variable associated with the name.
-  auto prev_var{m_var_env.get_value(t_name)};
+  if(is_global(t_name)) {
+    auto iter{m_global_map.find(std::string{t_name})};
+    const auto global_var{iter->second.m_entity};
+    const auto type{global_var->m_type};
 
-  return add_variable_ref(t_name, prev_var);
+    // Construct load instruction.
+    auto& load_instr{add_instruction(Opcode::LOAD)};
+    load_instr.add_operand(global_var);
+    add_result_var(type);
+
+    return load_instr;
+  } else {
+    // Get the previous ssa variable associated with the name.
+    auto prev_var{m_var_env.get_value(t_name)};
+
+    return add_update(t_name, prev_var);
+  }
 }
 
-auto MirModuleFactory::add_variable_ref(std::string_view t_name,
-                                        SsaVarPtr t_prev_var) -> Instruction&
+auto MirModuleFactory::add_update(std::string_view t_name, SsaVarPtr t_prev_var)
+  -> Instruction&
 {
   auto& update_instr{add_instruction(Opcode::UPDATE)};
 

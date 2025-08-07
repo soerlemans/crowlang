@@ -297,7 +297,8 @@ auto opcode2str(Opcode t_opcode) -> std::string_view;
 // Functions:
 auto operator<<(std::ostream& t_os, const mir::Opcode t_op) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::Literal& t_lit) -> std::ostream&;
-auto operator<<(std::ostream& t_os, const mir::GlobalVar& t_var) -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::GlobalVar& t_var)
+  -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::GlobalVarPtr& t_ptr)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::SsaVar& t_var) -> std::ostream&;

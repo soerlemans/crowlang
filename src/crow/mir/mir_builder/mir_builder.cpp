@@ -454,7 +454,7 @@ auto MirBuilder::visit(Assignment* t_assign) -> Any
     add_instr(t_iop);
 
     // Add the final update, for the variable name and comment.
-    m_factory->add_variable_ref(name, result_var);
+    m_factory->add_update(name, result_var);
     m_factory->add_comment(source_line);
   }};
 
@@ -486,7 +486,7 @@ auto MirBuilder::visit(Assignment* t_assign) -> Any
       const auto right_var{m_factory->require_last_var()};
 
       // For a regular assignment just update the ssa env state.
-      m_factory->add_variable_ref(name, right_var);
+      m_factory->add_update(name, right_var);
       m_factory->add_comment(source_line);
       break;
     }

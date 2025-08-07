@@ -22,7 +22,7 @@ class MirModuleFactory;
 using MirModuleFactoryPtr = std::unique_ptr<MirModuleFactory>;
 
 using FunctionMirEntity = MirEntity<FunctionPtr>;
-using GlobalMirEntity = MirEntity<SsaVarPtr>;
+using GlobalMirEntity = MirEntity<GlobalVarPtr>;
 
 //! Globals can be forward declared, regular variables not.
 using GlobalVarMap = std::unordered_map<std::string, GlobalMirEntity>;
@@ -80,6 +80,7 @@ class MirModuleFactory {
   // We need to increment these to prevent collisions.
   u64 m_block_id;
   u64 m_instr_id;
+  u64 m_global_id;
   u64 m_var_id;
 
   public:
@@ -138,8 +139,17 @@ class MirModuleFactory {
    */
   auto create_var_binding(std::string_view t_name, SsaVarPtr t_var) -> void;
 
+  auto create_global(std::string_view t_name, TypeVariant t_type)
+    -> GlobalVarPtr;
+
+  /*!
+   * Check if a variable name is a global.
+   */
+  auto is_global(std::string_view t_name) -> bool;
+
   /*!
    * Add a placeholder variable pointer, for later definition.
+   * Variables, are only allowed to be declared if they are globals.
    */
   auto add_global_declaration(std::string_view t_name, TypeVariant t_type)
     -> void;
@@ -153,13 +163,18 @@ class MirModuleFactory {
     -> Instruction&;
 
   /*!
-   * Variables need to be referenced to an SSA var.
-   * An update statement creates a new statement.
-   * Which assigns the old ssa variable, to a new ssa variable.
-   * So we can reference the last SSA var.
+   * Adds an instruction, which returns a result to reference the variable by.
+   * This is used to reference a source variable name.
+   * This method can load either a global or insert an update statement.
    */
   auto add_variable_ref(std::string_view t_name) -> Instruction&;
-  auto add_variable_ref(std::string_view t_name, SsaVarPtr t_prev_var)
+
+  /*!
+   * Adds an instruction, which returns a result to reference the variable by.
+   * This instruction is always an update instruction.
+   * So we can reference the last SSA var.
+   */
+  auto add_update(std::string_view t_name, SsaVarPtr t_prev_var)
     -> Instruction&;
 
   /*!
