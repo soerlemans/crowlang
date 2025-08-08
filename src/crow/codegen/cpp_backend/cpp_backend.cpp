@@ -283,7 +283,7 @@ auto CppBackend::visit([[maybe_unused]] ReturnType* t_rt) -> Any
 auto CppBackend::visit(Let* t_let) -> Any
 {
   const auto identifier{t_let->identifier()};
-  const auto init_expr{resolve(t_let->init_expr())};
+  const auto init_expr{resolve(t_let->init_expr(), false)};
 
   const auto type_variant{t_let->get_type()};
   const auto type{type_variant2cpp(type_variant)};
@@ -297,7 +297,7 @@ auto CppBackend::visit(Let* t_let) -> Any
 auto CppBackend::visit(Var* t_var) -> Any
 {
   const auto identifier{t_var->identifier()};
-  const auto init_expr{resolve(t_var->init_expr())};
+  const auto init_expr{resolve(t_var->init_expr(), false)};
 
   const auto type_variant{t_var->get_type()};
   const auto type{type_variant2cpp(type_variant)};

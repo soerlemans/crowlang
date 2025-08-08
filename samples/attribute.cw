@@ -7,7 +7,7 @@ module attribute_module
 func main() -> int {
   let num = abs(-23)
 
-  io::println("Absolute value of -23 => {}", num)
+  println("Absolute value of -23 => {}", num)
 
   return 0
 }
