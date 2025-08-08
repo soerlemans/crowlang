@@ -44,6 +44,40 @@ auto SemanticChecker::clear_env() -> void
   m_symbol_state.clear();
 }
 
+auto SemanticChecker::is_attr_active() const -> bool
+{
+  return (!m_attr_ctx.empty());
+}
+
+auto SemanticChecker::current_attr() const -> const AttributeMetadata&
+{
+  if(!is_attr_active()) {
+    // TODO: Throw.
+  }
+
+  return m_attr_ctx.top();
+}
+
+auto SemanticChecker::annotate_attr(AttributeData* t_node) -> void
+{
+  if(is_attr_active()) {
+    const auto& attr_metadata{current_attr()};
+
+    // Annotate AST, with AttributeMetadata.
+    t_node->set_attribute(attr_metadata);
+  }
+}
+
+auto SemanticChecker::annotate_type(TypeData* t_node, const SymbolData& t_data)
+  -> void
+{
+  // Convert SymbolData to TypeVariant.
+  const auto type_variant{t_data.type_variant()};
+
+  // Annotate AST, with TypeVariant.
+  t_node->set_type(type_variant);
+}
+
 // Environment state related methods:
 auto SemanticChecker::add_symbol_declaration(const std::string_view t_key,
                                              const SymbolData& t_data) -> void
@@ -225,7 +259,8 @@ auto SemanticChecker::get_resolved_type_list(NodeListPtr t_list)
 }
 
 // Public methods:
-SemanticChecker::SemanticChecker(): m_symbol_state{}, m_type_promoter{}
+SemanticChecker::SemanticChecker()
+  : m_symbol_state{}, m_type_promoter{}, m_attr_ctx{}
 {}
 
 // Control:
@@ -314,7 +349,7 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
   DBG_INFO("Function: ", id, "(", params_type_list, ") -> ", ret_type);
 
   // Annotate AST.
-  t_fn->set_type(data.type_variant());
+  annotate_type(t_fn, data);
 
   // Register parameters to environment.
   push_env();
@@ -421,7 +456,7 @@ auto SemanticChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
   DBG_INFO(id, ss.str(), " = <expr>: ", expr);
 
   // Annotate AST.
-  t_decl->set_type(expr.type_variant());
+  annotate_type(t_decl, expr);
 
   return expr;
 }
@@ -467,11 +502,25 @@ auto SemanticChecker::visit(Variable* t_var) -> Any
 // Meta:
 auto SemanticChecker::visit(Attribute* t_attr) -> Any
 {
+  using ast::node::node_traits::AttributeArgs;
+  using ast::node::node_traits::str2attribute_type;
+
   const auto id{t_attr->identifier()};
   const auto params{t_attr->params()};
   const auto body{t_attr->body()};
 
+  // TODO: Resolve parameters, and get them as strings.
+
+  const auto attr_type{str2attribute_type(id)};
+
+  // Push the current attribute on the context stack.
+  // So we can refer to them later.
+  m_attr.ctx.emplace(attr_type, id, AttributeArgs{});
+
+  // Traverse body like normal.
   traverse(body);
+
+  m_attr.ctx.pop();
 
   return {};
 }
@@ -486,7 +535,7 @@ auto SemanticChecker::visit(LetDecl* t_ldecl) -> Any
   add_symbol_declaration(id, data);
 
   // Annotate AST.
-  t_ldecl->set_type(type_data);
+  annotate_type(t_ldecl, type_data);
 
   return {};
 }
@@ -501,7 +550,7 @@ auto SemanticChecker::visit(VarDecl* t_vdecl) -> Any
   add_symbol_declaration(id, data);
 
   // Annotate AST.
-  t_vdecl->set_type(type_data);
+  annotate_type(t_vdecl, type_data);
 
   return {};
 }
@@ -520,7 +569,7 @@ auto SemanticChecker::visit(FunctionDecl* t_fdecl) -> Any
   DBG_INFO("FunctionDecl: ", id, "(", params_type_list, ") -> ", ret_type);
 
   // Annotate AST.
-  t_fdecl->set_type(data.type_variant());
+  annotate_type(t_fdecl, data);
 
   return {};
 }
@@ -554,7 +603,7 @@ auto SemanticChecker::visit(Arithmetic* t_arith) -> Any
   }
 
   // Annotate AST.
-  t_arith->set_type(ret.type_variant());
+  annotate_type(t_arith, ret);
 
   DBG_INFO("Result: ", ret);
 
@@ -600,7 +649,7 @@ auto SemanticChecker::visit(Assignment* t_assign) -> Any
   }
 
   // Annotate AST.
-  t_assign->set_type(var.type_variant());
+  annotate_type(t_assign, var);
 
   return var;
 }

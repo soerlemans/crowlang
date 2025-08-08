@@ -285,20 +285,12 @@ auto MirBuilder::visit(Variable* t_var) -> Any
 }
 
 // Meta:
-auto MirBuilder::visit(FunctionDecl* t_fdecl) -> Any
+auto MirBuilder::visit(Attribute* t_attr) -> Any
 {
-  FunctionPtr fn{std::make_shared<Function>()};
+  const auto body{t_attr->body()};
 
-  const auto id{t_fdecl->identifier()};
-
-  // We only need to add the name for the declaration.
-  // During semantic analysis we confirm, that the declaration.
-  // Matches the definition.
-  fn->m_name = id;
-
-  m_factory->add_function_declaration(fn);
-
-  return {};
+  // TODO: Think about what else to do with attributes, during MIR generation.
+  traverse(body);
 }
 
 auto MirBuilder::visit(LetDecl* t_ldecl) -> Any
@@ -317,6 +309,22 @@ auto MirBuilder::visit(VarDecl* t_vdecl) -> Any
   const auto type{t_vdecl->get_type()};
 
   m_factory->add_global_declaration(name, type);
+
+  return {};
+}
+
+auto MirBuilder::visit(FunctionDecl* t_fdecl) -> Any
+{
+  FunctionPtr fn{std::make_shared<Function>()};
+
+  const auto id{t_fdecl->identifier()};
+
+  // We only need to add the name for the declaration.
+  // During semantic analysis we confirm, that the declaration.
+  // Matches the definition.
+  fn->m_name = id;
+
+  m_factory->add_function_declaration(fn);
 
   return {};
 }

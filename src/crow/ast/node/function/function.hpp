@@ -9,6 +9,7 @@
 
 namespace ast::node::function {
 // Using Statements:
+using node_traits::AttributeData;
 using node_traits::Body;
 using node_traits::Identifier;
 using node_traits::Params;
@@ -20,7 +21,8 @@ class Function : public Identifier,
                  public Params,
                  public TypeAnnotation,
                  public Body,
-                 public TypeData {
+                 public TypeData,
+                 public AttributeData {
   public:
   Function(std::string_view t_identifier, NodeListPtr&& t_params,
            std::string_view t_type, NodeListPtr&& t_body);

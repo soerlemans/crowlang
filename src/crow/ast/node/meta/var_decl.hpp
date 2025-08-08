@@ -9,12 +9,16 @@
 
 namespace ast::node::meta {
 // Using Statements:
+using node_traits::AttributeData;
 using node_traits::Identifier;
 using node_traits::TypeAnnotation;
 using node_traits::TypeData;
 
 // Classes:
-class VarDecl : public Identifier, public TypeAnnotation, public TypeData {
+class VarDecl : public Identifier,
+                public TypeAnnotation,
+                public TypeData,
+                public AttributeData {
   public:
   VarDecl(std::string_view t_identifier, std::string_view t_type);
 

@@ -2,6 +2,7 @@
 #define CROW_CROW_SEMANTIC_SEMANTIC_CHECKER_HPP
 
 // STL Includes:
+#include <stack>
 #include <string_view>
 
 // Absolute includes:
@@ -24,19 +25,24 @@
  */
 
 namespace semantic {
-// Using Statements:
-using namespace ast;
+// Using:
+namespace node = ast::node;
 
-// Using Declarations:
-using ast::node::NodeListPtr;
-using ast::node::NodePtr;
 using ast::visitor::Any;
 using ast::visitor::NodeVisitor;
 using container::TextPosition;
+using node::NodeListPtr;
+using node::NodePtr;
+using node::node_traits::AttributeData;
+using node::node_traits::AttributeMetadata;
+using node::node_traits::TypeData;
 using symbol::SymbolData;
 using symbol::SymbolDataList;
 using types::core::NativeType;
 using types::core::NativeTypeOpt;
+
+// Aliases:
+using AttributeContext = std::stack<AttributeMetadata>;
 
 // Classes:
 // TODO: Add check for checking if the AST only has a single module declaration.
@@ -59,11 +65,25 @@ class SemanticChecker : public NodeVisitor {
   SymbolEnvState m_symbol_state;
   TypePromoter m_type_promoter;
 
+  AttributeContext m_attr_ctx;
+
   protected:
   // Environment related methods:
   auto push_env() -> void;
   auto pop_env() -> void;
   auto clear_env() -> void;
+
+  /*!
+	 */
+  auto annotate_attr(AttributeData* t_node) -> void;
+
+  /*!
+	 */
+  auto annotate_type(TypeData* t_node, const SymbolData& t_data) -> void;
+
+  // Attribute handling
+  auto is_attr_active() const -> bool;
+  auto current_attr() const -> const AttributeMetadata&;
 
   auto add_symbol_declaration(std::string_view t_id, const SymbolData& t_data)
     -> void;
