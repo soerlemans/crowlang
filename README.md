@@ -62,7 +62,6 @@ Compile using:
 crow --backend cpp samples/attribute.cw
 ```
 
-
 This will generate a DLL which can be directly imported from Python.
 
 ## Warning

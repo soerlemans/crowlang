@@ -503,19 +503,21 @@ auto SemanticChecker::visit(Variable* t_var) -> Any
 auto SemanticChecker::visit(Attribute* t_attr) -> Any
 {
   using ast::node::node_traits::AttributeArgs;
-  using ast::node::node_traits::str2attribute_type;
 
   const auto id{t_attr->identifier()};
   const auto params{t_attr->params()};
   const auto body{t_attr->body()};
 
   // TODO: Resolve parameters, and get them as strings.
+  AttributeArgs args{};
 
-  const auto attr_type{str2attribute_type(id)};
+  // We use set_attribute to
+  t_attr->set_attribute(id, args);
+  const auto attr{t_attr->get_attribute()};
 
   // Push the current attribute on the context stack.
   // So we can refer to them later.
-  m_attr_ctx.emplace(attr_type, std::string{id}, AttributeArgs{});
+  m_attr_ctx.push(attr);
 
   // Traverse body like normal.
   traverse(body);

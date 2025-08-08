@@ -13,9 +13,19 @@
     break
 
 namespace ast::node::node_traits {
+AttributeMetadata::AttributeMetadata()
+  : m_type{AttributeType::NO_ATTRIBUTE}, m_identifier{}, m_args{}
+{}
+
+AttributeMetadata::AttributeMetadata(const std::string_view t_identifier,
+                                     AttributeArgs&& t_args)
+  : m_type{str2attribute_type(t_identifier)},
+    m_identifier{std::string{t_identifier}},
+    m_args{std::move(t_args)}
+{}
+
 // Methods:
-AttributeData::AttributeData()
-  : m_attr{AttributeType::NO_ATTRIBUTE, std::string{}, AttributeArgs{}}
+AttributeData::AttributeData(): m_attr{std::string{}, AttributeArgs{}}
 {}
 
 auto AttributeData::set_attribute(const AttributeMetadata& t_attr) -> void
@@ -24,11 +34,11 @@ auto AttributeData::set_attribute(const AttributeMetadata& t_attr) -> void
 }
 
 auto AttributeData::set_attribute(std::string_view t_identifier,
-                                  const AttributeArgs& t_args) -> void
+                                  AttributeArgs&& t_args) -> void
 {
   const auto type{str2attribute_type(t_identifier)};
 
-  m_attr = {type, std::string{t_identifier}, t_args};
+  m_attr = AttributeMetadata{t_identifier, std::move(t_args)};
 }
 
 auto AttributeData::get_attribute() const -> const AttributeMetadata&

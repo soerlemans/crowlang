@@ -9,12 +9,13 @@
 
 namespace ast::node::meta {
 // Using:
+using node_traits::AttributeData;
 using node_traits::Body;
 using node_traits::Identifier;
 using node_traits::Params;
 
 // Classes:
-class Attribute : public Identifier, public Params, public Body {
+class Attribute : public Identifier, public Params, public Body, AttributeData {
   public:
   Attribute(std::string_view t_identifier, NodeListPtr&& t_params,
             NodeListPtr&& t_body);

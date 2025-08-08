@@ -40,6 +40,12 @@ struct AttributeMetadata {
   // Raw data.
   std::string m_identifier;
   AttributeArgs m_args;
+
+  AttributeMetadata();
+  explicit AttributeMetadata(std::string_view t_identifier,
+                             AttributeArgs&& t_args);
+
+  virtual ~AttributeMetadata() = default;
 };
 
 // Classes:

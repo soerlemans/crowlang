@@ -5,4 +5,5 @@ target_sources(${TARGET_CROW_LIB} PRIVATE
 	bad_any_cast.cpp
 	invalid_argument.cpp
 	runtime_error.cpp
+	logic_error.cpp
 )
