@@ -34,7 +34,7 @@ auto AttributeData::set_attribute(const AttributeMetadata& t_attr) -> void
 }
 
 auto AttributeData::set_attribute(std::string_view t_identifier,
-                                  AttributeArgs&& t_args) -> void
+                                  AttributeArgs t_args) -> void
 {
   const auto type{str2attribute_type(t_identifier)};
 

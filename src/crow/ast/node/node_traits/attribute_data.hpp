@@ -63,7 +63,7 @@ class AttributeData : virtual public NodeInterface {
 
   virtual auto set_attribute(const AttributeMetadata&) -> void;
   virtual auto set_attribute(std::string_view t_identifier,
-                             const AttributeArgs& t_args) -> void;
+                             AttributeArgs t_args) -> void;
 
   virtual auto get_attribute() const -> const AttributeMetadata&;
 
