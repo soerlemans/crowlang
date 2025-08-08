@@ -109,6 +109,10 @@ class AstPrinter : public NodeVisitor {
       print("| Type Data: ", t_ptr->get_type());
     });
 
+    when_derived<AttributeData>(t_ptr, [&](auto t_ptr) {
+      print("| Attribute Data: ", t_ptr->get_attribute());
+    });
+
     when_derived<Body>(t_ptr, [&](auto t_ptr) {
       lambda("Body", t_ptr->body());
     });

@@ -1,5 +1,14 @@
 #include "attribute_data.hpp"
 
+// Absolute Includes:
+#include "lib/stdexcept/stdexcept.hpp"
+
+// Macros:
+#define MATCH(t_key, t_value) \
+  case AttributeType::t_key:  \
+    str = t_value;            \
+    break
+
 namespace ast::node::node_traits {
 // Methods:
 AttributeData::AttributeData()
@@ -30,6 +39,29 @@ auto AttributeData::is_attribute_set() -> bool
 }
 
 // Functions:
+auto attribute_type2str(AttributeType t_type) -> std::string_view
+{
+  std::string_view str{};
+
+  switch(t_type) {
+    MATCH(NO_ATTRIBUTE, "no_attribute");
+    MATCH(INLINE, "inline");
+    MATCH(DEPRECATED, "deprecated");
+    MATCH(EXTERN, "extern");
+    MATCH(UNKNOWN, "unknown");
+
+    default: {
+      using lib::stdexcept::throw_invalid_argument;
+
+      throw_invalid_argument(
+        "Unhandled AttributeType cant be converted to string.");
+      break;
+    }
+  }
+
+  return str;
+}
+
 auto str2attribute_type(std::string_view t_str) -> AttributeType
 {
   auto type{AttributeType::NO_ATTRIBUTE};
@@ -54,3 +86,26 @@ auto str2attribute_type(std::string_view t_str) -> AttributeType
   return type;
 }
 } // namespace ast::node::node_traits
+
+// Functions:
+auto operator<<(std::ostream& t_os,
+                const ast::node::node_traits::AttributeType t_type)
+  -> std::ostream&
+{
+  using ast::node::node_traits::attribute_type2str;
+
+  t_os << attribute_type2str(t_type);
+
+  return t_os;
+}
+
+auto operator<<(std::ostream& t_os,
+                const ast::node::node_traits::AttributeMetadata& t_data)
+  -> std::ostream&
+{
+  const auto& [type, id, args] = t_data;
+
+  t_os << type << ":" << id;
+
+  return t_os;
+}

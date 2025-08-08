@@ -291,6 +291,8 @@ auto MirBuilder::visit(Attribute* t_attr) -> Any
 
   // TODO: Think about what else to do with attributes, during MIR generation.
   traverse(body);
+
+  return {};
 }
 
 auto MirBuilder::visit(LetDecl* t_ldecl) -> Any

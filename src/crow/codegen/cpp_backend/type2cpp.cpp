@@ -50,13 +50,14 @@ auto native_type2cpp(const NativeType t_type) -> std::string_view
 
     MATCH(BOOL, "bool");
 
-    default:
+    default: {
       const auto msg{
         std::format("NativeType could not be converted to C++ type: ",
                     nativetype2str(t_type))};
 
       throw std::invalid_argument{msg};
       break;
+    }
   }
 
   return str;

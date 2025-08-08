@@ -318,7 +318,32 @@ auto CppBackend::visit(Variable* t_var) -> Any
 // Meta:
 auto CppBackend::visit(Attribute* t_attr) -> Any
 {
+  using ast::node::node_traits::AttributeType;
+  using ast::node::node_traits::str2attribute_type;
+
   std::stringstream ss{};
+
+  const auto id{t_attr->identifier()};
+  const auto params{t_attr->params()};
+  const auto body{t_attr->body()};
+
+  // TODO: This should probably be somewhere else.
+  // Also we should not allow the extern attribute, inside of function bodies.
+  const auto attr_type{str2attribute_type(id)};
+  switch(attr_type) {
+    case AttributeType::EXTERN:
+      // clang-format off
+      ss << R"(extern "C" {\n )"
+				 << resolve(body)
+				 << "}\n";
+      // clang-format on
+      break;
+
+    default:
+      // Walk the body like normal.
+      ss << resolve(body);
+      break;
+  }
 
   return ss.str();
 }

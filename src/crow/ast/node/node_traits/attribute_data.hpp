@@ -2,6 +2,7 @@
 #define CROW_CROW_AST_NODE_NODE_TRAITS_ATTRIBUTE_DATA_HPP
 
 // STL Include:
+#include <iosfwd>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -73,8 +74,16 @@ class AttributeData : virtual public NodeInterface {
 };
 
 // Functions:
+auto attribute_type2str(AttributeType t_type) -> std::string_view;
 auto str2attribute_type(std::string_view t_str) -> AttributeType;
 } // namespace ast::node::node_traits
+
+// Functions:
+auto operator<<(std::ostream& t_os,
+                ast::node::node_traits::AttributeType t_type) -> std::ostream&;
+auto operator<<(std::ostream& t_os,
+                const ast::node::node_traits::AttributeMetadata& t_type)
+  -> std::ostream&;
 
 // Cereal register type:
 // REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits, AttributeData);
