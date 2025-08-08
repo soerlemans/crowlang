@@ -1,5 +1,8 @@
 #include "attribute_data.hpp"
 
+// STL Includes:
+#include <iomanip>
+
 // Absolute Includes:
 #include "lib/stdexcept/stdexcept.hpp"
 
@@ -105,7 +108,7 @@ auto operator<<(std::ostream& t_os,
 {
   const auto& [type, id, args] = t_data;
 
-  t_os << type << ":" << id;
+  t_os << "(" << type << ":" << std::quoted(id) << ")";
 
   return t_os;
 }
