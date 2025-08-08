@@ -515,12 +515,12 @@ auto SemanticChecker::visit(Attribute* t_attr) -> Any
 
   // Push the current attribute on the context stack.
   // So we can refer to them later.
-  m_attr.ctx.emplace(attr_type, id, AttributeArgs{});
+  m_attr_ctx.emplace(attr_type, std::string{id}, AttributeArgs{});
 
   // Traverse body like normal.
   traverse(body);
 
-  m_attr.ctx.pop();
+  m_attr_ctx.pop();
 
   return {};
 }

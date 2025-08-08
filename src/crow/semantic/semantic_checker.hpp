@@ -6,6 +6,8 @@
 #include <string_view>
 
 // Absolute includes:
+#include "crow/ast/node/node_traits/attribute_data.hpp"
+#include "crow/ast/node/node_traits/type_data.hpp"
 #include "crow/ast/visitor/node_visitor.hpp"
 #include "crow/container/text_position.hpp"
 #include "crow/types/semantic/semantic.hpp"
@@ -74,11 +76,11 @@ class SemanticChecker : public NodeVisitor {
   auto clear_env() -> void;
 
   /*!
-	 */
+   */
   auto annotate_attr(AttributeData* t_node) -> void;
 
   /*!
-	 */
+   */
   auto annotate_type(TypeData* t_node, const SymbolData& t_data) -> void;
 
   // Attribute handling
