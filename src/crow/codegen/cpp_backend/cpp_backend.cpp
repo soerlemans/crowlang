@@ -333,7 +333,7 @@ auto CppBackend::visit(Attribute* t_attr) -> Any
   switch(attr_type) {
     case AttributeType::EXTERN:
       // clang-format off
-      ss << R"(extern "C" {\n )"
+      ss << R"(extern "C" {)" << "\n"
 				 << resolve(body)
 				 << "}\n";
       // clang-format on

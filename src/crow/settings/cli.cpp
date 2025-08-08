@@ -96,8 +96,10 @@ auto add_nocolor_flag(CLI::App& t_app) -> void
 auto add_version_flag(CLI::App& t_app) -> void
 {
   // Version flag:
-  std::stringstream ss;
+  std::stringstream ss{};
+
   ss << "Version: " << CROW_PROJECT_VERSION;
+
   t_app.set_version_flag("-v,--version", ss.str(), "Show compiler version");
 }
 

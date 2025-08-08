@@ -6,6 +6,7 @@
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
 #include "crow/debug/log.hpp"
+#include "lib/check_nullptr.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
 
 
@@ -31,12 +32,8 @@ auto NodeVisitor::traverse(NodePtr t_node) -> Any
 {
   Any any{};
 
-  // Throw on nullptr.
-  if(!t_node) {
-    using lib::stdexcept::throw_unexpected_nullptr;
-
-    throw_unexpected_nullptr("Cant traverse a nullptr.");
-  }
+  // We cant traverse a nullptr.
+  CHECK_NULLPTR(t_node);
 
   // Kick off the traversal.
   any = t_node->accept(this);
