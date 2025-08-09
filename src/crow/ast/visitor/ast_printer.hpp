@@ -110,7 +110,7 @@ class AstPrinter : public NodeVisitor {
     });
 
     when_derived<AttributeData>(t_ptr, [&](auto t_ptr) {
-      print("| Attribute Data: ", t_ptr->get_attribute());
+      print("| Attribute Data: ", t_ptr->get_attributes());
     });
 
     when_derived<Body>(t_ptr, [&](auto t_ptr) {

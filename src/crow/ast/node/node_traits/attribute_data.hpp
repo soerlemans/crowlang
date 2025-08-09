@@ -14,8 +14,12 @@
 #include "fdecl.hpp"
 
 namespace ast::node::node_traits {
+// Forward Declarations:
+struct AttributeMetadata;
+
 // Aliases:
 using AttributeArgs = std::vector<std::string>;
+using AttributeSeq = std::vector<AttributeMetadata>;
 
 // Enums:
 enum class AttributeType {
@@ -56,18 +60,17 @@ struct AttributeMetadata {
  */
 class AttributeData : virtual public NodeInterface {
   private:
-  AttributeMetadata m_attr;
+  AttributeSeq m_attr_seq;
 
   public:
   AttributeData();
 
-  virtual auto set_attribute(const AttributeMetadata&) -> void;
-  virtual auto set_attribute(std::string_view t_identifier,
+  virtual auto add_attribute(const AttributeMetadata&) -> void;
+  virtual auto add_attribute(std::string_view t_identifier,
                              AttributeArgs t_args) -> void;
 
-  virtual auto get_attribute() const -> const AttributeMetadata&;
-
-  virtual auto is_attribute_set() -> bool;
+  virtual auto get_attributes() const -> const AttributeSeq&;
+  virtual auto no_attributes() const -> bool;
 
   // AST_ARCHIVE_MAKE_ARCHIVEABLE(AttributeData)
   // {
@@ -89,6 +92,9 @@ auto operator<<(std::ostream& t_os,
                 ast::node::node_traits::AttributeType t_type) -> std::ostream&;
 auto operator<<(std::ostream& t_os,
                 const ast::node::node_traits::AttributeMetadata& t_type)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os,
+                const ast::node::node_traits::AttributeSeq& t_seq)
   -> std::ostream&;
 
 // Cereal register type:

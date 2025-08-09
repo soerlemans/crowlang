@@ -5,6 +5,7 @@
 
 // Absolute Includes:
 #include "lib/stdexcept/stdexcept.hpp"
+#include "lib/stdprint.hpp"
 
 // Macros:
 #define MATCH(t_key, t_value) \
@@ -25,30 +26,30 @@ AttributeMetadata::AttributeMetadata(const std::string_view t_identifier,
 {}
 
 // Methods:
-AttributeData::AttributeData(): m_attr{std::string{}, AttributeArgs{}}
+AttributeData::AttributeData(): m_attr_seq{}
 {}
 
-auto AttributeData::set_attribute(const AttributeMetadata& t_attr) -> void
+auto AttributeData::add_attribute(const AttributeMetadata& t_attr) -> void
 {
-  m_attr = t_attr;
+  m_attr_seq.push_back(t_attr);
 }
 
-auto AttributeData::set_attribute(std::string_view t_identifier,
+auto AttributeData::add_attribute(std::string_view t_identifier,
                                   AttributeArgs t_args) -> void
 {
-  const auto type{str2attribute_type(t_identifier)};
+  AttributeMetadata attr{t_identifier, std::move(t_args)};
 
-  m_attr = AttributeMetadata{t_identifier, std::move(t_args)};
+  m_attr_seq.push_back(std::move(attr));
 }
 
-auto AttributeData::get_attribute() const -> const AttributeMetadata&
+auto AttributeData::get_attributes() const -> const AttributeSeq&
 {
-  return m_attr;
+  return m_attr_seq;
 }
 
-auto AttributeData::is_attribute_set() -> bool
+auto AttributeData::no_attributes() const -> bool
 {
-  return (m_attr.m_type != AttributeType::NO_ATTRIBUTE);
+  return m_attr_seq.empty();
 }
 
 // Functions:
@@ -119,6 +120,17 @@ auto operator<<(std::ostream& t_os,
   const auto& [type, id, args] = t_data;
 
   t_os << "(" << type << ":" << std::quoted(id) << ")";
+
+  return t_os;
+}
+
+auto operator<<(std::ostream& t_os,
+                const ast::node::node_traits::AttributeSeq& t_seq)
+  -> std::ostream&
+{
+  using namespace lib::stdprint::vector;
+
+  t_os << t_seq;
 
   return t_os;
 }

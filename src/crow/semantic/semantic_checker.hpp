@@ -2,7 +2,7 @@
 #define CROW_CROW_SEMANTIC_SEMANTIC_CHECKER_HPP
 
 // STL Includes:
-#include <stack>
+#include <list>
 #include <string_view>
 
 // Absolute includes:
@@ -37,6 +37,7 @@ using node::NodeListPtr;
 using node::NodePtr;
 using node::node_traits::AttributeData;
 using node::node_traits::AttributeMetadata;
+using node::node_traits::AttributeSeq;
 using node::node_traits::TypeData;
 using symbol::SymbolData;
 using symbol::SymbolDataList;
@@ -44,7 +45,7 @@ using types::core::NativeType;
 using types::core::NativeTypeOpt;
 
 // Aliases:
-using AttributeContext = std::stack<AttributeMetadata>;
+using AttributeContext = std::list<AttributeData*>;
 
 // Classes:
 // TODO: Add check for checking if the AST only has a single module declaration.
@@ -84,9 +85,6 @@ class SemanticChecker : public NodeVisitor {
   auto annotate_type(TypeData* t_node, const SymbolData& t_data) -> void;
 
   // Attribute handling
-  auto is_attr_active() const -> bool;
-  auto current_attr() const -> const AttributeMetadata&;
-
   auto add_symbol_declaration(std::string_view t_id, const SymbolData& t_data)
     -> void;
 

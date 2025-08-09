@@ -217,9 +217,11 @@ auto CppBackend::visit(Function* t_fn) -> Any
   std::stringstream ss{};
 
   // Attribute insertion:
-  const auto attr{t_fn->get_attribute()};
-  if(attr.m_type == AttributeType::INLINE) {
-    ss << "inline\n";
+  const auto attrs{t_fn->get_attributes()};
+  for(const auto& attr : attrs) {
+    if(attr.m_type == AttributeType::INLINE) {
+      ss << "inline\n";
+    }
   }
 
   // clang-format off
@@ -336,20 +338,22 @@ auto CppBackend::visit(Attribute* t_attr) -> Any
 
   // TODO: This should probably be somewhere else.
   // Also we should not allow the extern attribute, inside of function bodies.
-  const auto attr{t_attr->get_attribute()};
-  switch(attr.m_type) {
-    case AttributeType::EXTERN:
-      // clang-format off
+  const auto attrs{t_attr->get_attributes()};
+  for(const auto& attr : attrs) {
+    switch(attr.m_type) {
+      case AttributeType::EXTERN:
+        // clang-format off
       ss << R"(extern "C" {)" << "\n"
 				 << resolve(body)
 				 << "}\n";
-      // clang-format on
-      break;
+        // clang-format on
+        break;
 
-    default:
-      // Walk the body like normal.
-      ss << resolve(body);
-      break;
+      default:
+        // Walk the body like normal.
+        ss << resolve(body);
+        break;
+    }
   }
 
   return ss.str();

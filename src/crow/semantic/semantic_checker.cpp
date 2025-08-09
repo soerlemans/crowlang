@@ -44,27 +44,15 @@ auto SemanticChecker::clear_env() -> void
   m_symbol_state.clear();
 }
 
-auto SemanticChecker::is_attr_active() const -> bool
-{
-  return (!m_attr_ctx.empty());
-}
-
-auto SemanticChecker::current_attr() const -> const AttributeMetadata&
-{
-  if(!is_attr_active()) {
-    // TODO: Throw.
-  }
-
-  return m_attr_ctx.top();
-}
-
 auto SemanticChecker::annotate_attr(AttributeData* t_node) -> void
 {
-  if(is_attr_active()) {
-    const auto& attr_metadata{current_attr()};
+  for(const auto& attr_node : m_attr_ctx) {
 
-    // Annotate AST, with AttributeMetadata.
-    t_node->set_attribute(attr_metadata);
+    const auto& attributes{attr_node->get_attributes()};
+
+    for(const auto& attr : attributes) {
+      t_node->add_attribute();
+    }
   }
 }
 
@@ -512,19 +500,19 @@ auto SemanticChecker::visit(Attribute* t_attr) -> Any
 
   // TODO: Resolve parameters, and get them as strings.
   AttributeArgs args{};
+  AttributeMetadata attr{id, args};
 
-  // We use set_attribute to
-  t_attr->set_attribute(id, args);
-  const auto attr{t_attr->get_attribute()};
+  // Annotate attribute.
+  t_attr->add_attribute(attr);
 
   // Push the current attribute on the context stack.
   // So we can refer to them later.
-  m_attr_ctx.push(attr);
+  m_attr_ctx.push_back(t_attr);
 
   // Traverse body like normal.
   traverse(body);
 
-  m_attr_ctx.pop();
+  m_attr_ctx.pop_back();
 
   return {};
 }
