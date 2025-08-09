@@ -58,8 +58,8 @@ auto MirBuilder::visit(If* t_if) -> Any
   // TODO: Save environment before, traversal for phi node insertion.
   m_factory->push_env();
   traverse(then);
-  m_factory->pop_env();
   const auto then_var_env{m_factory->get_var_env()};
+  m_factory->pop_env();
   const auto then_jump{m_factory->create_instruction(Opcode::JUMP)};
 
   // Alt block:
@@ -69,10 +69,10 @@ auto MirBuilder::visit(If* t_if) -> Any
     if_instr.add_operand({&alt_block});
 
     // TODO: Save restore environment before, traversal for phi node insertion.
-    const auto then_var_env{m_factory->get_var_env()};
 
     m_factory->push_env();
     traverse(alt);
+    const auto then_var_env{m_factory->get_var_env()};
     m_factory->pop_env();
 
     const auto alt_jump{m_factory->create_instruction(Opcode::JUMP)};
