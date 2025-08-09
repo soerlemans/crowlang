@@ -302,6 +302,8 @@ auto operator<<(std::ostream& t_os, const mir::GlobalVar& t_var)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::GlobalVarPtr& t_ptr)
   -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::GlobalVarVec& t_vec)
+  -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::SsaVar& t_var) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::SsaVarPtr& t_ptr)
   -> std::ostream&;

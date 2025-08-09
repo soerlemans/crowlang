@@ -274,12 +274,18 @@ auto MirModuleFactory::add_variable_definition(const std::string_view t_name,
   if(m_var_env.is_toplevel()) {
     const auto global_var{create_global(t_name, t_type)};
 
+    // Insert into global environment tracking.
     GlobalMirEntity entity{EntityStatus::DEFINED, global_var};
     m_global_map.insert({std::string{t_name}, entity});
+
+    // Insert into globals section of module.
+    auto& global_vec{m_module->m_globals};
+    global_vec.push_back(global_var);
   } else {
     // Bind the source variable name to the ssa var.
     create_var_binding(t_name, result_var);
   }
+
 
   return assign_instr;
 }

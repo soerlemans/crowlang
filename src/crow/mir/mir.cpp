@@ -197,6 +197,13 @@ auto operator<<(std::ostream& t_os, const mir::GlobalVarPtr& t_ptr)
   return print_smart_ptr(t_os, t_ptr);
 }
 
+auto operator<<(std::ostream& t_os, const mir::GlobalVarVec& t_vec)
+  -> std::ostream&
+{
+
+	return t_os;
+}
+
 auto operator<<(std::ostream& t_os, const mir::SsaVar& t_var) -> std::ostream&
 {
   // TODO: Think about conditional printing of the type as well?
