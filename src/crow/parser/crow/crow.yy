@@ -303,7 +303,8 @@ function_call    : chain_expr '(' expr_list_opt')'
                  ;
 
 // Meta:
-attribute_item   : declare
+attribute_item   : attribute
+                 | declare
                  | decl_expr
                  | function
                  ;

@@ -678,7 +678,9 @@ auto CrowParser::attribute_item() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
 
-  if(auto ptr{declare()}; ptr) {
+  if(auto ptr{attribute()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{declare()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{decl_expr()}; ptr) {
     node = std::move(ptr);

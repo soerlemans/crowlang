@@ -45,7 +45,7 @@ using types::core::NativeType;
 using types::core::NativeTypeOpt;
 
 // Aliases:
-using AttributeContext = std::list<AttributeData*>;
+using AttributeContext = AttributeSeq;
 
 // Classes:
 // TODO: Add check for checking if the AST only has a single module declaration.
@@ -68,7 +68,7 @@ class SemanticChecker : public NodeVisitor {
   SymbolEnvState m_symbol_state;
   TypePromoter m_type_promoter;
 
-  AttributeContext m_attr_ctx;
+  AttributeContext m_active_attrs;
 
   protected:
   // Environment related methods:

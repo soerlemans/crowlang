@@ -21,6 +21,12 @@ func test3(t_x: int) -> int {
   return 30
 }
 
+[[inline]]
+[[constexpr]]
+func test4(t_x: int) -> int {
+  return 30
+}
+
 func main() -> int {
   let num = abs(-23)
 

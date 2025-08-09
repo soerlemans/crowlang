@@ -128,9 +128,7 @@ auto operator<<(std::ostream& t_os,
                 const ast::node::node_traits::AttributeSeq& t_seq)
   -> std::ostream&
 {
-  using namespace lib::stdprint::vector;
+  using lib::stdprint::detail::print_seq;
 
-  t_os << t_seq;
-
-  return t_os;
+  return print_seq(t_os, t_seq);
 }

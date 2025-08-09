@@ -46,13 +46,8 @@ auto SemanticChecker::clear_env() -> void
 
 auto SemanticChecker::annotate_attr(AttributeData* t_node) -> void
 {
-  for(const auto& attr_node : m_attr_ctx) {
-
-    const auto& attributes{attr_node->get_attributes()};
-
-    for(const auto& attr : attributes) {
-      t_node->add_attribute();
-    }
+  for(const auto& attr : m_active_attrs) {
+    t_node->add_attribute(attr);
   }
 }
 
@@ -248,7 +243,7 @@ auto SemanticChecker::get_resolved_type_list(NodeListPtr t_list)
 
 // Public methods:
 SemanticChecker::SemanticChecker()
-  : m_symbol_state{}, m_type_promoter{}, m_attr_ctx{}
+  : m_symbol_state{}, m_type_promoter{}, m_active_attrs{}
 {}
 
 // Control:
@@ -500,19 +495,19 @@ auto SemanticChecker::visit(Attribute* t_attr) -> Any
 
   // TODO: Resolve parameters, and get them as strings.
   AttributeArgs args{};
-  AttributeMetadata attr{id, args};
+  AttributeMetadata attr{id, std::move(args)};
 
   // Annotate attribute.
   t_attr->add_attribute(attr);
 
   // Push the current attribute on the context stack.
   // So we can refer to them later.
-  m_attr_ctx.push_back(t_attr);
+  m_active_attrs.push_back(attr);
 
   // Traverse body like normal.
   traverse(body);
 
-  m_attr_ctx.pop_back();
+  m_active_attrs.pop_back();
 
   return {};
 }
