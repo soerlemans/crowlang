@@ -15,7 +15,10 @@ using node_traits::Identifier;
 using node_traits::Params;
 
 // Classes:
-class Attribute : public Identifier, public Params, public Body, AttributeData {
+class Attribute : public Identifier,
+                  public Params,
+                  public Body,
+                  public AttributeData {
   public:
   Attribute(std::string_view t_identifier, NodeListPtr&& t_params,
             NodeListPtr&& t_body);

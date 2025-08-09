@@ -197,6 +197,8 @@ auto CppBackend::visit(Parameter* t_param) -> Any
 
 auto CppBackend::visit(Function* t_fn) -> Any
 {
+  using node::node_traits::AttributeType;
+
   const auto identifier{t_fn->identifier()};
 
   const auto fn_type{t_fn->get_type().function()};
@@ -213,6 +215,12 @@ auto CppBackend::visit(Function* t_fn) -> Any
   }
 
   std::stringstream ss{};
+
+  // Attribute insertion:
+  const auto attr{t_fn->get_attribute()};
+  if(attr.m_type == AttributeType::INLINE) {
+    ss << "inline\n";
+  }
 
   // clang-format off
   ss << std::format("auto {}({}) -> {}\n", identifier, param_ss.str(), ret_type)
@@ -318,8 +326,7 @@ auto CppBackend::visit(Variable* t_var) -> Any
 // Meta:
 auto CppBackend::visit(Attribute* t_attr) -> Any
 {
-  using ast::node::node_traits::AttributeType;
-  using ast::node::node_traits::str2attribute_type;
+  using node::node_traits::AttributeType;
 
   std::stringstream ss{};
 
@@ -329,8 +336,8 @@ auto CppBackend::visit(Attribute* t_attr) -> Any
 
   // TODO: This should probably be somewhere else.
   // Also we should not allow the extern attribute, inside of function bodies.
-  const auto attr_type{str2attribute_type(id)};
-  switch(attr_type) {
+  const auto attr{t_attr->get_attribute()};
+  switch(attr.m_type) {
     case AttributeType::EXTERN:
       // clang-format off
       ss << R"(extern "C" {)" << "\n"

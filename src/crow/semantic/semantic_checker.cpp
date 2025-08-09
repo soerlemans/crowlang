@@ -350,6 +350,7 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
 
   // Annotate AST.
   annotate_type(t_fn, data);
+  annotate_attr(t_fn);
 
   // Register parameters to environment.
   push_env();
@@ -457,6 +458,7 @@ auto SemanticChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
 
   // Annotate AST.
   annotate_type(t_decl, expr);
+  annotate_attr(t_decl);
 
   return expr;
 }
@@ -538,6 +540,7 @@ auto SemanticChecker::visit(LetDecl* t_ldecl) -> Any
 
   // Annotate AST.
   annotate_type(t_ldecl, type_data);
+  annotate_attr(t_ldecl);
 
   return {};
 }
@@ -553,6 +556,7 @@ auto SemanticChecker::visit(VarDecl* t_vdecl) -> Any
 
   // Annotate AST.
   annotate_type(t_vdecl, type_data);
+  annotate_attr(t_vdecl);
 
   return {};
 }
@@ -572,6 +576,7 @@ auto SemanticChecker::visit(FunctionDecl* t_fdecl) -> Any
 
   // Annotate AST.
   annotate_type(t_fdecl, data);
+  annotate_attr(t_fdecl);
 
   return {};
 }
