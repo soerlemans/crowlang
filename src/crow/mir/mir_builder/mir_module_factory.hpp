@@ -67,6 +67,7 @@ struct MirEntity {
  */
 class MirModuleFactory {
   private:
+  // This is the result of the factory.
   ModulePtr m_module;
 
   // Environment for referencing globals.
@@ -91,12 +92,9 @@ class MirModuleFactory {
   auto pop_env() -> void;
   auto clear_env() -> void;
 
-  // SsaVar operations:
-  // Forward declarations for variables, is only allowed for globals.
-  // TODO: Implement.
-  // auto add_global_var_declaration() -> void;
-  // auto add_global_var_definition() -> void;
+  auto get_var_env() const -> const SsaVarEnvState&;
 
+  // SsaVar operations:
   [[nodiscard("Must use created ssa var.")]]
   auto create_var(TypeVariant t_type) -> SsaVarPtr;
   auto add_result_var(TypeVariant t_type) -> SsaVarPtr;
@@ -139,6 +137,7 @@ class MirModuleFactory {
    */
   auto create_var_binding(std::string_view t_name, SsaVarPtr t_var) -> void;
 
+  [[nodiscard("Must use created global.")]]
   auto create_global(std::string_view t_name, TypeVariant t_type)
     -> GlobalVarPtr;
 
@@ -156,6 +155,7 @@ class MirModuleFactory {
 
   /*!
    * Add the init opcode tied to a variable name.
+   * Or create a new global if we are at the toplevel.
    *
    * @note this binds a source variable name to an ssa var.
    */
@@ -212,6 +212,13 @@ class MirModuleFactory {
   // auto get_function(std::string_view t_key) -> Function&;
 
   auto last_function() -> FunctionPtr&;
+
+  /*!
+   * Merge two @ref SsaVarEnvState's into a single one.
+   * This inserts phi'nodes where necessary.EnvStates
+   */
+  auto merge_envs(const SsaVarEnvState& t_env1, const SsaVarEnvState& t_env2)
+    -> SsaVarEnvState;
 
   // Module operations:
   auto set_module_name(std::string_view t_name) -> void;

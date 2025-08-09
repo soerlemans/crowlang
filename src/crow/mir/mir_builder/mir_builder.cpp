@@ -19,6 +19,7 @@ namespace mir::mir_builder {
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
+// Public:
 MirBuilder::MirBuilder(): m_factory{nullptr}
 {}
 
@@ -48,12 +49,17 @@ auto MirBuilder::visit(If* t_if) -> Any
   m_factory->add_result_var({NativeType::BOOL});
   if_instr.add_operand({last_var});
 
+  const auto main_var_env{m_factory->get_var_env()};
+
   // Then block:
   auto& then_block{m_factory->add_block("if_then")};
   if_instr.add_operand({&then_block});
 
   // TODO: Save environment before, traversal for phi node insertion.
+  m_factory->push_env();
   traverse(then);
+  m_factory->pop_env();
+  const auto then_var_env{m_factory->get_var_env()};
   const auto then_jump{m_factory->create_instruction(Opcode::JUMP)};
 
   // Alt block:
@@ -63,7 +69,12 @@ auto MirBuilder::visit(If* t_if) -> Any
     if_instr.add_operand({&alt_block});
 
     // TODO: Save restore environment before, traversal for phi node insertion.
+    const auto then_var_env{m_factory->get_var_env()};
+
+    m_factory->push_env();
     traverse(alt);
+    m_factory->pop_env();
+
     const auto alt_jump{m_factory->create_instruction(Opcode::JUMP)};
 
     // Final block after the if statement.
@@ -73,13 +84,18 @@ auto MirBuilder::visit(If* t_if) -> Any
     m_factory->insert_jump(then_jump, then_block, merge_block);
     m_factory->insert_jump(alt_jump, alt_block, merge_block);
 
-    // Perform any later phi node insertion in other visitation blocks.
+    // Insert phi node merging if necessary.
+    // For then and alt branch.
   } else {
     // Final block after the if statement.
     auto& merge_block{m_factory->add_block("if_merge")};
 
     // Insert jumps at the end of the blocks.
     m_factory->insert_jump(then_jump, then_block, merge_block);
+
+
+    // Insert phi node merging if necessary.
+    // For main and then branch.
   }
 
   return {};
@@ -105,7 +121,9 @@ auto MirBuilder::visit(Loop* t_loop) -> Any
   // TODO: Jump to start of body block.
 
   // TODO: Put in own basic block for looping.
+  m_factory->push_env();
   traverse(body);
+  m_factory->pop_env();
   // TODO: Go to conditional basic block check.
 
   // TODO: Insert post loop basic block.
@@ -187,7 +205,7 @@ auto MirBuilder::visit(node::function::Function* t_fn) -> Any
   const auto params{t_fn->params()};
 
   const auto fn_type{t_fn->get_type().function()};
-  const auto body{t_fn->identifier()};
+  const auto body{t_fn->body()};
 
   // Add the function to the current module.
   fn->m_name = id;
@@ -203,7 +221,7 @@ auto MirBuilder::visit(node::function::Function* t_fn) -> Any
   traverse(params);
 
   // Traverse the body.
-  traverse(t_fn->body());
+  traverse(body);
   m_factory->pop_env();
 
   return {};
@@ -295,6 +313,9 @@ auto MirBuilder::visit(Attribute* t_attr) -> Any
   const auto body{t_attr->body()};
 
   // TODO: Think about what else to do with attributes, during MIR generation.
+
+  // No need to push and pop env for attribute body.
+  // As an attribute body does not nest its scope.
   traverse(body);
 
   return {};

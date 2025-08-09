@@ -1,8 +1,10 @@
 #include "mir_module_factory.hpp"
 
 // STL Includes:
+#include <algorithm>
 #include <iomanip>
 #include <memory>
+#include <ranges>
 
 // Absolute Includes:
 #include "lib/check_nullptr.hpp"
@@ -43,6 +45,11 @@ auto MirModuleFactory::clear_env() -> void
   m_global_map.clear();
   m_var_env.clear();
   m_fn_env.clear();
+}
+
+auto MirModuleFactory::get_var_env() const -> const SsaVarEnvState&
+{
+  return m_var_env;
 }
 
 auto MirModuleFactory::create_var(TypeVariant t_type) -> SsaVarPtr
@@ -498,6 +505,30 @@ auto MirModuleFactory::last_function() -> FunctionPtr&
   }
 
   return functions.back();
+}
+
+auto MirModuleFactory::merge_envs(const SsaVarEnvState& t_env1,
+                                  const SsaVarEnvState& t_env2)
+  -> SsaVarEnvState
+{
+  using EnvMap = container::EnvState::EnvMap;
+  using std::ranges::transform;
+
+  // Loop through base layers of both t_env1 and t_env2.
+  // And insert phi nodes and update variable binding.
+  // For creation and setting of the new env state.
+
+  transform(t_env, t_env2, [](const EnvMap& t_map1, const EnvMap& t_map2) {
+    for(const auto& pair : t_map1) {
+
+      // Search for current entry in map2, and compare SsaVarPtr.
+      // If they differ we need a Phi node.
+      // Inserted, we should also for this function receive the phi condition.
+      // SsaVarPtr for the phi node insertion.
+    }
+  });
+
+  return {};
 }
 
 auto MirModuleFactory::set_module_name(std::string_view t_name) -> void
