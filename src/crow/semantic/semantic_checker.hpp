@@ -45,6 +45,7 @@ using types::core::NativeType;
 using types::core::NativeTypeOpt;
 
 // Aliases:
+//! Stores active contributes.
 using AttributeContext = AttributeSeq;
 
 // Classes:

@@ -23,7 +23,7 @@ func test3(t_x: int) -> int {
 
 [[inline]]
 [[constexpr]]
-func test4(t_x: int) -> int {
+func test3(t_x: int) -> int {
   return 30
 }
 
