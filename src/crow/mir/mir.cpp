@@ -201,11 +201,7 @@ auto operator<<(std::ostream& t_os, const mir::GlobalVarVec& t_vec)
   -> std::ostream&
 {
   for(const auto& global_var : t_vec) {
-    // TODO: Check if nullptr?
-    // const auto global_id{global_var->m_id};
-
-    // t_os << "\t" << global_id << ": " << global_var;
-    t_os << "\t" << global_var;
+    t_os << "\t" << global_var << '\n';
   }
 
   return t_os;

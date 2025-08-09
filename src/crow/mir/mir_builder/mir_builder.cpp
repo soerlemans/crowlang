@@ -45,12 +45,14 @@ auto MirBuilder::visit(If* t_if) -> Any
   const auto last_var{m_factory->require_last_var()};
 
   auto& if_instr{m_factory->add_instruction(Opcode::COND_JUMP)};
+  m_factory->add_result_var({NativeType::BOOL});
   if_instr.add_operand({last_var});
 
   // Then block:
   auto& then_block{m_factory->add_block("if_then")};
   if_instr.add_operand({&then_block});
 
+  // TODO: Save environment before, traversal for phi node insertion.
   traverse(then);
   const auto then_jump{m_factory->create_instruction(Opcode::JUMP)};
 
@@ -60,6 +62,7 @@ auto MirBuilder::visit(If* t_if) -> Any
     auto& alt_block{m_factory->add_block("if_alt")};
     if_instr.add_operand({&alt_block});
 
+    // TODO: Save restore environment before, traversal for phi node insertion.
     traverse(alt);
     const auto alt_jump{m_factory->create_instruction(Opcode::JUMP)};
 
@@ -69,6 +72,8 @@ auto MirBuilder::visit(If* t_if) -> Any
     // Insert jumps at the end of the blocks.
     m_factory->insert_jump(then_jump, then_block, merge_block);
     m_factory->insert_jump(alt_jump, alt_block, merge_block);
+
+    // Perform any later phi node insertion in other visitation blocks.
   } else {
     // Final block after the if statement.
     auto& merge_block{m_factory->add_block("if_merge")};
@@ -356,7 +361,7 @@ auto MirBuilder::visit(Arithmetic* t_arith) -> Any
     instr.add_operand({left_var});
     instr.add_operand({right_var});
 
-    instr.m_result = m_factory->create_var(type);
+    m_factory->add_result_var(type);
   }};
 
   const auto add_arithmetic_instr{[&](const Opcode t_iop, const Opcode t_fiop) {
@@ -536,7 +541,7 @@ auto MirBuilder::visit(Comparison* t_comp) -> Any
     instr.add_operand({right_var});
 
     // A comparison always returns the boolean type.
-    instr.m_result = m_factory->create_var({NativeType::BOOL});
+    m_factory->add_result_var({NativeType::BOOL});
   }};
 
   const auto add_comparison_instr{[&](const Opcode t_iop, const Opcode t_fiop) {
@@ -722,7 +727,7 @@ auto MirBuilder::visit(And* t_and) -> Any
   auto false_var{m_factory->require_last_var()};
 
   auto& phi_instr{m_factory->add_instruction(Opcode::PHI)};
-  phi_instr.m_result = m_factory->create_var(NativeType::BOOL);
+  m_factory->add_result_var({NativeType::BOOL});
 
   // If we short circuit and go directly to the merge block.
   // Then the result is false.
@@ -785,7 +790,7 @@ auto MirBuilder::visit(Or* t_or) -> Any
   auto true_var{m_factory->require_last_var()};
 
   auto& phi_instr{m_factory->add_instruction(Opcode::PHI)};
-  phi_instr.m_result = m_factory->create_var(NativeType::BOOL);
+  m_factory->add_result_var({NativeType::BOOL});
 
   // If we short circuit and go directly to the merge block.
   // Then the result is false.

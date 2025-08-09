@@ -1,12 +1,13 @@
 module if_
 
 func branch(t_cond: int) -> bool {
-  // if t_cond > 0 {
+  var someVar: int = -1
+
   if True {
-    return True
+    someVar = 1
   } else {
-    return False
+    someVar = 0
   }
 
-  return False
+  return someVar
 }
