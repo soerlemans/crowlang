@@ -46,6 +46,7 @@ class CrowParser : public pratt::PrattParser {
   virtual auto terminator() -> void;
 
   // Expressions:
+  virtual auto literal_list() -> NodeListPtr;
   virtual auto expr_opt() -> NodePtr;
 
   virtual auto init_expr(TokenType t_type) -> NodePtr;
@@ -98,6 +99,11 @@ class CrowParser : public pratt::PrattParser {
 
   virtual auto lambda() -> NodePtr;
   virtual auto function() -> NodePtr;
+
+  virtual auto attribute_item() -> NodePtr;
+  virtual auto attribute_item_list() -> NodeListPtr;
+  virtual auto attribute_body() -> NodeListPtr;
+  virtual auto attribute() -> NodePtr;
 
   virtual auto declare() -> NodePtr;
 

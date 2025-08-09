@@ -22,6 +22,8 @@ It is also possible to select for which languages you want interoperability:
 
 Here is a simple sample program.
 ```go
+module main
+
 func main() -> int {
   defer {
     println("Defer!")
@@ -34,6 +36,30 @@ func main() -> int {
 Which can be compiled using:
 ```shell
 crow --backend cpp --interop python samples/hello.cw
+```
+Which will create an importable Python DLL.
+
+Or here is a simple example using C interop.
+```go
+module main
+
+// Define a forward declaration for the libc abs function.
+[[extern("C")]] {
+  declare func abs(t_x: int) -> int
+}
+
+func main() -> int {
+  let num = abs(-23)
+
+  println("Absolute value of -23 => {}", num)
+
+  return 0
+}
+```
+
+Compile using:
+```shell
+crow --backend cpp samples/attribute.cw
 ```
 
 This will generate a DLL which can be directly imported from Python.

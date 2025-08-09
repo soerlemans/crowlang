@@ -285,18 +285,12 @@ auto MirBuilder::visit(Variable* t_var) -> Any
 }
 
 // Meta:
-auto MirBuilder::visit(FunctionDecl* t_fdecl) -> Any
+auto MirBuilder::visit(Attribute* t_attr) -> Any
 {
-  FunctionPtr fn{std::make_shared<Function>()};
+  const auto body{t_attr->body()};
 
-  const auto id{t_fdecl->identifier()};
-
-  // We only need to add the name for the declaration.
-  // During semantic analysis we confirm, that the declaration.
-  // Matches the definition.
-  fn->m_name = id;
-
-  m_factory->add_function_declaration(fn);
+  // TODO: Think about what else to do with attributes, during MIR generation.
+  traverse(body);
 
   return {};
 }
@@ -317,6 +311,22 @@ auto MirBuilder::visit(VarDecl* t_vdecl) -> Any
   const auto type{t_vdecl->get_type()};
 
   m_factory->add_global_declaration(name, type);
+
+  return {};
+}
+
+auto MirBuilder::visit(FunctionDecl* t_fdecl) -> Any
+{
+  FunctionPtr fn{std::make_shared<Function>()};
+
+  const auto id{t_fdecl->identifier()};
+
+  // We only need to add the name for the declaration.
+  // During semantic analysis we confirm, that the declaration.
+  // Matches the definition.
+  fn->m_name = id;
+
+  m_factory->add_function_declaration(fn);
 
   return {};
 }
@@ -620,18 +630,30 @@ auto MirBuilder::visit(UnaryPrefix* t_up) -> Any
   const auto op{t_up->op()};
   const auto left{t_up->left()};
 
+  traverse(left);
+  const auto last_var{m_factory->require_last_var()};
+  const auto type{last_var->m_type};
+
   switch(op) {
-    case UnaryPrefixOp::PLUS:
+    case UnaryPrefixOp::PLUS: {
       // TODO: Determine if float or integer.
       // TODO: No op.
       break;
+    }
 
-    case UnaryPrefixOp::MINUS:
-      // TODO: Determine if float or integer.
-      // m_factory->add_instruction(Opcode::ISUB);
+    case UnaryPrefixOp::MINUS: {
+      // TODO: Determine if float or integer, dont allow unsigned integers.
+      auto& sub_instr{m_factory->add_instruction(Opcode::ISUB)};
+
+      Literal lit{NativeType::INT, 0};
+      sub_instr.add_operand(lit);
+      sub_instr.add_operand(last_var);
+
+      m_factory->add_result_var(type);
 
       // TODO: Traverse left.
       break;
+    }
 
     default:
       // TODO: THROW!

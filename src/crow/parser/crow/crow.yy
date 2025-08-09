@@ -7,6 +7,10 @@
 // Package:
 %token Module Import Private Public
 
+// Meta:
+%token Declare
+%token ATTRIBUTE_OPEN ATTRIBUTE_CLOSE
+
 // Typing:
 %token Enum Struct
 
@@ -69,6 +73,14 @@ literal          : NUMBER
                  | STRING
                  | TRUE
                  | FALSE
+                 ;
+
+literal_list     : literal
+                 | literal_list ',' newline_opt literal
+                 ;
+
+expr_list_opt    : // empty
+                 | expr_list
                  ;
 
 grouping         : '(' expr ')'
@@ -155,8 +167,8 @@ assignment       : lvalue MUL_ASSIGN newline_opt expr
                  | lvalue ADD_ASSIGN newline_opt expr
                  | lvalue SUB_ASSIGN newline_opt expr
                  | lvalue '=' newline_opt expr
-		 | lvalue INCREMENT
-		 | lvalue DECREMENT
+		             | lvalue INCREMENT
+		             | lvalue DECREMENT
                  ;
 
 result_statement : decl_expr terminator
@@ -236,11 +248,6 @@ body             : newline_opt '{' newline_opt '}'
                  | newline_opt '{' newline_opt statement_list newline_opt '}'
                  ;
 
-// Attributes:
-attribute        : Private
-		             | Public
-                 ;
-
 // Typing:
 // TODO: Figure out how to name aliases?
 /* alias_def     : Alias? */
@@ -295,6 +302,26 @@ function         : Func IDENTIFIER '(' param_list_opt ')' return_type_opt body
 function_call    : chain_expr '(' expr_list_opt')'
                  ;
 
+// Meta:
+attribute_item   : attribute
+                 | declare
+                 | decl_expr
+                 | function
+                 ;
+
+attribute_item_list : attribute_item newline_opt
+                    | attribute_item_list newline_opt attribute_item
+                    ;
+
+attribute_body   : attribute_item
+                 | '{' newline_opt attribute_item_list'}'
+								 ;
+
+attribute        : ATTRIBUTE_OPEN identifier ATTRIBUTE_CLOSE newline_opt attribute_body
+		             | ATTRIBUTE_OPEN identifier '(' literal_list ')' ATTRIBUTE_CLOSE newline_opt attribute_body
+                 ;
+
+
 declare          : Declare Let IDENTIFIER : IDENTIFIER newline_opt
                  | Declare Var IDENTIFIER : IDENTIFIER newline_opt
                  | Declare Func IDENTIFIER '(' param_list_opt ')' return_type_opt newline_opt
@@ -313,7 +340,7 @@ import           : Import STRING
                  | Import '(' newline_opt import_list ')'
                  ;
 
-// Packaging:
+// Package:
 module_decl      : Module IDENTIFIER
                  ;
 
@@ -325,6 +352,7 @@ module_decl      : Module IDENTIFIER
 item             : module_decl
 				         | import
 								 | declare
+								 | attribute
 				         | type_def
 				         | decl_expr
                  | function

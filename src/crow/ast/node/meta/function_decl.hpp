@@ -8,7 +8,8 @@
 #include "fdecl.hpp"
 
 namespace ast::node::meta {
-// Using Statements:
+// Using:
+using node_traits::AttributeData;
 using node_traits::Identifier;
 using node_traits::Params;
 using node_traits::TypeAnnotation;
@@ -18,7 +19,8 @@ using node_traits::TypeData;
 class FunctionDecl : public Identifier,
                      public Params,
                      public TypeAnnotation,
-                     public TypeData {
+                     public TypeData,
+                     public AttributeData {
   public:
   FunctionDecl(std::string_view t_identifier, NodeListPtr&& t_params,
                std::string_view t_type);

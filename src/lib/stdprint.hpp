@@ -102,7 +102,7 @@ inline auto print_weak_ptr(std::ostream& t_os, const std::weak_ptr<T>& t_wk_ptr)
 namespace vector {
 //! For printing vectors.
 template<typename T>
-auto operator<<(std::ostream& t_os, const std::vector<T>& t_vector)
+inline auto operator<<(std::ostream& t_os, const std::vector<T>& t_vector)
   -> std::ostream&
 {
   return detail::print_seq(t_os, t_vector);
@@ -112,7 +112,7 @@ auto operator<<(std::ostream& t_os, const std::vector<T>& t_vector)
 namespace array {
 //
 template<typename T, size_t S>
-auto operator<<(std::ostream& t_os, const std::array<T, S>& t_array)
+inline auto operator<<(std::ostream& t_os, const std::array<T, S>& t_array)
   -> std::ostream&
 {
   return detail::print_seq(t_os, t_array);
@@ -121,7 +121,8 @@ auto operator<<(std::ostream& t_os, const std::array<T, S>& t_array)
 
 namespace list {
 template<typename T>
-auto operator<<(std::ostream& t_os, const std::list<T>& t_list) -> std::ostream&
+inline auto operator<<(std::ostream& t_os, const std::list<T>& t_list)
+  -> std::ostream&
 {
   return detail::print_seq(t_os, t_list);
 }
@@ -129,21 +130,21 @@ auto operator<<(std::ostream& t_os, const std::list<T>& t_list) -> std::ostream&
 
 namespace smart_ptr {
 template<typename T>
-auto operator<<(std::ostream& t_os, const std::unique_ptr<T>& t_ptr)
+inline auto operator<<(std::ostream& t_os, const std::unique_ptr<T>& t_ptr)
   -> std::ostream&
 {
   return detail::print_smart_ptr(t_os, t_ptr);
 }
 
 template<typename T>
-auto operator<<(std::ostream& t_os, const std::shared_ptr<T>& t_ptr)
+inline auto operator<<(std::ostream& t_os, const std::shared_ptr<T>& t_ptr)
   -> std::ostream&
 {
   return detail::print_smart_ptr(t_os, t_ptr);
 }
 
 template<typename T>
-auto operator<<(std::ostream& t_os, const std::weak_ptr<T>& t_ptr)
+inline auto operator<<(std::ostream& t_os, const std::weak_ptr<T>& t_ptr)
   -> std::ostream&
 {
   return detail::print_smart_ptr(t_os, t_ptr);

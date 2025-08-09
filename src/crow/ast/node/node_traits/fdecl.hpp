@@ -18,6 +18,7 @@ class Alt;
 class UnaryOperator;
 class BinaryOperator;
 class TypeData;
+class AttributeData;
 
 template<typename T>
 class Op;

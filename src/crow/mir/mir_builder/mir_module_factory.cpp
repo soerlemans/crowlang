@@ -333,6 +333,9 @@ auto MirModuleFactory::add_call(const std::string_view t_name,
   const FunctionMirEntity& entity{m_fn_env.get_value(t_name)};
 
   // Insert a weak reference to the function as operand.
+  // FIXME: But this fails when we only have a declaration of a function.
+  // Which occurs when we declare an extern C function.
+  // We need to have a fix for this.
   FunctionLabel label{FunctionWeakPtr{entity.m_entity}};
   call_instr.add_operand({label});
 

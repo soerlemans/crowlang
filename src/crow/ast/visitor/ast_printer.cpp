@@ -108,12 +108,12 @@ auto AstPrinter::visit(Variable* t_var) -> Any
 }
 
 // Meta:
-auto AstPrinter::visit(FunctionDecl* t_fdecl) -> Any
+auto AstPrinter::visit(Attribute* t_attr) -> Any
 {
   COUNTG_INIT();
 
-  print("FunctionDecl: ", t_fdecl->identifier());
-  print_traits(t_fdecl);
+  print("Attribute: ", t_attr->identifier());
+  print_traits(t_attr);
 
   return {};
 }
@@ -134,6 +134,16 @@ auto AstPrinter::visit(VarDecl* t_vdecl) -> Any
 
   print("VarDecl: ", t_vdecl->identifier());
   print_traits(t_vdecl);
+
+  return {};
+}
+
+auto AstPrinter::visit(FunctionDecl* t_fdecl) -> Any
+{
+  COUNTG_INIT();
+
+  print("FunctionDecl: ", t_fdecl->identifier());
+  print_traits(t_fdecl);
 
   return {};
 }

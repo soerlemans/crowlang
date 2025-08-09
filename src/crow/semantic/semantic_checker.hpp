@@ -2,9 +2,12 @@
 #define CROW_CROW_SEMANTIC_SEMANTIC_CHECKER_HPP
 
 // STL Includes:
+#include <list>
 #include <string_view>
 
 // Absolute includes:
+#include "crow/ast/node/node_traits/attribute_data.hpp"
+#include "crow/ast/node/node_traits/type_data.hpp"
 #include "crow/ast/visitor/node_visitor.hpp"
 #include "crow/container/text_position.hpp"
 #include "crow/types/semantic/semantic.hpp"
@@ -24,19 +27,26 @@
  */
 
 namespace semantic {
-// Using Statements:
-using namespace ast;
+// Using:
+namespace node = ast::node;
 
-// Using Declarations:
-using ast::node::NodeListPtr;
-using ast::node::NodePtr;
 using ast::visitor::Any;
 using ast::visitor::NodeVisitor;
 using container::TextPosition;
+using node::NodeListPtr;
+using node::NodePtr;
+using node::node_traits::AttributeData;
+using node::node_traits::AttributeMetadata;
+using node::node_traits::AttributeSeq;
+using node::node_traits::TypeData;
 using symbol::SymbolData;
 using symbol::SymbolDataList;
 using types::core::NativeType;
 using types::core::NativeTypeOpt;
+
+// Aliases:
+//! Stores active contributes.
+using AttributeContext = AttributeSeq;
 
 // Classes:
 // TODO: Add check for checking if the AST only has a single module declaration.
@@ -59,12 +69,23 @@ class SemanticChecker : public NodeVisitor {
   SymbolEnvState m_symbol_state;
   TypePromoter m_type_promoter;
 
+  AttributeContext m_active_attrs;
+
   protected:
   // Environment related methods:
   auto push_env() -> void;
   auto pop_env() -> void;
   auto clear_env() -> void;
 
+  /*!
+   */
+  auto annotate_attr(AttributeData* t_node) -> void;
+
+  /*!
+   */
+  auto annotate_type(TypeData* t_node, const SymbolData& t_data) -> void;
+
+  // Attribute handling
   auto add_symbol_declaration(std::string_view t_id, const SymbolData& t_data)
     -> void;
 
@@ -121,9 +142,10 @@ class SemanticChecker : public NodeVisitor {
   auto visit(node::lvalue::Variable* t_var) -> Any override;
 
   // Meta:
-  auto visit(node::meta::FunctionDecl* t_fdecl) -> Any override;
+  auto visit(node::meta::Attribute* t_attr) -> Any override;
   auto visit(node::meta::LetDecl* t_ldecl) -> Any override;
   auto visit(node::meta::VarDecl* t_vdecl) -> Any override;
+  auto visit(node::meta::FunctionDecl* t_fdecl) -> Any override;
 
   // Operators:
   auto visit(node::operators::Arithmetic* t_arith) -> Any override;

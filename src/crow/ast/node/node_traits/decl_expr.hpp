@@ -1,18 +1,17 @@
 #ifndef CROW_CROW_AST_NODE_NODE_TRAITS_DECL_EXPR_HPP
 #define CROW_CROW_AST_NODE_NODE_TRAITS_DECL_EXPR_HPP
 
-// Absolute Includes:
-#include "crow/ast/node/node_traits/type_data.hpp"
-
 // Includes:
 #include "../include.hpp"
 
 // Local Includes:
+#include "attribute_data.hpp"
 #include "fdecl.hpp"
 #include "identifier.hpp"
 #include "init_expr.hpp"
 #include "node_position.hpp"
 #include "type_annotation.hpp"
+#include "type_data.hpp"
 
 namespace ast::node::node_traits {
 // Using Statements:
@@ -23,6 +22,7 @@ class DeclExpr : public NodePosition,
                  public Identifier,
                  public TypeAnnotation,
                  public TypeData,
+                 public AttributeData,
                  public InitExpr {
   public:
   DeclExpr(TextPosition&& t_pos, std::string_view t_identifier,
