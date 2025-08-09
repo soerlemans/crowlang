@@ -520,6 +520,9 @@ auto MirModuleFactory::merge_envs(const SsaVarEnvState& t_env1,
 
   transform(t_env, t_env2, [](const EnvMap& t_map1, const EnvMap& t_map2) {
     for(const auto& pair : t_map1) {
+			// Maybe we should also loop through map2.
+			// If any items were missed in there.
+			// Likely the most robust approach.
 
       // Search for current entry in map2, and compare SsaVarPtr.
       // If they differ we need a Phi node.
