@@ -205,22 +205,22 @@ class EnvState {
     return t_os;
   }
 
-  auto begin() -> Iter
+  auto begin() -> EnvStack::iterator
   {
     return m_envs.begin();
   }
 
-  auto end() -> Iter
+  auto end() -> EnvStack::iterator
   {
     return m_envs.end();
   }
 
-  auto cbegin() const -> ConstIter
+  auto cbegin() const -> EnvStack::const_iterator
   {
     return m_envs.cbegin();
   }
 
-  auto cend() const -> ConstIter
+  auto cend() const -> EnvStack::const_iterator
   {
     return m_envs.cend();
   }

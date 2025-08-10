@@ -31,10 +31,9 @@ namespace mir::mir_builder {
  */
 template<typename T>
 class MirEnvState : public container::EnvState<T> {
-  private:
+  public:
   using BaseEnvState = container::EnvState<T>;
 
-  public:
   MirEnvState(): BaseEnvState{}
   {}
 

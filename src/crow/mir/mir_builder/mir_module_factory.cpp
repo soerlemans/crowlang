@@ -7,6 +7,7 @@
 #include <ranges>
 
 // Absolute Includes:
+#include "crow/debug/log.hpp"
 #include "lib/check_nullptr.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
 #include "lib/string_util.hpp"
@@ -511,25 +512,52 @@ auto MirModuleFactory::merge_envs(const SsaVarEnvState& t_env1,
                                   const SsaVarEnvState& t_env2)
   -> SsaVarEnvState
 {
-  using EnvMap = container::EnvState::EnvMap;
+  using EnvMap = SsaVarEnvState::BaseEnvState::EnvMap;
   using std::ranges::transform;
 
   // Loop through base layers of both t_env1 and t_env2.
   // And insert phi nodes and update variable binding.
   // For creation and setting of the new env state.
 
-  transform(t_env, t_env2, [](const EnvMap& t_map1, const EnvMap& t_map2) {
-    for(const auto& pair : t_map1) {
-			// Maybe we should also loop through map2.
-			// If any items were missed in there.
-			// Likely the most robust approach.
+  std::vector<int> sums{};
 
-      // Search for current entry in map2, and compare SsaVarPtr.
-      // If they differ we need a Phi node.
-      // Inserted, we should also for this function receive the phi condition.
-      // SsaVarPtr for the phi node insertion.
-    }
-  });
+  std::size_t level{0};
+  // clang-format off
+	std::transform(
+		t_env1.cbegin(), t_env1.cend(), t_env2.cbegin(),// t_env2.cend(),
+    std::back_inserter(sums),
+    // std::ostream_iterator<int>(std::cout, " "),
+
+    // Lambda:
+    [&](const auto& t_map1, const auto& t_map2) -> int {
+      for(const auto& [key, ssa1] : t_map1) {
+        const auto iter{t_map2.find(key)};
+        if(iter == t_map2.end()) {
+          const auto ssa2{iter->second};
+
+          if(ssa1 != ssa2) {
+            DBG_INFO("Need to merge ", std::quoted(key), "on level ",
+                     level, ".");
+          }
+        } else {
+          // TODO: Throw.
+        }
+
+        // Maybe we should also loop through t_map2.
+        // If any items were missed in there.
+        // Likely the most robust approach.
+
+        // Search for current entry in t_map2, and compare SsaVarPtr.
+        // If they differ we need a Phi node.
+        // Inserted, we should also for this function receive the phi
+        // condition. SsaVarPtr for the phi node insertion.
+
+        level++;
+      }
+
+      return {0};
+    });
+  // clang-format on
 
   return {};
 }
