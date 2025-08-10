@@ -205,22 +205,32 @@ class EnvState {
     return t_os;
   }
 
-  auto begin() -> EnvStack::iterator
+  auto begin() noexcept -> EnvStack::iterator
   {
     return m_envs.begin();
   }
 
-  auto end() -> EnvStack::iterator
+  auto end() noexcept -> EnvStack::iterator
   {
     return m_envs.end();
   }
 
-  auto cbegin() const -> EnvStack::const_iterator
+  auto begin() const noexcept -> EnvStack::const_iterator
   {
     return m_envs.cbegin();
   }
 
-  auto cend() const -> EnvStack::const_iterator
+  auto end() const noexcept -> EnvStack::const_iterator
+  {
+    return m_envs.cend();
+  }
+
+  auto cbegin() const noexcept -> EnvStack::const_iterator
+  {
+    return m_envs.cbegin();
+  }
+
+  auto cend() const noexcept -> EnvStack::const_iterator
   {
     return m_envs.cend();
   }

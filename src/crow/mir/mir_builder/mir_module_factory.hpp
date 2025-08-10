@@ -92,6 +92,7 @@ class MirModuleFactory {
   auto pop_env() -> void;
   auto clear_env() -> void;
 
+  auto set_var_env(const SsaVarEnvState& t_env) -> void;
   auto get_var_env() const -> const SsaVarEnvState&;
 
   // SsaVar operations:

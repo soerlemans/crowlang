@@ -48,6 +48,11 @@ auto MirModuleFactory::clear_env() -> void
   m_fn_env.clear();
 }
 
+auto MirModuleFactory::set_var_env(const SsaVarEnvState& t_env) -> void
+{
+  m_var_env = t_env;
+}
+
 auto MirModuleFactory::get_var_env() const -> const SsaVarEnvState&
 {
   return m_var_env;
@@ -523,13 +528,11 @@ auto MirModuleFactory::merge_envs(const SsaVarEnvState& t_env1,
 
   std::size_t level{0};
   // clang-format off
-	std::transform(
-		t_env1.cbegin(), t_env1.cend(), t_env2.cbegin(),// t_env2.cend(),
+	transform(
+		t_env1, t_env2,
     std::back_inserter(sums),
-    // std::ostream_iterator<int>(std::cout, " "),
-
     // Lambda:
-    [&](const auto& t_map1, const auto& t_map2) -> int {
+    [&](const EnvMap& t_map1, const EnvMap& t_map2) -> int {
       for(const auto& [key, ssa1] : t_map1) {
         const auto iter{t_map2.find(key)};
         if(iter == t_map2.end()) {
