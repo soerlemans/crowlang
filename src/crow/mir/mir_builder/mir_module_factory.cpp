@@ -504,6 +504,8 @@ auto MirModuleFactory::merge_envs(const SsaVarEnvState& t_env1,
   using EnvMap = SsaVarEnvState::BaseEnvState::EnvMap;
   using std::ranges::transform;
 
+  DBG_INFO(t_env1, ", ", t_env2);
+
   // Loop through base layers of both t_env1 and t_env2.
   // And insert phi nodes and update variable binding.
   // For creation and setting of the new env state.
@@ -517,11 +519,13 @@ auto MirModuleFactory::merge_envs(const SsaVarEnvState& t_env1,
     std::back_inserter(sums),
     // Lambda:
     [&](const EnvMap& t_map1, const EnvMap& t_map2) -> int {
+			DBG_INFO("Sizes: ", t_map1.size(), ' ', t_map2.size());
+
       for(const auto& [key, ssa1] : t_map1) {
-				DBG_INFO(key);
+				DBG_INFO("key ", key, ", level: ", level);
 
         const auto iter{t_map2.find(key)};
-        if(iter == t_map2.end()) {
+        if(iter != t_map2.end()) {
           const auto ssa2{iter->second};
 
           if(ssa1 != ssa2) {
