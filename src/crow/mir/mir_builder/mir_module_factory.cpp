@@ -512,19 +512,23 @@ auto MirModuleFactory::merge_envs(SsaVarPtr t_cond,
   // Create a new environment from the base environment.
   SsaVarEnvState merge_env{t_env1};
 
+  // We need to loop through both environments at the same time.
+  // Whilst merging the new one.
   auto iter2{t_env2.begin()};
   for(EnvMap& merge_map : merge_env) {
     if(iter2 == t_env2.end()) {
       // TODO: Error handle.
+      break;
     }
 
-    // TODO: Maybe we should also check if we looped through all map2 elements.
+    // TODO: Maybe we should also check if we looped through all map2
+    // elements.
     const EnvMap& map2{*iter2};
 
     for(auto& [merge_key, merge_ssa] : merge_map) {
-      const auto merge_iter{map2.find(merge_key)};
-      if(merge_iter != map2.end()) {
-        const auto ssa2{merge_iter->second};
+      const auto map_iter{map2.find(merge_key)};
+      if(map_iter != map2.end()) {
+        const auto ssa2{map_iter->second};
 
         // If the SSA variables differ for an entry.
         // Then we have variable references in two different branches.
@@ -546,62 +550,17 @@ auto MirModuleFactory::merge_envs(SsaVarPtr t_cond,
         }
       } else {
         // TODO: Throw or report.
+        break;
       }
-
-      iter2++;
     }
+
+    iter2++;
   }
 
-  // std::vector<int> sums{};
-
-  // // clang-format off
-  // transform(
-  // 	merge_env, t_env2,
-  //   std::back_inserter(sums),
-  //   // std::back_inserter(merge_env),
-  //   // Merge logic::
-  //   [&](EnvMap& merge_map, const EnvMap& t_map2) {
-  // 		// DBG_INFO("Sizes: ", merge_map.size(), ' ', t_map2.size());
-
-  // 		// Maybe we should also loop through t_map2.
-  // 		// If any items were missed in there.
-  // 		// Likely the most robust approach.
-
-  // 		std::size_t level{0};
-  //     for(auto& [key, ssa1] : merge_map) {
-
-  //       const auto iter{t_map2.find(key)};
-  //       if(iter != t_map2.end()) {
-  //         const auto ssa2{iter->second};
-
-  // 				// If the SSA variables differ for an entry.
-  // 				// Then
-  //         if(ssa1 != ssa2) {
-  // 					auto& phi_instr{add_instruction(Opcode::PHI)};
-
-  // 					const auto type{ssa1->m_type};
-  // 					const auto phi_result{add_result_var(type)};
-
-  // 					// Add operands, for the phi instruction.
-  // 					phi_instr.add_operand({t_cond});
-  // 					phi_instr.add_operand({ssa1});
-  // 					phi_instr.add_operand({ssa2});
-
-  // 					// Update the ssa binding to the new result var.
-  // 					ssa1 = phi_result;
-  //         }
-  //       } else {
-  //         // TODO: Throw or report.
-  //       }
-  //       level++;
-  //     }
-  //     return 0;
-  //   });
-  // clang-format on
-
-  DBG_INFO(merge_env);
-  DBG_INFO(t_env1);
-  DBG_INFO(t_env2);
+  // Use to debug:
+  // DBG_INFO("env1: ", t_env1);
+  // DBG_INFO("env2", t_env2);
+  // DBG_INFO("merge: ", merge_env);
 
   return merge_env;
 }
