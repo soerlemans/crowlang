@@ -145,7 +145,7 @@ class MirModuleFactory {
   /*!
    * Check if a variable name is a global.
    */
-  auto is_global(std::string_view t_name) -> bool;
+  auto is_global(std::string_view t_name) const -> bool;
 
   /*!
    * Add a placeholder variable pointer, for later definition.

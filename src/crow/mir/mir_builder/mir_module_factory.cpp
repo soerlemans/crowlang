@@ -62,16 +62,7 @@ auto MirModuleFactory::create_var(TypeVariant t_type) -> SsaVarPtr
 {
   auto ptr{std::make_shared<SsaVar>(m_var_id, t_type)};
 
-  const auto key{std::to_string(ptr->m_id)};
-  auto [iter, inserted] = m_var_env.insert({key, ptr});
-  if(!inserted) {
-    using lib::stdexcept::throw_runtime_error;
-
-    throw_runtime_error("Can not insert duplicate variable name.");
-  }
-
   m_var_id++;
-
 
   return ptr;
 }
@@ -249,16 +240,9 @@ auto MirModuleFactory::create_global(std::string_view t_name,
   return global_var;
 }
 
-auto MirModuleFactory::is_global(const std::string_view t_name) -> bool
+auto MirModuleFactory::is_global(const std::string_view t_name) const -> bool
 {
-  if(m_global_map.contains(std::string{t_name})) {
-    // We dont allow shadowing variables.
-    // TODO: Maybe double check if we have no duplicate variable names.
-
-    return true;
-  }
-
-  return false;
+  return m_global_map.contains(std::string{t_name});
 }
 
 auto MirModuleFactory::add_global_declaration(const std::string_view t_name,
@@ -534,6 +518,8 @@ auto MirModuleFactory::merge_envs(const SsaVarEnvState& t_env1,
     // Lambda:
     [&](const EnvMap& t_map1, const EnvMap& t_map2) -> int {
       for(const auto& [key, ssa1] : t_map1) {
+				DBG_INFO(key);
+
         const auto iter{t_map2.find(key)};
         if(iter == t_map2.end()) {
           const auto ssa2{iter->second};
