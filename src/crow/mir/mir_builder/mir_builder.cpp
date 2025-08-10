@@ -45,15 +45,16 @@ auto MirBuilder::visit(If* t_if) -> Any
   traverse(cond);
   const auto last_var{m_factory->require_last_var()};
 
-  auto& if_instr{m_factory->add_instruction(Opcode::COND_JUMP)};
+  auto& cond_instr{m_factory->add_instruction(Opcode::COND_JUMP)};
   m_factory->add_result_var({NativeType::BOOL});
-  if_instr.add_operand({last_var});
+  cond_instr.add_operand({last_var});
+  const auto cond_result{cond_instr.m_result};
 
   const auto main_env{m_factory->get_var_env()};
 
   // Then block:
   auto& then_block{m_factory->add_block("if_then")};
-  if_instr.add_operand({&then_block});
+  cond_instr.add_operand({&then_block});
 
   // TODO: Save environment before, traversal for phi node insertion.
   m_factory->push_env();
@@ -69,7 +70,7 @@ auto MirBuilder::visit(If* t_if) -> Any
   // TODO: Potentially cleanup?
   if(alt) {
     auto& alt_block{m_factory->add_block("if_alt")};
-    if_instr.add_operand({&alt_block});
+    cond_instr.add_operand({&alt_block});
 
     // TODO: Save restore environment before, traversal for phi node insertion.
 
@@ -89,7 +90,9 @@ auto MirBuilder::visit(If* t_if) -> Any
 
     // Insert phi node merging if necessary.
     // For then and alt branch.
-    m_factory->merge_envs(then_env, alt_env);
+    const auto merged_env{
+      m_factory->merge_envs(cond_result, then_env, alt_env)};
+    m_factory->set_var_env(merged_env);
   } else {
     // Final block after the if statement.
     auto& merge_block{m_factory->add_block("if_merge")};
@@ -99,7 +102,9 @@ auto MirBuilder::visit(If* t_if) -> Any
 
     // Insert phi node merging if necessary.
     // For main and then branch.
-    m_factory->merge_envs(main_env, then_env);
+    const auto merged_env{
+      m_factory->merge_envs(cond_result, main_env, then_env)};
+    m_factory->set_var_env(main_env);
   }
 
   return {};

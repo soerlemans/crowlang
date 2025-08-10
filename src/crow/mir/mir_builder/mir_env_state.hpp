@@ -34,8 +34,7 @@ class MirEnvState : public container::EnvState<T> {
   public:
   using BaseEnvState = container::EnvState<T>;
 
-  MirEnvState(): BaseEnvState{}
-  {}
+  MirEnvState() = default;
 
   auto get_iter(const std::string_view t_key) -> BaseEnvState::Iter
   {

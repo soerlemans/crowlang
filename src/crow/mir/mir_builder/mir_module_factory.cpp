@@ -497,12 +497,15 @@ auto MirModuleFactory::last_function() -> FunctionPtr&
   return functions.back();
 }
 
-auto MirModuleFactory::merge_envs(const SsaVarEnvState& t_env1,
+auto MirModuleFactory::merge_envs(SsaVarPtr t_cond,
+                                  const SsaVarEnvState& t_env1,
                                   const SsaVarEnvState& t_env2)
   -> SsaVarEnvState
 {
   using EnvMap = SsaVarEnvState::BaseEnvState::EnvMap;
   using std::ranges::transform;
+
+  SsaVarEnvState merged_env{t_env1};
 
   DBG_INFO(t_env1, ", ", t_env2);
 
@@ -512,47 +515,59 @@ auto MirModuleFactory::merge_envs(const SsaVarEnvState& t_env1,
 
   std::vector<int> sums{};
 
-  std::size_t level{0};
   // clang-format off
 	transform(
-		t_env1, t_env2,
+		merged_env, t_env2,
     std::back_inserter(sums),
-    // Lambda:
-    [&](const EnvMap& t_map1, const EnvMap& t_map2) -> int {
-			DBG_INFO("Sizes: ", t_map1.size(), ' ', t_map2.size());
+    // std::back_inserter(merged_env),
+    // Merge logic::
+    [&](EnvMap& t_map1, const EnvMap& t_map2) {
+			// DBG_INFO("Sizes: ", t_map1.size(), ' ', t_map2.size());
 
-      for(const auto& [key, ssa1] : t_map1) {
-				DBG_INFO("key ", key, ", level: ", level);
+			// Maybe we should also loop through t_map2.
+			// If any items were missed in there.
+			// Likely the most robust approach.
+
+			// We need to copy
+			// EnvMap merged_map{t_map1};
+
+			std::size_t level{0};
+      for(auto& [key, ssa1] : t_map1) {
 
         const auto iter{t_map2.find(key)};
         if(iter != t_map2.end()) {
           const auto ssa2{iter->second};
 
+					// If the SSA variables differ for an entry.
+					// Then
           if(ssa1 != ssa2) {
-            DBG_INFO("Need to merge ", std::quoted(key), "on level ",
-                     level, ".");
+						auto& phi_instr{add_instruction(Opcode::PHI)};
+
+						const auto type{ssa1->m_type};
+						const auto phi_result{add_result_var(type)};
+
+						// Add operands, for the phi instruction.
+						phi_instr.add_operand({t_cond});
+						phi_instr.add_operand({ssa1});
+						phi_instr.add_operand({ssa2});
+
+						// Update the ssa binding to the new result var.
+						ssa1 = phi_result;
           }
         } else {
-          // TODO: Throw.
+          // TODO: Throw or report.
         }
-
-        // Maybe we should also loop through t_map2.
-        // If any items were missed in there.
-        // Likely the most robust approach.
-
-        // Search for current entry in t_map2, and compare SsaVarPtr.
-        // If they differ we need a Phi node.
-        // Inserted, we should also for this function receive the phi
-        // condition. SsaVarPtr for the phi node insertion.
-
         level++;
       }
-
-      return {0};
+      return 0;
     });
   // clang-format on
 
-  return {};
+  DBG_INFO(merged_env);
+  DBG_INFO(t_env1);
+  DBG_INFO(t_env2);
+
+  return merged_env;
 }
 
 auto MirModuleFactory::set_module_name(std::string_view t_name) -> void

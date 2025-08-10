@@ -16,9 +16,6 @@
     break
 
 namespace semantic {
-SymbolEnvState::SymbolEnvState(): BaseEnvState{}
-{}
-
 auto SymbolEnvState::get_value(const std::string_view t_key) const
   -> const Symbol&
 {

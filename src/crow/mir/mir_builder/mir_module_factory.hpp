@@ -215,11 +215,11 @@ class MirModuleFactory {
   auto last_function() -> FunctionPtr&;
 
   /*!
+   * Insert phi nodes where necessary.
    * Merge two @ref SsaVarEnvState's into a single one.
-   * This inserts phi'nodes where necessary.EnvStates
    */
-  auto merge_envs(const SsaVarEnvState& t_env1, const SsaVarEnvState& t_env2)
-    -> SsaVarEnvState;
+  auto merge_envs(SsaVarPtr t_cond, const SsaVarEnvState& t_env1,
+                  const SsaVarEnvState& t_env2) -> SsaVarEnvState;
 
   // Module operations:
   auto set_module_name(std::string_view t_name) -> void;
