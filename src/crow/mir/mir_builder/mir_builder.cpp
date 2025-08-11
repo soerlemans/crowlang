@@ -25,23 +25,16 @@ MirBuilder::MirBuilder(): m_factory{nullptr}
 
 auto MirBuilder::visit(If* t_if) -> Any
 {
-  // TODO: We need support for phi, instruction marking later down the line.
-
-  // We need to create two new blocks an if and else branch.
-  auto& main_block{m_factory->last_block()};
-
-  // Get relevant members.
   const auto init_expr{t_if->init_expr()};
   const auto cond{t_if->condition()};
   const auto then{t_if->then()};
   const auto alt{t_if->alt()};
 
-  // Generate IR for init of another var.
   if(init_expr) {
     traverse(init_expr);
   }
 
-  // Resolve condition, should assign result of operation to a SSA var.
+  // Conditional jump:
   traverse(cond);
   const auto last_var{m_factory->require_last_var()};
 
@@ -66,13 +59,11 @@ auto MirBuilder::visit(If* t_if) -> Any
   // Restore to main env.
   m_factory->set_var_env(main_env);
 
-  // Alt block:
   // TODO: Potentially cleanup?
   if(alt) {
+    // Alt block:
     auto& alt_block{m_factory->add_block("if_alt")};
     cond_instr.add_operand({&alt_block});
-
-    // TODO: Save restore environment before, traversal for phi node insertion.
 
     m_factory->push_env();
     traverse(alt);
@@ -83,25 +74,19 @@ auto MirBuilder::visit(If* t_if) -> Any
 
     // Final block after the if statement.
     auto& merge_block{m_factory->add_block("if_merge")};
-
-    // Insert jumps at the end of the blocks.
     m_factory->insert_jump(then_jump, then_block, merge_block);
     m_factory->insert_jump(alt_jump, alt_block, merge_block);
 
-    // Insert phi node merging if necessary.
-    // For then and alt branch.
+    // Insert phi nodes.
     const auto merged_env{
       m_factory->merge_envs(cond_result, then_env, alt_env)};
     m_factory->set_var_env(merged_env);
   } else {
     // Final block after the if statement.
     auto& merge_block{m_factory->add_block("if_merge")};
-
-    // Insert jumps at the end of the blocks.
     m_factory->insert_jump(then_jump, then_block, merge_block);
 
-    // Insert phi node merging if necessary.
-    // For main and then branch.
+    // Insert phi nodes.
     const auto merged_env{
       m_factory->merge_envs(cond_result, main_env, then_env)};
     m_factory->set_var_env(main_env);
@@ -119,21 +104,45 @@ auto MirBuilder::visit(Loop* t_loop) -> Any
 
   // Make
   traverse(init_expr);
+  auto cond_jump{m_factory->add_instruction(Opcode::JUMP)};
   // TODO: Jump to conditional block.
 
   // TODO: Put in own basic block for looping.
+  auto& cond_block{m_factory->add_block("loop_cond")};
+  cond_jump.add_operand({&cond_block});
+
   traverse(cond);
-  // TODO: Check condition and quit, if condition fails, else to go expr block.
+  const auto last_var{m_factory->require_last_var()};
+
+  auto& cond_instr{m_factory->add_instruction(Opcode::COND_JUMP)};
+  m_factory->add_result_var({NativeType::BOOL});
+  cond_instr.add_operand({last_var});
+  const auto cond_result{cond_instr.m_result};
+
+  // TODO: Check condition and quit, if condition fails, else to go to merge
+  // blcok.
 
   // TODO: Put in own basic block for looping.
+  auto& expr_block{m_factory->add_block("loop_expr")};
   traverse(expr);
+
+  const auto expr_jump{m_factory->create_instruction(Opcode::JUMP)};
+  m_factory->insert_jump(expr_jump, expr_block, cond_block);
   // TODO: Jump to start of body block.
 
   // TODO: Put in own basic block for looping.
+  auto& body_block{m_factory->add_block("loop_body")};
   m_factory->push_env();
   traverse(body);
   m_factory->pop_env();
-  // TODO: Go to conditional basic block check.
+
+  const auto end_jump{m_factory->create_instruction(Opcode::JUMP)};
+  m_factory->insert_jump(end_jump, body_block, expr_block);
+
+  auto& merge_block{m_factory->add_block("loop_merge")};
+
+  cond_instr.add_operand({&body_block});
+  cond_instr.add_operand({&merge_block});
 
   // TODO: Insert post loop basic block.
 
@@ -158,6 +167,8 @@ auto MirBuilder::visit([[maybe_unused]] Break* t_break) -> Any
 
 auto MirBuilder::visit([[maybe_unused]] Defer* t_defer) -> Any
 {
+  // TODO: Figure this shit out.
+
   // Defer statements are inserted at the end.
   // Before all return statements.
   // Or at the end of a function.

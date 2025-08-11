@@ -497,12 +497,12 @@ auto MirModuleFactory::last_function() -> FunctionPtr&
   return functions.back();
 }
 
-auto MirModuleFactory::merge_envs(SsaVarPtr t_cond,
+// TODO: Maybe find a way to optimize the implementation.
+auto MirModuleFactory::merge_envs(const SsaVarPtr t_cond,
                                   const SsaVarEnvState& t_env1,
                                   const SsaVarEnvState& t_env2)
   -> SsaVarEnvState
 {
-  using std::ranges::transform;
   using EnvMap = SsaVarEnvState::BaseEnvState::EnvMap;
 
   // Loop through layers of both t_env1 and t_env2.

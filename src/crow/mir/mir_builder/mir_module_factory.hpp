@@ -147,6 +147,9 @@ class MirModuleFactory {
    */
   auto is_global(std::string_view t_name) const -> bool;
 
+  // TODO: Implement and move somewhere proper.
+  // auto add_external_function(std::string_view t_name, TypeVariant t_type)
+
   /*!
    * Add a placeholder variable pointer, for later definition.
    * Variables, are only allowed to be declared if they are globals.
