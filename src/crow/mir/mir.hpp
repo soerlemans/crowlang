@@ -283,6 +283,11 @@ struct Function {
 struct Module {
   std::string m_name;
   // TODO: Add a field for struct definitions, and type aliases.
+  // m_externals; // For out of module declarations or references.
+
+  // For C symbols we need interop with (these must own the FunctionPtr.).
+  // Or any other language.
+  // m_external_ffi;
   GlobalVarVec m_globals;
   FunctionSeq m_functions;
 
@@ -301,6 +306,8 @@ auto operator<<(std::ostream& t_os, const mir::Literal& t_lit) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::GlobalVar& t_var)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::GlobalVarPtr& t_ptr)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os, const mir::GlobalVarVec& t_vec)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::SsaVar& t_var) -> std::ostream&;
 auto operator<<(std::ostream& t_os, const mir::SsaVarPtr& t_ptr)

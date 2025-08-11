@@ -19,62 +19,77 @@ namespace mir::mir_builder {
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
+// Public:
 MirBuilder::MirBuilder(): m_factory{nullptr}
 {}
 
 auto MirBuilder::visit(If* t_if) -> Any
 {
-  // TODO: We need support for phi, instruction marking later down the line.
-
-  // We need to create two new blocks an if and else branch.
-  auto& main_block{m_factory->last_block()};
-
-  // Get relevant members.
   const auto init_expr{t_if->init_expr()};
   const auto cond{t_if->condition()};
   const auto then{t_if->then()};
   const auto alt{t_if->alt()};
 
-  // Generate IR for init of another var.
   if(init_expr) {
     traverse(init_expr);
   }
 
-  // Resolve condition, should assign result of operation to a SSA var.
+  // Conditional jump:
   traverse(cond);
   const auto last_var{m_factory->require_last_var()};
 
-  auto& if_instr{m_factory->add_instruction(Opcode::COND_JUMP)};
-  if_instr.add_operand({last_var});
+  auto& cond_instr{m_factory->add_instruction(Opcode::COND_JUMP)};
+  m_factory->add_result_var({NativeType::BOOL});
+  cond_instr.add_operand({last_var});
+  const auto cond_result{cond_instr.m_result};
+
+  const auto main_env{m_factory->get_var_env()};
 
   // Then block:
   auto& then_block{m_factory->add_block("if_then")};
-  if_instr.add_operand({&then_block});
+  cond_instr.add_operand({&then_block});
 
+  // TODO: Save environment before, traversal for phi node insertion.
+  m_factory->push_env();
   traverse(then);
+  const auto then_env{m_factory->get_var_env()};
+  m_factory->pop_env();
   const auto then_jump{m_factory->create_instruction(Opcode::JUMP)};
 
-  // Alt block:
+  // Restore to main env.
+  m_factory->set_var_env(main_env);
+
   // TODO: Potentially cleanup?
   if(alt) {
+    // Alt block:
     auto& alt_block{m_factory->add_block("if_alt")};
-    if_instr.add_operand({&alt_block});
+    cond_instr.add_operand({&alt_block});
 
+    m_factory->push_env();
     traverse(alt);
+    const auto alt_env{m_factory->get_var_env()};
+    m_factory->pop_env();
+
     const auto alt_jump{m_factory->create_instruction(Opcode::JUMP)};
 
     // Final block after the if statement.
     auto& merge_block{m_factory->add_block("if_merge")};
-
-    // Insert jumps at the end of the blocks.
     m_factory->insert_jump(then_jump, then_block, merge_block);
     m_factory->insert_jump(alt_jump, alt_block, merge_block);
+
+    // Insert phi nodes.
+    const auto merged_env{
+      m_factory->merge_envs(cond_result, then_env, alt_env)};
+    m_factory->set_var_env(merged_env);
   } else {
     // Final block after the if statement.
     auto& merge_block{m_factory->add_block("if_merge")};
-
-    // Insert jumps at the end of the blocks.
     m_factory->insert_jump(then_jump, then_block, merge_block);
+
+    // Insert phi nodes.
+    const auto merged_env{
+      m_factory->merge_envs(cond_result, main_env, then_env)};
+    m_factory->set_var_env(main_env);
   }
 
   return {};
@@ -89,19 +104,45 @@ auto MirBuilder::visit(Loop* t_loop) -> Any
 
   // Make
   traverse(init_expr);
+  auto& cond_jump{m_factory->add_instruction(Opcode::JUMP)};
   // TODO: Jump to conditional block.
 
   // TODO: Put in own basic block for looping.
+  auto& cond_block{m_factory->add_block("loop_cond")};
+  cond_jump.add_operand({&cond_block});
+
   traverse(cond);
-  // TODO: Check condition and quit, if condition fails, else to go expr block.
+  const auto last_var{m_factory->require_last_var()};
+
+  auto& cond_instr{m_factory->add_instruction(Opcode::COND_JUMP)};
+  m_factory->add_result_var({NativeType::BOOL});
+  cond_instr.add_operand({last_var});
+  const auto cond_result{cond_instr.m_result};
+
+  // TODO: Check condition and quit, if condition fails, else to go to merge
+  // blcok.
 
   // TODO: Put in own basic block for looping.
+  auto& expr_block{m_factory->add_block("loop_expr")};
   traverse(expr);
+
+  const auto expr_jump{m_factory->create_instruction(Opcode::JUMP)};
+  m_factory->insert_jump(expr_jump, expr_block, cond_block);
   // TODO: Jump to start of body block.
 
   // TODO: Put in own basic block for looping.
+  auto& body_block{m_factory->add_block("loop_body")};
+  m_factory->push_env();
   traverse(body);
-  // TODO: Go to conditional basic block check.
+  m_factory->pop_env();
+
+  const auto end_jump{m_factory->create_instruction(Opcode::JUMP)};
+  m_factory->insert_jump(end_jump, body_block, expr_block);
+
+  auto& merge_block{m_factory->add_block("loop_merge")};
+
+  cond_instr.add_operand({&body_block});
+  cond_instr.add_operand({&merge_block});
 
   // TODO: Insert post loop basic block.
 
@@ -126,6 +167,8 @@ auto MirBuilder::visit([[maybe_unused]] Break* t_break) -> Any
 
 auto MirBuilder::visit([[maybe_unused]] Defer* t_defer) -> Any
 {
+  // TODO: Figure this shit out.
+
   // Defer statements are inserted at the end.
   // Before all return statements.
   // Or at the end of a function.
@@ -182,7 +225,7 @@ auto MirBuilder::visit(node::function::Function* t_fn) -> Any
   const auto params{t_fn->params()};
 
   const auto fn_type{t_fn->get_type().function()};
-  const auto body{t_fn->identifier()};
+  const auto body{t_fn->body()};
 
   // Add the function to the current module.
   fn->m_name = id;
@@ -198,7 +241,7 @@ auto MirBuilder::visit(node::function::Function* t_fn) -> Any
   traverse(params);
 
   // Traverse the body.
-  traverse(t_fn->body());
+  traverse(body);
   m_factory->pop_env();
 
   return {};
@@ -290,6 +333,9 @@ auto MirBuilder::visit(Attribute* t_attr) -> Any
   const auto body{t_attr->body()};
 
   // TODO: Think about what else to do with attributes, during MIR generation.
+
+  // No need to push and pop env for attribute body.
+  // As an attribute body does not nest its scope.
   traverse(body);
 
   return {};
@@ -356,7 +402,7 @@ auto MirBuilder::visit(Arithmetic* t_arith) -> Any
     instr.add_operand({left_var});
     instr.add_operand({right_var});
 
-    instr.m_result = m_factory->create_var(type);
+    m_factory->add_result_var(type);
   }};
 
   const auto add_arithmetic_instr{[&](const Opcode t_iop, const Opcode t_fiop) {
@@ -536,7 +582,7 @@ auto MirBuilder::visit(Comparison* t_comp) -> Any
     instr.add_operand({right_var});
 
     // A comparison always returns the boolean type.
-    instr.m_result = m_factory->create_var({NativeType::BOOL});
+    m_factory->add_result_var({NativeType::BOOL});
   }};
 
   const auto add_comparison_instr{[&](const Opcode t_iop, const Opcode t_fiop) {
@@ -722,7 +768,7 @@ auto MirBuilder::visit(And* t_and) -> Any
   auto false_var{m_factory->require_last_var()};
 
   auto& phi_instr{m_factory->add_instruction(Opcode::PHI)};
-  phi_instr.m_result = m_factory->create_var(NativeType::BOOL);
+  m_factory->add_result_var({NativeType::BOOL});
 
   // If we short circuit and go directly to the merge block.
   // Then the result is false.
@@ -785,7 +831,7 @@ auto MirBuilder::visit(Or* t_or) -> Any
   auto true_var{m_factory->require_last_var()};
 
   auto& phi_instr{m_factory->add_instruction(Opcode::PHI)};
-  phi_instr.m_result = m_factory->create_var(NativeType::BOOL);
+  m_factory->add_result_var({NativeType::BOOL});
 
   // If we short circuit and go directly to the merge block.
   // Then the result is false.

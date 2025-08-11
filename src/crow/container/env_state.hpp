@@ -48,9 +48,16 @@ struct IsVariant<std::variant<Args...>> : std::true_type {};
 template<typename T>
 // requires IsVariant<T>::value
 class EnvState {
-  protected:
-  using EnvMap = std::unordered_map<std::string, T>;
-  using EnvStack = std::list<EnvMap>;
+  private:
+  using PrivEnvMap = std::unordered_map<std::string, T>;
+  using PrivEnvStack = std::list<PrivEnvMap>;
+
+  PrivEnvStack m_envs;
+
+  public:
+  // Aliases:
+  using EnvMap = PrivEnvMap;
+  using EnvStack = PrivEnvStack;
 
   using Iter = typename EnvMap::iterator;
   using ConstIter = typename EnvMap::const_iterator;
@@ -60,11 +67,7 @@ class EnvState {
 
   using InsertResult = std::pair<Iter, bool>;
 
-
-  private:
-  EnvStack m_envs;
-
-  public:
+  // Methods:
   EnvState()
   {
     // Always initialize the global scope.
@@ -200,6 +203,36 @@ class EnvState {
     t_os << "}";
 
     return t_os;
+  }
+
+  auto begin() noexcept -> EnvStack::iterator
+  {
+    return m_envs.begin();
+  }
+
+  auto end() noexcept -> EnvStack::iterator
+  {
+    return m_envs.end();
+  }
+
+  auto begin() const noexcept -> EnvStack::const_iterator
+  {
+    return m_envs.cbegin();
+  }
+
+  auto end() const noexcept -> EnvStack::const_iterator
+  {
+    return m_envs.cend();
+  }
+
+  auto cbegin() const noexcept -> EnvStack::const_iterator
+  {
+    return m_envs.cbegin();
+  }
+
+  auto cend() const noexcept -> EnvStack::const_iterator
+  {
+    return m_envs.cend();
   }
 
   virtual ~EnvState() = default;

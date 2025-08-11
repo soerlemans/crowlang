@@ -1,12 +1,29 @@
-module if_
+module if_module
 
 func branch(t_cond: int) -> bool {
-  // if t_cond > 0 {
-  if True {
-    return True
+  var someVar: int = -1
+
+  if t_cond > 10 {
+    someVar = 1
   } else {
-    return False
+    someVar = 0
   }
 
-  return False
+  return someVar
+}
+
+func branch2(t_cond: int) -> bool {
+  var someVar: int = -1
+
+  if t_cond > 10 {
+    someVar = 1
+  }
+
+  return someVar
+}
+
+func main() -> int {
+  branch(0)
+
+  return 0
 }

@@ -37,11 +37,10 @@ struct Symbol {
  * Used in @ref SemanticChecker.
  */
 class SymbolEnvState : public container::EnvState<Symbol> {
-  private:
+  public:
   using BaseEnvState = container::EnvState<Symbol>;
 
-  public:
-  SymbolEnvState();
+  SymbolEnvState() = default;
 
   //! Expect means it is required and if we dont find it error.
   auto get_value(std::string_view t_key) const -> const Symbol&;

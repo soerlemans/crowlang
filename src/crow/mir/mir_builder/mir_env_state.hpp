@@ -31,12 +31,10 @@ namespace mir::mir_builder {
  */
 template<typename T>
 class MirEnvState : public container::EnvState<T> {
-  private:
+  public:
   using BaseEnvState = container::EnvState<T>;
 
-  public:
-  MirEnvState(): BaseEnvState{}
-  {}
+  MirEnvState() = default;
 
   auto get_iter(const std::string_view t_key) -> BaseEnvState::Iter
   {
