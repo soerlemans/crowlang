@@ -104,7 +104,7 @@ auto MirBuilder::visit(Loop* t_loop) -> Any
 
   // Make
   traverse(init_expr);
-  auto cond_jump{m_factory->add_instruction(Opcode::JUMP)};
+  auto& cond_jump{m_factory->add_instruction(Opcode::JUMP)};
   // TODO: Jump to conditional block.
 
   // TODO: Put in own basic block for looping.
