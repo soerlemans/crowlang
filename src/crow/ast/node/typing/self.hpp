@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_AST_NODE_LVALUE_VARIABLE_HPP
-#define CROW_CROW_AST_NODE_LVALUE_VARIABLE_HPP
+#ifndef CROW_CROW_AST_NODE_TYPING_SELF_HPP
+#define CROW_CROW_AST_NODE_TYPING_SELF_HPP
 
 // Includes:
 #include "../node_traits/include.hpp"
@@ -28,4 +28,4 @@ class Self : public Identifier, public TypeAnnotation, public TypeData {
 // Cereal type registration:
 REGISTER_ARCHIVEABLE_TYPE(ast::node::typing, Self);
 
-#endif // CROW_CROW_AST_NODE_LVALUE_VARIABLE_HPP
+#endif // CROW_CROW_AST_NODE_TYPING_SELF_HPP
