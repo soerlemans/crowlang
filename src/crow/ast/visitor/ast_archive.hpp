@@ -143,7 +143,7 @@ class AstArchive : public NodeVisitor {
   auto visit(node::typing::Interface* t_ifc) -> Any override;
   auto visit(node::typing::MemberDecl* t_md) -> Any override;
   auto visit(node::typing::Struct* t_struct) -> Any override;
-  auto visit(node::typing::Impl* t_impl) -> Any override;
+  auto visit(node::typing::Self* t_self) -> Any override;
   auto visit(node::typing::DotExpr* t_dot_expr) -> Any override;
 
   // Misc:

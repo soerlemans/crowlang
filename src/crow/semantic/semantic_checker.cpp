@@ -790,7 +790,7 @@ AST_VISITOR_STUB(SemanticChecker, MethodDecl)
 AST_VISITOR_STUB(SemanticChecker, Interface)
 AST_VISITOR_STUB(SemanticChecker, MemberDecl)
 AST_VISITOR_STUB(SemanticChecker, Struct)
-AST_VISITOR_STUB(SemanticChecker, Impl)
+AST_VISITOR_STUB(SemanticChecker, Self)
 AST_VISITOR_STUB(SemanticChecker, DotExpr)
 
 auto SemanticChecker::check(NodePtr t_ast) -> void

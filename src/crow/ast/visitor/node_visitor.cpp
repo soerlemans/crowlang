@@ -85,7 +85,7 @@ STUB(MethodDecl)
 STUB(Interface)
 STUB(MemberDecl)
 STUB(Struct)
-STUB(Impl)
+STUB(Self)
 STUB(DotExpr)
 
 // Misc:

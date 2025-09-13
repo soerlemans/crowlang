@@ -26,9 +26,11 @@ enum class TokenType {
   // Typing:
   ENUM,
   STRUCT,
+  SELF,
+  INTERFACE,
 
   // Meta:
-	HASH,
+  HASH,
   ATTRIBUTE_OPEN,
   ATTRIBUTE_CLOSE,
 

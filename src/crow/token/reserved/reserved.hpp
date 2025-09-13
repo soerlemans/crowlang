@@ -41,6 +41,9 @@ namespace keywords {
   // Typing:
   DEFINE_TERMINAL(g_enum,   "enum",   ENUM);
   DEFINE_TERMINAL(g_struct, "struct", STRUCT);
+  DEFINE_TERMINAL(g_self,   "self", SELF);
+
+  DEFINE_TERMINAL(g_interface, "interface", INTERFACE);
 
   // Control statements:
   DEFINE_TERMINAL(g_declare, "declare", DECLARE); // TODO: Consider renaming to just decl.
@@ -79,7 +82,7 @@ namespace keywords {
   const std::map g_keywords {
     g_let.pair(), g_var.pair(),
     g_module.pair(), g_import.pair(), g_export.pair(),
-    g_enum.pair(), g_struct.pair(),
+    g_enum.pair(), g_struct.pair(), g_self.pair(), g_interface.pair(),
     g_declare.pair(), g_macro.pair(),
     g_func.pair(),
     g_match.pair(),

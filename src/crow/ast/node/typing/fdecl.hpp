@@ -7,7 +7,7 @@ class Interface;
 
 class MemberDecl;
 class Struct;
-class Impl;
+class Self;
 
 class DotExpr;
 } // namespace ast::node::typing

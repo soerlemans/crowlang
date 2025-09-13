@@ -543,7 +543,7 @@ AST_VISITOR_STUB(CppBackend, MethodDecl)
 AST_VISITOR_STUB(CppBackend, Interface)
 AST_VISITOR_STUB(CppBackend, MemberDecl)
 AST_VISITOR_STUB(CppBackend, Struct)
-AST_VISITOR_STUB(CppBackend, Impl)
+AST_VISITOR_STUB(CppBackend, Self)
 AST_VISITOR_STUB(CppBackend, DotExpr)
 
 // Misc:

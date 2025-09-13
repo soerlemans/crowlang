@@ -129,7 +129,7 @@ AST_VISITOR_STUB(NodeFrameFactory, MethodDecl)
 AST_VISITOR_STUB(NodeFrameFactory, Interface)
 AST_VISITOR_STUB(NodeFrameFactory, MemberDecl)
 AST_VISITOR_STUB(NodeFrameFactory, Struct)
-AST_VISITOR_STUB(NodeFrameFactory, Impl)
+AST_VISITOR_STUB(NodeFrameFactory, Self)
 AST_VISITOR_STUB(NodeFrameFactory, DotExpr)
 
 auto NodeFrameFactory::visit(node::List* t_list) -> Any
