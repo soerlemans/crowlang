@@ -1,10 +1,13 @@
 #include "mir_module_factory.hpp"
 
 // STL Includes:
+#include <algorithm>
 #include <iomanip>
 #include <memory>
+#include <ranges>
 
 // Absolute Includes:
+#include "crow/debug/log.hpp"
 #include "lib/check_nullptr.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
 #include "lib/string_util.hpp"
@@ -45,20 +48,21 @@ auto MirModuleFactory::clear_env() -> void
   m_fn_env.clear();
 }
 
+auto MirModuleFactory::set_var_env(const SsaVarEnvState& t_env) -> void
+{
+  m_var_env = t_env;
+}
+
+auto MirModuleFactory::get_var_env() const -> const SsaVarEnvState&
+{
+  return m_var_env;
+}
+
 auto MirModuleFactory::create_var(TypeVariant t_type) -> SsaVarPtr
 {
   auto ptr{std::make_shared<SsaVar>(m_var_id, t_type)};
 
-  const auto key{std::to_string(ptr->m_id)};
-  auto [iter, inserted] = m_var_env.insert({key, ptr});
-  if(!inserted) {
-    using lib::stdexcept::throw_runtime_error;
-
-    throw_runtime_error("Can not insert duplicate variable name.");
-  }
-
   m_var_id++;
-
 
   return ptr;
 }
@@ -236,16 +240,9 @@ auto MirModuleFactory::create_global(std::string_view t_name,
   return global_var;
 }
 
-auto MirModuleFactory::is_global(const std::string_view t_name) -> bool
+auto MirModuleFactory::is_global(const std::string_view t_name) const -> bool
 {
-  if(m_global_map.contains(std::string{t_name})) {
-    // We dont allow shadowing variables.
-    // TODO: Maybe double check if we have no duplicate variable names.
-
-    return true;
-  }
-
-  return false;
+  return m_global_map.contains(std::string{t_name});
 }
 
 auto MirModuleFactory::add_global_declaration(const std::string_view t_name,
@@ -274,12 +271,18 @@ auto MirModuleFactory::add_variable_definition(const std::string_view t_name,
   if(m_var_env.is_toplevel()) {
     const auto global_var{create_global(t_name, t_type)};
 
+    // Insert into global environment tracking.
     GlobalMirEntity entity{EntityStatus::DEFINED, global_var};
     m_global_map.insert({std::string{t_name}, entity});
+
+    // Insert into globals section of module.
+    auto& global_vec{m_module->m_globals};
+    global_vec.push_back(global_var);
   } else {
     // Bind the source variable name to the ssa var.
     create_var_binding(t_name, result_var);
   }
+
 
   return assign_instr;
 }
@@ -492,6 +495,74 @@ auto MirModuleFactory::last_function() -> FunctionPtr&
   }
 
   return functions.back();
+}
+
+// TODO: Maybe find a way to optimize the implementation.
+auto MirModuleFactory::merge_envs(const SsaVarPtr t_cond,
+                                  const SsaVarEnvState& t_env1,
+                                  const SsaVarEnvState& t_env2)
+  -> SsaVarEnvState
+{
+  using EnvMap = SsaVarEnvState::BaseEnvState::EnvMap;
+
+  // Loop through layers of both t_env1 and t_env2.
+  // And insert phi nodes and update variable binding.
+  // For creation and setting of the new env state.
+
+  // Create a new environment from the base environment.
+  SsaVarEnvState merge_env{t_env1};
+
+  // We need to loop through both environments at the same time.
+  // Whilst merging the new one.
+  auto iter2{t_env2.begin()};
+  for(EnvMap& merge_map : merge_env) {
+    if(iter2 == t_env2.end()) {
+      // TODO: Error handle.
+      break;
+    }
+
+    // TODO: Maybe we should also check if we looped through all map2
+    // elements.
+    const EnvMap& map2{*iter2};
+
+    for(auto& [merge_key, merge_ssa] : merge_map) {
+      const auto map_iter{map2.find(merge_key)};
+      if(map_iter != map2.end()) {
+        const auto ssa2{map_iter->second};
+
+        // If the SSA variables differ for an entry.
+        // Then we have variable references in two different branches.
+        // And we need to insert a phi instruction.
+        if(merge_ssa != ssa2) {
+          auto& phi_instr{add_instruction(Opcode::PHI)};
+
+          // Set result variable type.
+          const auto type{merge_ssa->m_type};
+          const auto phi_result{add_result_var(type)};
+
+          // Add operands, for the phi instruction.
+          phi_instr.add_operand({t_cond});
+          phi_instr.add_operand({merge_ssa});
+          phi_instr.add_operand({ssa2});
+
+          // Update the ssa binding to the new result var.
+          merge_ssa = phi_result;
+        }
+      } else {
+        // TODO: Throw or report.
+        break;
+      }
+    }
+
+    iter2++;
+  }
+
+  // Use to debug:
+  // DBG_INFO("env1: ", t_env1);
+  // DBG_INFO("env2", t_env2);
+  // DBG_INFO("merge: ", merge_env);
+
+  return merge_env;
 }
 
 auto MirModuleFactory::set_module_name(std::string_view t_name) -> void

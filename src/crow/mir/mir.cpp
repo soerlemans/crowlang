@@ -197,6 +197,16 @@ auto operator<<(std::ostream& t_os, const mir::GlobalVarPtr& t_ptr)
   return print_smart_ptr(t_os, t_ptr);
 }
 
+auto operator<<(std::ostream& t_os, const mir::GlobalVarVec& t_vec)
+  -> std::ostream&
+{
+  for(const auto& global_var : t_vec) {
+    t_os << "\t" << global_var << '\n';
+  }
+
+  return t_os;
+}
+
 auto operator<<(std::ostream& t_os, const mir::SsaVar& t_var) -> std::ostream&
 {
   // TODO: Think about conditional printing of the type as well?
@@ -349,6 +359,11 @@ auto operator<<(std::ostream& t_os, const mir::Module& t_mod) -> std::ostream&
 
   // Module declaration header.
   t_os << std::format("module {}\n\n", name);
+
+  // Print globals;
+  t_os << "globals {\n";
+  t_os << globals;
+  t_os << "}\n\n";
 
   // Print the functions part of the module.
   std::string_view sep{};

@@ -11,6 +11,7 @@ func main() -> int {
 }
 
 let fwd_lvar = 0
+var fwd_vvar = 0
 
 func fwd_func() -> int {
   return 0

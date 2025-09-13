@@ -23,14 +23,13 @@ func test3(t_x: int) -> int {
 
 [[inline]]
 [[constexpr]]
-func test3(t_x: int) -> int {
+func test4(t_x: int) -> int {
   return 30
 }
 
 func main() -> int {
-  let num = abs(-23)
-
-  println("Absolute value of -23 => {}", num)
+  // let num = abs(-23)
+  // println("Absolute value of -23 => {}", num)
 
   return 0
 }
