@@ -1,30 +1,39 @@
 module methods_module
 
-/*
-*/
-
-#include ""
-#include_once ""
+// TODO: Implement later.
+// #include ""
+// #include_once ""
 
 let magic_num = 100
 let some_str = "Some string"
 
-interface ExampleInterface {
-  hello() -> void
-}
+// interface ExampleInterface {
+//   num() -> void
+// }
 
 struct ExampleStruct {
+  m_num: int
 }
 
-func (ExampleStruct*) test() -> void {
-  println("Test!")
-}
+// [[implements(Exampleinterface)]]
+// func num(self: Examplestruct*) -> void {
+//   let num = self.m_num
 
-[[implements(Exampleinterface)]]
-func hello(self: Examplestruct*) -> void {
-  println("Hello!")
+//   println("Num: {}", num)
+// }
+
+func num(self: Examplestruct) -> void {
+  let num = self.m_num
+
+  println("Num: {}", num)
 }
 
 func main() -> int {
+  var example: ExampleStruct
+
+  example.m_num = 10
+
+  example.num()
+
   return 0
 }

@@ -28,6 +28,7 @@ enum class TokenType {
   STRUCT,
 
   // Meta:
+	HASH,
   ATTRIBUTE_OPEN,
   ATTRIBUTE_CLOSE,
 

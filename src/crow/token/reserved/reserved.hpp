@@ -93,7 +93,9 @@ namespace keywords {
 
 // Language reserved symbols
 namespace symbols {
-  // Attributes:
+  // Meta:
+  DEFINE_TERMINAL(g_hash, '#', HASH);
+
   DEFINE_TERMINAL(g_attribute_open,  "[[", ATTRIBUTE_OPEN);
   DEFINE_TERMINAL(g_attribute_close, "]]", ATTRIBUTE_CLOSE);
 
@@ -152,6 +154,8 @@ namespace symbols {
   DEFINE_TERMINAL(g_newline,  '\n', NEWLINE);
 
   const std::map g_single_symbols {
+		g_hash.pair(),
+
     g_paren_open.pair(),
     g_paren_close.pair(),
     g_accolade_open.pair(),

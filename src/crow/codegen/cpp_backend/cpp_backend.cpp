@@ -558,7 +558,7 @@ auto CppBackend::visit(List* t_list) -> Any
   return ss.str();
 }
 
-auto CppBackend::visit(NodeInterface* t_node) -> Any
+auto CppBackend::visit([[maybe_unused]] NodeInterface* t_node) -> Any
 {
   // We only call this method if we have not overriden.
   // The visit method for that AST node.

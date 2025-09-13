@@ -19,8 +19,8 @@ TextBuffer::TextBuffer(const std::string_view t_source)
 
 auto TextBuffer::add_line(std::string t_line) -> void
 {
-  // Warning: We disregard carriage return's
-  if(t_line.back() != '\n') {
+  // Warning: We disregard carriage return's.
+  if(t_line.empty() || t_line.back() != '\n') {
     t_line += '\n';
   }
 
