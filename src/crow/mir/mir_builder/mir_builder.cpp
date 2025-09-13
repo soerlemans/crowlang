@@ -102,6 +102,9 @@ auto MirBuilder::visit(Loop* t_loop) -> Any
   auto expr{t_loop->expr()};
   auto body{t_loop->body()};
 
+  // TODO: Handle different cases of loop.
+  // Currently we expect everything to be there.
+
   // Make
   traverse(init_expr);
   auto& cond_jump{m_factory->add_instruction(Opcode::JUMP)};
@@ -144,7 +147,12 @@ auto MirBuilder::visit(Loop* t_loop) -> Any
   cond_instr.add_operand({&body_block});
   cond_instr.add_operand({&merge_block});
 
-  // TODO: Insert post loop basic block.
+  // Insert phi nodes.
+  // const auto merged_env{
+  //   m_factory->merge_envs(cond_result, then_env, alt_env)};
+  // m_factory->set_var_env(merged_env);
+
+  // Add phi instructions.
 
   return {};
 }
