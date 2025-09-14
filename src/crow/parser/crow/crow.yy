@@ -12,7 +12,7 @@
 %token ATTRIBUTE_OPEN ATTRIBUTE_CLOSE
 
 // Typing:
-%token Enum Struct Self
+%token Enum Struct Self Proto
 
 // Control Statements:
 %token Fn Match Case If Else ElIf Loop
@@ -249,6 +249,11 @@ body             : newline_opt '{' newline_opt '}'
                  ;
 
 // Typing:
+// TODO: Deal with more complex type specifications/expressions.
+// Just looking at an identifier is not enough anymore (or it wont be).
+type_expr        :
+                 ;
+
 // TODO: Figure out how to name aliases?
 /* alias_def     : Alias? */
 /* type_specifier     : IDENTIFIER | *IDENTIFIER */

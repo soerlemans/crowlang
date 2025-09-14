@@ -33,6 +33,7 @@ enum class TokenType {
   CONST,
 
   // Typing:
+  ALIAS,
   ENUM,
   STRUCT,
   SELF,

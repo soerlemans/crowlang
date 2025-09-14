@@ -656,37 +656,44 @@ auto CrowParser::function() -> NodePtr
     const auto tt_id{expect(TokenType::IDENTIFIER)};
     const auto id{tt_id.str()};
 
-
     expect(TokenType::PAREN_OPEN);
 
     // NodeListPtr params;
     NodeListPtr params{};
     if(next_if(TokenType::SELF)) {
+      // Dealing with a method:
       PARSER_FOUND(TokenType::SELF);
-
       expect(TokenType::COLON);
-
       auto receiver_type{expect(TokenType::IDENTIFIER).str()};
 
-      // Get the rest of the parameters.
       if(next_if(TokenType::COMMA)) {
+        // Get the rest of the parameters.
         params = param_list_opt();
       }
+      expect(TokenType::PAREN_CLOSE);
+
+      const auto return_type{return_type_opt()};
+      auto body_ptr{body()};
+      if(!body_ptr) {
+        throw_syntax_error("Expected a method body");
+      }
+
+      node = make_node<Method>(id, std::move(params), return_type,
+                               std::move(body_ptr));
     } else {
+      // Dealing with a function:
       params = param_list_opt();
+      expect(TokenType::PAREN_CLOSE);
+
+      const auto return_type{return_type_opt()};
+      auto body_ptr{body()};
+      if(!body_ptr) {
+        throw_syntax_error("Expected a function body");
+      }
+
+      node = make_node<Function>(id, std::move(params), return_type,
+                                 std::move(body_ptr));
     }
-
-    expect(TokenType::PAREN_CLOSE);
-
-    const auto type{return_type_opt()};
-
-    auto body_ptr{body()};
-    if(!body_ptr) {
-      throw_syntax_error("Expected a function body");
-    }
-
-    node =
-      make_node<Function>(id, std::move(params), type, std::move(body_ptr));
   }
 
   return node;

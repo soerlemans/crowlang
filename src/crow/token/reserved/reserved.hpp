@@ -45,6 +45,7 @@ namespace keywords {
   DEFINE_TERMINAL(g_const,   "const",   CONST);
 
   // Typing:
+  DEFINE_TERMINAL(g_alias,  "alias",  ALIAS);
   DEFINE_TERMINAL(g_enum,   "enum",   ENUM);
   DEFINE_TERMINAL(g_struct, "struct", STRUCT);
   DEFINE_TERMINAL(g_self,   "self",   SELF);
@@ -87,7 +88,7 @@ namespace keywords {
     g_let.pair(), g_var.pair(),
     g_module.pair(), g_import.pair(), g_export.pair(),
     g_declare.pair(), g_macro.pair(), g_const.pair(),
-    g_enum.pair(), g_struct.pair(), g_self.pair(),
+    g_alias.pair(), g_enum.pair(), g_struct.pair(), g_self.pair(),
 		g_proto.pair(),
     g_func.pair(),
     g_match.pair(),
