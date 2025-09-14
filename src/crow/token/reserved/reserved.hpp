@@ -38,16 +38,21 @@ namespace keywords {
   DEFINE_TERMINAL(g_import, "import", IMPORT);
   DEFINE_TERMINAL(g_export, "export", EXPORT);
 
+	// Meta:
+	// TODO: Consider renaming to just decl.
+  DEFINE_TERMINAL(g_declare, "declare", DECLARE);
+  DEFINE_TERMINAL(g_macro,   "macro",   MACRO);
+  DEFINE_TERMINAL(g_const,   "const", CONST);
+
   // Typing:
   DEFINE_TERMINAL(g_enum,   "enum",   ENUM);
   DEFINE_TERMINAL(g_struct, "struct", STRUCT);
   DEFINE_TERMINAL(g_self,   "self", SELF);
 
-  DEFINE_TERMINAL(g_interface, "interface", INTERFACE);
+  DEFINE_TERMINAL(g_proto, "proto", PROTO);
+
 
   // Control statements:
-  DEFINE_TERMINAL(g_declare, "declare", DECLARE); // TODO: Consider renaming to just decl.
-  DEFINE_TERMINAL(g_macro,   "macro",   MACRO);
   DEFINE_TERMINAL(g_func,    "func",    FUNCTION);
   DEFINE_TERMINAL(g_match,   "match",   MATCH);
   DEFINE_TERMINAL(g_if,      "if",      IF);
@@ -70,7 +75,7 @@ namespace keywords {
   // 	(g_let.pair())
   // 	(g_var.pair())
   // 	(g_module.pair()) (g_import.pair()) (g_priv.pair()) (g_pub.pair())
-  // 	(g_struct.pair()) (g_interface.pair()) (g_impl.pair())
+  // 	(g_struct.pair()) (g_proto.pair()) (g_impl.pair())
   //    (g_func.pair())
   // 	(g_match.pair())
   //    (g_if.pair()) (g_else.pair()) (g_elif.pair())
@@ -82,8 +87,9 @@ namespace keywords {
   const std::map g_keywords {
     g_let.pair(), g_var.pair(),
     g_module.pair(), g_import.pair(), g_export.pair(),
-    g_enum.pair(), g_struct.pair(), g_self.pair(), g_interface.pair(),
-    g_declare.pair(), g_macro.pair(),
+    g_declare.pair(), g_macro.pair(), g_const.pair(),
+    g_enum.pair(), g_struct.pair(), g_self.pair(),
+		g_proto.pair(),
     g_func.pair(),
     g_match.pair(),
     g_if.pair(), g_else.pair(), g_elif.pair(),
