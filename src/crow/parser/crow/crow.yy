@@ -232,11 +232,11 @@ elif_statement   : ElIf eval_expr body
 
 // Statements:
 statement        : result_statement
-		 | if_statement
-		 | match_statement
-		 | loop_statement
-		 | keyword_statement
-		 | body
+                 | if_statement
+                 | match_statement
+                 | loop_statement
+                 | keyword_statement
+                 | body
                  ;
 
 statement_list   : statement newline_opt

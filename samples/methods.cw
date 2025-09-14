@@ -15,25 +15,27 @@ struct ExampleStruct {
   m_num: int
 }
 
+// [[implements[ExampleInterface]()]]
+// [[implements(<Exampleinterface>)]]
+// [[implements(type Exampleinterface)]]
 // [[implements(Exampleinterface)]]
-// func num(self: Examplestruct*) -> void {
-//   let num = self.m_num
+func num(self: Examplestruct) -> void {
+  // let num = self.m_num
 
-//   println("Num: {}", num)
-// }
+  // println("Num: {}", num)
+}
 
 func num(self: Examplestruct) -> void {
-  let num = self.m_num
+  // let num = self.m_num
 
-  println("Num: {}", num)
+  // println("Num: {}", num)
 }
 
 func main() -> int {
   var example: ExampleStruct
 
-  example.m_num = 10
-
-  example.num()
+  // example.m_num = 10
+  // example.num()
 
   return 0
 }
