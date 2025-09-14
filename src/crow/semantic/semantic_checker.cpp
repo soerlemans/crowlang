@@ -405,31 +405,36 @@ auto SemanticChecker::visit(ReturnType* t_rt) -> Any
 // TODO: Add TypeData annotation.
 auto SemanticChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
 {
-  auto expr{get_symbol_data(t_decl->init_expr())};
+  auto init_expr{t_decl->init_expr()};
 
   const auto position{t_decl->position()};
   const auto type{t_decl->type()};
 
   const auto id{t_decl->identifier()};
 
-  std::stringstream ss;
+  // TODO: Handle the case where we have no init_expr and type is not empty!
+  // if()
+
+  auto expr_data{get_symbol_data(init_expr)};
+
+  std::stringstream ss{};
   if(!type.empty()) {
     ss << ": " << type;
 
     // TODO: Resolve non native types.
     const SymbolData data{str2nativetype(type)};
 
-    const auto opt{promote(data, expr, true)};
+    const auto opt{promote(data, expr_data, true)};
     if(opt) {
-      expr = opt.value();
-    } else if(data != expr) {
+      expr_data = opt.value();
+    } else if(data != expr_data) {
       std::stringstream err_ss;
       const auto var{std::quoted(t_decl->identifier())};
 
       err_ss << "Init of " << var << " contains a type mismatch.\n\n";
 
       err_ss << "typeof " << var << " = " << data << "\n";
-      err_ss << "typeof expr = " << expr << "\n\n";
+      err_ss << "typeof expr_data = " << expr_data << "\n\n";
 
       err_ss << t_decl->position();
 
@@ -437,10 +442,10 @@ auto SemanticChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
     }
   }
 
-  DBG_INFO(id, ss.str(), " = <expr>: ", expr);
+  DBG_INFO(id, ss.str(), " = <expr>: ", expr_data);
 
   // Annotate AST.
-  annotate_type(t_decl, expr);
+  annotate_type(t_decl, expr_data);
   annotate_attr(t_decl);
 
   return expr;
