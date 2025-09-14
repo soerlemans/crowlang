@@ -125,7 +125,7 @@ AST_VISITOR_STUB(NodeFrameFactory, String)
 AST_VISITOR_STUB(NodeFrameFactory, Boolean)
 
 // Typing:
-AST_VISITOR_STUB(NodeFrameFactory, MethodDecl)
+AST_VISITOR_STUB(NodeFrameFactory, Method)
 AST_VISITOR_STUB(NodeFrameFactory, Interface)
 AST_VISITOR_STUB(NodeFrameFactory, MemberDecl)
 AST_VISITOR_STUB(NodeFrameFactory, Struct)

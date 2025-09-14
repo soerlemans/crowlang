@@ -920,7 +920,7 @@ auto MirBuilder::visit(Boolean* t_bool) -> Any
 }
 
 // Typing:
-STUB(MethodDecl)
+STUB(Method)
 STUB(Interface)
 STUB(MemberDecl)
 STUB(Struct)

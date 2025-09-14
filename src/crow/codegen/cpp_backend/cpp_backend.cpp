@@ -539,7 +539,7 @@ auto CppBackend::visit([[maybe_unused]] Boolean* t_bool) -> Any
 }
 
 // Typing:
-AST_VISITOR_STUB(CppBackend, MethodDecl)
+AST_VISITOR_STUB(CppBackend, Method)
 AST_VISITOR_STUB(CppBackend, Interface)
 AST_VISITOR_STUB(CppBackend, MemberDecl)
 AST_VISITOR_STUB(CppBackend, Struct)

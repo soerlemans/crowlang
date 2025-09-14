@@ -786,7 +786,7 @@ auto SemanticChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
 }
 
 // Typing:
-AST_VISITOR_STUB(SemanticChecker, MethodDecl)
+AST_VISITOR_STUB(SemanticChecker, Method)
 AST_VISITOR_STUB(SemanticChecker, Interface)
 AST_VISITOR_STUB(SemanticChecker, MemberDecl)
 AST_VISITOR_STUB(SemanticChecker, Struct)
