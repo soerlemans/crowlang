@@ -30,7 +30,7 @@ enum class TokenType {
 
   DECLARE,
   MACRO,
-	CONST,
+  CONST,
 
   // Typing:
   ENUM,

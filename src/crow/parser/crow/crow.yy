@@ -291,13 +291,12 @@ return_type_opt  : // empty
                  | return_type
                  ;
 
-lambda           : Func '(' param_list_opt ')' return_type_opt body
-                 | Func return_type_opt body
-                 ;
+// lambda           : Func '(' param_list_opt ')' return_type_opt body
+//                  | Func return_type_opt body
+//                  ;
 
 // We detect methods by the self keyword in the first param (TODO: Maybe find a cleaner way to do this?).
 function         : Func IDENTIFIER '(' param_list_opt ')' return_type_opt body
-                 | Func IDENTIFIER return_type_opt body
                  | Func IDENTIFIER '(' Self ':' IDENTIFIER ')' return_type_opt body
                  | Func IDENTIFIER '(' Self ':' IDENTIFIER ',' param_list ')' return_type_opt body
 				         ;
