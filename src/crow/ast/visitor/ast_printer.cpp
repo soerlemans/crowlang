@@ -295,7 +295,7 @@ auto AstPrinter::visit(Boolean* t_bool) -> Any
 }
 
 // Typing:
-DEFINE_PRINTER_METHOD(MethodDecl)
+DEFINE_PRINTER_METHOD(Method)
 DEFINE_PRINTER_METHOD(Interface)
 DEFINE_PRINTER_METHOD(MemberDecl)
 DEFINE_PRINTER_METHOD(Struct)

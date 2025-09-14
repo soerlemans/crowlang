@@ -1,6 +1,6 @@
 # Add source files
 target_sources(${TARGET_CROW_LIB} PRIVATE
-	method_decl.cpp
+	method.cpp
 	interface.cpp
 	member_decl.cpp
 	struct.cpp

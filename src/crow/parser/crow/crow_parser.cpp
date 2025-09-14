@@ -651,13 +651,24 @@ auto CrowParser::function() -> NodePtr
   NodePtr node{};
 
   if(next_if(TokenType::FUNCTION)) {
+    PARSER_FOUND(TokenType::FUNCTION);
+
     const auto tt_id{expect(TokenType::IDENTIFIER)};
     const auto id{tt_id.str()};
 
     // NodeListPtr params;
-    auto params{parens([this] {
-      return this->param_list_opt();
-    })};
+    NodeListPtr params{};
+    if(next_if(TokenType::SELF)) {
+      PARSER_FOUND(TokenType::SELF);
+
+      expect(TokenType::COLON);
+
+      // type = expect(TokenType::IDENTIFIER).str();
+    } else {
+      params = parens([this] {
+        return this->param_list_opt();
+      });
+    }
 
     const auto type{return_type_opt()};
 

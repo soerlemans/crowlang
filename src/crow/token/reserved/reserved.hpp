@@ -42,23 +42,22 @@ namespace keywords {
 	// TODO: Consider renaming to just decl.
   DEFINE_TERMINAL(g_declare, "declare", DECLARE);
   DEFINE_TERMINAL(g_macro,   "macro",   MACRO);
-  DEFINE_TERMINAL(g_const,   "const", CONST);
+  DEFINE_TERMINAL(g_const,   "const",   CONST);
 
   // Typing:
   DEFINE_TERMINAL(g_enum,   "enum",   ENUM);
   DEFINE_TERMINAL(g_struct, "struct", STRUCT);
-  DEFINE_TERMINAL(g_self,   "self", SELF);
+  DEFINE_TERMINAL(g_self,   "self",   SELF);
 
   DEFINE_TERMINAL(g_proto, "proto", PROTO);
 
-
   // Control statements:
-  DEFINE_TERMINAL(g_func,    "func",    FUNCTION);
-  DEFINE_TERMINAL(g_match,   "match",   MATCH);
-  DEFINE_TERMINAL(g_if,      "if",      IF);
-  DEFINE_TERMINAL(g_else,    "else",    ELSE);
-  DEFINE_TERMINAL(g_elif,    "elif",    ELIF);
-  DEFINE_TERMINAL(g_loop,    "loop",    LOOP);
+  DEFINE_TERMINAL(g_func,  "func",  FUNCTION);
+  DEFINE_TERMINAL(g_match, "match", MATCH);
+  DEFINE_TERMINAL(g_if,    "if",    IF);
+  DEFINE_TERMINAL(g_else,  "else",  ELSE);
+  DEFINE_TERMINAL(g_elif,  "elif",  ELIF);
+  DEFINE_TERMINAL(g_loop,  "loop",  LOOP);
 
   // Jump:
   DEFINE_TERMINAL(g_break,    "break",    BREAK);

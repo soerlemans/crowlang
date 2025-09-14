@@ -90,7 +90,7 @@ class NodeVisitor {
   virtual auto visit(node::rvalue::Boolean* t_bool) -> Any;
 
   // Typing:
-  virtual auto visit(node::typing::MethodDecl* t_md) -> Any;
+  virtual auto visit(node::typing::Method* t_meth) -> Any;
   virtual auto visit(node::typing::Interface* t_ifc) -> Any;
   virtual auto visit(node::typing::MemberDecl* t_md) -> Any;
   virtual auto visit(node::typing::Struct* t_struct) -> Any;

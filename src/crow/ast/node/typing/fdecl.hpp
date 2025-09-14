@@ -2,7 +2,7 @@
 #define CROW_CROW_AST_NODE_TYPING_FDECL_HPP
 
 namespace ast::node::typing {
-class MethodDecl;
+class Method;
 class Interface;
 
 class MemberDecl;

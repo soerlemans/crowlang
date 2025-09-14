@@ -5,7 +5,7 @@
 #include "dot_expr.hpp"
 #include "interface.hpp"
 #include "member_decl.hpp"
-#include "method_decl.hpp"
+#include "method.hpp"
 #include "self.hpp"
 #include "struct.hpp"
 
