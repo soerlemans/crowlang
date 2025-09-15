@@ -415,7 +415,7 @@ auto SemanticChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
   // TODO: Handle the case where we have no init_expr and type is not empty!
   // if()
 
-  auto expr_data{get_symbol_data(init_expr)};
+  auto init_expr_data{get_symbol_data(init_expr)};
 
   std::stringstream ss{};
   if(!type.empty()) {
@@ -424,17 +424,17 @@ auto SemanticChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
     // TODO: Resolve non native types.
     const SymbolData data{str2nativetype(type)};
 
-    const auto opt{promote(data, expr_data, true)};
+    const auto opt{promote(data, init_expr_data, true)};
     if(opt) {
-      expr_data = opt.value();
-    } else if(data != expr_data) {
+      init_expr_data = opt.value();
+    } else if(data != init_expr_data) {
       std::stringstream err_ss;
       const auto var{std::quoted(t_decl->identifier())};
 
       err_ss << "Init of " << var << " contains a type mismatch.\n\n";
 
       err_ss << "typeof " << var << " = " << data << "\n";
-      err_ss << "typeof expr_data = " << expr_data << "\n\n";
+      err_ss << "typeof init_expr_data = " << init_expr_data << "\n\n";
 
       err_ss << t_decl->position();
 
@@ -442,23 +442,23 @@ auto SemanticChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
     }
   }
 
-  DBG_INFO(id, ss.str(), " = <expr>: ", expr_data);
+  DBG_INFO(id, ss.str(), " = <expr>: ", init_expr_data);
 
   // Annotate AST.
-  annotate_type(t_decl, expr_data);
+  annotate_type(t_decl, init_expr_data);
   annotate_attr(t_decl);
 
-  return expr;
+  return init_expr_data;
 }
 
 // TODO: FIXME Disallow redeclaration of variables.
 auto SemanticChecker::visit(Let* t_let) -> Any
 {
   const auto id{t_let->identifier()};
-  const auto expr_data{decl_expr(t_let)};
+  const auto init_expr_data{decl_expr(t_let)};
 
   // Create the SymbolData for a variable.
-  const SymbolData data{symbol::make_variable(true, expr_data)};
+  const SymbolData data{symbol::make_variable(true, init_expr_data)};
   add_symbol_definition(id, data);
 
   return {};
@@ -467,10 +467,10 @@ auto SemanticChecker::visit(Let* t_let) -> Any
 auto SemanticChecker::visit(Var* t_var) -> Any
 {
   const auto id{t_var->identifier()};
-  const auto expr_data{decl_expr(t_var)};
+  const auto init_expr_data{decl_expr(t_var)};
 
   // Create the SymbolData for a variable.
-  const SymbolData data{symbol::make_variable(false, expr_data)};
+  const SymbolData data{symbol::make_variable(false, init_expr_data)};
   add_symbol_definition(id, data);
 
   return {};

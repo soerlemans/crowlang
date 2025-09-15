@@ -25,9 +25,17 @@ class Method : public Identifier,
                public Body,
                public TypeData,
                public AttributeData {
+  private:
+  std::string m_receiver_type;
+
   public:
-  Method(std::string_view t_identifier, NodeListPtr&& t_params,
-         std::string_view t_type, NodeListPtr&& t_body);
+  Method(std::string_view t_identifier, std::string_view t_receiver_type,
+         NodeListPtr&& t_params, std::string_view t_type, NodeListPtr&& t_body);
+
+  // TODO: replace the receiver being a string with something more elegant.
+  // Maybe its own node type?
+	// Something like Receiver which has its own type annotation and type data?
+  auto get_receiver() const -> std::string_view;
 
   AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Method, Identifier, Params,
                                       TypeAnnotation, Body)

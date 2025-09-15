@@ -678,8 +678,8 @@ auto CrowParser::function() -> NodePtr
         throw_syntax_error("Expected a method body");
       }
 
-      node = make_node<Method>(id, std::move(params), return_type,
-                               std::move(body_ptr));
+      node = make_node<Method>(id, receiver_type, std::move(params),
+                               return_type, std::move(body_ptr));
     } else {
       // Dealing with a function:
       params = param_list_opt();
