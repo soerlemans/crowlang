@@ -25,8 +25,9 @@ using TypeLadder = std::unordered_map<NativeType, int>;
 
 // Enums:
 enum class TypeOperandPriority {
-  LEFT,
-  RIGHT
+  PROMOTE_TO_LHS, //< Check if RHS can be promoted to the LHS.
+  ENFORCE_RHS,    //< Enforce the type of RHS no matter what.
+  PEAK            //< Enforce highest priority promotion of both operands.
 };
 
 // Classes:
@@ -47,15 +48,18 @@ class TypePromoter {
   auto promote_bool(NativeType t_lhs) const -> NativeTypeOpt;
 
   // Type promotion for binary cases:
-  auto promote_float(NativeType t_lhs, NativeType t_rhs,
-                     TypeOperandPriority t_enforce =
-                       TypeOperandPriority::LEFT) const -> NativeTypeOpt;
-  auto promote_int(NativeType t_lhs, NativeType t_rhs,
-                   TypeOperandPriority t_enforce =
-                     TypeOperandPriority::LEFT) const -> NativeTypeOpt;
-  auto promote_uint(NativeType t_lhs, NativeType t_rhs,
-                    TypeOperandPriority t_enforce =
-                      TypeOperandPriority::LEFT) const -> NativeTypeOpt;
+  auto promote_float(
+    NativeType t_lhs, NativeType t_rhs,
+    TypeOperandPriority t_enforce = TypeOperandPriority::PROMOTE_TO_LHS) const
+    -> NativeTypeOpt;
+  auto promote_int(
+    NativeType t_lhs, NativeType t_rhs,
+    TypeOperandPriority t_enforce = TypeOperandPriority::PROMOTE_TO_LHS) const
+    -> NativeTypeOpt;
+  auto promote_uint(
+    NativeType t_lhs, NativeType t_rhs,
+    TypeOperandPriority t_enforce = TypeOperandPriority::PROMOTE_TO_LHS) const
+    -> NativeTypeOpt;
 
   /*!
    * Handles type promotion between two different types.

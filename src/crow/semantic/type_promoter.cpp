@@ -91,11 +91,22 @@ auto TypePromoter::promote_float(const NativeType t_lhs, const NativeType t_rhs,
   const auto lhs_priority{get_priority(m_float, t_lhs)};
   const auto rhs_priority{get_priority(m_float, t_rhs)};
 
-  if(lhs_priority > rhs_priority) {
-    opt = t_lhs;
-  } else if(t_enforce == TypeOperandPriority::RIGHT) {
+  if(t_enforce == TypeOperandPriority::PROMOTE_TO_LHS) {
+    if(lhs_priority >= rhs_priority) {
+      opt = t_lhs;
+    } else {
+      // TODO: error.
+    }
+  } else if(t_enforce == TypeOperandPriority::ENFORCE_RHS) {
     opt = t_rhs;
+  } else if(t_enforce == TypeOperandPriority::PEAK) {
+    if(lhs_priority > rhs_priority) {
+      opt = t_lhs;
+    } else {
+      opt = t_rhs;
+    }
   }
+
 
   return opt;
 }
@@ -110,10 +121,20 @@ auto TypePromoter::promote_int(const NativeType t_lhs, const NativeType t_rhs,
   const auto rhs_priority{get_priority(m_int, t_rhs)};
 
   // First check if RHS is castable to LHS.
-  if(lhs_priority > rhs_priority) {
-    opt = t_lhs;
-  } else if(t_enforce == TypeOperandPriority::RIGHT) {
+  if(t_enforce == TypeOperandPriority::PROMOTE_TO_LHS) {
+    if(lhs_priority >= rhs_priority) {
+      opt = t_lhs;
+    } else {
+      // TODO: error.
+    }
+  } else if(t_enforce == TypeOperandPriority::ENFORCE_RHS) {
     opt = t_rhs;
+  } else if(t_enforce == TypeOperandPriority::PEAK) {
+    if(lhs_priority > rhs_priority) {
+      opt = t_lhs;
+    } else {
+      opt = t_rhs;
+    }
   }
 
   return opt;
@@ -129,10 +150,20 @@ auto TypePromoter::promote_uint(const NativeType t_lhs, const NativeType t_rhs,
   const auto lhs_priority{get_priority(m_uint, t_lhs)};
   const auto rhs_priority{get_priority(m_uint, t_rhs)};
 
-  if(lhs_priority > rhs_priority) {
-    opt = t_lhs;
-  } else if(t_enforce == TypeOperandPriority::RIGHT) {
+  if(t_enforce == TypeOperandPriority::PROMOTE_TO_LHS) {
+    if(lhs_priority >= rhs_priority) {
+      opt = t_lhs;
+    } else {
+      // TODO: error.
+    }
+  } else if(t_enforce == TypeOperandPriority::ENFORCE_RHS) {
     opt = t_rhs;
+  } else if(t_enforce == TypeOperandPriority::PEAK) {
+    if(lhs_priority > rhs_priority) {
+      opt = t_lhs;
+    } else {
+      opt = t_rhs;
+    }
   }
 
   return opt;

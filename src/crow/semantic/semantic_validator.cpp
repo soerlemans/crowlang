@@ -125,7 +125,7 @@ auto SemanticValidator::validate_arithmetic(const BinaryOperationData& t_data)
   // FIXME: Copy preemptively from lhs now.
   SymbolData ret{lhs};
 
-  const auto opt{promote(lhs, rhs)};
+  const auto opt{promote(lhs, rhs, TypeOperandPriority::PEAK)};
   if(opt) {
     ret = opt.value();
   } else if(lhs != rhs) {
@@ -160,7 +160,7 @@ auto SemanticValidator::validate_comparison(const BinaryOperationData& t_data)
 
   DBG_INFO("Comparison: lhs: ", lhs, " rhs: ", rhs);
 
-  const auto opt{promote(lhs, rhs)};
+  const auto opt{promote(lhs, rhs, TypeOperandPriority::PEAK)};
 
   // If promotion fails and the types are not equal.
   // We have a type mismatch.
