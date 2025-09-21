@@ -98,7 +98,7 @@ auto SemanticValidator::get_symbol_data_from_env(
 // TODO: Implement.
 auto SemanticValidator::promote(const SymbolData& t_lhs,
                                 const SymbolData& t_rhs,
-                                const TypeOperandPriority t_enforce) const
+                                const PromotionMode t_mode) const
   -> NativeTypeOpt
 {
   NativeTypeOpt opt{};
@@ -109,7 +109,7 @@ auto SemanticValidator::promote(const SymbolData& t_lhs,
   // FIXME: For now we must ensure both types are native types to consider
   // promotion.
   if(lhs && rhs) {
-    opt = m_type_promoter.promote(lhs.value(), rhs.value(), t_enforce);
+    opt = m_type_promoter.promote(lhs.value(), rhs.value(), t_mode);
   }
 
   return opt;
@@ -125,7 +125,7 @@ auto SemanticValidator::validate_arithmetic(const BinaryOperationData& t_data)
   // FIXME: Copy preemptively from lhs now.
   SymbolData ret{lhs};
 
-  const auto opt{promote(lhs, rhs, TypeOperandPriority::PEAK)};
+  const auto opt{promote(lhs, rhs, PromotionMode::PEAK)};
   if(opt) {
     ret = opt.value();
   } else if(lhs != rhs) {
@@ -160,7 +160,7 @@ auto SemanticValidator::validate_comparison(const BinaryOperationData& t_data)
 
   DBG_INFO("Comparison: lhs: ", lhs, " rhs: ", rhs);
 
-  const auto opt{promote(lhs, rhs, TypeOperandPriority::PEAK)};
+  const auto opt{promote(lhs, rhs, PromotionMode::PEAK)};
 
   // If promotion fails and the types are not equal.
   // We have a type mismatch.

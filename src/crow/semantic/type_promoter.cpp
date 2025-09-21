@@ -82,7 +82,7 @@ auto TypePromoter::promote_bool(const NativeType t_lhs) const -> NativeTypeOpt
 }
 
 auto TypePromoter::promote_float(const NativeType t_lhs, const NativeType t_rhs,
-                                 const TypeOperandPriority t_enforce) const
+                                 const PromotionMode t_mode) const
   -> NativeTypeOpt
 {
   NativeTypeOpt opt{};
@@ -91,15 +91,15 @@ auto TypePromoter::promote_float(const NativeType t_lhs, const NativeType t_rhs,
   const auto lhs_priority{get_priority(m_float, t_lhs)};
   const auto rhs_priority{get_priority(m_float, t_rhs)};
 
-  if(t_enforce == TypeOperandPriority::PROMOTE_TO_LHS) {
+  if(t_mode == PromotionMode::PROMOTE_TO_LHS) {
     if(lhs_priority >= rhs_priority) {
       opt = t_lhs;
     } else {
       // TODO: error.
     }
-  } else if(t_enforce == TypeOperandPriority::ENFORCE_RHS) {
+  } else if(t_mode == PromotionMode::ENFORCE_RHS) {
     opt = t_rhs;
-  } else if(t_enforce == TypeOperandPriority::PEAK) {
+  } else if(t_mode == PromotionMode::PEAK) {
     opt = (lhs_priority > rhs_priority) ? t_lhs : t_rhs;
   }
 
@@ -107,7 +107,7 @@ auto TypePromoter::promote_float(const NativeType t_lhs, const NativeType t_rhs,
 }
 
 auto TypePromoter::promote_int(const NativeType t_lhs, const NativeType t_rhs,
-                               const TypeOperandPriority t_enforce) const
+                               const PromotionMode t_mode) const
   -> NativeTypeOpt
 {
   NativeTypeOpt opt{};
@@ -116,15 +116,15 @@ auto TypePromoter::promote_int(const NativeType t_lhs, const NativeType t_rhs,
   const auto rhs_priority{get_priority(m_int, t_rhs)};
 
   // First check if RHS is castable to LHS.
-  if(t_enforce == TypeOperandPriority::PROMOTE_TO_LHS) {
+  if(t_mode == PromotionMode::PROMOTE_TO_LHS) {
     if(lhs_priority >= rhs_priority) {
       opt = t_lhs;
     } else {
       // TODO: error.
     }
-  } else if(t_enforce == TypeOperandPriority::ENFORCE_RHS) {
+  } else if(t_mode == PromotionMode::ENFORCE_RHS) {
     opt = t_rhs;
-  } else if(t_enforce == TypeOperandPriority::PEAK) {
+  } else if(t_mode == PromotionMode::PEAK) {
     opt = (lhs_priority > rhs_priority) ? t_lhs : t_rhs;
   }
 
@@ -132,7 +132,7 @@ auto TypePromoter::promote_int(const NativeType t_lhs, const NativeType t_rhs,
 }
 
 auto TypePromoter::promote_uint(const NativeType t_lhs, const NativeType t_rhs,
-                                const TypeOperandPriority t_enforce) const
+                                const PromotionMode t_mode) const
   -> NativeTypeOpt
 {
   NativeTypeOpt opt{};
@@ -141,15 +141,15 @@ auto TypePromoter::promote_uint(const NativeType t_lhs, const NativeType t_rhs,
   const auto lhs_priority{get_priority(m_uint, t_lhs)};
   const auto rhs_priority{get_priority(m_uint, t_rhs)};
 
-  if(t_enforce == TypeOperandPriority::PROMOTE_TO_LHS) {
+  if(t_mode == PromotionMode::PROMOTE_TO_LHS) {
     if(lhs_priority >= rhs_priority) {
       opt = t_lhs;
     } else {
       // TODO: error.
     }
-  } else if(t_enforce == TypeOperandPriority::ENFORCE_RHS) {
+  } else if(t_mode == PromotionMode::ENFORCE_RHS) {
     opt = t_rhs;
-  } else if(t_enforce == TypeOperandPriority::PEAK) {
+  } else if(t_mode == PromotionMode::PEAK) {
     opt = (lhs_priority > rhs_priority) ? t_lhs : t_rhs;
   }
 
@@ -157,7 +157,7 @@ auto TypePromoter::promote_uint(const NativeType t_lhs, const NativeType t_rhs,
 }
 
 auto TypePromoter::promote(const NativeType t_lhs, const NativeType t_rhs,
-                           const TypeOperandPriority t_enforce) const
+                           const PromotionMode t_mode) const
   -> NativeTypeOpt
 {
   NativeTypeOpt opt{};
@@ -174,9 +174,9 @@ auto TypePromoter::promote(const NativeType t_lhs, const NativeType t_rhs,
   // } else
 
   if(in_ladder(m_int)) {
-    opt = promote_int(t_lhs, t_rhs, t_enforce);
+    opt = promote_int(t_lhs, t_rhs, t_mode);
   } else if(in_ladder(m_uint)) {
-    opt = promote_uint(t_lhs, t_rhs, t_enforce);
+    opt = promote_uint(t_lhs, t_rhs, t_mode);
   }
 
   return opt;

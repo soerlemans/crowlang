@@ -57,8 +57,8 @@ class SemanticValidator {
 
   //! Handle type promotion between two different types.
   auto promote(const SymbolData& t_lhs, const SymbolData& rhs,
-               TypeOperandPriority t_enforce =
-                 TypeOperandPriority::PROMOTE_TO_LHS) const -> NativeTypeOpt;
+               PromotionMode t_mode =
+                 PromotionMode::PROMOTE_TO_LHS) const -> NativeTypeOpt;
 
   public:
   SemanticValidator() = default;
