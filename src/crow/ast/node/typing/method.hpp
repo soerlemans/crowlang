@@ -34,7 +34,7 @@ class Method : public Identifier,
 
   // TODO: replace the receiver being a string with something more elegant.
   // Maybe its own node type?
-	// Something like Receiver which has its own type annotation and type data?
+  // Something like Receiver which has its own type annotation and type data?
   auto get_receiver() const -> std::string_view;
 
   AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Method, Identifier, Params,

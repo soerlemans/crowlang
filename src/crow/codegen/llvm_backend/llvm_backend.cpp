@@ -231,6 +231,8 @@ auto LlvmBackend::compile(CompileParams& t_params) -> void
 
   const auto& [ast, mir_module, build_dir, source_path] = t_params;
 
+  // FIXME: Check mir_module for nullptr.
+
   fs::path stem{source_path.stem()};
   const fs::path tmp_src{build_dir / stem.concat(".ll")};
 

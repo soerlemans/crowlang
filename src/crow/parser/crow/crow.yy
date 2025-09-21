@@ -332,6 +332,8 @@ attribute        : ATTRIBUTE_OPEN identifier ATTRIBUTE_CLOSE newline_opt attribu
 declare          : Declare Let IDENTIFIER : IDENTIFIER newline_opt
                  | Declare Var IDENTIFIER : IDENTIFIER newline_opt
                  | Declare Func IDENTIFIER '(' param_list_opt ')' return_type_opt newline_opt
+                 | Declare Struct IDENTIFIER newline_opt
+								 | /* TODO: Add method declarations. */
 								 ;
 
 // Import:

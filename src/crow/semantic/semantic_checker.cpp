@@ -182,6 +182,8 @@ auto SemanticChecker::promote(const SymbolData& t_lhs, const SymbolData& t_rhs,
   const auto lhs{t_lhs.native_type()};
   const auto rhs{t_rhs.native_type()};
 
+  // FIXME: For now we must ensure both types are native types to consider
+  // promotion.
   if(lhs && rhs) {
     opt = m_type_promoter.promote(lhs.value(), rhs.value(), enforce_lhs);
   }
@@ -197,11 +199,11 @@ auto SemanticChecker::get_symbol_data(NodePtr t_ptr) -> SymbolData
   if(any.has_value()) {
     try {
       data = std::any_cast<SymbolData>(any);
-    } catch(const std::bad_any_cast& e) {
-      DBG_CRITICAL(e.what());
+    } catch(const std::bad_any_cast& err) {
+      DBG_CRITICAL(err.what());
 
       // TODO: Print elegant error message and terminate.
-      throw e;
+      throw err;
     }
   }
 
@@ -413,7 +415,7 @@ auto SemanticChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
   const auto id{t_decl->identifier()};
 
   // TODO: Handle the case where we have no init_expr and type is not empty!
-  // if()
+  // if(init_expr)
 
   auto init_expr_data{get_symbol_data(init_expr)};
 
@@ -426,9 +428,11 @@ auto SemanticChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
 
     const auto opt{promote(data, init_expr_data, true)};
     if(opt) {
+      // Successfull type promotion.
       init_expr_data = opt.value();
     } else if(data != init_expr_data) {
-      std::stringstream err_ss;
+      // Type annotation and expression deduced type do not match.
+      std::stringstream err_ss{};
       const auto var{std::quoted(t_decl->identifier())};
 
       err_ss << "Init of " << var << " contains a type mismatch.\n\n";
@@ -731,6 +735,7 @@ auto SemanticChecker::visit(Not* t_not) -> Any
 
   DBG_INFO("Typeof lhs: ", lhs);
 
+  // Check types of
   handle_condition(lhs, t_not->position());
 
   return SymbolData{NativeType::BOOL};
@@ -741,12 +746,14 @@ auto SemanticChecker::visit(And* t_and) -> Any
 {
   const auto lhs{get_symbol_data(t_and->left())};
   const auto rhs{get_symbol_data(t_and->right())};
+  const auto pos{t_and->position()};
 
   DBG_INFO("Typeof lhs: ", lhs);
   DBG_INFO("Typeof rhs: ", rhs);
 
-  handle_condition(lhs, t_and->position());
-  handle_condition(rhs, t_and->position());
+  // Check if arguments
+  handle_condition(lhs, pos);
+  handle_condition(rhs, pos);
 
   return SymbolData{NativeType::BOOL};
 }
@@ -755,12 +762,13 @@ auto SemanticChecker::visit(Or* t_or) -> Any
 {
   const auto lhs{get_symbol_data(t_or->left())};
   const auto rhs{get_symbol_data(t_or->right())};
+  const auto pos{t_or->position()};
 
   DBG_INFO("Typeof lhs: ", lhs);
   DBG_INFO("Typeof rhs: ", rhs);
 
-  handle_condition(lhs, t_or->position());
-  handle_condition(rhs, t_or->position());
+  handle_condition(lhs, pos);
+  handle_condition(rhs, pos);
 
   return SymbolData{NativeType::BOOL};
 }
@@ -791,7 +799,49 @@ auto SemanticChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
 }
 
 // Typing:
-AST_VISITOR_STUB(SemanticChecker, Method)
+auto SemanticChecker::visit(Method* t_meth) -> Any
+{
+  // const auto id{t_fn->identifier()};
+  // const auto ret_type{str2nativetype(t_fn->type())};
+  // const auto params{t_fn->params()};
+
+  // // Register function type signature to environment.
+  // const auto params_type_list{get_type_list(params)};
+  // const SymbolData data{symbol::make_function(params_type_list, ret_type)};
+
+  // // Add the function and ID to the environment.
+  // add_symbol_definition(id, data);
+  // DBG_INFO("Function: ", id, "(", params_type_list, ") -> ", ret_type);
+
+  // // Annotate AST.
+  // annotate_type(t_fn, data);
+  // annotate_attr(t_fn);
+
+  // // Register parameters to environment.
+  // push_env();
+  // for(const auto& node : *params) {
+  //   // Gain a raw ptr (non owning).
+  //   // If the AST changes the assertion will be triggered.
+  //   const auto* param{dynamic_cast<Parameter*>(node.get())};
+  //   DEBUG_ASSERT(param, R"(Was unable to cast to "Parameter*"!)", param,
+  //   node,
+  //                params);
+
+  //   const auto id{param->identifier()};
+  //   const auto type{str2nativetype(param->type())};
+
+  //   const SymbolData data{symbol::make_variable(false, type)};
+
+  //   // Add parameter to environment.
+  //   add_symbol_definition(id, data);
+  // }
+
+  // // Run type checking on the function body.
+  // traverse(t_fn->body());
+  // pop_env();
+
+  return {};
+}
 AST_VISITOR_STUB(SemanticChecker, Interface)
 AST_VISITOR_STUB(SemanticChecker, MemberDecl)
 AST_VISITOR_STUB(SemanticChecker, Struct)

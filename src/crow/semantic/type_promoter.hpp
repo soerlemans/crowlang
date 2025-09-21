@@ -23,6 +23,12 @@ using types::core::NativeTypeOpt;
 //! Type for keeping track of the promotion ladder.
 using TypeLadder = std::unordered_map<NativeType, int>;
 
+// Enums:
+enum class TypeOperandPrecedence {
+  LEFT,
+  RIGHT
+};
+
 // Classes:
 class TypePromoter {
   private:
