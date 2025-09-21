@@ -68,7 +68,7 @@ TypePromoter::TypePromoter()
 
 auto TypePromoter::promote_bool(const NativeType t_lhs) const -> NativeTypeOpt
 {
-  NativeTypeOpt opt;
+  NativeTypeOpt opt{};
 
   const auto integer{m_int.contains(t_lhs)};
   const auto unsigned_integer{m_uint.contains(t_lhs)};
@@ -85,7 +85,7 @@ auto TypePromoter::promote_float(const NativeType t_lhs, const NativeType t_rhs,
                                  const TypeOperandPriority t_enforce) const
   -> NativeTypeOpt
 {
-  NativeTypeOpt opt;
+  NativeTypeOpt opt{};
 
   // TODO: Handle Int and UInt to float promotion.
   const auto lhs_priority{get_priority(m_float, t_lhs)};
@@ -100,13 +100,8 @@ auto TypePromoter::promote_float(const NativeType t_lhs, const NativeType t_rhs,
   } else if(t_enforce == TypeOperandPriority::ENFORCE_RHS) {
     opt = t_rhs;
   } else if(t_enforce == TypeOperandPriority::PEAK) {
-    if(lhs_priority > rhs_priority) {
-      opt = t_lhs;
-    } else {
-      opt = t_rhs;
-    }
+    opt = (lhs_priority > rhs_priority) ? t_lhs : t_rhs;
   }
-
 
   return opt;
 }
@@ -115,7 +110,7 @@ auto TypePromoter::promote_int(const NativeType t_lhs, const NativeType t_rhs,
                                const TypeOperandPriority t_enforce) const
   -> NativeTypeOpt
 {
-  NativeTypeOpt opt;
+  NativeTypeOpt opt{};
 
   const auto lhs_priority{get_priority(m_int, t_lhs)};
   const auto rhs_priority{get_priority(m_int, t_rhs)};
@@ -130,11 +125,7 @@ auto TypePromoter::promote_int(const NativeType t_lhs, const NativeType t_rhs,
   } else if(t_enforce == TypeOperandPriority::ENFORCE_RHS) {
     opt = t_rhs;
   } else if(t_enforce == TypeOperandPriority::PEAK) {
-    if(lhs_priority > rhs_priority) {
-      opt = t_lhs;
-    } else {
-      opt = t_rhs;
-    }
+    opt = (lhs_priority > rhs_priority) ? t_lhs : t_rhs;
   }
 
   return opt;
@@ -144,7 +135,7 @@ auto TypePromoter::promote_uint(const NativeType t_lhs, const NativeType t_rhs,
                                 const TypeOperandPriority t_enforce) const
   -> NativeTypeOpt
 {
-  NativeTypeOpt opt;
+  NativeTypeOpt opt{};
 
   // TODO: Handle Int to UInt type promotion.
   const auto lhs_priority{get_priority(m_uint, t_lhs)};
@@ -159,11 +150,7 @@ auto TypePromoter::promote_uint(const NativeType t_lhs, const NativeType t_rhs,
   } else if(t_enforce == TypeOperandPriority::ENFORCE_RHS) {
     opt = t_rhs;
   } else if(t_enforce == TypeOperandPriority::PEAK) {
-    if(lhs_priority > rhs_priority) {
-      opt = t_lhs;
-    } else {
-      opt = t_rhs;
-    }
+    opt = (lhs_priority > rhs_priority) ? t_lhs : t_rhs;
   }
 
   return opt;
