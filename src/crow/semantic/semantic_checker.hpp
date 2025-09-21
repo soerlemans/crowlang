@@ -77,10 +77,6 @@ class SemanticChecker : public NodeVisitor {
   auto pop_env() -> void;
   auto clear_env() -> void;
 
-  // TODO: Implement.
-  auto register_struct(std::string_view t_name) -> void;
-  auto register_alias(std::string_view t_name) -> void;
-
   /*!
    * Annotate a node with its attribute data.
    */

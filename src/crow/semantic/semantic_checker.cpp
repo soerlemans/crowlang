@@ -620,7 +620,7 @@ auto SemanticChecker::visit(Assignment* t_assign) -> Any
   DBG_INFO("Typeof var: ", var_resolved);
   DBG_INFO("Typeof expr: ", expr);
 
-  std::stringstream ss;
+  std::stringstream ss{};
 
   if(var.is_const()) {
     ss << "Assigning to a const variable is illegal.\n\n";
