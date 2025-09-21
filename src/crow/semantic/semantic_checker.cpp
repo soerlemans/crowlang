@@ -577,35 +577,15 @@ auto SemanticChecker::visit(FunctionDecl* t_fdecl) -> Any
 // Operators:
 auto SemanticChecker::visit(Arithmetic* t_arith) -> Any
 {
-  auto ret{get_symbol_data(t_arith->left())};
-
-  const auto lhs{ret.resolve_type()};
+  const auto lhs{get_resolved_type(t_arith->left())};
   const auto rhs{get_resolved_type(t_arith->right())};
+  const auto pos{t_arith->position()};
 
-  DBG_INFO("Typeof lhs: ", lhs);
-  DBG_INFO("Typeof rhs: ", rhs);
-
-  const auto opt{promote(lhs, rhs)};
-  if(opt) {
-    ret = opt.value();
-  } else if(lhs != rhs) {
-    std::stringstream ss;
-
-    DBG_ERROR("Typeof: ", lhs, " != ", rhs);
-
-    ss << "Arithmetic operation contains a type mismatch.\n";
-    ss << "typeof lhs = " << lhs << "\n";
-    ss << "typeof rhs = " << rhs << "\n\n";
-
-    ss << t_arith->position();
-
-    throw_type_error(ss.str());
-  }
+  BinaryOperationData data{lhs, rhs, pos};
+  const auto ret{m_validator.validate_assignment(data)};
 
   // Annotate AST.
   annotate_type(t_arith, ret);
-
-  DBG_INFO("Result: ", ret);
 
   return ret;
 }
@@ -658,26 +638,14 @@ auto SemanticChecker::visit(Comparison* t_comp) -> Any
 {
   const auto lhs{get_symbol_data(t_comp->left())};
   const auto rhs{get_symbol_data(t_comp->right())};
+  const auto pos{t_comp->position()};
 
-  DBG_INFO("Typeof lhs: ", lhs);
-  DBG_INFO("Typeof rhs: ", rhs);
-
-  const auto opt{promote(lhs, rhs)};
-  if(!opt && lhs != rhs) {
-    std::stringstream ss;
-
-    ss << "Comparison operation contains a type mismatch.\n";
-    ss << "typeof lhs = " << lhs << "\n";
-    ss << "typeof rhs = " << rhs << "\n\n";
-
-    ss << t_comp->position();
-
-    throw_type_error(ss.str());
-  }
+  BinaryOperationData data{lhs, rhs, pos};
+  const auto ret{m_validator.validate_comparison(data)};
 
   // TODO: Annotate types.
 
-  return SymbolData{NativeType::BOOL};
+  return ret;
 }
 
 auto SemanticChecker::visit(Increment* t_inc) -> Any

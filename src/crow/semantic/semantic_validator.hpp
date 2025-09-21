@@ -15,7 +15,7 @@ using container::TextPosition;
 using symbol::SymbolData;
 
 // Structs:
-struct BinaryOperation {
+struct BinaryOperationData {
   SymbolData m_lhs;
   SymbolData m_rhs;
   TextPosition m_position;
@@ -39,6 +39,21 @@ class SemanticValidator {
   auto push_env() -> void;
   auto pop_env() -> void;
   auto clear_env() -> void;
+
+  auto add_symbol_declaration(std::string_view t_id, const SymbolData& t_data)
+    -> void;
+
+  /*!
+   * Add symbol to current @ref EnvSate.
+   * Also add the symbol to the global @ref SymbolTable.
+   *
+   * @return false means inserting the symbol failed.
+   */
+  auto add_symbol_definition(std::string_view t_id, const SymbolData& t_data)
+    -> void;
+
+  [[nodiscard("Pure method must use result.")]]
+  auto get_symbol_data_from_env(std::string_view t_id) const -> SymbolData;
 
   //! Handle type promotion between two different types.
   auto promote(const SymbolData& t_lhs, const SymbolData& rhs,
@@ -65,9 +80,9 @@ class SemanticValidator {
   auto validate_logical_binop(const SymbolData& t_lhs, const SymbolData& t_rhs)
     -> SymbolData;
 
-  auto validate_arithmetic(const BinaryOperation& t_binop) -> SymbolData;
-  auto validate_assignment(const BinaryOperation& t_binop) -> SymbolData;
-  auto validate_comparison(const BinaryOperation& t_binop) -> SymbolData;
+  auto validate_arithmetic(const BinaryOperationData& t_data) -> SymbolData;
+  auto validate_assignment(const BinaryOperationData& t_data) -> SymbolData;
+  auto validate_comparison(const BinaryOperationData& t_data) -> SymbolData;
 
   virtual ~SemanticValidator() = default;
 };

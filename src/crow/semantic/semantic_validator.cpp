@@ -8,6 +8,93 @@ namespace semantic {
 // Using:
 using diagnostic::throw_type_error;
 
+auto SemanticValidator::add_symbol_declaration(const std::string_view t_key,
+                                               const SymbolData& t_data) -> void
+{
+  // First check if the entry exists.
+  const auto [iter, exists] = m_symbol_state.find(t_key);
+  if(exists) {
+    const auto& symbol{iter->second};
+
+    std::stringstream ss{};
+    switch(symbol.m_status) {
+      case SymbolStatus::DECLARED:
+        [[fallthrough]];
+      case SymbolStatus::DEFINED: {
+        // Check for conflicting.
+        if(t_data != symbol.m_data) {
+          ss << "Conflicting declarations and definitions for "
+             << std::quoted(t_key) << ".";
+
+          throw_type_error(ss.str());
+        }
+        break;
+      }
+
+      default: {
+        using lib::stdexcept::throw_invalid_argument;
+
+        throw_invalid_argument("Unhandled SymbolStatus case.");
+        break;
+      }
+    }
+  } else {
+    Symbol symbol{SymbolStatus::DECLARED, t_data};
+    m_symbol_state.insert({std::string{t_key}, symbol});
+  }
+}
+
+auto SemanticValidator::add_symbol_definition(const std::string_view t_key,
+                                              const SymbolData& t_data) -> void
+{
+  // First check if the entry exists.
+  const auto [iter, exists] = m_symbol_state.find(t_key);
+  if(exists) {
+    auto& symbol{iter->second};
+
+    std::stringstream ss{};
+    switch(symbol.m_status) {
+      case SymbolStatus::DECLARED: {
+        // Check symbolData equality.
+        if(t_data == symbol.m_data) {
+          // Change from declaration to definition.
+          symbol.m_status = SymbolStatus::DEFINED;
+        } else {
+          ss << "Conflicting declaration and definition for "
+             << std::quoted(t_key) << ".";
+
+          throw_type_error(ss.str());
+        }
+        break;
+      }
+
+      case SymbolStatus::DEFINED: {
+        // Redefinition is not allowed so throw.
+        ss << "Redefining " << std::quoted(t_key) << " is not allowed.";
+
+        throw_type_error(ss.str());
+        break;
+      }
+
+      default: {
+        using lib::stdexcept::throw_invalid_argument;
+
+        throw_invalid_argument("Unhandled SymbolStatus case.");
+        break;
+      }
+    }
+  } else {
+    Symbol symbol{SymbolStatus::DEFINED, t_data};
+    m_symbol_state.insert({std::string{t_key}, symbol});
+  }
+}
+
+auto SemanticValidator::get_symbol_data_from_env(
+  const std::string_view t_key) const -> SymbolData
+{
+  return m_symbol_state.get_data(t_key);
+}
+
 // TODO: Implement.
 auto SemanticValidator::promote(const SymbolData& t_lhs,
                                 const SymbolData& t_rhs,
@@ -28,10 +115,10 @@ auto SemanticValidator::promote(const SymbolData& t_lhs,
   return opt;
 }
 
-auto SemanticValidator::validate_arithmetic(const BinaryOperation& t_binop)
+auto SemanticValidator::validate_arithmetic(const BinaryOperationData& t_data)
   -> SymbolData
 {
-  const auto& [lhs, rhs, pos] = t_binop;
+  const auto& [lhs, rhs, pos] = t_data;
 
   DBG_INFO("Arithmetic: lhs: ", lhs, " rhs: ", rhs);
 
@@ -60,10 +147,16 @@ auto SemanticValidator::validate_arithmetic(const BinaryOperation& t_binop)
   return ret;
 }
 
-auto SemanticValidator::validate_comparison(const BinaryOperation& t_binop)
+auto SemanticValidator::validate_assignment(const BinaryOperationData& t_data)
   -> SymbolData
 {
-  const auto& [lhs, rhs, pos] = t_binop;
+  return SymbolData{NativeType::BOOL};
+}
+
+auto SemanticValidator::validate_comparison(const BinaryOperationData& t_data)
+  -> SymbolData
+{
+  const auto& [lhs, rhs, pos] = t_data;
 
   DBG_INFO("Comparison: lhs: ", lhs, " rhs: ", rhs);
 

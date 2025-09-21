@@ -14,6 +14,7 @@
 #include "crow/types/semantic/symbol.hpp"
 
 // Local Includes:
+#include "semantic_validator.hpp"
 #include "symbol_env_state.hpp"
 #include "type_promoter.hpp"
 
@@ -90,7 +91,6 @@ class SemanticChecker : public NodeVisitor {
    */
   auto annotate_type(TypeData* t_node, const SymbolData& t_data) -> void;
 
-  // Attribute handling
   auto add_symbol_declaration(std::string_view t_id, const SymbolData& t_data)
     -> void;
 
