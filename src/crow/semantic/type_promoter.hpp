@@ -24,7 +24,7 @@ using types::core::NativeTypeOpt;
 using TypeLadder = std::unordered_map<NativeType, int>;
 
 // Enums:
-enum class TypeOperandPrecedence {
+enum class TypeOperandPriority {
   LEFT,
   RIGHT
 };
@@ -48,11 +48,14 @@ class TypePromoter {
 
   // Type promotion for binary cases:
   auto promote_float(NativeType t_lhs, NativeType t_rhs,
-                     bool enforce_lhs = false) const -> NativeTypeOpt;
+                     TypeOperandPriority t_enforce =
+                       TypeOperandPriority::LEFT) const -> NativeTypeOpt;
   auto promote_int(NativeType t_lhs, NativeType t_rhs,
-                   bool enforce_lhs = false) const -> NativeTypeOpt;
+                   TypeOperandPriority t_enforce =
+                     TypeOperandPriority::LEFT) const -> NativeTypeOpt;
   auto promote_uint(NativeType t_lhs, NativeType t_rhs,
-                    bool enforce_lhs = false) const -> NativeTypeOpt;
+                    TypeOperandPriority t_enforce =
+                      TypeOperandPriority::LEFT) const -> NativeTypeOpt;
 
   /*!
    * Handles type promotion between two different types.
@@ -64,7 +67,8 @@ class TypePromoter {
    * @return Optional containing a @ref NativeType if promoted.
    */
   auto promote(NativeType t_lhs, NativeType t_rhs,
-               bool enforce_lhs = false) const -> NativeTypeOpt;
+               TypeOperandPriority t_enforce = TypeOperandPriority::LEFT) const
+    -> NativeTypeOpt;
 
   virtual ~TypePromoter() = default;
 };

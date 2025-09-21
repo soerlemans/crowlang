@@ -175,7 +175,8 @@ auto SemanticChecker::handle_condition(const SymbolData& t_data,
 }
 
 auto SemanticChecker::promote(const SymbolData& t_lhs, const SymbolData& t_rhs,
-                              const bool enforce_lhs) const -> NativeTypeOpt
+                              const TypeOperandPriority t_enforce) const
+  -> NativeTypeOpt
 {
   NativeTypeOpt opt{};
 
@@ -185,7 +186,7 @@ auto SemanticChecker::promote(const SymbolData& t_lhs, const SymbolData& t_rhs,
   // FIXME: For now we must ensure both types are native types to consider
   // promotion.
   if(lhs && rhs) {
-    opt = m_type_promoter.promote(lhs.value(), rhs.value(), enforce_lhs);
+    opt = m_type_promoter.promote(lhs.value(), rhs.value(), t_enforce);
   }
 
   return opt;
@@ -426,7 +427,7 @@ auto SemanticChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
     // TODO: Resolve non native types.
     const SymbolData data{str2nativetype(type)};
 
-    const auto opt{promote(data, init_expr_data, true)};
+    const auto opt{promote(data, init_expr_data, TypeOperandPriority::RIGHT)};
     if(opt) {
       // Successfull type promotion.
       init_expr_data = opt.value();
@@ -633,8 +634,8 @@ auto SemanticChecker::visit(Assignment* t_assign) -> Any
     throw_type_error(ss.str());
   }
 
-  // If the expression being assigned is castable too the typ ebeing assigned
-  const auto opt{promote(var, expr, true)};
+  // If the expression being assigned is castable too the type being assigned
+  const auto opt{promote(var, expr, TypeOperandPriority::RIGHT)};
   if(!opt && var_resolved != expr) {
     ss << "Types do not match on assignment.\n\n";
 

@@ -7,6 +7,12 @@
 #include "crow/debug/log.hpp"
 #include "crow/diagnostic/diagnostic_error.hpp"
 
+// Internal:
+namespace {
+//! Reserve an arbitrary amount of entries as an optimization.
+constexpr auto prealloc_map_size{10};
+} // namespace
+
 namespace semantic {
 // Methods:
 auto TypePromoter::get_priority(const TypeLadder& t_ladder,
@@ -32,8 +38,13 @@ auto TypePromoter::get_priority(const TypeLadder& t_ladder,
   return priority;
 }
 
-TypePromoter::TypePromoter(): m_float{2}, m_int{10}, m_uint{10}
+TypePromoter::TypePromoter()
+  : m_float{prealloc_map_size},
+    m_int{prealloc_map_size},
+    m_uint{prealloc_map_size}
 {
+  // Type precedence ladders.
+
   // Float:
   m_float.insert({NativeType::F32, 0});
   m_float.insert({NativeType::F64, 1});
@@ -62,7 +73,7 @@ auto TypePromoter::promote_bool(const NativeType t_lhs) const -> NativeTypeOpt
   const auto integer{m_int.contains(t_lhs)};
   const auto unsigned_integer{m_uint.contains(t_lhs)};
 
-  // Only integers may be promoted to boolean's.
+  // Only integers may be promoted to boolean's (implicitely).
   if(integer || unsigned_integer) {
     opt = NativeType::BOOL;
   }
@@ -71,7 +82,8 @@ auto TypePromoter::promote_bool(const NativeType t_lhs) const -> NativeTypeOpt
 }
 
 auto TypePromoter::promote_float(const NativeType t_lhs, const NativeType t_rhs,
-                                 const bool enforce_lhs) const -> NativeTypeOpt
+                                 const TypeOperandPriority t_enforce) const
+  -> NativeTypeOpt
 {
   NativeTypeOpt opt;
 
@@ -81,7 +93,7 @@ auto TypePromoter::promote_float(const NativeType t_lhs, const NativeType t_rhs,
 
   if(lhs_priority > rhs_priority) {
     opt = t_lhs;
-  } else if(!enforce_lhs) {
+  } else if(t_enforce == TypeOperandPriority::RIGHT) {
     opt = t_rhs;
   }
 
@@ -89,16 +101,18 @@ auto TypePromoter::promote_float(const NativeType t_lhs, const NativeType t_rhs,
 }
 
 auto TypePromoter::promote_int(const NativeType t_lhs, const NativeType t_rhs,
-                               const bool enforce_lhs) const -> NativeTypeOpt
+                               const TypeOperandPriority t_enforce) const
+  -> NativeTypeOpt
 {
   NativeTypeOpt opt;
 
   const auto lhs_priority{get_priority(m_int, t_lhs)};
   const auto rhs_priority{get_priority(m_int, t_rhs)};
 
+  // First check if RHS is castable to LHS.
   if(lhs_priority > rhs_priority) {
     opt = t_lhs;
-  } else if(!enforce_lhs) {
+  } else if(t_enforce == TypeOperandPriority::RIGHT) {
     opt = t_rhs;
   }
 
@@ -106,7 +120,8 @@ auto TypePromoter::promote_int(const NativeType t_lhs, const NativeType t_rhs,
 }
 
 auto TypePromoter::promote_uint(const NativeType t_lhs, const NativeType t_rhs,
-                                const bool enforce_lhs) const -> NativeTypeOpt
+                                const TypeOperandPriority t_enforce) const
+  -> NativeTypeOpt
 {
   NativeTypeOpt opt;
 
@@ -116,7 +131,7 @@ auto TypePromoter::promote_uint(const NativeType t_lhs, const NativeType t_rhs,
 
   if(lhs_priority > rhs_priority) {
     opt = t_lhs;
-  } else if(!enforce_lhs) {
+  } else if(t_enforce == TypeOperandPriority::RIGHT) {
     opt = t_rhs;
   }
 
@@ -124,9 +139,10 @@ auto TypePromoter::promote_uint(const NativeType t_lhs, const NativeType t_rhs,
 }
 
 auto TypePromoter::promote(const NativeType t_lhs, const NativeType t_rhs,
-                           const bool enforce_lhs) const -> NativeTypeOpt
+                           const TypeOperandPriority t_enforce) const
+  -> NativeTypeOpt
 {
-  NativeTypeOpt opt;
+  NativeTypeOpt opt{};
 
   const auto in_ladder{[&](const TypeLadder& t_ladder) {
     const auto lhs{t_ladder.contains(t_lhs)};
@@ -140,9 +156,9 @@ auto TypePromoter::promote(const NativeType t_lhs, const NativeType t_rhs,
   // } else
 
   if(in_ladder(m_int)) {
-    opt = promote_int(t_lhs, t_rhs, enforce_lhs);
+    opt = promote_int(t_lhs, t_rhs, t_enforce);
   } else if(in_ladder(m_uint)) {
-    opt = promote_uint(t_lhs, t_rhs, enforce_lhs);
+    opt = promote_uint(t_lhs, t_rhs, t_enforce);
   }
 
   return opt;
