@@ -11,7 +11,15 @@
 
 namespace semantic {
 // Using:
+using container::TextPosition;
 using symbol::SymbolData;
+
+// Structs:
+struct BinaryOperation {
+  SymbolData m_lhs;
+  SymbolData m_rhs;
+  TextPosition m_position;
+};
 
 // Classes:
 /*!
@@ -24,10 +32,22 @@ class SemanticValidator {
   SymbolEnvState m_symbol_state;
   TypePromoter m_type_promoter;
 
-  private:
-  auto error();
+  protected:
+  // auto error();
+
+  // Environment related methods:
+  auto push_env() -> void;
+  auto pop_env() -> void;
+  auto clear_env() -> void;
+
+  //! Handle type promotion between two different types.
+  auto promote(const SymbolData& t_lhs, const SymbolData& rhs,
+               TypeOperandPriority t_enforce = TypeOperandPriority::LEFT) const
+    -> NativeTypeOpt;
 
   public:
+  SemanticValidator() = default;
+
   auto register_struct() -> SymbolData;
   auto register_alias() -> SymbolData;
 
@@ -39,16 +59,18 @@ class SemanticValidator {
   auto validate_unary_prefix() -> SymbolData;
 
   //! Validate logical `not`.
-  auto validate_logical_unop() -> SymbolData;
+  auto validate_logical_unop(const SymbolData& t_lhs) -> SymbolData;
 
   //! Validate logical `and` and `or`.
-  auto validate_logical_binop() -> SymbolData;
+  auto validate_logical_binop(const SymbolData& t_lhs, const SymbolData& t_rhs)
+    -> SymbolData;
 
-  auto validate_arithmetic() -> SymbolData;
-  auto validate_assignment() -> SymbolData;
-  auto validate_comparison() -> SymbolData;
+  auto validate_arithmetic(const BinaryOperation& t_binop) -> SymbolData;
+  auto validate_assignment(const BinaryOperation& t_binop) -> SymbolData;
+  auto validate_comparison(const BinaryOperation& t_binop) -> SymbolData;
+
+  virtual ~SemanticValidator() = default;
 };
-
 } // namespace semantic
 
 #endif // CROW_CROW_SEMANTIC_TYPE_REGISTER_HPP

@@ -1,12 +1,12 @@
 #include "type2cpp.hpp"
 
 // STL Includes:
-#include <exception>
 #include <memory>
 
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
 #include "lib/overload.hpp"
+#include "lib/stdexcept/stdexcept.hpp"
 
 // Macros:
 #define MATCH(t_key, t_value) \
@@ -25,6 +25,8 @@ using types::core::nativetype2str;
  */
 auto native_type2cpp(const NativeType t_type) -> std::string_view
 {
+  using lib::stdexcept::throw_invalid_argument;
+
   std::string_view str{};
 
   // FIXME: Currently the C++ fixed width floating point types.
@@ -48,6 +50,8 @@ auto native_type2cpp(const NativeType t_type) -> std::string_view
     MATCH(U64, "std::uint64_t");
     MATCH(USIZE, "std::uintptr_t");
 
+    // TODO: Add string literals.
+
     MATCH(BOOL, "bool");
 
     default: {
@@ -55,7 +59,7 @@ auto native_type2cpp(const NativeType t_type) -> std::string_view
         std::format("NativeType could not be converted to C++ type: ",
                     nativetype2str(t_type))};
 
-      throw std::invalid_argument{msg};
+      throw_invalid_argument(msg);
       break;
     }
   }

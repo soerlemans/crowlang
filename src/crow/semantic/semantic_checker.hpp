@@ -66,6 +66,9 @@ using AttributeContext = AttributeSeq;
  */
 class SemanticChecker : public NodeVisitor {
   private:
+  SemanticValidator m_validator;
+
+  // TODO: Remove (now in SemanticValidator):
   SymbolEnvState m_symbol_state;
   TypePromoter m_type_promoter;
 

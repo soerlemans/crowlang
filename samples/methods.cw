@@ -5,7 +5,7 @@ module methods_module
 // #include_once ""
 
 let magic_num = 100
-let some_str = "Some string"
+// let some_str = "Some string" // Not 
 
 // interface ExampleInterface {
 //   num() -> void
