@@ -15,6 +15,11 @@ using container::TextPosition;
 using symbol::SymbolData;
 
 // Structs:
+struct UnaryOperationData {
+  SymbolData m_lhs;
+  TextPosition m_position;
+};
+
 struct BinaryOperationData {
   SymbolData m_lhs;
   SymbolData m_rhs;
@@ -55,10 +60,13 @@ class SemanticValidator {
   [[nodiscard("Pure method must use result.")]]
   auto get_symbol_data_from_env(std::string_view t_id) const -> SymbolData;
 
+  auto handle_condition(const SymbolData& t_data,
+                        const TextPosition& t_pos) const -> void;
+
   //! Handle type promotion between two different types.
   auto promote(const SymbolData& t_lhs, const SymbolData& rhs,
-               PromotionMode t_mode =
-                 PromotionMode::PROMOTE_TO_LHS) const -> NativeTypeOpt;
+               PromotionMode t_mode = PromotionMode::PROMOTE_TO_LHS) const
+    -> NativeTypeOpt;
 
   public:
   SemanticValidator() = default;
@@ -74,11 +82,10 @@ class SemanticValidator {
   auto validate_unary_prefix() -> SymbolData;
 
   //! Validate logical `not`.
-  auto validate_logical_unop(const SymbolData& t_lhs) -> SymbolData;
+  auto validate_logical_unop(const UnaryOperationData& t_data) -> SymbolData;
 
   //! Validate logical `and` and `or`.
-  auto validate_logical_binop(const SymbolData& t_lhs, const SymbolData& t_rhs)
-    -> SymbolData;
+  auto validate_logical_binop(const BinaryOperationData& t_data) -> SymbolData;
 
   auto validate_arithmetic(const BinaryOperationData& t_data) -> SymbolData;
   auto validate_assignment(const BinaryOperationData& t_data) -> SymbolData;

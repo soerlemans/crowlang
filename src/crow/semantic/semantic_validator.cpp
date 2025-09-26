@@ -95,6 +95,31 @@ auto SemanticValidator::get_symbol_data_from_env(
   return m_symbol_state.get_data(t_key);
 }
 
+auto SemanticValidator::handle_condition(const SymbolData& t_data,
+                                         const TextPosition& t_pos) const
+  -> void
+{
+  std::stringstream ss{};
+
+  if(const auto opt{t_data.native_type()}; opt) {
+    if(!is_condition(opt.value())) {
+      ss << "Expected a pointer, integer or a boolean for a conditional "
+         << "expression.\n\n";
+
+      ss << t_pos;
+
+      throw_type_error(ss.str());
+    }
+  } else {
+    ss << "Non native types can not casted to " << std::quoted("bool")
+       << ".\n\n";
+
+    ss << t_pos;
+
+    throw_type_error(ss.str());
+  }
+}
+
 // TODO: Implement.
 auto SemanticValidator::promote(const SymbolData& t_lhs,
                                 const SymbolData& t_rhs,
@@ -113,6 +138,29 @@ auto SemanticValidator::promote(const SymbolData& t_lhs,
   }
 
   return opt;
+}
+
+auto SemanticValidator::validate_logical_unop(const UnaryOperationData& t_data)
+  -> SymbolData
+{
+  const auto& [lhs, pos] = t_data;
+
+  // Check if the operand is convertible to a boolean.
+  handle_condition(lhs, pos);
+
+  return SymbolData{NativeType::BOOL};
+}
+
+auto SemanticValidator::validate_logical_binop(
+  const BinaryOperationData& t_data) -> SymbolData
+{
+  const auto& [lhs, rhs, pos] = t_data;
+
+  // Check if both operands can be converted to a boolean.
+  handle_condition(lhs, pos);
+  handle_condition(rhs, pos);
+
+  return SymbolData{NativeType::BOOL};
 }
 
 auto SemanticValidator::validate_arithmetic(const BinaryOperationData& t_data)
@@ -150,7 +198,42 @@ auto SemanticValidator::validate_arithmetic(const BinaryOperationData& t_data)
 auto SemanticValidator::validate_assignment(const BinaryOperationData& t_data)
   -> SymbolData
 {
-  return SymbolData{NativeType::BOOL};
+  auto [lhs, expr, pos] = t_data;
+
+  // We need to resolve to the underlying type of the variable.
+  // For type validation purposes.
+  const auto var_resolved{lhs.resolve_type()};
+
+  std::stringstream ss{};
+
+  if(lhs.is_const()) {
+    ss << "Reassigning a const variable is illegal.\n\n";
+
+    ss << "<lhs> = <expr>\n";
+    ss << "typeof lhs = " << lhs << "\n";
+    ss << "typeof expr = " << expr << "\n\n";
+
+    ss << pos;
+
+    throw_type_error(ss.str());
+  }
+
+  // The right hand side must be promoteable or castable to the left hand side.
+  // We dont care about the value, only if it is promoteable.
+  const auto opt{promote(lhs, expr, PromotionMode::PROMOTE_TO_LHS)};
+  if(!opt && var_resolved != expr) {
+    ss << "Types do not match on assignment.\n\n";
+
+    ss << "<lhs> = <expr>\n";
+    ss << "typeof lhs = " << lhs << "\n";
+    ss << "typeof expr = " << expr << "\n\n";
+
+    ss << pos;
+
+    throw_type_error(ss.str());
+  }
+
+  return lhs;
 }
 
 auto SemanticValidator::validate_comparison(const BinaryOperationData& t_data)
@@ -158,8 +241,7 @@ auto SemanticValidator::validate_comparison(const BinaryOperationData& t_data)
 {
   const auto& [lhs, rhs, pos] = t_data;
 
-  DBG_INFO("Comparison: lhs: ", lhs, " rhs: ", rhs);
-
+  // We only check if the promotion is possible because we dont use the result.
   const auto opt{promote(lhs, rhs, PromotionMode::PEAK)};
 
   // If promotion fails and the types are not equal.

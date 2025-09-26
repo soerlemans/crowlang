@@ -175,8 +175,7 @@ auto SemanticChecker::handle_condition(const SymbolData& t_data,
 }
 
 auto SemanticChecker::promote(const SymbolData& t_lhs, const SymbolData& t_rhs,
-                              const PromotionMode t_mode) const
-  -> NativeTypeOpt
+                              const PromotionMode t_mode) const -> NativeTypeOpt
 {
   NativeTypeOpt opt{};
 
@@ -427,8 +426,7 @@ auto SemanticChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
     // TODO: Resolve non native types.
     const SymbolData data{str2nativetype(type)};
 
-    const auto opt{
-      promote(data, init_expr_data, PromotionMode::ENFORCE_RHS)};
+    const auto opt{promote(data, init_expr_data, PromotionMode::ENFORCE_RHS)};
     if(opt) {
       // Successfull type promotion.
       init_expr_data = opt.value();
@@ -582,6 +580,9 @@ auto SemanticChecker::visit(Arithmetic* t_arith) -> Any
   const auto rhs{get_resolved_type(t_arith->right())};
   const auto pos{t_arith->position()};
 
+  DBG_INFO("Typeof lhs: ", lhs);
+  DBG_INFO("Typeof rhs: ", rhs);
+
   BinaryOperationData data{lhs, rhs, pos};
   const auto ret{m_validator.validate_assignment(data)};
 
@@ -594,45 +595,20 @@ auto SemanticChecker::visit(Arithmetic* t_arith) -> Any
 auto SemanticChecker::visit(Assignment* t_assign) -> Any
 {
   const auto var{get_symbol_data(t_assign->left())};
-  const auto var_resolved{var.resolve_type()};
-
   const auto expr{get_resolved_type(t_assign->right())};
+
+  const auto pos{t_assign->position()};
 
   DBG_INFO("Typeof var: ", var_resolved);
   DBG_INFO("Typeof expr: ", expr);
 
-  std::stringstream ss{};
-
-  if(var.is_const()) {
-    ss << "Assigning to a const variable is illegal.\n\n";
-
-    ss << "<lhs> = <expr>\n";
-    ss << "typeof lhs = " << var << "\n";
-    ss << "typeof expr = " << expr << "\n\n";
-
-    ss << t_assign->position();
-
-    throw_type_error(ss.str());
-  }
-
-  // If the expression being assigned is castable too the type being assigned
-  const auto opt{promote(var, expr, PromotionMode::ENFORCE_RHS)};
-  if(!opt && var_resolved != expr) {
-    ss << "Types do not match on assignment.\n\n";
-
-    ss << "<lhs> = <expr>\n";
-    ss << "typeof lhs = " << var << "\n";
-    ss << "typeof expr = " << expr << "\n\n";
-
-    ss << t_assign->position();
-
-    throw_type_error(ss.str());
-  }
+  BinaryOperationData data{var, expr, pos};
+  const auto ret{m_validator.validate_assignment(data)};
 
   // Annotate AST.
-  annotate_type(t_assign, var);
+  annotate_type(t_assign, ret);
 
-  return var;
+  return ret;
 }
 
 auto SemanticChecker::visit(Comparison* t_comp) -> Any
@@ -641,10 +617,14 @@ auto SemanticChecker::visit(Comparison* t_comp) -> Any
   const auto rhs{get_symbol_data(t_comp->right())};
   const auto pos{t_comp->position()};
 
+  DBG_INFO("Typeof lhs: ", lhs);
+  DBG_INFO("Typeof rhs: ", rhs);
+
   BinaryOperationData data{lhs, rhs, pos};
   const auto ret{m_validator.validate_comparison(data)};
 
   // TODO: Annotate types.
+  annotate_type(t_comp, ret);
 
   return ret;
 }
@@ -702,13 +682,13 @@ auto SemanticChecker::visit(UnaryPrefix* t_up) -> Any
 auto SemanticChecker::visit(Not* t_not) -> Any
 {
   const auto lhs{get_symbol_data(t_not->left())};
+  const auto pos{t_not->position()};
 
   DBG_INFO("Typeof lhs: ", lhs);
 
-  // Check types of
-  handle_condition(lhs, t_not->position());
+  UnaryOperationData data{lhs, pos};
 
-  return SymbolData{NativeType::BOOL};
+  return m_validator.validate_logical_unop(data);
 }
 
 // TODO: Create a helper method for these types of type checks
@@ -721,11 +701,9 @@ auto SemanticChecker::visit(And* t_and) -> Any
   DBG_INFO("Typeof lhs: ", lhs);
   DBG_INFO("Typeof rhs: ", rhs);
 
-  // Check if arguments
-  handle_condition(lhs, pos);
-  handle_condition(rhs, pos);
+  BinaryOperationData data{lhs, rhs, pos};
 
-  return SymbolData{NativeType::BOOL};
+  return m_validator.validate_logical_binop(data);
 }
 
 auto SemanticChecker::visit(Or* t_or) -> Any
@@ -737,10 +715,9 @@ auto SemanticChecker::visit(Or* t_or) -> Any
   DBG_INFO("Typeof lhs: ", lhs);
   DBG_INFO("Typeof rhs: ", rhs);
 
-  handle_condition(lhs, pos);
-  handle_condition(rhs, pos);
+  BinaryOperationData data{lhs, rhs, pos};
 
-  return SymbolData{NativeType::BOOL};
+  return m_validator.validate_logical_binop(data);
 }
 
 // Packaging:
@@ -812,6 +789,7 @@ auto SemanticChecker::visit(Method* t_meth) -> Any
 
   return {};
 }
+
 AST_VISITOR_STUB(SemanticChecker, Interface)
 AST_VISITOR_STUB(SemanticChecker, MemberDecl)
 AST_VISITOR_STUB(SemanticChecker, Struct)
