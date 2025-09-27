@@ -18,25 +18,25 @@ namespace ast::node::node_traits {
 using container::TextPosition;
 
 // Classes:
-class DeclExpr : public NodePosition,
+class BindingExpr : public NodePosition,
                  public Identifier,
                  public TypeAnnotation,
                  public TypeData,
                  public AttributeData,
                  public InitExpr {
   public:
-  DeclExpr(TextPosition&& t_pos, std::string_view t_identifier,
+  BindingExpr(TextPosition&& t_pos, std::string_view t_identifier,
            std::string_view t_type, NodePtr&& t_init);
 
-  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(DeclExpr, NodePosition, Identifier,
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(BindingExpr, NodePosition, Identifier,
                                       TypeAnnotation, InitExpr)
   AST_VISITOR_VISITABLE_PURE_ACCEPT(visitor::NodeVisitor);
 
-  virtual ~DeclExpr() = default;
+  virtual ~BindingExpr() = default;
 };
 } // namespace ast::node::node_traits
 
 // Cereal type registration:
-REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits, DeclExpr);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits, BindingExpr);
 
 #endif // CROW_CROW_AST_NODE_NODE_TRAITS_DECL_EXPR_HPP

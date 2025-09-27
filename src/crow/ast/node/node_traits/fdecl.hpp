@@ -6,7 +6,7 @@ namespace ast::node::node_traits {
 class Args;
 class Body;
 class Condition;
-class DeclExpr;
+class BindingExpr;
 class Expr;
 class Identifier;
 class InitExpr;

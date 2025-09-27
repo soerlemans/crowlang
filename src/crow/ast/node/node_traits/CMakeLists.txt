@@ -3,7 +3,7 @@ target_sources(${TARGET_CROW_LIB} PRIVATE
 	args.cpp
 	body.cpp
 	condition.cpp
-	decl_expr.cpp
+	binding_expr.cpp
 	expr.cpp
 	identifier.cpp
 	init_expr.cpp
