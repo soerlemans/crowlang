@@ -328,7 +328,7 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
     // Gain a raw ptr (non owning).
     // If the AST changes the assertion will be triggered.
     const auto* param{dynamic_cast<Parameter*>(node.get())};
-    DEBUG_ASSERT(param, R"(Was unable to cast to "Parameter*"!)", param, node,
+    DEBUG_ASSERT(param, R"(Was unable to cast to "*Parameter"!)", param, node,
                  params);
 
     const auto id{param->identifier()};
@@ -777,11 +777,29 @@ AST_VISITOR_STUB(SemanticChecker, MemberDecl)
 
 auto SemanticChecker::visit(Struct* t_struct) -> Any
 {
-  const auto id{t_struct->identifier()};
-  const auto body{t_struct->body()};
+  using symbol::MemberMap;
 
-  symbol::MemberMap members{};
-  const auto data{symbol::make_struct(id, {})};
+  const std::string struct_id{t_struct->identifier()};
+  const auto struct_body{t_struct->body()};
+
+  // Loop through member declarations and add them to the member map.
+  MemberMap members{};
+  for(const auto& node : *struct_body) {
+    // Gain a raw ptr (non owning).
+    // If the AST changes the assertion will be triggered.
+    const auto* member_decl{dynamic_cast<MemberDecl*>(node.get())};
+    DEBUG_ASSERT(member_decl, R"(Was unable to cast to "*MemberDecl"!)",
+                 member_decl, node, struct_body);
+
+    const std::string member_id{member_decl->identifier()};
+    const SymbolData member_type{str2nativetype(member_decl->type())};
+
+    members.insert({member_id, member_type});
+  }
+
+  const auto struct_data{symbol::make_struct(struct_id, members)};
+
+  add_symbol_definition(struct_id, struct_data);
 
   return {};
 }

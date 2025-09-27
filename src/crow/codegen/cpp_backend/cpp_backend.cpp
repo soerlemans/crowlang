@@ -539,11 +539,24 @@ auto CppBackend::visit([[maybe_unused]] Boolean* t_bool) -> Any
 }
 
 // Typing:
-AST_VISITOR_STUB(CppBackend, Method)
+auto CppBackend::visit(Method* t_meth) -> Any
+{
+  return std::string{""};
+}
+
 AST_VISITOR_STUB(CppBackend, Interface)
 AST_VISITOR_STUB(CppBackend, MemberDecl)
-AST_VISITOR_STUB(CppBackend, Struct)
-AST_VISITOR_STUB(CppBackend, Self)
+
+auto CppBackend::visit(Struct* t_struct) -> Any
+{
+  return std::string{""};
+}
+
+auto CppBackend::visit(Self* t_self) -> Any
+{
+  return std::string{""};
+}
+
 AST_VISITOR_STUB(CppBackend, DotExpr)
 
 // Misc:
