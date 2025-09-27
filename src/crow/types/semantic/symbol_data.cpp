@@ -174,7 +174,7 @@ auto SymbolData::operator==(const SymbolData& t_rhs) const -> bool
       if constexpr(std::is_same_v<L, R>) {
         if constexpr(std::is_same_v<L, NativeType>) {
           // NativeType is just a simple compare.
-          return t_l == t_r;
+          return (t_l == t_r);
         } else if constexpr(lib::IsAnyOf<L, StructTypePtr, FnTypePtr,
                                          VarTypePtr>) {
           // Return
@@ -187,7 +187,7 @@ auto SymbolData::operator==(const SymbolData& t_rhs) const -> bool
         } else if constexpr(std::is_same_v<L, std::monostate>) {
           // We should try to avoid throwing in operator==.
           // So just compare std::monostate and return.
-          return t_l == t_r;
+          return (t_l == t_r);
         } else {
           static_assert(always_false<L>, "Unhandled type.");
         }
