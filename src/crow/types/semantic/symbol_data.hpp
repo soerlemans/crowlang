@@ -25,8 +25,8 @@ using types::core::NativeTypeOpt;
 using types::core::TypeVariant;
 
 // Aliases:
-// TODO: Add monostate.
-using Variant = std::variant<NativeType, StructTypePtr, FnTypePtr, VarTypePtr>;
+using Variant = std::variant<std::monostate, NativeType, StructTypePtr,
+                             FnTypePtr, VarTypePtr>;
 
 // Classes:
 // FIXME: We probably should probably not inherit from Variant.
@@ -50,7 +50,7 @@ class SymbolData : public Variant {
   auto var() const -> VarTypePtr;
 
   //! Verify if a symbol is immutable.
-  auto is_const() const -> bool;
+  auto is_mutable() const -> bool;
 
   /*!
    * Stripts non type related information from the @ref SymbolData.

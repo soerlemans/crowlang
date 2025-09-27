@@ -7,6 +7,7 @@
 #include "invalid_argument.hpp"
 #include "logic_error.hpp"
 #include "runtime_error.hpp"
+#include "unexpected_monostate.hpp"
 #include "unexpected_nullptr.hpp"
 
 #endif // CROW_LIB_STDEXCEPT_STDEXCEPT_HPP

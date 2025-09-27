@@ -1,7 +1,10 @@
 #ifndef CROW_CROW_SEMANTIC_SEMANTIC_VALIDATOR_HPP
 #define CROW_CROW_SEMANTIC_SEMANTIC_VALIDATOR_HPP
 
-// Absolute includes:
+// STL Includes:
+#include <optional>
+
+// Absolute Includes:
 #include "crow/container/text_position.hpp"
 #include "crow/types/semantic/symbol.hpp"
 
@@ -14,7 +17,22 @@ namespace semantic {
 using container::TextPosition;
 using symbol::SymbolData;
 
+// Aliases:
+using SymbolDataOpt = std::optional<SymbolData>;
+
+// Enums:
+// enum class BindingExprType {
+// 	TYPE
+// };
+
 // Structs:
+struct BindingExprData {
+  SymbolDataOpt m_init_expr;
+  std::string m_identifier;
+  SymbolDataOpt m_type;
+  TextPosition m_position;
+};
+
 struct UnaryOperationData {
   SymbolData m_lhs;
   TextPosition m_position;
@@ -77,7 +95,7 @@ class SemanticValidator {
   auto validate_function() -> SymbolData;
   auto validate_method() -> SymbolData;
 
-  auto validate_binding_expr() -> SymbolData;
+  auto validate_binding_expr(const BindingExprData& t_data) -> SymbolData;
 
   auto validate_unary_prefix() -> SymbolData;
 

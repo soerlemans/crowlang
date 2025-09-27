@@ -340,6 +340,8 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
   // Register parameters to environment.
   push_env();
   for(const auto& node : *params) {
+    using symbol::Mutability;
+
     // Gain a raw ptr (non owning).
     // If the AST changes the assertion will be triggered.
     const auto* param{dynamic_cast<Parameter*>(node.get())};
@@ -349,7 +351,7 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
     const auto id{param->identifier()};
     const auto type{str2nativetype(param->type())};
 
-    const SymbolData data{symbol::make_variable(false, type)};
+    const SymbolData data{symbol::make_variable(Mutability::IMMUTABLE, type)};
 
     // Add parameter to environment.
     add_symbol_definition(id, data);
@@ -407,12 +409,10 @@ auto SemanticChecker::visit(ReturnType* t_rt) -> Any
 // TODO: Add TypeData annotation.
 auto SemanticChecker::binding_expr(BindingExpr* t_decl) -> SymbolData
 {
-  auto init_expr{t_decl->init_expr()};
-
-  const auto position{t_decl->position()};
-  const auto type{t_decl->type()};
-
+  const auto init_expr{t_decl->init_expr()};
   const auto id{t_decl->identifier()};
+  const auto type{t_decl->type()};
+  const auto pos{t_decl->position()};
 
   // TODO: Handle the case where we have no init_expr and type is not empty!
   // if(init_expr)
@@ -433,14 +433,14 @@ auto SemanticChecker::binding_expr(BindingExpr* t_decl) -> SymbolData
     } else if(data != init_expr_data) {
       // Type annotation and expression deduced type do not match.
       std::stringstream err_ss{};
-      const auto var{std::quoted(t_decl->identifier())};
+      const auto var{std::quoted(id)};
 
       err_ss << "Init of " << var << " contains a type mismatch.\n\n";
 
       err_ss << "typeof " << var << " = " << data << "\n";
       err_ss << "typeof init_expr_data = " << init_expr_data << "\n\n";
 
-      err_ss << t_decl->position();
+      err_ss << pos;
 
       throw_type_error(err_ss.str());
     }
@@ -458,24 +458,68 @@ auto SemanticChecker::binding_expr(BindingExpr* t_decl) -> SymbolData
 // TODO: FIXME Disallow redeclaration of variables.
 auto SemanticChecker::visit(Let* t_let) -> Any
 {
-  const auto id{t_let->identifier()};
-  const auto init_expr_data{binding_expr(t_let)};
+  using symbol::Mutability;
 
-  // Create the SymbolData for a variable.
-  const SymbolData data{symbol::make_variable(true, init_expr_data)};
-  add_symbol_definition(id, data);
+  const auto init_expr{t_let->init_expr()};
+  const std::string id{t_let->identifier()};
+  const std::string type{t_let->type()};
+  const auto pos{t_let->position()};
+
+  // Extract the SymbolData if an init expression was given.
+  SymbolDataOpt init_opt{};
+  if(init_expr) {
+    init_opt = get_symbol_data(init_expr);
+  }
+
+  SymbolDataOpt type_opt{};
+  if(!type.empty()) {
+    type_opt = str2nativetype(type);
+  }
+
+  const BindingExprData data{init_opt, id, type_opt, pos};
+  const auto type_data{m_validator.validate_binding_expr(data)};
+
+  const SymbolData var_data{
+    symbol::make_variable(Mutability::IMMUTABLE, type_data)};
+  add_symbol_definition(id, var_data);
+
+  // Annotate AST.
+  annotate_type(t_let, type_data);
+  annotate_attr(t_let);
 
   return {};
 }
 
 auto SemanticChecker::visit(Var* t_var) -> Any
 {
-  const auto id{t_var->identifier()};
-  const auto init_expr_data{binding_expr(t_var)};
+  using symbol::Mutability;
 
-  // Create the SymbolData for a variable.
-  const SymbolData data{symbol::make_variable(false, init_expr_data)};
-  add_symbol_definition(id, data);
+  const auto init_expr{t_var->init_expr()};
+  const std::string id{t_var->identifier()};
+  const std::string type{t_var->type()};
+  const auto pos{t_var->position()};
+
+  // Extract the SymbolData if an init expression was given.
+  SymbolDataOpt init_opt{};
+  if(init_expr) {
+    init_opt = {get_symbol_data(init_expr)};
+  }
+
+  SymbolDataOpt type_opt{};
+  if(!type.empty()) {
+    type_opt = str2nativetype(type);
+  }
+
+  const BindingExprData data{init_opt, id, type_opt, pos};
+  const auto type_data{m_validator.validate_binding_expr(data)};
+
+  const SymbolData var_data{
+    symbol::make_variable(Mutability::MUTABLE, type_data)};
+  add_symbol_definition(id, var_data);
+
+  // Annotate AST.
+  annotate_type(t_var, type_data);
+  annotate_attr(t_var);
 
   return {};
 }
@@ -523,11 +567,14 @@ auto SemanticChecker::visit(Attribute* t_attr) -> Any
 
 auto SemanticChecker::visit(LetDecl* t_ldecl) -> Any
 {
+  using symbol::Mutability;
+
   const auto id{t_ldecl->identifier()};
   const auto type_data{str2nativetype(t_ldecl->type())};
 
   // Create the SymbolData for a variable.
-  const SymbolData data{symbol::make_variable(true, type_data)};
+  const SymbolData data{
+    symbol::make_variable(Mutability::IMMUTABLE, type_data)};
   add_symbol_declaration(id, data);
 
   // Annotate AST.
@@ -539,11 +586,13 @@ auto SemanticChecker::visit(LetDecl* t_ldecl) -> Any
 
 auto SemanticChecker::visit(VarDecl* t_vdecl) -> Any
 {
+  using symbol::Mutability;
+
   const auto id{t_vdecl->identifier()};
   const auto type_data{str2nativetype(t_vdecl->type())};
 
   // Create the SymbolData for a variable.
-  const SymbolData data{symbol::make_variable(false, type_data)};
+  const SymbolData data{symbol::make_variable(Mutability::MUTABLE, type_data)};
   add_symbol_declaration(id, data);
 
   // Annotate AST.
@@ -599,7 +648,7 @@ auto SemanticChecker::visit(Assignment* t_assign) -> Any
 
   const auto pos{t_assign->position()};
 
-  DBG_INFO("Typeof var: ", var_resolved);
+  DBG_INFO("Typeof var: ", var);
   DBG_INFO("Typeof expr: ", expr);
 
   BinaryOperationData data{var, expr, pos};

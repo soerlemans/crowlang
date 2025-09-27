@@ -11,6 +11,12 @@
  */
 
 namespace semantic::symbol {
+// Enums:
+enum class Mutability {
+  IMMUTABLE,
+  MUTABLE
+};
+
 // Structs:
 // TODO: use VarTypePtr and FnTypePtr in combination with a map?
 // This way we will be able to couple id's to type info.
@@ -36,9 +42,10 @@ struct FnType {
 
 // TODO: Ignore m_const value when comparing
 struct VarType {
-  bool m_const;
+  Mutability m_mutability;
   SymbolData m_type;
 
+  auto is_mutable() const -> bool;
   auto native_type() const -> NativeTypeOpt;
   auto type_variant() const -> TypeVariant;
 

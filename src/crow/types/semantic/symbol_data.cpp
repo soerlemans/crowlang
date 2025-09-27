@@ -37,6 +37,13 @@ auto nullptr_check(const std::string_view t_str,
     throw_unexpected_nullptr("ptr is nullptr!");
   }
 }
+
+auto handle_monostate([[maybe_unused]] const std::monostate& t_ms) -> void
+{
+  using lib::stdexcept::throw_unexpected_monostate;
+
+  throw_unexpected_nullptr("Illegal occurrence of std::monostate.");
+}
 } // namespace
 
 namespace semantic::symbol {
@@ -56,7 +63,7 @@ auto SymbolData::var() const -> VarTypePtr
   return std::get<VarTypePtr>(*this);
 }
 
-auto SymbolData::is_const() const -> bool
+auto SymbolData::is_mutable() const -> bool
 {
   using lib::Overload;
 
@@ -65,15 +72,16 @@ auto SymbolData::is_const() const -> bool
   const auto var_type{[&](const VarTypePtr& t_data) {
     nullptr_check("Variable", t_data);
 
-    return t_data->m_const;
+    return (t_data->m_mutability == Mutability::IMMUTABLE);
   }};
 
-  const auto not_const{[]([[maybe_unused]]
-                          const auto& t_data) {
+  const auto immutable_types{[]([[maybe_unused]]
+                                const auto& t_data) {
     return false;
   }};
 
-  result = std::visit(Overload{var_type, not_const}, *this);
+  result =
+    std::visit(Overload{var_type, immutable_types, handle_monostate}, *this);
 
   return result;
 }
@@ -109,7 +117,7 @@ auto SymbolData::native_type() const -> NativeTypeOpt
     return t_data->native_type();
   }};
 
-  opt = std::visit(Overload{native, rest}, *this);
+  opt = std::visit(Overload{native, rest, handle_monostate}, *this);
 
   return opt;
 }
@@ -131,7 +139,7 @@ auto SymbolData::type_variant() const -> TypeVariant
     return t_data->type_variant();
   }};
 
-  variant = std::visit(Overload{native, rest}, *this);
+  variant = std::visit(Overload{native, rest, handle_monostate}, *this);
 
   return variant;
 }
@@ -176,7 +184,7 @@ auto SymbolData::operator!=(const SymbolData& t_rhs) const -> bool
 {
   const auto& lhs{*this};
 
-  // Use ==.
+  // Reuse operator== logic.
   return !(lhs == t_rhs);
 }
 } // namespace semantic::symbol

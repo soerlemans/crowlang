@@ -51,8 +51,8 @@ auto operator<<(std::ostream& t_os, FnTypePtr t_fn) -> std::ostream&
 auto operator<<(std::ostream& t_os, VarTypePtr t_var) -> std::ostream&
 {
   if(t_var) {
-    if(t_var->m_const) {
-      t_os << "Const ";
+    if(t_var->is_mutable()) {
+      t_os << "mutable ";
     }
 
     t_os << t_var->m_type;

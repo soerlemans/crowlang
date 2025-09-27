@@ -36,6 +36,11 @@ auto FnType::type_variant() const -> TypeVariant
 }
 
 // VarType:
+auto VarType::is_mutable() const -> bool
+{
+  return (m_mutability == Mutability::MUTABLE);
+}
+
 auto VarType::native_type() const -> NativeTypeOpt
 {
   return m_type.native_type();
