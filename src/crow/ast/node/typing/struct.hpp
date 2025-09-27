@@ -14,7 +14,6 @@ using node_traits::Identifier;
 
 // Classes:
 class Struct : public Identifier, public Body {
-
   public:
   Struct(std::string_view t_identifier, NodeListPtr&& t_body);
 

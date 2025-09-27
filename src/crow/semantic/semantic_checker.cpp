@@ -101,7 +101,7 @@ auto SemanticChecker::add_symbol_declaration(const std::string_view t_key,
 auto SemanticChecker::add_symbol_definition(const std::string_view t_key,
                                             const SymbolData& t_data) -> void
 {
-  // First check if the entry exists.
+  // First check if the entry already exists.
   const auto [iter, exists] = m_symbol_state.find(t_key);
   if(exists) {
     auto& symbol{iter->second};
@@ -774,8 +774,26 @@ auto SemanticChecker::visit(Method* t_meth) -> Any
 
 AST_VISITOR_STUB(SemanticChecker, Interface)
 AST_VISITOR_STUB(SemanticChecker, MemberDecl)
-AST_VISITOR_STUB(SemanticChecker, Struct)
-AST_VISITOR_STUB(SemanticChecker, Self)
+
+auto SemanticChecker::visit(Struct* t_struct) -> Any
+{
+  const auto id{t_struct->identifier()};
+  const auto body{t_struct->body()};
+
+  symbol::MemberMap members{};
+  const auto data{symbol::make_struct(id, {})};
+
+  return {};
+}
+
+// TODO: Rename SelfAcceptor?
+auto SemanticChecker::visit(Self* t_self) -> Any
+{
+
+  return {};
+}
+
+
 AST_VISITOR_STUB(SemanticChecker, DotExpr)
 
 auto SemanticChecker::check(NodePtr t_ast) -> void

@@ -19,17 +19,20 @@ struct ExampleStruct {
 // [[implements(<Exampleinterface>)]]
 // [[implements(type Exampleinterface)]]
 // [[implements(Exampleinterface)]]
-func num(self: Examplestruct) -> void {
+func num(self: ExampleStruct) -> void {
   // let num = self.m_num
 
   // println("Num: {}", num)
 }
 
-func num(self: Examplestruct) -> void {
+func num(self: ExampleStruct) -> void {
   // let num = self.m_num
 
   // println("Num: {}", num)
 }
+
+// func (self: ExampleStruct) num() -> void {
+// }
 
 func main() -> int {
   // var example: ExampleStruct

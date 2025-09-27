@@ -1,16 +1,26 @@
 #ifndef CROW_CROW_TYPES_SEMANTIC_SYMBOL_TYPES_HPP
 #define CROW_CROW_TYPES_SEMANTIC_SYMBOL_TYPES_HPP
 
+// STL Includes:
+#include <map>
+#include <string>
+
 // Local Includes:
 #include "symbol_data.hpp"
 
 /*!
  * @file
  *
- * TODO: Describe TypeVariant usage and why it is a good idea.
+ * TODO: Describe @ref TypeVariant usage and why it is a good idea.
  */
 
 namespace semantic::symbol {
+// Forward Declarations;
+class SymbolData;
+
+// Aliases:
+using MemberMap = std::map<std::string, SymbolData>;
+
 // Enums:
 enum class Mutability {
   IMMUTABLE,
@@ -22,6 +32,9 @@ enum class Mutability {
 // This way we will be able to couple id's to type info.
 struct StructType {
   std::string m_identifier;
+
+  MemberMap m_members;
+  // MethodMap m_methods.
 
   auto native_type() const -> NativeTypeOpt;
   auto type_variant() const -> TypeVariant;
