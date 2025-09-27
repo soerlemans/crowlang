@@ -2,8 +2,9 @@
 
 namespace ast::node::node_traits {
 // Methods:
-BindingExpr::BindingExpr(TextPosition&& t_pos, const std::string_view t_identifier,
-                   const std::string_view t_type, NodePtr&& t_init)
+BindingExpr::BindingExpr(TextPosition&& t_pos,
+                         const std::string_view t_identifier,
+                         const std::string_view t_type, NodePtr&& t_init)
   : NodePosition{std::move(t_pos)},
     Identifier{t_identifier},
     TypeAnnotation{t_type},

@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_SEMANTIC_TYPE_REGISTER_HPP
-#define CROW_CROW_SEMANTIC_TYPE_REGISTER_HPP
+#ifndef CROW_CROW_SEMANTIC_SEMANTIC_VALIDATOR_HPP
+#define CROW_CROW_SEMANTIC_SEMANTIC_VALIDATOR_HPP
 
 // Absolute includes:
 #include "crow/container/text_position.hpp"
@@ -95,4 +95,4 @@ class SemanticValidator {
 };
 } // namespace semantic
 
-#endif // CROW_CROW_SEMANTIC_TYPE_REGISTER_HPP
+#endif // CROW_CROW_SEMANTIC_SEMANTIC_VALIDATOR_HPP

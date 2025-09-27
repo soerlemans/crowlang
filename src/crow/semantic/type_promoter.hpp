@@ -48,17 +48,14 @@ class TypePromoter {
   auto promote_bool(NativeType t_lhs) const -> NativeTypeOpt;
 
   // Type promotion for binary cases:
-  auto promote_float(
-    NativeType t_lhs, NativeType t_rhs,
-    PromotionMode t_mode = PromotionMode::PROMOTE_TO_LHS) const
+  auto promote_float(NativeType t_lhs, NativeType t_rhs,
+                     PromotionMode t_mode = PromotionMode::PROMOTE_TO_LHS) const
     -> NativeTypeOpt;
-  auto promote_int(
-    NativeType t_lhs, NativeType t_rhs,
-    PromotionMode t_mode = PromotionMode::PROMOTE_TO_LHS) const
+  auto promote_int(NativeType t_lhs, NativeType t_rhs,
+                   PromotionMode t_mode = PromotionMode::PROMOTE_TO_LHS) const
     -> NativeTypeOpt;
-  auto promote_uint(
-    NativeType t_lhs, NativeType t_rhs,
-    PromotionMode t_mode = PromotionMode::PROMOTE_TO_LHS) const
+  auto promote_uint(NativeType t_lhs, NativeType t_rhs,
+                    PromotionMode t_mode = PromotionMode::PROMOTE_TO_LHS) const
     -> NativeTypeOpt;
 
   /*!
@@ -71,8 +68,8 @@ class TypePromoter {
    * @return Optional containing a @ref NativeType if promoted.
    */
   auto promote(NativeType t_lhs, NativeType t_rhs,
-               PromotionMode t_mode =
-                 PromotionMode::PROMOTE_TO_LHS) const -> NativeTypeOpt;
+               PromotionMode t_mode = PromotionMode::PROMOTE_TO_LHS) const
+    -> NativeTypeOpt;
 
   virtual ~TypePromoter() = default;
 };

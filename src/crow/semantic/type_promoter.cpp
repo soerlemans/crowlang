@@ -157,8 +157,7 @@ auto TypePromoter::promote_uint(const NativeType t_lhs, const NativeType t_rhs,
 }
 
 auto TypePromoter::promote(const NativeType t_lhs, const NativeType t_rhs,
-                           const PromotionMode t_mode) const
-  -> NativeTypeOpt
+                           const PromotionMode t_mode) const -> NativeTypeOpt
 {
   NativeTypeOpt opt{};
 

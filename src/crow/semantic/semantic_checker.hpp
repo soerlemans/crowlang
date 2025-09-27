@@ -113,8 +113,8 @@ class SemanticChecker : public NodeVisitor {
 
   //! Handle type promotion between two different types.
   auto promote(const SymbolData& t_lhs, const SymbolData& rhs,
-               PromotionMode t_mode =
-                 PromotionMode::PROMOTE_TO_LHS) const -> NativeTypeOpt;
+               PromotionMode t_mode = PromotionMode::PROMOTE_TO_LHS) const
+    -> NativeTypeOpt;
 
   // Helper methods for dealing with resolving nodes to SymbolData:
   // NodeVisitor visitation is not marked const so these methods cant be const.

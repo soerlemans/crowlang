@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_AST_NODE_NODE_TRAITS_DECL_EXPR_HPP
-#define CROW_CROW_AST_NODE_NODE_TRAITS_DECL_EXPR_HPP
+#ifndef CROW_CROW_AST_NODE_NODE_TRAITS_BINDING_EXPR_HPP
+#define CROW_CROW_AST_NODE_NODE_TRAITS_BINDING_EXPR_HPP
 
 // Includes:
 #include "../include.hpp"
@@ -19,14 +19,14 @@ using container::TextPosition;
 
 // Classes:
 class BindingExpr : public NodePosition,
-                 public Identifier,
-                 public TypeAnnotation,
-                 public TypeData,
-                 public AttributeData,
-                 public InitExpr {
+                    public Identifier,
+                    public TypeAnnotation,
+                    public TypeData,
+                    public AttributeData,
+                    public InitExpr {
   public:
   BindingExpr(TextPosition&& t_pos, std::string_view t_identifier,
-           std::string_view t_type, NodePtr&& t_init);
+              std::string_view t_type, NodePtr&& t_init);
 
   AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(BindingExpr, NodePosition, Identifier,
                                       TypeAnnotation, InitExpr)
@@ -39,4 +39,4 @@ class BindingExpr : public NodePosition,
 // Cereal type registration:
 REGISTER_ARCHIVEABLE_TYPE(ast::node::node_traits, BindingExpr);
 
-#endif // CROW_CROW_AST_NODE_NODE_TRAITS_DECL_EXPR_HPP
+#endif // CROW_CROW_AST_NODE_NODE_TRAITS_BINDING_EXPR_HPP
