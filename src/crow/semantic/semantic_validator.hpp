@@ -52,31 +52,10 @@ struct BinaryOperationData {
  */
 class SemanticValidator {
   private:
-  SymbolEnvState m_symbol_state;
   TypePromoter m_type_promoter;
 
   protected:
   // auto error();
-
-  // Environment related methods:
-  auto push_env() -> void;
-  auto pop_env() -> void;
-  auto clear_env() -> void;
-
-  auto add_symbol_declaration(std::string_view t_id, const SymbolData& t_data)
-    -> void;
-
-  /*!
-   * Add symbol to current @ref EnvSate.
-   * Also add the symbol to the global @ref SymbolTable.
-   *
-   * @return false means inserting the symbol failed.
-   */
-  auto add_symbol_definition(std::string_view t_id, const SymbolData& t_data)
-    -> void;
-
-  [[nodiscard("Pure method must use result.")]]
-  auto get_symbol_data_from_env(std::string_view t_id) const -> SymbolData;
 
   auto handle_condition(const SymbolData& t_data,
                         const TextPosition& t_pos) const -> void;
@@ -94,6 +73,8 @@ class SemanticValidator {
 
   auto validate_function() -> SymbolData;
   auto validate_method() -> SymbolData;
+
+  auto validate_call() -> SymbolData;
 
   auto validate_binding_expr(const BindingExprData& t_data) -> SymbolData;
 

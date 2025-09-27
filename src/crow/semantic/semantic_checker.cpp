@@ -174,23 +174,6 @@ auto SemanticChecker::handle_condition(const SymbolData& t_data,
   }
 }
 
-auto SemanticChecker::promote(const SymbolData& t_lhs, const SymbolData& t_rhs,
-                              const PromotionMode t_mode) const -> NativeTypeOpt
-{
-  NativeTypeOpt opt{};
-
-  const auto lhs{t_lhs.native_type()};
-  const auto rhs{t_rhs.native_type()};
-
-  // FIXME: For now we must ensure both types are native types to consider
-  // promotion.
-  if(lhs && rhs) {
-    opt = m_type_promoter.promote(lhs.value(), rhs.value(), t_mode);
-  }
-
-  return opt;
-}
-
 auto SemanticChecker::get_symbol_data(NodePtr t_ptr) -> SymbolData
 {
   SymbolData data;
@@ -244,8 +227,7 @@ auto SemanticChecker::get_resolved_type_list(NodeListPtr t_list)
 }
 
 // Public methods:
-SemanticChecker::SemanticChecker()
-  : m_symbol_state{}, m_type_promoter{}, m_active_attrs{}
+SemanticChecker::SemanticChecker(): m_symbol_state{}, m_active_attrs{}
 {}
 
 // Control:
@@ -324,6 +306,7 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
   const auto id{t_fn->identifier()};
   const auto ret_type{str2nativetype(t_fn->type())};
   const auto params{t_fn->params()};
+  const auto body{t_fn->body()};
 
   // Register function type signature to environment.
   const auto params_type_list{get_type_list(params)};
@@ -358,7 +341,7 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
   }
 
   // Run type checking on the function body.
-  traverse(t_fn->body());
+  traverse(body);
   pop_env();
 
   return {};
@@ -405,56 +388,6 @@ auto SemanticChecker::visit(ReturnType* t_rt) -> Any
 }
 
 // Lvalue:
-// TODO: Account for when init expr is a nullptr
-// TODO: Add TypeData annotation.
-auto SemanticChecker::binding_expr(BindingExpr* t_decl) -> SymbolData
-{
-  const auto init_expr{t_decl->init_expr()};
-  const auto id{t_decl->identifier()};
-  const auto type{t_decl->type()};
-  const auto pos{t_decl->position()};
-
-  // TODO: Handle the case where we have no init_expr and type is not empty!
-  // if(init_expr)
-
-  auto init_expr_data{get_symbol_data(init_expr)};
-
-  std::stringstream ss{};
-  if(!type.empty()) {
-    ss << ": " << type;
-
-    // TODO: Resolve non native types.
-    const SymbolData data{str2nativetype(type)};
-
-    const auto opt{promote(data, init_expr_data, PromotionMode::ENFORCE_RHS)};
-    if(opt) {
-      // Successfull type promotion.
-      init_expr_data = opt.value();
-    } else if(data != init_expr_data) {
-      // Type annotation and expression deduced type do not match.
-      std::stringstream err_ss{};
-      const auto var{std::quoted(id)};
-
-      err_ss << "Init of " << var << " contains a type mismatch.\n\n";
-
-      err_ss << "typeof " << var << " = " << data << "\n";
-      err_ss << "typeof init_expr_data = " << init_expr_data << "\n\n";
-
-      err_ss << pos;
-
-      throw_type_error(err_ss.str());
-    }
-  }
-
-  DBG_INFO(id, ss.str(), " = <expr>: ", init_expr_data);
-
-  // Annotate AST.
-  annotate_type(t_decl, init_expr_data);
-  annotate_attr(t_decl);
-
-  return init_expr_data;
-}
-
 // TODO: FIXME Disallow redeclaration of variables.
 auto SemanticChecker::visit(Let* t_let) -> Any
 {
@@ -532,7 +465,7 @@ auto SemanticChecker::visit(Variable* t_var) -> Any
   DBG_INFO("Variable ", std::quoted(id), " of type ", var_data);
 
   // Annotate AST.
-  t_var->set_type(var_data.type_variant());
+  annotate_type(t_var, var_data);
 
   return {var_data};
 }

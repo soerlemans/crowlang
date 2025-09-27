@@ -71,8 +71,6 @@ class SemanticChecker : public NodeVisitor {
 
   // TODO: Remove (now in SemanticValidator):
   SymbolEnvState m_symbol_state;
-  TypePromoter m_type_promoter;
-
   AttributeContext m_active_attrs;
 
   protected:
@@ -142,7 +140,6 @@ class SemanticChecker : public NodeVisitor {
   auto visit(node::function::ReturnType* t_rt) -> Any override;
 
   // Lvalue:
-  auto binding_expr(node::node_traits::BindingExpr* t_decl) -> SymbolData;
   auto visit(node::lvalue::Let* t_let) -> Any override;
   auto visit(node::lvalue::Var* t_var) -> Any override;
   auto visit(node::lvalue::Variable* t_var) -> Any override;

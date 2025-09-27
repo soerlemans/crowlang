@@ -170,12 +170,11 @@ auto SymbolData::operator==(const SymbolData& t_rhs) const -> bool
       using L = std::decay_t<decltype(t_l)>;
       using R = std::decay_t<decltype(t_r)>;
 
-      // Guard clause make sure the types are the same.
       if constexpr(!std::is_same_v<L, R>) {
+        // Guard clause make sure the types are the same.
+        // Or we just return false.
         return false;
-      }
-
-      if constexpr(std::is_same_v<L, NativeType>) {
+      } else if constexpr(std::is_same_v<L, NativeType>) {
         // NativeType is just a simple compare.
         return (t_l == t_r);
       } else if constexpr(lib::IsAnyOf<L, StructTypePtr, FnTypePtr,
