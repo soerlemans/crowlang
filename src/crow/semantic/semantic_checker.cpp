@@ -405,7 +405,7 @@ auto SemanticChecker::visit(ReturnType* t_rt) -> Any
 // Lvalue:
 // TODO: Account for when init expr is a nullptr
 // TODO: Add TypeData annotation.
-auto SemanticChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
+auto SemanticChecker::binding_expr(BindingExpr* t_decl) -> SymbolData
 {
   auto init_expr{t_decl->init_expr()};
 
@@ -459,7 +459,7 @@ auto SemanticChecker::decl_expr(DeclExpr* t_decl) -> SymbolData
 auto SemanticChecker::visit(Let* t_let) -> Any
 {
   const auto id{t_let->identifier()};
-  const auto init_expr_data{decl_expr(t_let)};
+  const auto init_expr_data{binding_expr(t_let)};
 
   // Create the SymbolData for a variable.
   const SymbolData data{symbol::make_variable(true, init_expr_data)};
@@ -471,7 +471,7 @@ auto SemanticChecker::visit(Let* t_let) -> Any
 auto SemanticChecker::visit(Var* t_var) -> Any
 {
   const auto id{t_var->identifier()};
-  const auto init_expr_data{decl_expr(t_var)};
+  const auto init_expr_data{binding_expr(t_var)};
 
   // Create the SymbolData for a variable.
   const SymbolData data{symbol::make_variable(false, init_expr_data)};

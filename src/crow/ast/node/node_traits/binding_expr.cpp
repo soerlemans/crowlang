@@ -1,4 +1,4 @@
-#include "decl_expr.hpp"
+#include "binding_expr.hpp"
 
 namespace ast::node::node_traits {
 // Methods:

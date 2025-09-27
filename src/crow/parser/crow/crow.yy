@@ -149,11 +149,11 @@ var_expr         : Var IDENTIFIER ':' IDENTIFIER
                  | Var IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
                  ;
 
-decl_expr        : var_expr
+binding_expr     : var_expr
                  | let_expr
                  ;
 
-eval_expr        : decl_expr ';' expr
+eval_expr        : binding_expr ';' expr
                  | expr
                  ;
 
@@ -171,7 +171,7 @@ assignment       : lvalue MUL_ASSIGN newline_opt expr
 		             | lvalue DECREMENT
                  ;
 
-result_statement : decl_expr terminator
+result_statement : binding_expr terminator
                  | assignment terminator
                  | function_call terminator
                  ;
@@ -312,7 +312,7 @@ function_call    : chain_expr '(' expr_list_opt')'
 // Meta:
 attribute_item   : attribute
                  | declare
-                 | decl_expr
+                 | binding_expr
                  | function
                  ;
 
@@ -363,7 +363,7 @@ item             : module_decl
 								 | declare
 								 | attribute
 				         | type_def
-				         | decl_expr
+				         | binding_expr
                  | function
                  | impl_block
                  ;

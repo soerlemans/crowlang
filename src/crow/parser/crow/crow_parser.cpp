@@ -162,7 +162,7 @@ auto CrowParser::var_expr() -> NodePtr
   return init_expr(TokenType::VAR);
 }
 
-auto CrowParser::decl_expr() -> NodePtr
+auto CrowParser::binding_expr() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
@@ -181,7 +181,7 @@ auto CrowParser::eval_expr() -> EvalPair
   DBG_TRACE_FN(VERBOSE);
   EvalPair pair;
 
-  if(auto ptr{decl_expr()}; ptr) {
+  if(auto ptr{binding_expr()}; ptr) {
     expect(TokenType::SEMICOLON);
 
     pair = {std::move(ptr), expr()};
@@ -305,7 +305,7 @@ auto CrowParser::result_statement() -> NodePtr
 
   if(auto ptr{function_call()}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{decl_expr()}; ptr) {
+  } else if(auto ptr{binding_expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{assignment()}; ptr) {
     node = std::move(ptr);
@@ -433,7 +433,7 @@ auto CrowParser::statement() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
 
-  if(auto ptr{decl_expr()}; ptr) {
+  if(auto ptr{binding_expr()}; ptr) {
     terminator();
     node = std::move(ptr);
   } else if(auto ptr{result_statement()}; ptr) {
@@ -708,7 +708,7 @@ auto CrowParser::attribute_item() -> NodePtr
     node = std::move(ptr);
   } else if(auto ptr{declare()}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{decl_expr()}; ptr) {
+  } else if(auto ptr{binding_expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{function()}; ptr) {
     node = std::move(ptr);
@@ -934,7 +934,7 @@ auto CrowParser::item() -> NodePtr
     node = std::move(ptr);
   } else if(auto ptr{type_def()}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{decl_expr()}; ptr) {
+  } else if(auto ptr{binding_expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{function()}; ptr) {
     node = std::move(ptr);

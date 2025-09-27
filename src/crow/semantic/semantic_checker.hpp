@@ -142,7 +142,7 @@ class SemanticChecker : public NodeVisitor {
   auto visit(node::function::ReturnType* t_rt) -> Any override;
 
   // Lvalue:
-  auto decl_expr(node::node_traits::DeclExpr* t_decl) -> SymbolData;
+  auto binding_expr(node::node_traits::BindingExpr* t_decl) -> SymbolData;
   auto visit(node::lvalue::Let* t_let) -> Any override;
   auto visit(node::lvalue::Var* t_var) -> Any override;
   auto visit(node::lvalue::Variable* t_var) -> Any override;

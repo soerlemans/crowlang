@@ -77,7 +77,7 @@ class SemanticValidator {
   auto validate_function() -> SymbolData;
   auto validate_method() -> SymbolData;
 
-  auto validate_decl_expr() -> SymbolData;
+  auto validate_binding_expr() -> SymbolData;
 
   auto validate_unary_prefix() -> SymbolData;
 
