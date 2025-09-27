@@ -801,6 +801,8 @@ auto SemanticChecker::visit(Struct* t_struct) -> Any
 
   add_symbol_definition(struct_id, struct_data);
 
+  DBG_INFO("Struct: ", struct_data);
+
   return {};
 }
 

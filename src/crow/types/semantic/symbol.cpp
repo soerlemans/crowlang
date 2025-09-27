@@ -17,8 +17,20 @@ using namespace std::literals::string_view_literals;
 // Functions:
 auto operator<<(std::ostream& t_os, StructTypePtr t_struct) -> std::ostream&
 {
+	// TODO: Redo these operator<< functions they are outdated.
+
   if(t_struct) {
     t_os << "Identifier: " << t_struct->m_identifier;
+    t_os << ", Members: {";
+
+		std::string_view sep{""};
+    for(const auto& [id, type_data] : t_struct->m_members) {
+      t_os << sep << "(" << id << ", " << type_data << ")";
+    }
+
+    t_os << "}";
+
+		sep = ", ";
   } else {
     DBG_ERROR("(StructTypePtr) nullptr!");
 

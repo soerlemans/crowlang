@@ -13,6 +13,8 @@ let magic_num = 100
 
 struct ExampleStruct {
   m_num: int
+  m_count: int
+  m_range: int
 }
 
 // [[implements[ExampleInterface]()]]
