@@ -170,27 +170,29 @@ auto SymbolData::operator==(const SymbolData& t_rhs) const -> bool
       using L = std::decay_t<decltype(t_l)>;
       using R = std::decay_t<decltype(t_r)>;
 
-      // Make sure the types are the same.
-      if constexpr(std::is_same_v<L, R>) {
-        if constexpr(std::is_same_v<L, NativeType>) {
-          // NativeType is just a simple compare.
-          return (t_l == t_r);
-        } else if constexpr(lib::IsAnyOf<L, StructTypePtr, FnTypePtr,
-                                         VarTypePtr>) {
-          // Return
-          if(t_l && t_r) {
-            // Compare resolved pointers.
-            return (*t_l == *t_r);
-          } else {
-            return false;
-          }
-        } else if constexpr(std::is_same_v<L, std::monostate>) {
-          // We should try to avoid throwing in operator==.
-          // So just compare std::monostate and return.
-          return (t_l == t_r);
+      // Guard clause make sure the types are the same.
+      if constexpr(!std::is_same_v<L, R>) {
+        return false;
+      }
+
+      if constexpr(std::is_same_v<L, NativeType>) {
+        // NativeType is just a simple compare.
+        return (t_l == t_r);
+      } else if constexpr(lib::IsAnyOf<L, StructTypePtr, FnTypePtr,
+                                       VarTypePtr>) {
+        if(t_l && t_r) {
+          // Compare resolved pointers.
+          return (*t_l == *t_r);
         } else {
-          static_assert(always_false<L>, "Unhandled type.");
+          // Return false on any nullptr.
+          return false;
         }
+      } else if constexpr(std::is_same_v<L, std::monostate>) {
+        // We should try to avoid throwing in operator==.
+        // So just compare std::monostate and return.
+        return (t_l == t_r);
+      } else {
+        static_assert(always_false<L>, "Unhandled type.");
       }
 
       return false;
