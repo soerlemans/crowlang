@@ -4,6 +4,7 @@
 // STL Includes:
 #include <memory>
 #include <type_traits>
+#include <variant>
 
 // Absolute Includes:
 #include "crow/types/core/core.hpp"
