@@ -44,17 +44,19 @@ auto SemanticChecker::clear_env() -> void
   m_symbol_state.clear();
 }
 
-auto SemanticChecker::str2type(const std::string_view t_type_name) -> SymbolData
+auto SemanticChecker::str2type(const std::string_view t_type) -> SymbolData
 {
+  const auto quoted_name{std::quoted(t_type)};
+
   // First check for native type.
-  const auto opt{str2nativetype_opt(t_type_name)};
+  const auto opt{str2nativetype_opt(t_type)};
   if(opt) {
     return {opt.value()};
   }
 
   // Then check for user defined types.
   // If this type does not exist, we should error.
-  const auto [iter, exists] = m_symbol_state.find(t_type_name);
+  const auto [iter, exists] = m_symbol_state.find(t_type);
   if(exists) {
     const auto& symbol{iter->second};
     const auto& symbol_data{symbol.m_data};
@@ -63,20 +65,15 @@ auto SemanticChecker::str2type(const std::string_view t_type_name) -> SymbolData
     if(symbol_data.is_struct()) {
       return symbol_data;
     } else {
-      std::stringstream ss{};
+      const auto msg{
+        std::format(R"(Given specifier is not a type "{}".)", t_type)};
 
-      ss << "Given type specifier is not a type: " << std::quoted(t_type_name)
-         << '.';
-
-      throw_type_error();
+      throw_type_error(msg);
     }
   } else {
-    std::stringstream ss{};
+    const auto msg{std::format(R"(No type found for specifier "{}".)", t_type)};
 
-    ss << "No type found for given type specifier: " << std::quoted(t_type_name)
-       << '.';
-
-    throw_type_error();
+    throw_type_error(msg);
   }
 
   return {};

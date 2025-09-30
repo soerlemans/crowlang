@@ -38,6 +38,7 @@ func num(self: ExampleStruct) -> void {
 
 func main() -> int {
   var example: ExampleStruct
+  var example: magic_num
 
   // example.m_num = 10
   // example.num()
