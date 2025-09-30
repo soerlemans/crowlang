@@ -116,7 +116,7 @@ namespace symbols {
   DEFINE_TERMINAL(g_brace_open,     '[', BRACE_OPEN);
   DEFINE_TERMINAL(g_brace_close,    ']', BRACE_CLOSE);
 
-  // Assignment variants of Arithmetic operators:
+  // Arithmetic operators:
   DEFINE_TERMINAL(g_plus,         '+', PLUS);
   DEFINE_TERMINAL(g_minus,        '-', MINUS);
   DEFINE_TERMINAL(g_asterisk,     '*', ASTERISK);
@@ -159,6 +159,7 @@ namespace symbols {
   DEFINE_TERMINAL(g_double_colon,  "::", DOUBLE_COLON);
   DEFINE_TERMINAL(g_colon,         ':',  COLON);
   DEFINE_TERMINAL(g_semicolon,     ';',  SEMICOLON);
+  DEFINE_TERMINAL(g_ampersand,     '&',  AMPERSAND);
 
   DEFINE_TERMINAL(g_newline,  '\n', NEWLINE);
 
@@ -190,6 +191,7 @@ namespace symbols {
     g_asterisk.pair(),
     g_slash.pair(),
     g_percent_sign.pair(),
+		g_ampersand.pair(),
 
     g_newline.pair()
   };

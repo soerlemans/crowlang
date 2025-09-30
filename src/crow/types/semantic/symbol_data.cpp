@@ -76,6 +76,13 @@ auto SymbolData::var() const -> VarTypePtr
   return std::get<VarTypePtr>(*this);
 }
 
+auto SymbolData::is_struct() const -> bool
+{
+  const auto* struct_ptr{std::get_if<StructTypePtr>(this)};
+
+  return (struct_ptr != nullptr);
+}
+
 auto SymbolData::is_mutable() const -> bool
 {
   using lib::Overload;

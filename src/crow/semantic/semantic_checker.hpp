@@ -79,6 +79,8 @@ class SemanticChecker : public NodeVisitor {
   auto pop_env() -> void;
   auto clear_env() -> void;
 
+  auto str2type(std::string_view t_typename) -> SymbolData;
+
   /*!
    * Annotate a node with its attribute data.
    */

@@ -140,13 +140,14 @@ expr_opt         : // empty
 
 // TODO: Refactor Var and Let to be more elegant.
 // TODO: Add block definitions like in Golang (using parenthesis).
-let_expr         : Let IDENTIFIER '=' newline_opt expr
-                 | Let IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
+let_expr         : Let IDENTIFIER ':' type_specifier
+                 | Let IDENTIFIER '=' newline_opt expr
+                 | Let IDENTIFIER ':' type_specifier '=' newline_opt expr
                  ;
 
-var_expr         : Var IDENTIFIER ':' IDENTIFIER
+var_expr         : Var IDENTIFIER ':' type_specifier
                  | Var IDENTIFIER '=' newline_opt expr
-                 | Var IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
+                 | Var IDENTIFIER ':' type_specifier '=' newline_opt expr
                  ;
 
 binding_expr     : var_expr
@@ -256,7 +257,10 @@ type_expr        :
 
 // TODO: Figure out how to name aliases?
 /* alias_def     : Alias? */
-/* type_specifier     : IDENTIFIER | *IDENTIFIER */
+type_specifier   : IDENTIFIER
+                 | * type_specifier
+                 | & type_specifier
+								 ;
 
 // Enum:
 enum_def         : Enum IDENTIFIER newline_opt

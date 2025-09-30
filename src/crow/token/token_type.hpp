@@ -119,6 +119,7 @@ enum class TokenType {
   DOUBLE_COLON,
   COLON,
   SEMICOLON,
+  AMPERSAND,
 
   NEWLINE
 };

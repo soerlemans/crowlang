@@ -50,6 +50,9 @@ class SymbolData : public Variant {
   auto function() const -> FnTypePtr;
   auto var() const -> VarTypePtr;
 
+  //! Verify if a symbol is struct type.
+  auto is_struct() const -> bool;
+
   //! Verify if a symbol is immutable.
   auto is_mutable() const -> bool;
 

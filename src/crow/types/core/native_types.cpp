@@ -3,8 +3,9 @@
 // STL Includes:
 #include <stdexcept>
 
-// Includes:
+// Absolute Includes:
 #include "crow/debug/log.hpp"
+#include "lib/stdexcept/stdexcept.hpp"
 
 // Using Statements:
 using types::core::NativeType;
@@ -71,7 +72,22 @@ auto is_numeric(const NativeType t_native_type) -> bool
 
 auto str2nativetype(const std::string_view t_str) -> NativeType
 {
-  NativeType type;
+  const auto opt{str2nativetype_opt(t_str)};
+
+  if(!opt) {
+    using lib::stdexcept::throw_invalid_argument;
+
+    DBG_ERROR("Cant convert ", std::quoted(t_str), " to NativeType!");
+
+    throw_invalid_argument("String could not be converted to NativeType.");
+  }
+
+  return opt.value();
+}
+
+auto str2nativetype_opt(const std::string_view t_str) -> NativeTypeOpt
+{
+  NativeTypeOpt type{};
   auto& lmap{native_types.left};
 
   const std::string str{t_str};
@@ -80,10 +96,6 @@ auto str2nativetype(const std::string_view t_str) -> NativeType
   const auto iter{lmap.find(str)};
   if(iter != lmap.end()) {
     type = iter->second;
-  } else {
-    DBG_ERROR("Cant convert ", std::quoted(t_str), " to NativeType!");
-
-    throw std::invalid_argument{"String could not be converted to NativeType."};
   }
 
   return type;
@@ -91,7 +103,7 @@ auto str2nativetype(const std::string_view t_str) -> NativeType
 
 auto nativetype2str(const NativeType t_native_type) -> std::string
 {
-  std::string id;
+  std::string id{};
   auto& rmap{native_types.right};
 
   const auto iter{rmap.find(t_native_type)};

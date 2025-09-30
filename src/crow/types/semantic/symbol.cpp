@@ -20,8 +20,10 @@ auto operator<<(std::ostream& t_os, StructTypePtr t_struct) -> std::ostream&
   // TODO: Redo these operator<< functions they are outdated.
 
   if(t_struct) {
-    t_os << "Identifier: " << t_struct->m_identifier;
-    t_os << ", Members: {";
+    // t_os << "Identifier: " << t_struct->m_identifier;
+    // t_os << ", Members: {";
+
+    t_os << t_struct->m_identifier;
 
     std::string_view sep{""};
     for(const auto& [id, type_data] : t_struct->m_members) {
