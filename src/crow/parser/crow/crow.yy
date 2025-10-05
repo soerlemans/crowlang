@@ -304,10 +304,9 @@ return_type_opt  : // empty
 //                  | Func return_type_opt body
 //                  ;
 
-// We detect methods by the self keyword in the first param (TODO: Maybe find a cleaner way to do this?).
+// We detect methods by the receiver which will give them access to the self keyword.
 function         : Func IDENTIFIER '(' param_list_opt ')' return_type_opt body
-                 | Func IDENTIFIER '(' Self ':' IDENTIFIER ')' return_type_opt body
-                 | Func IDENTIFIER '(' Self ':' IDENTIFIER ',' param_list ')' return_type_opt body
+                 | Func '(' IDENTIFIER ')' IDENTIFIER '(' param_list_opt ')' return_type_opt body
 				         ;
 
 function_call    : chain_expr '(' expr_list_opt')'

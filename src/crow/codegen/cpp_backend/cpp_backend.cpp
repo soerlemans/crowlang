@@ -545,11 +545,27 @@ auto CppBackend::visit(Method* t_meth) -> Any
 }
 
 AST_VISITOR_STUB(CppBackend, Interface)
-AST_VISITOR_STUB(CppBackend, MemberDecl)
+
+auto CppBackend::visit(MemberDecl* t_member) -> Any
+{
+  const auto identifier{t_member->identifier()};
+  const auto type{type_variant2cpp(t_member->get_type())};
+
+  return std::format("{} {};\n", type, identifier);
+}
 
 auto CppBackend::visit(Struct* t_struct) -> Any
 {
-  return std::string{""};
+  const auto identifier{t_struct->identifier()};
+  const auto members{t_struct->body()};
+
+  std::stringstream ss{};
+
+  ss << std::format("struct {} {{\n", identifier);
+  ss << resolve(members);
+  ss << "};\n";
+
+  return ss.str();
 }
 
 auto CppBackend::visit(Self* t_self) -> Any

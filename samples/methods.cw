@@ -21,24 +21,12 @@ struct ExampleStruct {
 // [[implements(<Exampleinterface>)]]
 // [[implements(type Exampleinterface)]]
 // [[implements(Exampleinterface)]]
-func num(self: ExampleStruct) -> void {
-  // let num = self.m_num
-
-  // println("Num: {}", num)
+func (ExampleStruct) num() -> void {
 }
-
-func num(self: ExampleStruct) -> void {
-  // let num = self.m_num
-
-  // println("Num: {}", num)
-}
-
-// func (self: ExampleStruct) num() -> void {
-// }
 
 func main() -> int {
-  var example: ExampleStruct
-  var example: magic_num
+  // var example: ExampleStruct
+  // var example: magic_num
 
   // example.m_num = 10
   // example.num()

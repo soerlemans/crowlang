@@ -653,23 +653,21 @@ auto CrowParser::function() -> NodePtr
   if(next_if(TokenType::FUNCTION)) {
     PARSER_FOUND(TokenType::FUNCTION);
 
-    const auto tt_id{expect(TokenType::IDENTIFIER)};
-    const auto id{tt_id.str()};
-
-    expect(TokenType::PAREN_OPEN);
-
     // NodeListPtr params;
     NodeListPtr params{};
-    if(next_if(TokenType::SELF)) {
-      // Dealing with a method:
-      PARSER_FOUND(TokenType::SELF);
-      expect(TokenType::COLON);
-      auto receiver_type{expect(TokenType::IDENTIFIER).str()};
 
-      if(next_if(TokenType::COMMA)) {
-        // Get the rest of the parameters.
-        params = param_list_opt();
-      }
+		// TODO: Split method and function handling in their own parts.
+
+		// Handle method:
+    if(next_if(TokenType::PAREN_OPEN)) {
+      auto receiver_type{expect(TokenType::IDENTIFIER).str()};
+      expect(TokenType::PAREN_CLOSE);
+
+      const auto tt_id{expect(TokenType::IDENTIFIER)};
+      const auto id{tt_id.str()};
+
+      expect(TokenType::PAREN_OPEN);
+      params = param_list_opt();
       expect(TokenType::PAREN_CLOSE);
 
       const auto return_type{return_type_opt()};
@@ -680,7 +678,13 @@ auto CrowParser::function() -> NodePtr
 
       node = make_node<Method>(id, receiver_type, std::move(params),
                                return_type, std::move(body_ptr));
+		// Handle function:
     } else {
+      const auto tt_id{expect(TokenType::IDENTIFIER)};
+      const auto id{tt_id.str()};
+
+      expect(TokenType::PAREN_OPEN);
+
       // Dealing with a function:
       params = param_list_opt();
       expect(TokenType::PAREN_CLOSE);

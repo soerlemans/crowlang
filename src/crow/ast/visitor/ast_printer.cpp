@@ -295,11 +295,31 @@ auto AstPrinter::visit(Boolean* t_bool) -> Any
 }
 
 // Typing:
-DEFINE_PRINTER_METHOD(Method)
+auto AstPrinter::visit(Method* t_meth) -> Any
+{
+  COUNTG_INIT();
+
+  print("Method");
+  print("Receiver Type: ", t_meth->get_receiver());
+  print_traits(t_meth);
+
+  return {};
+}
+
 DEFINE_PRINTER_METHOD(Interface)
 DEFINE_PRINTER_METHOD(MemberDecl)
 DEFINE_PRINTER_METHOD(Struct)
-DEFINE_PRINTER_METHOD(Self)
+
+auto AstPrinter::visit(Self* t_self) -> Any
+{
+  COUNTG_INIT();
+
+  print("Self");
+  print_traits(t_self);
+
+  return {};
+}
+
 DEFINE_PRINTER_METHOD(DotExpr)
 
 // Misc:

@@ -765,9 +765,10 @@ auto SemanticChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
 // Typing:
 auto SemanticChecker::visit(Method* t_meth) -> Any
 {
-  // const auto id{t_fn->identifier()};
-  // const auto ret_type{str2nativetype(t_fn->type())};
-  // const auto params{t_fn->params()};
+  const auto id{t_meth->identifier()};
+  const auto recv_type{str2type(t_meth->get_receiver())};
+  const auto ret_type{str2type(t_meth->type())};
+  const auto params{t_meth->params()};
 
   // // Register function type signature to environment.
   // const auto params_type_list{get_type_list(params)};
@@ -778,8 +779,8 @@ auto SemanticChecker::visit(Method* t_meth) -> Any
   // DBG_INFO("Function: ", id, "(", params_type_list, ") -> ", ret_type);
 
   // // Annotate AST.
-  // annotate_type(t_fn, data);
-  // annotate_attr(t_fn);
+  // annotate_type(t_meth, data);
+  // annotate_attr(t_meth);
 
   // // Register parameters to environment.
   // push_env();
@@ -801,14 +802,23 @@ auto SemanticChecker::visit(Method* t_meth) -> Any
   // }
 
   // // Run type checking on the function body.
-  // traverse(t_fn->body());
+  // traverse(t_meth->body());
   // pop_env();
 
   return {};
 }
 
 AST_VISITOR_STUB(SemanticChecker, Interface)
-AST_VISITOR_STUB(SemanticChecker, MemberDecl)
+
+auto SemanticChecker::visit(MemberDecl* t_member) -> Any
+{
+  const auto type{str2type(t_member->type())};
+
+  // Annotate AST.
+  annotate_type(t_member, type);
+
+  return {};
+}
 
 auto SemanticChecker::visit(Struct* t_struct) -> Any
 {
@@ -816,6 +826,9 @@ auto SemanticChecker::visit(Struct* t_struct) -> Any
 
   const std::string struct_id{t_struct->identifier()};
   const auto struct_body{t_struct->body()};
+
+  // First annotate all the member declarations.
+  traverse(struct_body);
 
   // Loop through member declarations and add them to the member map.
   MemberMap members{};
