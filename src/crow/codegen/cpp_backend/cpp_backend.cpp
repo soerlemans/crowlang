@@ -541,7 +541,49 @@ auto CppBackend::visit([[maybe_unused]] Boolean* t_bool) -> Any
 // Typing:
 auto CppBackend::visit(Method* t_meth) -> Any
 {
-  return std::string{""};
+  using node::node_traits::AttributeType;
+
+  const auto identifier{t_meth->identifier()};
+
+  // const auto fn_type{t_meth->get_type()};
+  // const auto ret_type{type_variant2cpp(fn_type->m_return_type)};
+
+  std::stringstream param_ss{};
+
+  auto sep{""sv};
+  const auto params{t_meth->params()};
+  for(const auto& param : *params) {
+    param_ss << sep << resolve(param);
+
+    sep = ", ";
+  }
+
+  std::stringstream ss{};
+
+  // Attribute insertion:
+  const auto attrs{t_meth->get_attributes()};
+  for(const auto& attr : attrs) {
+    if(attr.m_type == AttributeType::INLINE) {
+      ss << "inline\n";
+    }
+  }
+
+  // clang-format off
+  // ss << std::format("auto {}({}) -> {}\n", identifier, param_ss.str(), ret_type)
+  ss << std::format("auto {}({}) -> {}\n", identifier, param_ss.str(), "void")
+     << "{\n"
+     << resolve(t_meth->body())
+     << "}\n";
+  // clang-format on
+
+  // FIXME: We should do this by looping through the toplevel.
+  // Of the SymbolTable instead.
+  // Register function to interop backend.
+  // for(auto& ptr : m_interop_backends) {
+  //   ptr->register_function(identifier);
+  // }
+
+  return ss.str();
 }
 
 AST_VISITOR_STUB(CppBackend, Interface)
@@ -570,7 +612,7 @@ auto CppBackend::visit(Struct* t_struct) -> Any
 
 auto CppBackend::visit(Self* t_self) -> Any
 {
-  return std::string{""};
+  return std::string{"this"};
 }
 
 AST_VISITOR_STUB(CppBackend, DotExpr)

@@ -851,6 +851,9 @@ auto SemanticChecker::visit(Struct* t_struct) -> Any
 
   DBG_INFO("Struct: ", struct_data);
 
+  // Annotate AST.
+  annotate_type(t_struct, struct_data);
+
   return {};
 }
 

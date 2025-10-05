@@ -11,9 +11,10 @@ namespace ast::node::typing {
 // Using Statements:
 using node_traits::Body;
 using node_traits::Identifier;
+using node_traits::TypeData;
 
 // Classes:
-class Struct : public Identifier, public Body {
+class Struct : public Identifier, public Body, public TypeData {
   public:
   Struct(std::string_view t_identifier, NodeListPtr&& t_body);
 

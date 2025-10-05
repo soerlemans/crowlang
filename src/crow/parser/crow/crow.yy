@@ -61,11 +61,15 @@ lvalue           : IDENTIFIER
                  | lvalue newline_opt ARROW IDENTIFIER
                  ;
 
-chain_expr       : IDENTIFIER
-                 | chain_expr '[' expr ']'
-				         | chain_expr '(' expr_list_opt ')'
-                 | chain_expr newline_opt '.' IDENTIFIER
+chain_expr       : '.' newline_opt IDENTIFIER
+                 | '.' newline_opt function_call
+                 | '.' '[' expr ']'
+				         | '.' '(' expr_list_opt ')'
                  | chain_expr newline_opt ARROW IDENTIFIER
+                 ;
+
+chain_expr_opt   : // empty
+                 | chain_expr
                  ;
 
 // Literals:
@@ -309,7 +313,7 @@ function         : Func IDENTIFIER '(' param_list_opt ')' return_type_opt body
                  | Func '(' IDENTIFIER ')' IDENTIFIER '(' param_list_opt ')' return_type_opt body
 				         ;
 
-function_call    : chain_expr '(' expr_list_opt')'
+function_call    : IDENTIFIER '(' expr_list_opt')'
                  ;
 
 // Meta:
