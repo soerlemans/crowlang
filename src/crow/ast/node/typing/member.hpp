@@ -28,6 +28,6 @@ class Member : public NodePosition, public Identifier, public TypeData {
 } // namespace ast::node::lvalue
 
 // Cereal type registration:
-REGISTER_ARCHIVEABLE_TYPE(ast::node::lvalue, Member);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::typing, Member);
 
 #endif // MEMBER_HPP
