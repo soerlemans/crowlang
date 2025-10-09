@@ -145,7 +145,7 @@ class CppBackend : public NodeVisitor, public BackendInterface {
   auto visit(node::typing::MemberDecl* t_meth) -> Any override;
   auto visit(node::typing::Struct* t_struct) -> Any override;
   auto visit(node::typing::Self* t_self) -> Any override;
-  auto visit(node::typing::DotExpr* t_dot_expr) -> Any override;
+  auto visit(node::typing::FieldAccess* t_dot_expr) -> Any override;
 
   // Misc:
   auto visit(node::List* t_list) -> Any override;

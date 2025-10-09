@@ -13,18 +13,18 @@ using node_traits::Expr;
 using node_traits::Identifier;
 
 // Classes:
-class DotExpr : public Identifier, public Expr {
+class FieldAccess : public Identifier, public Expr {
   public:
-  DotExpr(std::string_view t_identifier, NodePtr&& t_init);
+  FieldAccess(std::string_view t_identifier, NodePtr&& t_init);
 
-  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(DotExpr, Identifier, Expr)
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(FieldAccess, Identifier, Expr)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
-  virtual ~DotExpr() = default;
+  virtual ~FieldAccess() = default;
 };
 } // namespace ast::node::typing
 
 // Cereal type registration:
-REGISTER_ARCHIVEABLE_TYPE(ast::node::typing, DotExpr);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::typing, FieldAccess);
 
 #endif // CROW_CROW_AST_NODE_TYPING_DOT_EXPR_HPP

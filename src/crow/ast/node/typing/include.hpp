@@ -2,7 +2,7 @@
 #define CROW_CROW_AST_NODE_TYPING_INCLUDE_HPP
 
 // Typing:
-#include "dot_expr.hpp"
+#include "field_access.hpp"
 #include "interface.hpp"
 #include "member_decl.hpp"
 #include "method.hpp"

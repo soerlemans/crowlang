@@ -61,16 +61,30 @@ lvalue           : IDENTIFIER
                  | lvalue newline_opt ARROW IDENTIFIER
                  ;
 
-chain_expr       : '.' newline_opt IDENTIFIER
+lvalue_chain_expr : '.' newline_opt IDENTIFIER
+                  | '.' '[' expr ']'
+                  ;
+
+// | '.' '(' expr_list_opt ')'
+chain_expr       : lvalue_chain_expr
                  | '.' newline_opt function_call
-                 | '.' '[' expr ']'
-				         | '.' '(' expr_list_opt ')'
-                 | chain_expr newline_opt ARROW IDENTIFIER
                  ;
 
-chain_expr_opt   : // empty
-                 | chain_expr
+lvalue_chain_expr_list : lvalue_chain_expr
+                       | lvalue_chain_expr_list lvalue_chain_expr
+                       ;
+
+chain_expr_list  : chain_expr
+                 | chain_expr_list chain_expr
                  ;
+
+lvalue_chain_expr_list_opt : // empty
+                           | lvalue_chain_expr_list
+                           ;
+
+chain_expr_list_opt : // empty
+                    | chain_expr_list
+                    ;
 
 // Literals:
 literal          : NUMBER

@@ -86,7 +86,7 @@ STUB(Interface)
 STUB(MemberDecl)
 STUB(Struct)
 STUB(Self)
-STUB(DotExpr)
+STUB(FieldAccess)
 
 // Misc:
 auto NodeVisitor::visit(List* t_list) -> Any

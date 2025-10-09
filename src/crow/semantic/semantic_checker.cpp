@@ -865,7 +865,7 @@ auto SemanticChecker::visit(Self* t_self) -> Any
 }
 
 
-AST_VISITOR_STUB(SemanticChecker, DotExpr)
+AST_VISITOR_STUB(SemanticChecker, FieldAccess)
 
 auto SemanticChecker::check(NodePtr t_ast) -> void
 {

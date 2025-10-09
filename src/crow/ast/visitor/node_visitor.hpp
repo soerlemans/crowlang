@@ -95,7 +95,7 @@ class NodeVisitor {
   virtual auto visit(node::typing::MemberDecl* t_meth) -> Any;
   virtual auto visit(node::typing::Struct* t_struct) -> Any;
   virtual auto visit(node::typing::Self* t_self) -> Any;
-  virtual auto visit(node::typing::DotExpr* t_dot_expr) -> Any;
+  virtual auto visit(node::typing::FieldAccess* t_dot_expr) -> Any;
 
   // Misc:
   virtual auto visit(node::List* t_list) -> Any;

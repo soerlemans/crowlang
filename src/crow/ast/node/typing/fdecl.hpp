@@ -9,7 +9,7 @@ class MemberDecl;
 class Struct;
 class Self;
 
-class DotExpr;
+class FieldAccess;
 } // namespace ast::node::typing
 
 #endif // CROW_CROW_AST_NODE_TYPING_FDECL_HPP

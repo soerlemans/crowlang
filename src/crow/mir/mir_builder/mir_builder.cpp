@@ -925,7 +925,7 @@ STUB(Interface)
 STUB(MemberDecl)
 STUB(Struct)
 STUB(Self)
-STUB(DotExpr)
+STUB(FieldAccess)
 
 // Misc:
 auto MirBuilder::visit(List* t_list) -> Any

@@ -320,7 +320,7 @@ auto AstPrinter::visit(Self* t_self) -> Any
   return {};
 }
 
-DEFINE_PRINTER_METHOD(DotExpr)
+DEFINE_PRINTER_METHOD(FieldAccess)
 
 // Misc:
 auto AstPrinter::visit(List* t_list) -> Any
