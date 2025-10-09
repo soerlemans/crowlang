@@ -86,6 +86,7 @@ STUB(Interface)
 STUB(MemberDecl)
 STUB(Struct)
 STUB(Self)
+STUB(Member)
 STUB(MemberAccess)
 
 // Misc:

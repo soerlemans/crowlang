@@ -320,6 +320,7 @@ auto AstPrinter::visit(Self* t_self) -> Any
   return {};
 }
 
+DEFINE_PRINTER_METHOD(Member)
 DEFINE_PRINTER_METHOD(MemberAccess)
 
 // Misc:

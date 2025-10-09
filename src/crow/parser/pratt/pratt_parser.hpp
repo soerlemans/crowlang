@@ -57,8 +57,21 @@ class PrattParser : public Parser {
   virtual auto expr(int t_min_bp = 0) -> NodePtr;
 
   // Lvalue specific:
+  virtual auto member() -> NodePtr;
+
   virtual auto lvalue_chain_expr(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
   virtual auto lvalue_infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
+
+  /*!
+   * Continous a member access chain.
+   */
+  virtual auto lvalue_member_expr(int t_min_bp = 0) -> NodePtr;
+
+  /*!
+   * Generally an expression is universal.
+   * But when we are dealing with precedence as the destination for a value.
+   * We only allow assignable statements on the left side.
+   */
   virtual auto lvalue_expr(int t_min_bp = 0) -> NodePtr;
 
   virtual ~PrattParser() = default;

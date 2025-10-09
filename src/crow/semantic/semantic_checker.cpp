@@ -864,9 +864,28 @@ auto SemanticChecker::visit(Self* t_self) -> Any
   return {};
 }
 
-auto SemanticChecker::visit(MemberAccess* t_member) -> Any
+auto SemanticChecker::visit(Member* t_member) -> Any
 {
-  return SymbolData{NativeType::STRING};
+  const auto id{t_member->identifier()};
+  // Rewrite:
+  // const auto var_data{get_symbol_data_from_env(id)};
+
+  // DBG_INFO("Member ", std::quoted(id), " of type ", var_data);
+
+  // Annotate AST.
+  // annotate_type(t_member, var_data);
+
+  // return {var_data};
+  return SymbolData{NativeType::INT}; // FIXME: hardcoded cuz stupid.
+}
+
+auto SemanticChecker::visit(MemberAccess* t_access) -> Any
+{
+  const auto lhs{get_resolved_type(t_access->left())};
+  const auto rhs{get_resolved_type(t_access->right())};
+  const auto pos{t_access->position()};
+
+  return rhs;
 }
 
 auto SemanticChecker::check(NodePtr t_ast) -> void

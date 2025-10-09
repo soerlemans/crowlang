@@ -195,7 +195,8 @@ class AstPrinter : public NodeVisitor {
   auto visit(node::typing::MemberDecl* t_meth) -> Any override;
   auto visit(node::typing::Struct* t_struct) -> Any override;
   auto visit(node::typing::Self* t_self) -> Any override;
-  auto visit(node::typing::MemberAccess* t_dot_expr) -> Any override;
+  auto visit(node::typing::Member* t_member) -> Any override;
+  auto visit(node::typing::MemberAccess* t_access) -> Any override;
 
   // Misc:
   auto visit(node::List* t_list) -> Any override;

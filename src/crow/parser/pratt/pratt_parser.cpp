@@ -351,6 +351,22 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
 }
 
 // Lvalue specific:
+auto PrattParser::member() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node{};
+
+  const auto token{get_token()};
+  if(next_if(TokenType::IDENTIFIER)) {
+    const auto id{token.str()};
+    const auto pos{token.position()};
+    DBG_TRACE_PRINT(INFO, "Found 'MEMBER': ", id);
+    node = make_node<Member>(pos, id);
+  }
+
+  return node;
+}
+
 auto PrattParser::lvalue_chain_expr(NodePtr& t_lhs, const RhsFn& t_fn)
   -> NodePtr
 {
@@ -398,6 +414,41 @@ auto PrattParser::lvalue_infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   return node;
 }
 
+auto PrattParser::lvalue_member_expr(const int t_min_bp) -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr lhs{member()};
+
+  // Infix:
+  while(!eos()) {
+    const auto rhs_fn{[&](const TokenType t_type) {
+      NodePtr rhs;
+
+      const auto [lbp, rbp] = m_infix.at(t_type);
+      if(lbp < t_min_bp) {
+        prev();
+      } else {
+        rhs = lvalue_member_expr(rbp);
+        if(!rhs) {
+          throw_syntax_error(
+            "Lvalue member infix operations require a right hand side");
+        }
+      }
+
+      return rhs;
+    }};
+
+    // If we do not find the expression quit.
+    if(auto ptr{lvalue_infix(lhs, rhs_fn)}; ptr) {
+      lhs = std::move(ptr);
+    } else {
+      break;
+    }
+  }
+
+  return lhs;
+}
+
 auto PrattParser::lvalue_expr(const int t_min_bp) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -412,7 +463,7 @@ auto PrattParser::lvalue_expr(const int t_min_bp) -> NodePtr
       if(lbp < t_min_bp) {
         prev();
       } else {
-        rhs = lvalue_expr(rbp);
+        rhs = lvalue_member_expr(rbp);
         if(!rhs) {
           throw_syntax_error(
             "Lvalue infix operations require a right hand side");
