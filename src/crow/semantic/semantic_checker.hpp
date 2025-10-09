@@ -185,7 +185,7 @@ class SemanticChecker : public NodeVisitor {
   auto visit(node::typing::MemberDecl* t_meth) -> Any override;
   auto visit(node::typing::Struct* t_struct) -> Any override;
   auto visit(node::typing::Self* t_self) -> Any override;
-  auto visit(node::typing::FieldAccess* t_dot_expr) -> Any override;
+  auto visit(node::typing::MemberAccess* t_dot_expr) -> Any override;
 
   auto check(NodePtr t_ast) -> void;
 

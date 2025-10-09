@@ -615,7 +615,7 @@ auto CppBackend::visit(Self* t_self) -> Any
   return std::string{"this"};
 }
 
-AST_VISITOR_STUB(CppBackend, FieldAccess)
+AST_VISITOR_STUB(CppBackend, MemberAccess)
 
 // Misc:
 auto CppBackend::visit(List* t_list) -> Any

@@ -6,5 +6,5 @@ target_sources(${TARGET_CROW_LIB} PRIVATE
 	struct.cpp
 	struct_decl.cpp
 	self.cpp
-	field_access.cpp
+	member_access.cpp
 )

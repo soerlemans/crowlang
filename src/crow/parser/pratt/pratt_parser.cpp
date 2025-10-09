@@ -372,7 +372,7 @@ auto PrattParser::lvalue_chain_expr(NodePtr& t_lhs, const RhsFn& t_fn)
     next();
 
     if(auto rhs{t_fn(token.type())}; rhs) {
-      node = make_node<FieldAccess>(pos, std::move(t_lhs), std::move(rhs));
+      node = make_node<MemberAccess>(pos, std::move(t_lhs), std::move(rhs));
     }
 
     // }else if(after_newlines(TokenType::BRACKET_OPEN)) {

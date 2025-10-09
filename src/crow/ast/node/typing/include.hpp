@@ -2,8 +2,8 @@
 #define CROW_CROW_AST_NODE_TYPING_INCLUDE_HPP
 
 // Typing:
-#include "field_access.hpp"
 #include "interface.hpp"
+#include "member_access.hpp"
 #include "member_decl.hpp"
 #include "method.hpp"
 #include "self.hpp"

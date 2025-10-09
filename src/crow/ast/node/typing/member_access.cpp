@@ -1,8 +1,8 @@
 #include "field_access.hpp"
 
 namespace ast::node::typing {
-FieldAccess::FieldAccess(TextPosition t_pos, NodePtr&& t_left,
-                         NodePtr&& t_right)
+MemberAccess::MemberAccess(TextPosition t_pos, NodePtr&& t_left,
+                           NodePtr&& t_right)
   : NodePosition{std::move(t_pos)},
     BinaryOperator{std::move(t_left), std::move(t_right)},
     TypeData{}
