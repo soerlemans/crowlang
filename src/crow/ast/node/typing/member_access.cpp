@@ -1,4 +1,4 @@
-#include "field_access.hpp"
+#include "member_access.hpp"
 
 namespace ast::node::typing {
 MemberAccess::MemberAccess(TextPosition t_pos, NodePtr&& t_left,

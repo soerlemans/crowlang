@@ -2,9 +2,10 @@
 target_sources(${TARGET_CROW_LIB} PRIVATE
 	method.cpp
 	interface.cpp
-	member_decl.cpp
 	struct.cpp
 	struct_decl.cpp
 	self.cpp
+	member_decl.cpp
 	member_access.cpp
+	member.cpp
 )

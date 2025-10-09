@@ -864,8 +864,10 @@ auto SemanticChecker::visit(Self* t_self) -> Any
   return {};
 }
 
-
-AST_VISITOR_STUB(SemanticChecker, MemberAccess)
+auto SemanticChecker::visit(MemberAccess* t_member) -> Any
+{
+  return SymbolData{NativeType::STRING};
+}
 
 auto SemanticChecker::check(NodePtr t_ast) -> void
 {

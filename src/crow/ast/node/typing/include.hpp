@@ -3,6 +3,7 @@
 
 // Typing:
 #include "interface.hpp"
+#include "member.hpp"
 #include "member_access.hpp"
 #include "member_decl.hpp"
 #include "method.hpp"

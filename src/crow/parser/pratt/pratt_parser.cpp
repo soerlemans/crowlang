@@ -35,8 +35,9 @@ auto PrattParser::lvalue() -> NodePtr
   const auto token{get_token()};
   if(next_if(TokenType::IDENTIFIER)) {
     const auto id{token.str()};
+    const auto pos{token.position()};
     DBG_TRACE_PRINT(INFO, "Found 'VARIABLE': ", id);
-    node = make_node<Variable>(token.position(), id);
+    node = make_node<Variable>(pos, id);
   }
 
   return node;
@@ -431,6 +432,4 @@ auto PrattParser::lvalue_expr(const int t_min_bp) -> NodePtr
 
   return lhs;
 }
-
-
 } // namespace parser::pratt

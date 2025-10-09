@@ -615,7 +615,10 @@ auto CppBackend::visit(Self* t_self) -> Any
   return std::string{"this"};
 }
 
-AST_VISITOR_STUB(CppBackend, MemberAccess)
+auto CppBackend::visit(MemberAccess* t_member) -> Any
+{
+  return std::string{"/* TODO: Implement. */"};
+}
 
 // Misc:
 auto CppBackend::visit(List* t_list) -> Any
