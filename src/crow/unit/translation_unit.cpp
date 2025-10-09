@@ -25,7 +25,8 @@ auto read_file(const path t_path) -> TextBuffer
   using std::filesystem::exists;
 
   if(!exists(t_path)) {
-    std::stringstream ss;
+    std::stringstream ss{};
+
     ss << "File does not exist! ";
     ss << std::quoted(t_path.string());
 
@@ -36,7 +37,7 @@ auto read_file(const path t_path) -> TextBuffer
 
   std::ifstream ifs{t_path};
   while(ifs.good() && !ifs.eof()) {
-    std::string line;
+    std::string line{};
     std::getline(ifs, line);
 
     text_buffer.add_line(std::move(line));
