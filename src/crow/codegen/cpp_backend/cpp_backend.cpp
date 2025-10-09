@@ -615,9 +615,14 @@ auto CppBackend::visit(Self* t_self) -> Any
   return std::string{"this"};
 }
 
-auto CppBackend::visit(MemberAccess* t_member) -> Any
+auto CppBackend::visit(Member* t_member) -> Any
 {
-  return std::string{"/* TODO: Implement. */"};
+  return std::string{"/* TODO: Member Implement. */"};
+}
+
+auto CppBackend::visit(MemberAccess* t_access) -> Any
+{
+  return std::string{"/* TODO: MemberAccess Implement. */"};
 }
 
 // Misc:
