@@ -252,7 +252,7 @@ auto CrowParser::assignment() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
 
-  if(auto lhs{lvalue()}; lhs) {
+  if(auto lhs{lvalue_expr()}; lhs) {
     const auto pos{get_position()};
     const auto lambda{[&](const AssignmentOp t_op) {
       newline_opt();
@@ -656,9 +656,9 @@ auto CrowParser::function() -> NodePtr
     // NodeListPtr params;
     NodeListPtr params{};
 
-		// TODO: Split method and function handling in their own parts.
+    // TODO: Split method and function handling in their own parts.
 
-		// Handle method:
+    // Handle method:
     if(next_if(TokenType::PAREN_OPEN)) {
       auto receiver_type{expect(TokenType::IDENTIFIER).str()};
       expect(TokenType::PAREN_CLOSE);
@@ -678,7 +678,7 @@ auto CrowParser::function() -> NodePtr
 
       node = make_node<Method>(id, receiver_type, std::move(params),
                                return_type, std::move(body_ptr));
-		// Handle function:
+      // Handle function:
     } else {
       const auto tt_id{expect(TokenType::IDENTIFIER)};
       const auto id{tt_id.str()};

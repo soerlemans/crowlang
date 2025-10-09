@@ -30,8 +30,11 @@ class InfixMap : public BindingMap {
   InfixMap()
   {
     // Member access:
-    INSERT_BINDING(DOT, 15, 15);
-    INSERT_BINDING(ARROW, 15, 15);
+    INSERT_BINDING(DOT, 15, 14);
+    INSERT_BINDING(ARROW, 15, 14);
+
+    // INSERT_BINDING(PAREN_OPEN, 15, 14);
+    // INSERT_BINDING(BRACKET_OPEN, 15, 14);
 
     // Factor:
     INSERT_BINDING(ASTERISK, 12, 13);     // Multiplication

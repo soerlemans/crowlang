@@ -348,4 +348,89 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
 
   return lhs;
 }
+
+// Lvalue specific:
+auto PrattParser::lvalue_chain_expr(NodePtr& t_lhs, const RhsFn& t_fn)
+  -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node{};
+
+  const auto pos{get_position()};
+  const auto lambda{[&](ArithmeticOp t_op) {
+    const auto token{get_token()};
+    next();
+
+    if(auto rhs{t_fn(token.type())}; rhs) {
+      node = make_node<Arithmetic>(pos, t_op, std::move(t_lhs), std::move(rhs));
+    }
+  }};
+
+  if(after_newlines(TokenType::DOT)) {
+    PARSER_FOUND(TokenType::DOT);
+    const auto token{get_token()};
+    next();
+
+    if(auto rhs{t_fn(token.type())}; rhs) {
+      node = make_node<FieldAccess>(pos, std::move(t_lhs), std::move(rhs));
+    }
+
+    // }else if(after_newlines(TokenType::BRACKET_OPEN)) {
+    // } else if(after_newlines(TokenType::PAREN_OPEN)) {
+    // TODO: Add for '[]' and '()'.
+  }
+
+  return node;
+}
+
+auto PrattParser::lvalue_infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  if(t_lhs) {
+    if(auto ptr{lvalue_chain_expr(t_lhs, t_fn)}; ptr) {
+      node = std::move(ptr);
+    }
+  }
+
+  return node;
+}
+
+auto PrattParser::lvalue_expr(const int t_min_bp) -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr lhs{lvalue()};
+
+  // Infix:
+  while(!eos()) {
+    const auto rhs_fn{[&](const TokenType t_type) {
+      NodePtr rhs;
+
+      const auto [lbp, rbp] = m_infix.at(t_type);
+      if(lbp < t_min_bp) {
+        prev();
+      } else {
+        rhs = lvalue_expr(rbp);
+        if(!rhs) {
+          throw_syntax_error(
+            "Lvalue infix operations require a right hand side");
+        }
+      }
+
+      return rhs;
+    }};
+
+    // If we do not find the expression quit.
+    if(auto ptr{lvalue_infix(lhs, rhs_fn)}; ptr) {
+      lhs = std::move(ptr);
+    } else {
+      break;
+    }
+  }
+
+  return lhs;
+}
+
+
 } // namespace parser::pratt

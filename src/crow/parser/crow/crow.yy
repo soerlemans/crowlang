@@ -56,13 +56,18 @@ terminator       : terminator ';'
 
 // Lvalue:
 lvalue           : IDENTIFIER
-                 | lvalue '[' expr ']'
-                 | lvalue newline_opt '.' IDENTIFIER
-                 | lvalue newline_opt ARROW IDENTIFIER
                  ;
 
-lvalue_chain_expr : '.' newline_opt IDENTIFIER
-                  | '.' '[' expr ']'
+// Lvalue Infix:
+lvalue_expr      : lvalue
+                 | lvalue lvalue_chain_expr
+                 ;
+
+// Chain:
+// Note lets not allow ending in () for lvalue chain expressions.
+lvalue_chain_expr : '.' newline_opt lvalue
+                  | '[' expr ']' newline_opt
+                  | '(' expr_list_opt ')' newline_opt
                   ;
 
 // | '.' '(' expr_list_opt ')'
@@ -180,14 +185,14 @@ expr_statement   : expr terminator
                  ;
 
 // Result statement:
-assignment       : lvalue MUL_ASSIGN newline_opt expr
-                 | lvalue DIV_ASSIGN newline_opt expr
-                 | lvalue MOD_ASSIGN newline_opt expr
-                 | lvalue ADD_ASSIGN newline_opt expr
-                 | lvalue SUB_ASSIGN newline_opt expr
-                 | lvalue '=' newline_opt expr
-		             | lvalue INCREMENT
-		             | lvalue DECREMENT
+assignment       : lvalue_expr MUL_ASSIGN newline_opt expr
+                 | lvalue_expr DIV_ASSIGN newline_opt expr
+                 | lvalue_expr MOD_ASSIGN newline_opt expr
+                 | lvalue_expr ADD_ASSIGN newline_opt expr
+                 | lvalue_expr SUB_ASSIGN newline_opt expr
+                 | lvalue_expr '=' newline_opt expr
+		             | lvalue_expr INCREMENT
+		             | lvalue_expr DECREMENT
                  ;
 
 result_statement : binding_expr terminator

@@ -50,10 +50,16 @@ class PrattParser : public Parser {
   virtual auto logical(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
   virtual auto comparison(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
 
+
   virtual auto infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
 
   // Expressions:
   virtual auto expr(int t_min_bp = 0) -> NodePtr;
+
+  // Lvalue specific:
+  virtual auto lvalue_chain_expr(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
+  virtual auto lvalue_infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
+  virtual auto lvalue_expr(int t_min_bp = 0) -> NodePtr;
 
   virtual ~PrattParser() = default;
 };

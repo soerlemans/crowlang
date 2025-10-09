@@ -9,15 +9,19 @@
 
 namespace ast::node::typing {
 // Using Statements:
-using node_traits::Expr;
-using node_traits::Identifier;
+using container::TextPosition;
+using node_traits::BinaryOperator;
+using node_traits::NodePosition;
+using node_traits::TypeData;
 
 // Classes:
-class FieldAccess : public Identifier, public Expr {
+class FieldAccess : public NodePosition,
+                    public BinaryOperator,
+                    public TypeData {
   public:
-  FieldAccess(std::string_view t_identifier, NodePtr&& t_init);
+  FieldAccess(TextPosition t_pos, NodePtr&& t_left, NodePtr&& t_right);
 
-  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(FieldAccess, Identifier, Expr)
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(FieldAccess, NodePosition, BinaryOperator)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~FieldAccess() = default;
