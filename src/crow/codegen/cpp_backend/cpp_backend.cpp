@@ -617,12 +617,17 @@ auto CppBackend::visit(Self* t_self) -> Any
 
 auto CppBackend::visit(Member* t_member) -> Any
 {
-  return std::string{"/* TODO: Member Implement. */"};
+  const auto identifier{t_member->identifier()};
+
+  return std::format("{}", identifier);
 }
 
 auto CppBackend::visit(MemberAccess* t_access) -> Any
 {
-  return std::string{"/* TODO: MemberAccess Implement. */"};
+  const auto left{resolve(t_access->left())};
+  const auto right{resolve(t_access->right())};
+
+  return std::format("({}.{})", left, right);
 }
 
 // Misc:

@@ -85,22 +85,25 @@ namespace codegen::cpp_backend {
 // Using Statements:
 NODE_USING_ALL_NAMESPACES()
 
-auto type_variant2cpp(const TypeVariant& t_variant) -> std::string_view
+auto type_variant2cpp(const TypeVariant& t_variant) -> std::string
 {
   using lib::Overload;
 
-  std::string_view str{};
+  std::string str{};
 
   if(const auto opt{t_variant.native_type()}; opt) {
     str = native_type2cpp(opt.value());
+  } else if(const auto struct_ptr{t_variant.struct_()}; struct_ptr) {
+    str = struct_ptr->m_identifier;
   }
 
-  return str;
 
   // FIXME: Get the overloads to work.
   // I am getting some strange template error fix this later.
 
   // return std::visit(Overload{native_type2cpp_type, user_type2cpp_type},
   //                   symbol_data);
+
+  return str;
 }
 } // namespace codegen::cpp_backend

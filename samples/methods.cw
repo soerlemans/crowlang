@@ -30,5 +30,7 @@ func main() -> int {
   example.m_num = 10
   // example.num()
 
-  return 0
+  let test = example.m_num
+
+  return test
 }
