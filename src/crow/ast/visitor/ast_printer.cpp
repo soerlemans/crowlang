@@ -80,7 +80,7 @@ DEFINE_PRINTER_METHOD(Return)
 DEFINE_PRINTER_METHOD(Parameter)
 DEFINE_PRINTER_METHOD(Function)
 
-auto AstPrinter::visit(Call* t_fn_call) -> Any
+auto AstPrinter::visit(FunctionCall* t_fn_call) -> Any
 {
   COUNTG_INIT();
 

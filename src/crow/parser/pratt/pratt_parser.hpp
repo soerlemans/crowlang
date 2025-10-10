@@ -58,7 +58,7 @@ class PrattParser : public Parser {
   virtual auto expr(int t_min_bp = 0) -> NodePtr;
 
   // Lvalue specific:
-  virtual auto member() -> NodePtr;
+  virtual auto field_access() -> NodePtr;
 
   virtual auto lvalue_chain_expr(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
   virtual auto lvalue_infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;

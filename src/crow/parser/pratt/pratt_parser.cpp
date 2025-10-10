@@ -335,7 +335,7 @@ auto PrattParser::infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
     } else {
       // TODO: Write better code than this lazy ad hoc solution.
       // const auto* is_variable{dynamic_cast<Variable*>(t_lhs.get())};
-      // const auto* is_function_call{dynamic_cast<Call*>(t_lhs.get())};
+      // const auto* is_function_call{dynamic_cast<FunctionCall*>(t_lhs.get())};
       // We need to have member() for rhs.
 			// If we fix this we can write to and from.
 
@@ -386,7 +386,7 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
 }
 
 // Lvalue specific:
-auto PrattParser::member() -> NodePtr
+auto PrattParser::field_access() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
@@ -443,7 +443,7 @@ auto PrattParser::lvalue_infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 auto PrattParser::lvalue_member_expr(const int t_min_bp) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePtr lhs{member()};
+  NodePtr lhs{field_access()};
 
   // Infix:
   while(!eos()) {

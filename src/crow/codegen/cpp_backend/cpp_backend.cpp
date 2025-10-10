@@ -241,7 +241,7 @@ auto CppBackend::visit(Function* t_fn) -> Any
   return ss.str();
 }
 
-auto CppBackend::visit(Call* t_call) -> Any
+auto CppBackend::visit(FunctionCall* t_call) -> Any
 {
   // FIXME: When get non shitty import resolution.
   // const auto identifier{t_call->identifier()};

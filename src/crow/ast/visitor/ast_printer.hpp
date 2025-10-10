@@ -148,7 +148,7 @@ class AstPrinter : public NodeVisitor {
   // Function:
   auto visit(node::function::Parameter* t_param) -> Any override;
   auto visit(node::function::Function* t_fn) -> Any override;
-  auto visit(node::function::Call* t_fn_call) -> Any override;
+  auto visit(node::function::FunctionCall* t_fn_call) -> Any override;
   auto visit(node::function::ReturnType* t_rt) -> Any override;
 
   // Lvalue:

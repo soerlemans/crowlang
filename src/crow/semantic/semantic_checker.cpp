@@ -382,7 +382,7 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
   return {};
 }
 
-auto SemanticChecker::visit(Call* t_fn_call) -> Any
+auto SemanticChecker::visit(FunctionCall* t_fn_call) -> Any
 {
   // TODO: Improve this code to be more generic and clean, error if this is
   // not a function name
