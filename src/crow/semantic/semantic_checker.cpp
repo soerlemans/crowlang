@@ -409,7 +409,7 @@ auto SemanticChecker::visit(FunctionCall* t_fn_call) -> Any
     ss << "Function signature: fn " << id << "(" << params << ") -> "
        << return_type << " { ... }\n";
 
-    ss << "Call signature: " << id << "(" << args << ")";
+    ss << "FunctionCall signature: " << id << "(" << args << ")";
 
     throw_type_error(ss.str());
   }

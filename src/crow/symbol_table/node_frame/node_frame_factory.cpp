@@ -73,7 +73,7 @@ auto NodeFrameFactory::visit(Function* t_fn) -> Any
   return {};
 }
 
-AST_VISITOR_STUB(NodeFrameFactory, Call)
+AST_VISITOR_STUB(NodeFrameFactory, FunctionCall)
 AST_VISITOR_STUB(NodeFrameFactory, ReturnType)
 
 // Lvalue:

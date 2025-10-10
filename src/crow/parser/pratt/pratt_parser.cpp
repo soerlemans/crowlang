@@ -156,7 +156,7 @@ auto PrattParser::function_call() -> NodePtr
     const auto id{token.str()};
     DBG_TRACE_PRINT(INFO, "Found a 'FUNCTION CALL': ", id);
 
-    node = make_node<Call>(id, std::move(args));
+    node = make_node<FunctionCall>(id, std::move(args));
   }
 
   return node;
@@ -189,6 +189,16 @@ auto PrattParser::chain_expr(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
+
+  // Chain expressions can only be performed on the following:
+  const auto* is_variable{dynamic_cast<Variable*>(t_lhs.get())};
+  const auto* is_function_call{dynamic_cast<FunctionCall*>(t_lhs.get())};
+  const auto* is_member_access{dynamic_cast<MemberAccess*>(t_lhs.get())};
+
+  // Guard clause:
+  if(!is_variable && !is_function_call && !is_member_access) {
+    return node;
+  }
 
   const auto pos{get_position()};
   if(after_newlines(TokenType::DOT)) {
@@ -325,26 +335,19 @@ auto PrattParser::infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  if(t_lhs) {
-    if(auto ptr{arithmetic(t_lhs, t_fn)}; ptr) {
-      node = std::move(ptr);
-    } else if(auto ptr{logical(t_lhs, t_fn)}; ptr) {
-      node = std::move(ptr);
-    } else if(auto ptr{comparison(t_lhs, t_fn)}; ptr) {
-      node = std::move(ptr);
-    } else {
-      // TODO: Write better code than this lazy ad hoc solution.
-      // const auto* is_variable{dynamic_cast<Variable*>(t_lhs.get())};
-      // const auto* is_function_call{dynamic_cast<FunctionCall*>(t_lhs.get())};
-      // We need to have member() for rhs.
-			// If we fix this we can write to and from.
+  // Guard clause:
+  if(t_lhs == nullptr) {
+    return nullptr;
+  }
 
-      // if(is_variable || is_function_call) {
-      //   if(auto ptr{lvalue_chain_expr(t_lhs, t_fn)}; ptr) {
-      //     node = std::move(ptr);
-      //   }
-      // }
-    }
+  if(auto ptr{chain_expr(t_lhs, t_fn)}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{arithmetic(t_lhs, t_fn)}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{logical(t_lhs, t_fn)}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{comparison(t_lhs, t_fn)}; ptr) {
+    node = std::move(ptr);
   }
 
   return node;

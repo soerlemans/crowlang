@@ -50,7 +50,7 @@ STUB(Defer)
 STUB(Return)
 STUB(Parameter)
 STUB(Function)
-STUB(Call)
+STUB(FunctionCall)
 STUB(ReturnType)
 
 // LValue:

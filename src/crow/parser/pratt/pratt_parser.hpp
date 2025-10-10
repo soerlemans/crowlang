@@ -47,6 +47,7 @@ class PrattParser : public Parser {
 
   // Infix parsing:
   virtual auto chain_expr(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
+
   virtual auto arithmetic(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
   virtual auto logical(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
   virtual auto comparison(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
