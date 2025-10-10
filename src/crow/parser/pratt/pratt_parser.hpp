@@ -44,9 +44,10 @@ class PrattParser : public Parser {
   virtual auto function_call() -> NodePtr;
 
   virtual auto prefix() -> NodePtr;
+  virtual auto prefix_chain_expr() -> NodePtr;
 
   // Infix parsing:
-  virtual auto chain_expr(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
+  virtual auto infix_chain_expr(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
 
   virtual auto arithmetic(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
   virtual auto logical(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
@@ -56,6 +57,7 @@ class PrattParser : public Parser {
   virtual auto infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
 
   // Expressions:
+  virtual auto chain_expr(int t_min_bp = 0) -> NodePtr;
   virtual auto expr(int t_min_bp = 0) -> NodePtr;
 
   // Lvalue specific:
