@@ -30,6 +30,9 @@ class PrattParser : public Parser {
   public:
   PrattParser(TokenStream&& t_token_stream);
 
+  // TODO: The chain expression stuff needs to be cleaned.
+  // Up and gain some clarity.
+
   // Grammar:
   virtual auto newline_opt() -> void = 0;
   virtual auto expr_list_opt() -> NodeListPtr = 0;
@@ -52,7 +55,6 @@ class PrattParser : public Parser {
   virtual auto arithmetic(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
   virtual auto logical(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
   virtual auto comparison(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
-
 
   virtual auto infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
 
