@@ -4,6 +4,7 @@
 // STL Includes:
 #include <memory>
 #include <type_traits>
+#include <variant>
 
 // Absolute Includes:
 #include "crow/types/core/core.hpp"
@@ -25,8 +26,8 @@ using types::core::NativeTypeOpt;
 using types::core::TypeVariant;
 
 // Aliases:
-// TODO: Add monostate.
-using Variant = std::variant<NativeType, StructTypePtr, FnTypePtr, VarTypePtr>;
+using Variant = std::variant<std::monostate, NativeType, StructTypePtr,
+                             FnTypePtr, VarTypePtr>;
 
 // Classes:
 // FIXME: We probably should probably not inherit from Variant.
@@ -49,8 +50,11 @@ class SymbolData : public Variant {
   auto function() const -> FnTypePtr;
   auto var() const -> VarTypePtr;
 
+  //! Verify if a symbol is struct type.
+  auto is_struct() const -> bool;
+
   //! Verify if a symbol is immutable.
-  auto is_const() const -> bool;
+  auto is_mutable() const -> bool;
 
   /*!
    * Stripts non type related information from the @ref SymbolData.

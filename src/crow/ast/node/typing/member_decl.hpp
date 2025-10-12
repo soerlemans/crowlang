@@ -11,9 +11,10 @@ namespace ast::node::typing {
 // Using Statements:
 using node_traits::Identifier;
 using node_traits::TypeAnnotation;
+using node_traits::TypeData;
 
 // Classes:
-class MemberDecl : public Identifier, public TypeAnnotation {
+class MemberDecl : public Identifier, public TypeAnnotation, public TypeData {
   public:
   MemberDecl(std::string_view t_identifier, std::string_view t_type);
 

@@ -23,16 +23,22 @@ enum class TokenType {
   IMPORT,
   EXPORT,
 
-  // Typing:
-  ENUM,
-  STRUCT,
-
   // Meta:
+  HASH, // Used for preprocessor directives.
   ATTRIBUTE_OPEN,
   ATTRIBUTE_CLOSE,
 
   DECLARE,
   MACRO,
+  CONST,
+
+  // Typing:
+  ALIAS,
+  ENUM,
+  STRUCT,
+  SELF,
+
+  PROTO,
 
   // Control statements:
   FUNCTION,
@@ -113,6 +119,7 @@ enum class TokenType {
   DOUBLE_COLON,
   COLON,
   SEMICOLON,
+  AMPERSAND,
 
   NEWLINE
 };

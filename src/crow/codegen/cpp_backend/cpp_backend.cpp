@@ -241,7 +241,7 @@ auto CppBackend::visit(Function* t_fn) -> Any
   return ss.str();
 }
 
-auto CppBackend::visit(Call* t_call) -> Any
+auto CppBackend::visit(FunctionCall* t_call) -> Any
 {
   // FIXME: When get non shitty import resolution.
   // const auto identifier{t_call->identifier()};
@@ -539,12 +539,96 @@ auto CppBackend::visit([[maybe_unused]] Boolean* t_bool) -> Any
 }
 
 // Typing:
-AST_VISITOR_STUB(CppBackend, MethodDecl)
+auto CppBackend::visit(Method* t_meth) -> Any
+{
+  using node::node_traits::AttributeType;
+
+  const auto identifier{t_meth->identifier()};
+
+  // const auto fn_type{t_meth->get_type()};
+  // const auto ret_type{type_variant2cpp(fn_type->m_return_type)};
+
+  std::stringstream param_ss{};
+
+  auto sep{""sv};
+  const auto params{t_meth->params()};
+  for(const auto& param : *params) {
+    param_ss << sep << resolve(param);
+
+    sep = ", ";
+  }
+
+  std::stringstream ss{};
+
+  // Attribute insertion:
+  const auto attrs{t_meth->get_attributes()};
+  for(const auto& attr : attrs) {
+    if(attr.m_type == AttributeType::INLINE) {
+      ss << "inline\n";
+    }
+  }
+
+  // clang-format off
+  // ss << std::format("auto {}({}) -> {}\n", identifier, param_ss.str(), ret_type)
+  ss << std::format("auto {}({}) -> {}\n", identifier, param_ss.str(), "void")
+     << "{\n"
+     << resolve(t_meth->body())
+     << "}\n";
+  // clang-format on
+
+  // FIXME: We should do this by looping through the toplevel.
+  // Of the SymbolTable instead.
+  // Register function to interop backend.
+  // for(auto& ptr : m_interop_backends) {
+  //   ptr->register_function(identifier);
+  // }
+
+  return ss.str();
+}
+
 AST_VISITOR_STUB(CppBackend, Interface)
-AST_VISITOR_STUB(CppBackend, MemberDecl)
-AST_VISITOR_STUB(CppBackend, Struct)
-AST_VISITOR_STUB(CppBackend, Impl)
-AST_VISITOR_STUB(CppBackend, DotExpr)
+
+auto CppBackend::visit(MemberDecl* t_member) -> Any
+{
+  const auto identifier{t_member->identifier()};
+  const auto type{type_variant2cpp(t_member->get_type())};
+
+  return std::format("{} {};\n", type, identifier);
+}
+
+auto CppBackend::visit(Struct* t_struct) -> Any
+{
+  const auto identifier{t_struct->identifier()};
+  const auto members{t_struct->body()};
+
+  std::stringstream ss{};
+
+  ss << std::format("struct {} {{\n", identifier);
+  ss << resolve(members);
+  ss << "};\n";
+
+  return ss.str();
+}
+
+auto CppBackend::visit(Self* t_self) -> Any
+{
+  return std::string{"this"};
+}
+
+auto CppBackend::visit(Member* t_member) -> Any
+{
+  const auto identifier{t_member->identifier()};
+
+  return std::format("{}", identifier);
+}
+
+auto CppBackend::visit(MemberAccess* t_access) -> Any
+{
+  const auto left{resolve(t_access->left())};
+  const auto right{resolve(t_access->right())};
+
+  return std::format("({}.{})", left, right);
+}
 
 // Misc:
 auto CppBackend::visit(List* t_list) -> Any
@@ -558,7 +642,7 @@ auto CppBackend::visit(List* t_list) -> Any
   return ss.str();
 }
 
-auto CppBackend::visit(NodeInterface* t_node) -> Any
+auto CppBackend::visit([[maybe_unused]] NodeInterface* t_node) -> Any
 {
   // We only call this method if we have not overriden.
   // The visit method for that AST node.

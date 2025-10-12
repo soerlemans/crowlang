@@ -35,8 +35,9 @@ auto PrattParser::lvalue() -> NodePtr
   const auto token{get_token()};
   if(next_if(TokenType::IDENTIFIER)) {
     const auto id{token.str()};
+    const auto pos{token.position()};
     DBG_TRACE_PRINT(INFO, "Found 'VARIABLE': ", id);
-    node = make_node<Variable>(token.position(), id);
+    node = make_node<Variable>(pos, id);
   }
 
   return node;
@@ -155,7 +156,7 @@ auto PrattParser::function_call() -> NodePtr
     const auto id{token.str()};
     DBG_TRACE_PRINT(INFO, "Found a 'FUNCTION CALL': ", id);
 
-    node = make_node<Call>(id, std::move(args));
+    node = make_node<FunctionCall>(id, std::move(args));
   }
 
   return node;
@@ -183,7 +184,59 @@ auto PrattParser::prefix() -> NodePtr
   return node;
 }
 
+auto PrattParser::prefix_chain_expr() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  if(auto ptr{function_call()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{field_access()}; ptr) {
+    node = std::move(ptr);
+  }
+
+  return node;
+}
+
 // Infix parsing:
+auto PrattParser::infix_chain_expr(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node{};
+
+  // Guard clause:
+  if(t_lhs == nullptr) {
+    return nullptr;
+  }
+
+  // Chain expressions can only be performed on the following:
+  const auto* is_variable{dynamic_cast<Variable*>(t_lhs.get())};
+  const auto* is_function_call{dynamic_cast<FunctionCall*>(t_lhs.get())};
+  const auto* is_member_access{dynamic_cast<MemberAccess*>(t_lhs.get())};
+
+  // Guard clause:
+  if(!is_variable && !is_function_call && !is_member_access) {
+    return node;
+  }
+
+  const auto pos{get_position()};
+  if(after_newlines(TokenType::DOT)) {
+    PARSER_FOUND(TokenType::DOT);
+    const auto token{get_token()};
+    next();
+
+    if(auto rhs{t_fn(token.type())}; rhs) {
+      node = make_node<MemberAccess>(pos, std::move(t_lhs), std::move(rhs));
+    }
+
+    // }else if(after_newlines(TokenType::BRACKET_OPEN)) {
+    // } else if(after_newlines(TokenType::PAREN_OPEN)) {
+    // TODO: Add for '[]' and '()'.
+  }
+
+  return node;
+}
+
 auto PrattParser::arithmetic(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -301,20 +354,57 @@ auto PrattParser::infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node;
 
-  if(t_lhs) {
-    if(auto ptr{arithmetic(t_lhs, t_fn)}; ptr) {
-      node = std::move(ptr);
-    } else if(auto ptr{logical(t_lhs, t_fn)}; ptr) {
-      node = std::move(ptr);
-    } else if(auto ptr{comparison(t_lhs, t_fn)}; ptr) {
-      node = std::move(ptr);
-    }
+  // Guard clause:
+  if(t_lhs == nullptr) {
+    return nullptr;
+  }
+
+  if(auto ptr{arithmetic(t_lhs, t_fn)}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{logical(t_lhs, t_fn)}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{comparison(t_lhs, t_fn)}; ptr) {
+    node = std::move(ptr);
   }
 
   return node;
 }
 
 // Expressions:
+auto PrattParser::chain_expr(const int t_min_bp) -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr lhs{prefix_chain_expr()};
+
+  // Infix:
+  while(!eos()) {
+    const auto rhs_chain_fn{[&](const TokenType t_type) {
+      NodePtr rhs;
+
+      const auto [lbp, rbp] = m_infix.at(t_type);
+      if(lbp < t_min_bp) {
+        prev();
+      } else {
+        rhs = chain_expr(rbp);
+        if(!rhs) {
+          throw_syntax_error(
+            "Chain infix operations require a right hand side");
+        }
+      }
+
+      return rhs;
+    }};
+
+    if(auto ptr{infix_chain_expr(lhs, rhs_chain_fn)}; ptr) {
+      lhs = std::move(ptr);
+    } else {
+      break;
+    }
+  }
+
+  return lhs;
+}
+
 auto PrattParser::expr(const int t_min_bp) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -322,6 +412,29 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
 
   // Infix:
   while(!eos()) {
+    const auto rhs_chain_fn{[&](const TokenType t_type) {
+      NodePtr rhs;
+
+      // If we see a chain expression we need to defer into first parsing it.
+      // And then resume normal operation.
+      const auto [lbp, rbp] = m_infix.at(t_type);
+      if(lbp < t_min_bp) {
+        prev();
+      } else {
+        rhs = chain_expr(rbp);
+        if(!rhs) {
+          throw_syntax_error(
+            "Chain infix operations require a right hand side");
+        }
+      }
+
+      return rhs;
+    }};
+
+    if(auto ptr{infix_chain_expr(lhs, rhs_chain_fn)}; ptr) {
+      lhs = std::move(ptr);
+    }
+
     const auto rhs_fn{[&](const TokenType t_type) {
       NodePtr rhs;
 
@@ -338,8 +451,136 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
       return rhs;
     }};
 
-    // If we do not find the expression quit
+    // If we do not find the expression quit.
     if(auto ptr{infix(lhs, rhs_fn)}; ptr) {
+      lhs = std::move(ptr);
+    } else {
+      break;
+    }
+  }
+
+  return lhs;
+}
+
+// Lvalue specific:
+auto PrattParser::field_access() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node{};
+
+  // TODO: Add method call.
+  // And Array Subscript.
+
+  const auto token{get_token()};
+  if(next_if(TokenType::IDENTIFIER)) {
+    const auto id{token.str()};
+    const auto pos{token.position()};
+    DBG_TRACE_PRINT(INFO, "Found 'MEMBER': ", id);
+    node = make_node<Member>(pos, id);
+  }
+
+  return node;
+}
+
+auto PrattParser::lvalue_chain_expr(NodePtr& t_lhs, const RhsFn& t_fn)
+  -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node{};
+
+  const auto pos{get_position()};
+  if(after_newlines(TokenType::DOT)) {
+    PARSER_FOUND(TokenType::DOT);
+    const auto token{get_token()};
+    next();
+
+    if(auto rhs{t_fn(token.type())}; rhs) {
+      node = make_node<MemberAccess>(pos, std::move(t_lhs), std::move(rhs));
+    }
+
+    // }else if(after_newlines(TokenType::BRACKET_OPEN)) {
+    // } else if(after_newlines(TokenType::PAREN_OPEN)) {
+    // TODO: Add for '[]' and '()'.
+  }
+
+  return node;
+}
+
+auto PrattParser::lvalue_infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node;
+
+  if(t_lhs) {
+    if(auto ptr{lvalue_chain_expr(t_lhs, t_fn)}; ptr) {
+      node = std::move(ptr);
+    }
+  }
+
+  return node;
+}
+
+auto PrattParser::lvalue_member_expr(const int t_min_bp) -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr lhs{field_access()};
+
+  // Infix:
+  while(!eos()) {
+    const auto rhs_fn{[&](const TokenType t_type) {
+      NodePtr rhs;
+
+      const auto [lbp, rbp] = m_infix.at(t_type);
+      if(lbp < t_min_bp) {
+        prev();
+      } else {
+        rhs = lvalue_member_expr(rbp);
+        if(!rhs) {
+          throw_syntax_error(
+            "Lvalue member infix operations require a right hand side");
+        }
+      }
+
+      return rhs;
+    }};
+
+    // If we do not find the expression quit.
+    if(auto ptr{lvalue_infix(lhs, rhs_fn)}; ptr) {
+      lhs = std::move(ptr);
+    } else {
+      break;
+    }
+  }
+
+  return lhs;
+}
+
+auto PrattParser::lvalue_expr(const int t_min_bp) -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr lhs{lvalue()};
+
+  // Infix:
+  while(!eos()) {
+    const auto rhs_fn{[&](const TokenType t_type) {
+      NodePtr rhs;
+
+      const auto [lbp, rbp] = m_infix.at(t_type);
+      if(lbp < t_min_bp) {
+        prev();
+      } else {
+        rhs = lvalue_member_expr(rbp);
+        if(!rhs) {
+          throw_syntax_error(
+            "Lvalue infix operations require a right hand side");
+        }
+      }
+
+      return rhs;
+    }};
+
+    // If we do not find the expression quit.
+    if(auto ptr{lvalue_infix(lhs, rhs_fn)}; ptr) {
       lhs = std::move(ptr);
     } else {
       break;

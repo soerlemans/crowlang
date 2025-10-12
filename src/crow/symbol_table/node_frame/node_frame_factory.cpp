@@ -73,7 +73,7 @@ auto NodeFrameFactory::visit(Function* t_fn) -> Any
   return {};
 }
 
-AST_VISITOR_STUB(NodeFrameFactory, Call)
+AST_VISITOR_STUB(NodeFrameFactory, FunctionCall)
 AST_VISITOR_STUB(NodeFrameFactory, ReturnType)
 
 // Lvalue:
@@ -125,12 +125,12 @@ AST_VISITOR_STUB(NodeFrameFactory, String)
 AST_VISITOR_STUB(NodeFrameFactory, Boolean)
 
 // Typing:
-AST_VISITOR_STUB(NodeFrameFactory, MethodDecl)
+AST_VISITOR_STUB(NodeFrameFactory, Method)
 AST_VISITOR_STUB(NodeFrameFactory, Interface)
 AST_VISITOR_STUB(NodeFrameFactory, MemberDecl)
 AST_VISITOR_STUB(NodeFrameFactory, Struct)
-AST_VISITOR_STUB(NodeFrameFactory, Impl)
-AST_VISITOR_STUB(NodeFrameFactory, DotExpr)
+AST_VISITOR_STUB(NodeFrameFactory, Self)
+AST_VISITOR_STUB(NodeFrameFactory, MemberAccess)
 
 auto NodeFrameFactory::visit(node::List* t_list) -> Any
 {

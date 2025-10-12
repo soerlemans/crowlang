@@ -38,19 +38,27 @@ namespace keywords {
   DEFINE_TERMINAL(g_import, "import", IMPORT);
   DEFINE_TERMINAL(g_export, "export", EXPORT);
 
+	// Meta:
+	// TODO: Consider renaming to just decl.
+  DEFINE_TERMINAL(g_declare, "declare", DECLARE);
+  DEFINE_TERMINAL(g_macro,   "macro",   MACRO);
+  DEFINE_TERMINAL(g_const,   "const",   CONST);
+
   // Typing:
+  DEFINE_TERMINAL(g_alias,  "alias",  ALIAS);
   DEFINE_TERMINAL(g_enum,   "enum",   ENUM);
   DEFINE_TERMINAL(g_struct, "struct", STRUCT);
+  DEFINE_TERMINAL(g_self,   "self",   SELF);
+
+  DEFINE_TERMINAL(g_proto, "proto", PROTO);
 
   // Control statements:
-  DEFINE_TERMINAL(g_declare, "declare", DECLARE); // TODO: Consider renaming to just decl.
-  DEFINE_TERMINAL(g_macro,   "macro",   MACRO);
-  DEFINE_TERMINAL(g_func,    "func",    FUNCTION);
-  DEFINE_TERMINAL(g_match,   "match",   MATCH);
-  DEFINE_TERMINAL(g_if,      "if",      IF);
-  DEFINE_TERMINAL(g_else,    "else",    ELSE);
-  DEFINE_TERMINAL(g_elif,    "elif",    ELIF);
-  DEFINE_TERMINAL(g_loop,    "loop",    LOOP);
+  DEFINE_TERMINAL(g_func,  "func",  FUNCTION);
+  DEFINE_TERMINAL(g_match, "match", MATCH);
+  DEFINE_TERMINAL(g_if,    "if",    IF);
+  DEFINE_TERMINAL(g_else,  "else",  ELSE);
+  DEFINE_TERMINAL(g_elif,  "elif",  ELIF);
+  DEFINE_TERMINAL(g_loop,  "loop",  LOOP);
 
   // Jump:
   DEFINE_TERMINAL(g_break,    "break",    BREAK);
@@ -67,7 +75,7 @@ namespace keywords {
   // 	(g_let.pair())
   // 	(g_var.pair())
   // 	(g_module.pair()) (g_import.pair()) (g_priv.pair()) (g_pub.pair())
-  // 	(g_struct.pair()) (g_interface.pair()) (g_impl.pair())
+  // 	(g_struct.pair()) (g_proto.pair()) (g_impl.pair())
   //    (g_func.pair())
   // 	(g_match.pair())
   //    (g_if.pair()) (g_else.pair()) (g_elif.pair())
@@ -79,8 +87,9 @@ namespace keywords {
   const std::map g_keywords {
     g_let.pair(), g_var.pair(),
     g_module.pair(), g_import.pair(), g_export.pair(),
-    g_enum.pair(), g_struct.pair(),
-    g_declare.pair(), g_macro.pair(),
+    g_declare.pair(), g_macro.pair(), g_const.pair(),
+    g_alias.pair(), g_enum.pair(), g_struct.pair(), g_self.pair(),
+		g_proto.pair(),
     g_func.pair(),
     g_match.pair(),
     g_if.pair(), g_else.pair(), g_elif.pair(),
@@ -93,7 +102,9 @@ namespace keywords {
 
 // Language reserved symbols
 namespace symbols {
-  // Attributes:
+  // Meta:
+  DEFINE_TERMINAL(g_hash, '#', HASH);
+
   DEFINE_TERMINAL(g_attribute_open,  "[[", ATTRIBUTE_OPEN);
   DEFINE_TERMINAL(g_attribute_close, "]]", ATTRIBUTE_CLOSE);
 
@@ -105,7 +116,7 @@ namespace symbols {
   DEFINE_TERMINAL(g_brace_open,     '[', BRACE_OPEN);
   DEFINE_TERMINAL(g_brace_close,    ']', BRACE_CLOSE);
 
-  // Assignment variants of Arithmetic operators:
+  // Arithmetic operators:
   DEFINE_TERMINAL(g_plus,         '+', PLUS);
   DEFINE_TERMINAL(g_minus,        '-', MINUS);
   DEFINE_TERMINAL(g_asterisk,     '*', ASTERISK);
@@ -148,10 +159,13 @@ namespace symbols {
   DEFINE_TERMINAL(g_double_colon,  "::", DOUBLE_COLON);
   DEFINE_TERMINAL(g_colon,         ':',  COLON);
   DEFINE_TERMINAL(g_semicolon,     ';',  SEMICOLON);
+  DEFINE_TERMINAL(g_ampersand,     '&',  AMPERSAND);
 
   DEFINE_TERMINAL(g_newline,  '\n', NEWLINE);
 
   const std::map g_single_symbols {
+		g_hash.pair(),
+
     g_paren_open.pair(),
     g_paren_close.pair(),
     g_accolade_open.pair(),
@@ -177,6 +191,7 @@ namespace symbols {
     g_asterisk.pair(),
     g_slash.pair(),
     g_percent_sign.pair(),
+		g_ampersand.pair(),
 
     g_newline.pair()
   };

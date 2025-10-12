@@ -1,12 +1,12 @@
 #include "type2cpp.hpp"
 
 // STL Includes:
-#include <exception>
 #include <memory>
 
 // Absolute Includes:
 #include "crow/ast/node/include_nodes.hpp"
 #include "lib/overload.hpp"
+#include "lib/stdexcept/stdexcept.hpp"
 
 // Macros:
 #define MATCH(t_key, t_value) \
@@ -25,6 +25,8 @@ using types::core::nativetype2str;
  */
 auto native_type2cpp(const NativeType t_type) -> std::string_view
 {
+  using lib::stdexcept::throw_invalid_argument;
+
   std::string_view str{};
 
   // FIXME: Currently the C++ fixed width floating point types.
@@ -48,6 +50,8 @@ auto native_type2cpp(const NativeType t_type) -> std::string_view
     MATCH(U64, "std::uint64_t");
     MATCH(USIZE, "std::uintptr_t");
 
+    // TODO: Add string literals.
+
     MATCH(BOOL, "bool");
 
     default: {
@@ -55,7 +59,7 @@ auto native_type2cpp(const NativeType t_type) -> std::string_view
         std::format("NativeType could not be converted to C++ type: ",
                     nativetype2str(t_type))};
 
-      throw std::invalid_argument{msg};
+      throw_invalid_argument(msg);
       break;
     }
   }
@@ -81,22 +85,25 @@ namespace codegen::cpp_backend {
 // Using Statements:
 NODE_USING_ALL_NAMESPACES()
 
-auto type_variant2cpp(const TypeVariant& t_variant) -> std::string_view
+auto type_variant2cpp(const TypeVariant& t_variant) -> std::string
 {
   using lib::Overload;
 
-  std::string_view str{};
+  std::string str{};
 
   if(const auto opt{t_variant.native_type()}; opt) {
     str = native_type2cpp(opt.value());
+  } else if(const auto struct_ptr{t_variant.struct_()}; struct_ptr) {
+    str = struct_ptr->m_identifier;
   }
 
-  return str;
 
   // FIXME: Get the overloads to work.
   // I am getting some strange template error fix this later.
 
   // return std::visit(Overload{native_type2cpp_type, user_type2cpp_type},
   //                   symbol_data);
+
+  return str;
 }
 } // namespace codegen::cpp_backend

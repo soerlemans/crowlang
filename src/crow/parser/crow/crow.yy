@@ -12,7 +12,7 @@
 %token ATTRIBUTE_OPEN ATTRIBUTE_CLOSE
 
 // Typing:
-%token Enum Struct
+%token Enum Struct Self Proto
 
 // Control Statements:
 %token Fn Match Case If Else ElIf Loop
@@ -56,17 +56,40 @@ terminator       : terminator ';'
 
 // Lvalue:
 lvalue           : IDENTIFIER
-                 | lvalue '[' expr ']'
-                 | lvalue newline_opt '.' IDENTIFIER
-                 | lvalue newline_opt ARROW IDENTIFIER
                  ;
 
-chain_expr       : IDENTIFIER
-                 | chain_expr '[' expr ']'
-				         | chain_expr '(' expr_list_opt ')'
-                 | chain_expr newline_opt '.' IDENTIFIER
-                 | chain_expr newline_opt ARROW IDENTIFIER
+// Lvalue Infix:
+lvalue_expr      : lvalue
+                 | lvalue lvalue_chain_expr
                  ;
+
+// Chain:
+// Note lets not allow ending in () for lvalue chain expressions.
+lvalue_chain_expr : '.' newline_opt lvalue
+                  | '[' expr ']' newline_opt
+                  | '(' expr_list_opt ')' newline_opt
+                  ;
+
+// | '.' '(' expr_list_opt ')'
+chain_expr       : lvalue_chain_expr
+                 | '.' newline_opt function_call
+                 ;
+
+lvalue_chain_expr_list : lvalue_chain_expr
+                       | lvalue_chain_expr_list lvalue_chain_expr
+                       ;
+
+chain_expr_list  : chain_expr
+                 | chain_expr_list chain_expr
+                 ;
+
+lvalue_chain_expr_list_opt : // empty
+                           | lvalue_chain_expr_list
+                           ;
+
+chain_expr_list_opt : // empty
+                    | chain_expr_list
+                    ;
 
 // Literals:
 literal          : NUMBER
@@ -140,20 +163,21 @@ expr_opt         : // empty
 
 // TODO: Refactor Var and Let to be more elegant.
 // TODO: Add block definitions like in Golang (using parenthesis).
-let_expr         : Let IDENTIFIER '=' newline_opt expr
-                 | Let IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
+let_expr         : Let IDENTIFIER ':' type_specifier
+                 | Let IDENTIFIER '=' newline_opt expr
+                 | Let IDENTIFIER ':' type_specifier '=' newline_opt expr
                  ;
 
-var_expr         : Var IDENTIFIER ':' IDENTIFIER
+var_expr         : Var IDENTIFIER ':' type_specifier
                  | Var IDENTIFIER '=' newline_opt expr
-                 | Var IDENTIFIER ':' IDENTIFIER '=' newline_opt expr
+                 | Var IDENTIFIER ':' type_specifier '=' newline_opt expr
                  ;
 
-decl_expr        : var_expr
+binding_expr     : var_expr
                  | let_expr
                  ;
 
-eval_expr        : decl_expr ';' expr
+eval_expr        : binding_expr ';' expr
                  | expr
                  ;
 
@@ -161,17 +185,17 @@ expr_statement   : expr terminator
                  ;
 
 // Result statement:
-assignment       : lvalue MUL_ASSIGN newline_opt expr
-                 | lvalue DIV_ASSIGN newline_opt expr
-                 | lvalue MOD_ASSIGN newline_opt expr
-                 | lvalue ADD_ASSIGN newline_opt expr
-                 | lvalue SUB_ASSIGN newline_opt expr
-                 | lvalue '=' newline_opt expr
-		             | lvalue INCREMENT
-		             | lvalue DECREMENT
+assignment       : lvalue_expr MUL_ASSIGN newline_opt expr
+                 | lvalue_expr DIV_ASSIGN newline_opt expr
+                 | lvalue_expr MOD_ASSIGN newline_opt expr
+                 | lvalue_expr ADD_ASSIGN newline_opt expr
+                 | lvalue_expr SUB_ASSIGN newline_opt expr
+                 | lvalue_expr '=' newline_opt expr
+		             | lvalue_expr INCREMENT
+		             | lvalue_expr DECREMENT
                  ;
 
-result_statement : decl_expr terminator
+result_statement : binding_expr terminator
                  | assignment terminator
                  | function_call terminator
                  ;
@@ -232,11 +256,11 @@ elif_statement   : ElIf eval_expr body
 
 // Statements:
 statement        : result_statement
-		 | if_statement
-		 | match_statement
-		 | loop_statement
-		 | keyword_statement
-		 | body
+                 | if_statement
+                 | match_statement
+                 | loop_statement
+                 | keyword_statement
+                 | body
                  ;
 
 statement_list   : statement newline_opt
@@ -249,9 +273,17 @@ body             : newline_opt '{' newline_opt '}'
                  ;
 
 // Typing:
+// TODO: Deal with more complex type specifications/expressions.
+// Just looking at an identifier is not enough anymore (or it wont be).
+type_expr        :
+                 ;
+
 // TODO: Figure out how to name aliases?
 /* alias_def     : Alias? */
-/* type_specifier     : IDENTIFIER | *IDENTIFIER */
+type_specifier   : IDENTIFIER
+                 | * type_specifier
+                 | & type_specifier
+								 ;
 
 // Enum:
 enum_def         : Enum IDENTIFIER newline_opt
@@ -291,21 +323,22 @@ return_type_opt  : // empty
                  | return_type
                  ;
 
-lambda           : Func '(' param_list_opt ')' return_type_opt body
-                 | Func return_type_opt body
-                 ;
+// lambda           : Func '(' param_list_opt ')' return_type_opt body
+//                  | Func return_type_opt body
+//                  ;
 
+// We detect methods by the receiver which will give them access to the self keyword.
 function         : Func IDENTIFIER '(' param_list_opt ')' return_type_opt body
-                 | Func IDENTIFIER return_type_opt body
+                 | Func '(' IDENTIFIER ')' IDENTIFIER '(' param_list_opt ')' return_type_opt body
 				         ;
 
-function_call    : chain_expr '(' expr_list_opt')'
+function_call    : IDENTIFIER '(' expr_list_opt')'
                  ;
 
 // Meta:
 attribute_item   : attribute
                  | declare
-                 | decl_expr
+                 | binding_expr
                  | function
                  ;
 
@@ -325,6 +358,8 @@ attribute        : ATTRIBUTE_OPEN identifier ATTRIBUTE_CLOSE newline_opt attribu
 declare          : Declare Let IDENTIFIER : IDENTIFIER newline_opt
                  | Declare Var IDENTIFIER : IDENTIFIER newline_opt
                  | Declare Func IDENTIFIER '(' param_list_opt ')' return_type_opt newline_opt
+                 | Declare Struct IDENTIFIER newline_opt
+								 | /* TODO: Add method declarations. */
 								 ;
 
 // Import:
@@ -354,7 +389,7 @@ item             : module_decl
 								 | declare
 								 | attribute
 				         | type_def
-				         | decl_expr
+				         | binding_expr
                  | function
                  | impl_block
                  ;

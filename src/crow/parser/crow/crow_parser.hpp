@@ -52,7 +52,7 @@ class CrowParser : public pratt::PrattParser {
   virtual auto init_expr(TokenType t_type) -> NodePtr;
   virtual auto let_expr() -> NodePtr;
   virtual auto var_expr() -> NodePtr;
-  virtual auto decl_expr() -> NodePtr;
+  virtual auto binding_expr() -> NodePtr;
   virtual auto eval_expr() -> EvalPair;
 
   virtual auto expr_statement() -> NodePtr;

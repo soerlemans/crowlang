@@ -109,6 +109,7 @@ auto is_condition(NativeType t_native_type) -> bool;
 auto is_numeric(NativeType t_native_type) -> bool;
 
 auto str2nativetype(std::string_view t_str) -> NativeType;
+auto str2nativetype_opt(std::string_view t_str) -> NativeTypeOpt;
 auto nativetype2str(NativeType t_native_type) -> std::string;
 } // namespace types::core
 

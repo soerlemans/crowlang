@@ -21,6 +21,26 @@ template<typename T>
 inline constexpr bool always_false = false;
 
 /*!
+ * Needs to be a struct because @ref Overload only accepts functors.
+ * The handler is used to catch the error state where @ref std::monostate is.
+ * Set when its not supposed to be.
+ * We need to be able to specifically set the return type.
+ */
+template<typename T = void>
+struct MonoStateHandler {
+  auto operator()(std::monostate) -> T
+  {
+    using lib::stdexcept::throw_unexpected_monostate;
+
+    throw_unexpected_monostate("Illegal occurrence of std::monostate.");
+
+    // Will never be reached.
+    return T{};
+  }
+};
+
+// Functions:
+/*!
  * Check if a @ref std::shared_ptr is a nullptr or not.
  * If the given ptr is a nullptr we should throw.
  * Only use in cases where you are certain a nullptr should never happen.
@@ -34,7 +54,7 @@ auto nullptr_check(const std::string_view t_str,
   if(!t_ptr) {
     const auto msg{std::format("{} ptr is nullptr!", t_str)};
 
-    throw_unexpected_nullptr("ptr is nullptr!");
+    throw_unexpected_nullptr(msg);
   }
 }
 } // namespace
@@ -56,7 +76,14 @@ auto SymbolData::var() const -> VarTypePtr
   return std::get<VarTypePtr>(*this);
 }
 
-auto SymbolData::is_const() const -> bool
+auto SymbolData::is_struct() const -> bool
+{
+  const auto* struct_ptr{std::get_if<StructTypePtr>(this)};
+
+  return (struct_ptr != nullptr);
+}
+
+auto SymbolData::is_mutable() const -> bool
 {
   using lib::Overload;
 
@@ -65,15 +92,16 @@ auto SymbolData::is_const() const -> bool
   const auto var_type{[&](const VarTypePtr& t_data) {
     nullptr_check("Variable", t_data);
 
-    return t_data->m_const;
+    return (t_data->m_mutability == Mutability::IMMUTABLE);
   }};
 
-  const auto not_const{[]([[maybe_unused]]
-                          const auto& t_data) {
+  const auto immutable_types{[]([[maybe_unused]]
+                                const auto& t_data) {
     return false;
   }};
 
-  result = std::visit(Overload{var_type, not_const}, *this);
+  result = std::visit(
+    Overload{var_type, immutable_types, MonoStateHandler<bool>{}}, *this);
 
   return result;
 }
@@ -97,7 +125,7 @@ auto SymbolData::native_type() const -> NativeTypeOpt
 {
   using lib::Overload;
 
-  NativeTypeOpt opt;
+  NativeTypeOpt opt{};
 
   const auto native{[&](const NativeType t_type) -> NativeTypeOpt {
     return t_type;
@@ -106,10 +134,12 @@ auto SymbolData::native_type() const -> NativeTypeOpt
   const auto rest{[&](const std::shared_ptr<auto>& t_data) {
     nullptr_check("Non native", t_data);
 
+    // Note this is a recursive call.
     return t_data->native_type();
   }};
 
-  opt = std::visit(Overload{native, rest}, *this);
+  opt = std::visit(Overload{native, rest, MonoStateHandler<NativeTypeOpt>{}},
+                   *this);
 
   return opt;
 }
@@ -131,7 +161,8 @@ auto SymbolData::type_variant() const -> TypeVariant
     return t_data->type_variant();
   }};
 
-  variant = std::visit(Overload{native, rest}, *this);
+  variant =
+    std::visit(Overload{native, rest, MonoStateHandler<TypeVariant>{}}, *this);
 
   return variant;
 }
@@ -146,23 +177,28 @@ auto SymbolData::operator==(const SymbolData& t_rhs) const -> bool
       using L = std::decay_t<decltype(t_l)>;
       using R = std::decay_t<decltype(t_r)>;
 
-      // Make sure the types are the same.
-      if constexpr(std::is_same_v<L, R>) {
-        if constexpr(std::is_same_v<L, NativeType>) {
-          // NativeType is just a simple compare.
-          return t_l == t_r;
-        } else if constexpr(lib::IsAnyOf<L, StructTypePtr, FnTypePtr,
-                                         VarTypePtr>) {
-          // Return
-          if(t_l && t_r) {
-            // Compare resolved pointers.
-            return (*t_l == *t_r);
-          } else {
-            return false;
-          }
+      if constexpr(!std::is_same_v<L, R>) {
+        // Guard clause make sure the types are the same.
+        // Or we just return false.
+        return false;
+      } else if constexpr(std::is_same_v<L, NativeType>) {
+        // NativeType is just a simple compare.
+        return (t_l == t_r);
+      } else if constexpr(lib::IsAnyOf<L, StructTypePtr, FnTypePtr,
+                                       VarTypePtr>) {
+        if(t_l && t_r) {
+          // Compare resolved pointers.
+          return (*t_l == *t_r);
         } else {
-          static_assert(always_false<L>, "Unhandled type.");
+          // Return false on any nullptr.
+          return false;
         }
+      } else if constexpr(std::is_same_v<L, std::monostate>) {
+        // We should try to avoid throwing in operator==.
+        // So just compare std::monostate and return.
+        return (t_l == t_r);
+      } else {
+        static_assert(always_false<L>, "Unhandled type.");
       }
 
       return false;
@@ -176,7 +212,7 @@ auto SymbolData::operator!=(const SymbolData& t_rhs) const -> bool
 {
   const auto& lhs{*this};
 
-  // Use ==.
+  // Reuse operator== logic.
   return !(lhs == t_rhs);
 }
 } // namespace semantic::symbol

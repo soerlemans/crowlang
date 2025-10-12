@@ -255,7 +255,7 @@ auto MirBuilder::visit(node::function::Function* t_fn) -> Any
   return {};
 }
 
-auto MirBuilder::visit(Call* t_call) -> Any
+auto MirBuilder::visit(FunctionCall* t_call) -> Any
 {
   const auto fn_name{t_call->identifier()};
   const auto fn_args{t_call->args()};
@@ -920,12 +920,12 @@ auto MirBuilder::visit(Boolean* t_bool) -> Any
 }
 
 // Typing:
-STUB(MethodDecl)
+STUB(Method)
 STUB(Interface)
 STUB(MemberDecl)
 STUB(Struct)
-STUB(Impl)
-STUB(DotExpr)
+STUB(Self)
+STUB(MemberAccess)
 
 // Misc:
 auto MirBuilder::visit(List* t_list) -> Any

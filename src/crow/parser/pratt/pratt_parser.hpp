@@ -30,6 +30,9 @@ class PrattParser : public Parser {
   public:
   PrattParser(TokenStream&& t_token_stream);
 
+  // TODO: The chain expression stuff needs to be cleaned.
+  // Up and gain some clarity.
+
   // Grammar:
   virtual auto newline_opt() -> void = 0;
   virtual auto expr_list_opt() -> NodeListPtr = 0;
@@ -44,8 +47,11 @@ class PrattParser : public Parser {
   virtual auto function_call() -> NodePtr;
 
   virtual auto prefix() -> NodePtr;
+  virtual auto prefix_chain_expr() -> NodePtr;
 
   // Infix parsing:
+  virtual auto infix_chain_expr(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
+
   virtual auto arithmetic(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
   virtual auto logical(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
   virtual auto comparison(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
@@ -53,7 +59,26 @@ class PrattParser : public Parser {
   virtual auto infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
 
   // Expressions:
+  virtual auto chain_expr(int t_min_bp = 0) -> NodePtr;
   virtual auto expr(int t_min_bp = 0) -> NodePtr;
+
+  // Lvalue specific:
+  virtual auto field_access() -> NodePtr;
+
+  virtual auto lvalue_chain_expr(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
+  virtual auto lvalue_infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
+
+  /*!
+   * Continue's a member access chain.
+   */
+  virtual auto lvalue_member_expr(int t_min_bp = 0) -> NodePtr;
+
+  /*!
+   * Generally an expression is universal.
+   * But when we are dealing with precedence as the destination for a value.
+   * We only allow assignable statements on the left side.
+   */
+  virtual auto lvalue_expr(int t_min_bp = 0) -> NodePtr;
 
   virtual ~PrattParser() = default;
 };

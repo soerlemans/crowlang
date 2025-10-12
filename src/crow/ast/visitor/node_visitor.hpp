@@ -48,7 +48,7 @@ class NodeVisitor {
   // Function:
   virtual auto visit(node::function::Parameter* t_param) -> Any;
   virtual auto visit(node::function::Function* t_fn) -> Any;
-  virtual auto visit(node::function::Call* t_fn_call) -> Any;
+  virtual auto visit(node::function::FunctionCall* t_fn_call) -> Any;
   virtual auto visit(node::function::ReturnType* t_rt) -> Any;
 
   // Lvalue:
@@ -90,12 +90,13 @@ class NodeVisitor {
   virtual auto visit(node::rvalue::Boolean* t_bool) -> Any;
 
   // Typing:
-  virtual auto visit(node::typing::MethodDecl* t_md) -> Any;
+  virtual auto visit(node::typing::Method* t_meth) -> Any;
   virtual auto visit(node::typing::Interface* t_ifc) -> Any;
-  virtual auto visit(node::typing::MemberDecl* t_md) -> Any;
+  virtual auto visit(node::typing::MemberDecl* t_meth) -> Any;
   virtual auto visit(node::typing::Struct* t_struct) -> Any;
-  virtual auto visit(node::typing::Impl* t_impl) -> Any;
-  virtual auto visit(node::typing::DotExpr* t_dot_expr) -> Any;
+  virtual auto visit(node::typing::Self* t_self) -> Any;
+  virtual auto visit(node::typing::Member* t_member) -> Any;
+  virtual auto visit(node::typing::MemberAccess* t_access) -> Any;
 
   // Misc:
   virtual auto visit(node::List* t_list) -> Any;

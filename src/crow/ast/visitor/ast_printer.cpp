@@ -80,7 +80,7 @@ DEFINE_PRINTER_METHOD(Return)
 DEFINE_PRINTER_METHOD(Parameter)
 DEFINE_PRINTER_METHOD(Function)
 
-auto AstPrinter::visit(Call* t_fn_call) -> Any
+auto AstPrinter::visit(FunctionCall* t_fn_call) -> Any
 {
   COUNTG_INIT();
 
@@ -295,12 +295,33 @@ auto AstPrinter::visit(Boolean* t_bool) -> Any
 }
 
 // Typing:
-DEFINE_PRINTER_METHOD(MethodDecl)
+auto AstPrinter::visit(Method* t_meth) -> Any
+{
+  COUNTG_INIT();
+
+  print("Method");
+  print("Receiver Type: ", t_meth->get_receiver());
+  print_traits(t_meth);
+
+  return {};
+}
+
 DEFINE_PRINTER_METHOD(Interface)
 DEFINE_PRINTER_METHOD(MemberDecl)
 DEFINE_PRINTER_METHOD(Struct)
-DEFINE_PRINTER_METHOD(Impl)
-DEFINE_PRINTER_METHOD(DotExpr)
+
+auto AstPrinter::visit(Self* t_self) -> Any
+{
+  COUNTG_INIT();
+
+  print("Self");
+  print_traits(t_self);
+
+  return {};
+}
+
+DEFINE_PRINTER_METHOD(Member)
+DEFINE_PRINTER_METHOD(MemberAccess)
 
 // Misc:
 auto AstPrinter::visit(List* t_list) -> Any

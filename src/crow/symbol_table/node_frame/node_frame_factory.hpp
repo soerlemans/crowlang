@@ -39,7 +39,7 @@ class NodeFrameFactory : public NodeVisitor {
   // Function:
   auto visit(node::function::Parameter* t_param) -> Any override;
   auto visit(node::function::Function* t_fn) -> Any override;
-  auto visit(node::function::Call* t_fn_call) -> Any override;
+  auto visit(node::function::FunctionCall* t_fn_call) -> Any override;
   auto visit(node::function::ReturnType* t_rt) -> Any override;
 
   // Lvalue:
@@ -75,12 +75,12 @@ class NodeFrameFactory : public NodeVisitor {
   auto visit(node::rvalue::Boolean* t_bool) -> Any override;
 
   // Typing:
-  auto visit(node::typing::MethodDecl* t_md) -> Any override;
+  auto visit(node::typing::Method* t_meth) -> Any override;
   auto visit(node::typing::Interface* t_ifc) -> Any override;
-  auto visit(node::typing::MemberDecl* t_md) -> Any override;
+  auto visit(node::typing::MemberDecl* t_meth) -> Any override;
   auto visit(node::typing::Struct* t_struct) -> Any override;
-  auto visit(node::typing::Impl* t_impl) -> Any override;
-  auto visit(node::typing::DotExpr* t_dot_expr) -> Any override;
+  auto visit(node::typing::Self* t_self) -> Any override;
+  auto visit(node::typing::MemberAccess* t_dot_expr) -> Any override;
 
   // Misc:
   virtual auto visit(node::List* t_list) -> Any override;

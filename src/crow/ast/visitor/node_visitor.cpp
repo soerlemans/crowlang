@@ -50,7 +50,7 @@ STUB(Defer)
 STUB(Return)
 STUB(Parameter)
 STUB(Function)
-STUB(Call)
+STUB(FunctionCall)
 STUB(ReturnType)
 
 // LValue:
@@ -81,12 +81,13 @@ STUB(Float)
 STUB(Integer)
 STUB(String)
 STUB(Boolean)
-STUB(MethodDecl)
+STUB(Method)
 STUB(Interface)
 STUB(MemberDecl)
 STUB(Struct)
-STUB(Impl)
-STUB(DotExpr)
+STUB(Self)
+STUB(Member)
+STUB(MemberAccess)
 
 // Misc:
 auto NodeVisitor::visit(List* t_list) -> Any

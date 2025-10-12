@@ -1,9 +1,10 @@
-#include "decl_expr.hpp"
+#include "binding_expr.hpp"
 
 namespace ast::node::node_traits {
 // Methods:
-DeclExpr::DeclExpr(TextPosition&& t_pos, const std::string_view t_identifier,
-                   const std::string_view t_type, NodePtr&& t_init)
+BindingExpr::BindingExpr(TextPosition&& t_pos,
+                         const std::string_view t_identifier,
+                         const std::string_view t_type, NodePtr&& t_init)
   : NodePosition{std::move(t_pos)},
     Identifier{t_identifier},
     TypeAnnotation{t_type},

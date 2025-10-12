@@ -13,6 +13,7 @@ using container::TextPosition;
 using node_traits::BinaryOperator;
 using node_traits::NodePosition;
 using node_traits::Op;
+using node_traits::TypeData;
 
 // Enums:
 enum class ComparisonOp {
@@ -29,7 +30,8 @@ enum class ComparisonOp {
 // Classes:
 class Comparison : public NodePosition,
                    public Op<ComparisonOp>,
-                   public BinaryOperator {
+                   public BinaryOperator,
+                   public TypeData {
   public:
   Comparison(TextPosition t_pos, ComparisonOp t_op, NodePtr&& t_left,
              NodePtr&& t_right);

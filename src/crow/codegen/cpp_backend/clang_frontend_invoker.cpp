@@ -102,7 +102,7 @@ auto ClangFrontendInvoker::compile(const fs::path &t_source) -> void
   if(status_code == 0) {
     DBG_NOTICE("Out file was generated!: ", out);
   } else {
-    DBG_CRITICAL(cpp_compiler, "Failed to compile.");
+    DBG_CRITICAL(cpp_compiler, " Failed to compile.");
 
     // TODO: Throw an exception. Or maybe not?
   }

@@ -17,8 +17,23 @@ using namespace std::literals::string_view_literals;
 // Functions:
 auto operator<<(std::ostream& t_os, StructTypePtr t_struct) -> std::ostream&
 {
+  // TODO: Redo these operator<< functions they are outdated.
+
   if(t_struct) {
-    t_os << "Identifier: " << t_struct->m_identifier;
+    // t_os << "Identifier: " << t_struct->m_identifier;
+    // t_os << ", Members: {";
+
+    t_os << t_struct->m_identifier;
+
+    std::string_view sep{""};
+    for(const auto& [id, type_data] : t_struct->m_members) {
+      t_os << sep << "(" << id << ", " << type_data << ")";
+
+      sep = ", ";
+    }
+
+    t_os << "}";
+
   } else {
     DBG_ERROR("(StructTypePtr) nullptr!");
 
@@ -51,8 +66,8 @@ auto operator<<(std::ostream& t_os, FnTypePtr t_fn) -> std::ostream&
 auto operator<<(std::ostream& t_os, VarTypePtr t_var) -> std::ostream&
 {
   if(t_var) {
-    if(t_var->m_const) {
-      t_os << "Const ";
+    if(t_var->is_mutable()) {
+      t_os << "mutable ";
     }
 
     t_os << t_var->m_type;

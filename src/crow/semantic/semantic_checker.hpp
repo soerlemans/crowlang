@@ -14,6 +14,7 @@
 #include "crow/types/semantic/symbol.hpp"
 
 // Local Includes:
+#include "semantic_validator.hpp"
 #include "symbol_env_state.hpp"
 #include "type_promoter.hpp"
 
@@ -66,9 +67,10 @@ using AttributeContext = AttributeSeq;
  */
 class SemanticChecker : public NodeVisitor {
   private:
-  SymbolEnvState m_symbol_state;
-  TypePromoter m_type_promoter;
+  SemanticValidator m_validator;
 
+  // TODO: Remove (now in SemanticValidator):
+  SymbolEnvState m_symbol_state;
   AttributeContext m_active_attrs;
 
   protected:
@@ -77,15 +79,18 @@ class SemanticChecker : public NodeVisitor {
   auto pop_env() -> void;
   auto clear_env() -> void;
 
+  auto str2type(std::string_view t_typename) -> SymbolData;
+
   /*!
+   * Annotate a node with its attribute data.
    */
   auto annotate_attr(AttributeData* t_node) -> void;
 
   /*!
+   * Annotate a node with its type data.
    */
   auto annotate_type(TypeData* t_node, const SymbolData& t_data) -> void;
 
-  // Attribute handling
   auto add_symbol_declaration(std::string_view t_id, const SymbolData& t_data)
     -> void;
 
@@ -108,7 +113,8 @@ class SemanticChecker : public NodeVisitor {
 
   //! Handle type promotion between two different types.
   auto promote(const SymbolData& t_lhs, const SymbolData& rhs,
-               bool enforce_lhs = false) const -> NativeTypeOpt;
+               PromotionMode t_mode = PromotionMode::PROMOTE_TO_LHS) const
+    -> NativeTypeOpt;
 
   // Helper methods for dealing with resolving nodes to SymbolData:
   // NodeVisitor visitation is not marked const so these methods cant be const.
@@ -132,11 +138,10 @@ class SemanticChecker : public NodeVisitor {
   // Function:
   auto visit(node::function::Parameter* t_param) -> Any override;
   auto visit(node::function::Function* t_fn) -> Any override;
-  auto visit(node::function::Call* t_fn_call) -> Any override;
+  auto visit(node::function::FunctionCall* t_fn_call) -> Any override;
   auto visit(node::function::ReturnType* t_rt) -> Any override;
 
   // Lvalue:
-  auto decl_expr(node::node_traits::DeclExpr* t_decl) -> SymbolData;
   auto visit(node::lvalue::Let* t_let) -> Any override;
   auto visit(node::lvalue::Var* t_var) -> Any override;
   auto visit(node::lvalue::Variable* t_var) -> Any override;
@@ -175,12 +180,13 @@ class SemanticChecker : public NodeVisitor {
   auto visit(node::rvalue::Boolean* t_bool) -> Any override;
 
   // Typing:
-  auto visit(node::typing::MethodDecl* t_md) -> Any override;
+  auto visit(node::typing::Method* t_meth) -> Any override;
   auto visit(node::typing::Interface* t_ifc) -> Any override;
-  auto visit(node::typing::MemberDecl* t_md) -> Any override;
+  auto visit(node::typing::MemberDecl* t_meth) -> Any override;
   auto visit(node::typing::Struct* t_struct) -> Any override;
-  auto visit(node::typing::Impl* t_impl) -> Any override;
-  auto visit(node::typing::DotExpr* t_dot_expr) -> Any override;
+  auto visit(node::typing::Self* t_self) -> Any override;
+  auto visit(node::typing::Member* t_member) -> Any override;
+  auto visit(node::typing::MemberAccess* t_access) -> Any override;
 
   auto check(NodePtr t_ast) -> void;
 
