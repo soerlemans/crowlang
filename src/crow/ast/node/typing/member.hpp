@@ -1,5 +1,5 @@
-#ifndef MEMBER_HPP
-#define MEMBER_HPP
+#ifndef CROW_CROW_AST_NODE_TYPING_MEMBER_HPP
+#define CROW_CROW_AST_NODE_TYPING_MEMBER_HPP
 
 
 // Includes:
@@ -25,9 +25,9 @@ class Member : public NodePosition, public Identifier, public TypeData {
 
   virtual ~Member() = default;
 };
-} // namespace ast::node::lvalue
+} // namespace ast::node::typing
 
 // Cereal type registration:
 REGISTER_ARCHIVEABLE_TYPE(ast::node::typing, Member);
 
-#endif // MEMBER_HPP
+#endif // CROW_CROW_AST_NODE_TYPING_MEMBER_HPP

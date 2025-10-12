@@ -416,7 +416,7 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
       NodePtr rhs;
 
       // If we see a chain expression we need to defer into first parsing it.
-			// And then resume normal operation.
+      // And then resume normal operation.
       const auto [lbp, rbp] = m_infix.at(t_type);
       if(lbp < t_min_bp) {
         prev();
@@ -469,7 +469,7 @@ auto PrattParser::field_access() -> NodePtr
   NodePtr node{};
 
   // TODO: Add method call.
-	// And Array Subscript.
+  // And Array Subscript.
 
   const auto token{get_token()};
   if(next_if(TokenType::IDENTIFIER)) {
