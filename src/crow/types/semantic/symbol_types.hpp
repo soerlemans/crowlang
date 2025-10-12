@@ -3,6 +3,7 @@
 
 // STL Includes:
 #include <map>
+#include <set>
 #include <string>
 
 // Local Includes:
@@ -20,6 +21,7 @@ class SymbolData;
 
 // Aliases:
 using MemberMap = std::map<std::string, SymbolData>;
+using IdentifierSet = std ::set<std::string>;
 
 // Enums:
 enum class Mutability {
@@ -28,6 +30,11 @@ enum class Mutability {
 };
 
 // Structs:
+struct EnumType {
+  SymbolData m_underlying_type;
+  IdentifierSet m_enums;
+};
+
 // TODO: use VarTypePtr and FnTypePtr in combination with a map?
 // This way we will be able to couple id's to type info.
 struct StructType {
