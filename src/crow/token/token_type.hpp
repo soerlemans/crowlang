@@ -42,6 +42,7 @@ enum class TokenType {
 
   // Control statements:
   FUNCTION,
+  METHOD,
   MATCH,
   IF,
   ELSE,

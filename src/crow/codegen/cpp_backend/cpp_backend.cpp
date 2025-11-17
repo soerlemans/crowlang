@@ -544,6 +544,7 @@ auto CppBackend::visit(Method* t_meth) -> Any
   using node::node_traits::AttributeType;
 
   const auto identifier{t_meth->identifier()};
+  const auto receiver_type{t_meth->get_receiver()};
 
   // const auto fn_type{t_meth->get_type()};
   // const auto ret_type{type_variant2cpp(fn_type->m_return_type)};
@@ -570,7 +571,7 @@ auto CppBackend::visit(Method* t_meth) -> Any
 
   // clang-format off
   // ss << std::format("auto {}({}) -> {}\n", identifier, param_ss.str(), ret_type)
-  ss << std::format("auto {}({}) -> {}\n", identifier, param_ss.str(), "void")
+  ss << std::format("auto {}::{}({}) -> {}\n", receiver_type, identifier, param_ss.str(), "void")
      << "{\n"
      << resolve(t_meth->body())
      << "}\n";
