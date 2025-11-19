@@ -19,8 +19,8 @@ using MethodMap = std::map<std::string, TypeVariant>;
 struct StructType {
   std::string m_identifier;
 
-  // TODO: Handle properly.
-	// We need to get the info of methods in here to define in the body.
+	MemberMap m_members;
+	MethodMap m_methods;
 
   auto native_type() const -> core::NativeTypeOpt;
 };

@@ -232,7 +232,7 @@ auto MirBuilder::visit(node::function::Function* t_fn) -> Any
   const auto id{t_fn->identifier()};
   const auto params{t_fn->params()};
 
-  const auto fn_type{t_fn->get_type().function()};
+  const auto fn_type{t_fn->get_type().as_function()};
   const auto body{t_fn->body()};
 
   // Add the function to the current module.

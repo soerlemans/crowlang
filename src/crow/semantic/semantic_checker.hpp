@@ -110,7 +110,7 @@ class SemanticChecker : public NodeVisitor {
                                     const symbol::MethodSymbol& t_sym) -> void;
 
   [[nodiscard("Pure method must use result.")]]
-  auto get_symbol_data_from_env(std::string_view t_id) const -> SymbolData;
+  auto get_symbol_data_from_env(std::string_view t_id) -> SymbolData&;
 
   // Helper methods for type promotion:
   //! Handle type conversion for conditionals.

@@ -16,8 +16,7 @@
     break
 
 namespace semantic {
-auto SymbolEnvState::get_value(const std::string_view t_key) const
-  -> const Symbol&
+auto SymbolEnvState::get_value(const std::string_view t_key) -> Symbol&
 {
   const auto [iter, found] = EnvState::find(t_key);
 
@@ -33,17 +32,16 @@ auto SymbolEnvState::get_value(const std::string_view t_key) const
   return {iter->second};
 }
 
-auto SymbolEnvState::get_status(const std::string_view t_key) const
-  -> SymbolStatus
+auto SymbolEnvState::get_status(const std::string_view t_key) -> SymbolStatus
 {
-  const auto symbol{get_value(t_key)};
+  const auto& symbol{get_value(t_key)};
 
   return symbol.m_status;
 }
 
-auto SymbolEnvState::get_data(const std::string_view t_key) const -> SymbolData
+auto SymbolEnvState::get_data(const std::string_view t_key) -> SymbolData&
 {
-  const auto symbol{get_value(t_key)};
+  auto& symbol{get_value(t_key)};
 
   return symbol.m_data;
 }

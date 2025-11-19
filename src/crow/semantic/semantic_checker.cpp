@@ -222,8 +222,8 @@ auto SemanticChecker::add_struct_method_definition(
   }
 }
 
-auto SemanticChecker::get_symbol_data_from_env(
-  const std::string_view t_key) const -> SymbolData
+auto SemanticChecker::get_symbol_data_from_env(const std::string_view t_key)
+  -> SymbolData&
 {
   return m_symbol_state.get_data(t_key);
 }

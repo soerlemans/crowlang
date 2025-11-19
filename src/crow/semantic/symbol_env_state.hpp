@@ -43,10 +43,10 @@ class SymbolEnvState : public container::EnvState<Symbol> {
   SymbolEnvState() = default;
 
   //! Expect means it is required and if we dont find it error.
-  auto get_value(std::string_view t_key) const -> const Symbol&;
+  auto get_value(std::string_view t_key) -> Symbol&;
 
-  auto get_status(std::string_view t_key) const -> SymbolStatus;
-  auto get_data(std::string_view t_key) const -> SymbolData;
+  auto get_status(std::string_view t_key) -> SymbolStatus;
+  auto get_data(std::string_view t_key) -> SymbolData&;
 
   virtual ~SymbolEnvState() = default;
 };
