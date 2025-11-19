@@ -90,10 +90,20 @@ auto SemanticChecker::annotate_type(TypeData* t_node, const SymbolData& t_data)
   -> void
 {
   // Convert SymbolData to TypeVariant.
-  const auto type_variant{t_data.type_variant()};
+  // const auto type_variant{t_data.type_variant()};
 
   // Annotate AST, with TypeVariant.
-  t_node->set_type(type_variant);
+  // t_node->set_type(type_variant);
+
+  // Process later so that we can freely edit type info after the fact.
+  // This is necessary for methods which change the original type.
+  // Like a Method adding a method to the type definition.
+  // After the initial type defintion of the struct.
+  // The moment we convert to a TypeVariant.
+  // We create a new shared_ptr and cant update it anymore.
+  // If we delay this after traversal it works properly.
+
+  m_annot_queue.push({t_node, t_data});
 }
 
 // Environment state related methods:
@@ -943,6 +953,16 @@ auto SemanticChecker::check(NodePtr t_ast) -> void
   // Semantically check the AST for correctness.
   // This also constructs the global symbol table.
   traverse(t_ast);
+
+  while(!m_annot_queue.empty()) {
+    auto& [node, data] = m_annot_queue.front();
+    m_annot_queue.pop();
+    // Convert SymbolData to TypeVariant.
+    const auto type_variant{data.type_variant()};
+
+    // Annotate AST, with TypeVariant.
+    node->set_type(type_variant);
+  }
 
   // Create the return value containing the AST and the global SymbolTable.
   // const auto ptr{retrieve_symbol_table()};

@@ -4,6 +4,7 @@
 // STL Includes:
 #include <list>
 #include <string_view>
+#include <queue>
 
 // Absolute includes:
 #include "crow/ast/node/node_traits/attribute_data.hpp"
@@ -45,17 +46,26 @@ using symbol::SymbolDataList;
 using types::core::NativeType;
 using types::core::NativeTypeOpt;
 
+// Forward Declarations:
+struct AnnotationInfo;
+
 // Aliases:
 //! Stores active contributes.
 using AttributeContext = AttributeSeq;
+using AnnotationQueue = std::queue<AnnotationInfo>;
+
+// Structs:
+struct AnnotationInfo {
+  TypeData* m_node;
+	SymbolData m_data;
+};
 
 // Classes:
-// TODO: Add check for checking if the AST only has a single module declaration.
-// We should either way, have some kind of entity which merges multiple
-// translation units.
-// Into a single Module Unit.
-// Maybe force module declarations to be at the top of the file?
-// To be considered when enforcing modules.
+// TODO: Add check for checking if the AST only has a single module
+// declaration. We should either way, have some kind of entity which merges
+// multiple translation units. Into a single Module Unit. Maybe force module
+// declarations to be at the top of the file? To be considered when enforcing
+// modules.
 /*!
  * The semantic checker validates the semantic validity of the AST.
  * This performs type inference and type checking.
@@ -72,6 +82,8 @@ class SemanticChecker : public NodeVisitor {
   // TODO: Remove (now in SemanticValidator):
   SymbolEnvState m_symbol_state;
   AttributeContext m_active_attrs;
+
+  AnnotationQueue m_annot_queue;
 
   protected:
   // Environment related methods:
