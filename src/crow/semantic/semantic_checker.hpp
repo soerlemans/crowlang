@@ -103,6 +103,12 @@ class SemanticChecker : public NodeVisitor {
   auto add_symbol_definition(std::string_view t_id, const SymbolData& t_data)
     -> void;
 
+  auto add_struct_member_definition(SymbolData& t_struct,
+                                    const symbol::MemberSymbol& t_sym) -> void;
+
+  auto add_struct_method_definition(SymbolData& t_struct,
+                                    const symbol::MethodSymbol& t_sym) -> void;
+
   [[nodiscard("Pure method must use result.")]]
   auto get_symbol_data_from_env(std::string_view t_id) const -> SymbolData;
 

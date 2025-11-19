@@ -46,9 +46,9 @@ class SymbolData : public Variant {
   using Variant::Variant;
 
   // Only use these methods if you are sure about the underlying type.
-  auto struct_() const -> StructTypePtr;
-  auto function() const -> FnTypePtr;
-  auto var() const -> VarTypePtr;
+  auto as_struct() const -> StructTypePtr;
+  auto as_function() const -> FnTypePtr;
+  auto as_var() const -> VarTypePtr;
 
   //! Verify if a symbol is struct type.
   auto is_struct() const -> bool;

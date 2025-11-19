@@ -178,6 +178,50 @@ auto SemanticChecker::add_symbol_definition(const std::string_view t_key,
   }
 }
 
+auto SemanticChecker::add_struct_member_definition(
+  SymbolData& t_struct, const symbol::MemberSymbol& t_sym) -> void
+{
+  using lib::stdexcept::throw_runtime_error;
+
+  if(!t_struct.is_struct()) {
+    std::ostringstream ss{};
+
+    ss << "Symbol data \"" << t_struct << "\" is not a struct.";
+
+    throw_runtime_error(ss.str());
+  }
+
+  // Shared pointer so copying is fine.
+  const auto struct_ptr{t_struct.as_struct()};
+  auto& members{struct_ptr->m_members};
+
+  const auto inserted{members.insert(t_sym).second};
+  if(inserted) {
+  }
+}
+
+auto SemanticChecker::add_struct_method_definition(
+  SymbolData& t_struct, const symbol::MethodSymbol& t_sym) -> void
+{
+  using lib::stdexcept::throw_runtime_error;
+
+  if(!t_struct.is_struct()) {
+    std::ostringstream ss{};
+
+    ss << "Symbol data \"" << t_struct << "\" is not a struct.";
+
+    throw_runtime_error(ss.str());
+  }
+
+  // Shared pointer so copying is fine.
+  const auto struct_ptr{t_struct.as_struct()};
+  auto& methods{struct_ptr->m_methods};
+
+  const auto inserted{methods.insert(t_sym).second};
+  if(inserted) {
+  }
+}
+
 auto SemanticChecker::get_symbol_data_from_env(
   const std::string_view t_key) const -> SymbolData
 {
@@ -396,7 +440,7 @@ auto SemanticChecker::visit(FunctionCall* t_fn_call) -> Any
   const auto fn_data{get_symbol_data_from_env(id)};
   const auto args{get_resolved_type_list(t_fn_call->args())};
 
-  const auto fn{fn_data.function()};
+  const auto fn{fn_data.as_function()};
   const auto params{fn->m_params};
   const auto return_type{fn->m_return_type};
 
@@ -765,45 +809,51 @@ auto SemanticChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
 // Typing:
 auto SemanticChecker::visit(Method* t_meth) -> Any
 {
+  using symbol::MethodSymbol;
+
+  auto recv_type{str2type(t_meth->get_receiver())};
+
   const auto id{t_meth->identifier()};
-  const auto recv_type{str2type(t_meth->get_receiver())};
   const auto ret_type{str2type(t_meth->type())};
   const auto params{t_meth->params()};
 
-  // // Register function type signature to environment.
-  // const auto params_type_list{get_type_list(params)};
-  // const SymbolData data{symbol::make_function(params_type_list, ret_type)};
+  // // Register function type signature to Struct.
+  const auto params_type_list{get_type_list(params)};
+  const SymbolData data{symbol::make_function(params_type_list, ret_type)};
 
-  // // Add the function and ID to the environment.
-  // add_symbol_definition(id, data);
-  // DBG_INFO("Function: ", id, "(", params_type_list, ") -> ", ret_type);
+  // Add the function and ID to the environment.
+  MethodSymbol sym{id, data};
+  add_struct_method_definition(recv_type, sym);
+  DBG_INFO("Method: (", recv_type, ") ", id, "(", params_type_list, ") -> ",
+           ret_type);
 
-  // // Annotate AST.
-  // annotate_type(t_meth, data);
-  // annotate_attr(t_meth);
+  // Annotate AST.
+  annotate_type(t_meth, data);
+  annotate_attr(t_meth);
 
-  // // Register parameters to environment.
-  // push_env();
-  // for(const auto& node : *params) {
-  //   // Gain a raw ptr (non owning).
-  //   // If the AST changes the assertion will be triggered.
-  //   const auto* param{dynamic_cast<Parameter*>(node.get())};
-  //   DEBUG_ASSERT(param, R"(Was unable to cast to "Parameter*"!)", param,
-  //   node,
-  //                params);
+  // Register parameters to environment.
+  push_env();
+  for(const auto& node : *params) {
+    using symbol::Mutability;
 
-  //   const auto id{param->identifier()};
-  //   const auto type{str2nativetype(param->type())};
+    // Gain a raw ptr (non owning).
+    // If the AST changes the assertion will be triggered.
+    const auto* param{dynamic_cast<Parameter*>(node.get())};
+    DEBUG_ASSERT(param, R"(Was unable to cast to "Parameter*"!)", param, node,
+                 params);
 
-  //   const SymbolData data{symbol::make_variable(false, type)};
+    const auto id{param->identifier()};
+    const auto type{str2nativetype(param->type())};
 
-  //   // Add parameter to environment.
-  //   add_symbol_definition(id, data);
-  // }
+    const SymbolData data{symbol::make_variable(Mutability::MUTABLE, type)};
 
-  // // Run type checking on the function body.
-  // traverse(t_meth->body());
-  // pop_env();
+    // Add parameter to environment.
+    add_symbol_definition(id, data);
+  }
+
+  // Run type checking on the function body.
+  traverse(t_meth->body());
+  pop_env();
 
   return {};
 }
