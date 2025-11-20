@@ -933,7 +933,7 @@ auto SemanticChecker::check(NodePtr t_ast) -> void
   // Semantically check the AST for correctness.
   traverse(t_ast);
 
-	// Annotate AST nodes with type info.
+  // Annotate AST nodes with type info.
   m_annot_queue.annotate_ast();
 
   // Clear EnvState and release old SymbolTable ptr.

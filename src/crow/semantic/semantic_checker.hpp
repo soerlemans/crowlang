@@ -14,10 +14,10 @@
 #include "crow/types/semantic/symbol.hpp"
 
 // Local Includes:
+#include "annotation_queue.hpp"
 #include "semantic_validator.hpp"
 #include "symbol_env_state.hpp"
 #include "type_promoter.hpp"
-#include "annotation_queue.hpp"
 
 /*!
  * @file
