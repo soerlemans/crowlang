@@ -5,6 +5,7 @@
 
 // Absolute Includes:
 #include "crow/debug/log.hpp"
+#include "lib/enum2int.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
 
 // Using Statements:
@@ -110,10 +111,15 @@ auto nativetype2str(const NativeType t_native_type) -> std::string
   if(iter != rmap.end()) {
     id = iter->second;
   } else {
-    std::string_view str{"NativeType could not be converted to std::string."};
+    using lib::stdexcept::throw_invalid_argument;
+
+    const auto integer{lib::enum2int(t_native_type)};
+    const auto str{std::format(
+      "NativeType could not be converted to std::string ({}).", integer)};
+
     DBG_ERROR(str);
 
-    throw std::invalid_argument{str.data()};
+    throw_invalid_argument(str.data());
   }
 
   return id;

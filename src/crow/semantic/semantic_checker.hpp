@@ -4,7 +4,6 @@
 // STL Includes:
 #include <list>
 #include <string_view>
-#include <queue>
 
 // Absolute includes:
 #include "crow/ast/node/node_traits/attribute_data.hpp"
@@ -18,6 +17,7 @@
 #include "semantic_validator.hpp"
 #include "symbol_env_state.hpp"
 #include "type_promoter.hpp"
+#include "annotation_queue.hpp"
 
 /*!
  * @file
@@ -46,19 +46,9 @@ using symbol::SymbolDataList;
 using types::core::NativeType;
 using types::core::NativeTypeOpt;
 
-// Forward Declarations:
-struct AnnotationInfo;
-
 // Aliases:
-//! Stores active contributes.
+//! Stores active contexts.
 using AttributeContext = AttributeSeq;
-using AnnotationQueue = std::queue<AnnotationInfo>;
-
-// Structs:
-struct AnnotationInfo {
-  TypeData* m_node;
-	SymbolData m_data;
-};
 
 // Classes:
 // TODO: Add check for checking if the AST only has a single module
@@ -79,7 +69,6 @@ class SemanticChecker : public NodeVisitor {
   private:
   SemanticValidator m_validator;
 
-  // TODO: Remove (now in SemanticValidator):
   SymbolEnvState m_symbol_state;
   AttributeContext m_active_attrs;
 
@@ -99,9 +88,9 @@ class SemanticChecker : public NodeVisitor {
   auto annotate_attr(AttributeData* t_node) -> void;
 
   /*!
-   * Annotate a node with its type data.
+   * Queue annotation for later.
    */
-  auto annotate_type(TypeData* t_node, const SymbolData& t_data) -> void;
+  auto queue_annotation(TypeData* t_node, const SymbolData& t_data) -> void;
 
   auto add_symbol_declaration(std::string_view t_id, const SymbolData& t_data)
     -> void;
