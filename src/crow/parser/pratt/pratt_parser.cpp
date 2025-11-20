@@ -560,6 +560,12 @@ auto PrattParser::lvalue_expr(const int t_min_bp) -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr lhs{lvalue()};
 
+  if(!lhs) {
+    // TODO: Check for self keyword.
+    // Should we not terminate early, if no lhs?
+		// Almost 90% sure.
+  }
+
   // Infix:
   while(!eos()) {
     const auto rhs_fn{[&](const TokenType t_type) {
