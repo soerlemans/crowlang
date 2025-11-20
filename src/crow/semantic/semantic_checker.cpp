@@ -86,16 +86,6 @@ auto SemanticChecker::annotate_attr(AttributeData* t_node) -> void
   }
 }
 
-auto SemanticChecker::annotate_type(TypeData* t_node, const SymbolData& t_data)
-  -> void
-{
-  // Convert SymbolData to TypeVariant.
-  const auto type_variant{t_data.type_variant()};
-
-  // Annotate AST, with TypeVariant.
-  t_node->set_type(type_variant);
-}
-
 // Environment state related methods:
 auto SemanticChecker::add_symbol_declaration(const std::string_view t_key,
                                              const SymbolData& t_data) -> void
@@ -178,8 +168,52 @@ auto SemanticChecker::add_symbol_definition(const std::string_view t_key,
   }
 }
 
-auto SemanticChecker::get_symbol_data_from_env(
-  const std::string_view t_key) const -> SymbolData
+auto SemanticChecker::add_struct_member_definition(
+  SymbolData& t_struct, const symbol::MemberSymbol& t_sym) -> void
+{
+  using lib::stdexcept::throw_runtime_error;
+
+  if(!t_struct.is_struct()) {
+    std::ostringstream ss{};
+
+    ss << "Symbol data \"" << t_struct << "\" is not a struct.";
+
+    throw_runtime_error(ss.str());
+  }
+
+  // Shared pointer so copying is fine.
+  const auto struct_ptr{t_struct.as_struct()};
+  auto& members{struct_ptr->m_members};
+
+  const auto inserted{members.insert(t_sym).second};
+  if(inserted) {
+  }
+}
+
+auto SemanticChecker::add_struct_method_definition(
+  SymbolData& t_struct, const symbol::MethodSymbol& t_sym) -> void
+{
+  using lib::stdexcept::throw_runtime_error;
+
+  if(!t_struct.is_struct()) {
+    std::ostringstream ss{};
+
+    ss << "Symbol data \"" << t_struct << "\" is not a struct.";
+
+    throw_runtime_error(ss.str());
+  }
+
+  // Shared pointer so copying is fine.
+  const auto struct_ptr{t_struct.as_struct()};
+  auto& methods{struct_ptr->m_methods};
+
+  const auto inserted{methods.insert(t_sym).second};
+  if(inserted) {
+  }
+}
+
+auto SemanticChecker::get_symbol_data_from_env(const std::string_view t_key)
+  -> SymbolData&
 {
   return m_symbol_state.get_data(t_key);
 }
@@ -352,7 +386,7 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
   DBG_INFO("Function: ", id, "(", params_type_list, ") -> ", ret_type);
 
   // Annotate AST.
-  annotate_type(t_fn, data);
+  m_annot_queue.push({t_fn, data});
   annotate_attr(t_fn);
 
   // Register parameters to environment.
@@ -396,7 +430,7 @@ auto SemanticChecker::visit(FunctionCall* t_fn_call) -> Any
   const auto fn_data{get_symbol_data_from_env(id)};
   const auto args{get_resolved_type_list(t_fn_call->args())};
 
-  const auto fn{fn_data.function()};
+  const auto fn{fn_data.as_function()};
   const auto params{fn->m_params};
   const auto return_type{fn->m_return_type};
 
@@ -452,7 +486,7 @@ auto SemanticChecker::visit(Let* t_let) -> Any
   add_symbol_definition(id, var_data);
 
   // Annotate AST.
-  annotate_type(t_let, type_data);
+  m_annot_queue.push({t_let, type_data});
   annotate_attr(t_let);
 
   return {};
@@ -486,7 +520,7 @@ auto SemanticChecker::visit(Var* t_var) -> Any
   add_symbol_definition(id, var_data);
 
   // Annotate AST.
-  annotate_type(t_var, type_data);
+  m_annot_queue.push({t_var, type_data});
   annotate_attr(t_var);
 
   return {};
@@ -500,7 +534,7 @@ auto SemanticChecker::visit(Variable* t_var) -> Any
   DBG_INFO("Variable ", std::quoted(id), " of type ", var_data);
 
   // Annotate AST.
-  annotate_type(t_var, var_data);
+  m_annot_queue.push({t_var, var_data});
 
   return {var_data};
 }
@@ -546,7 +580,7 @@ auto SemanticChecker::visit(LetDecl* t_ldecl) -> Any
   add_symbol_declaration(id, data);
 
   // Annotate AST.
-  annotate_type(t_ldecl, type_data);
+  m_annot_queue.push({t_ldecl, type_data});
   annotate_attr(t_ldecl);
 
   return {};
@@ -564,7 +598,7 @@ auto SemanticChecker::visit(VarDecl* t_vdecl) -> Any
   add_symbol_declaration(id, data);
 
   // Annotate AST.
-  annotate_type(t_vdecl, type_data);
+  m_annot_queue.push({t_vdecl, type_data});
   annotate_attr(t_vdecl);
 
   return {};
@@ -584,7 +618,7 @@ auto SemanticChecker::visit(FunctionDecl* t_fdecl) -> Any
   DBG_INFO("FunctionDecl: ", id, "(", params_type_list, ") -> ", ret_type);
 
   // Annotate AST.
-  annotate_type(t_fdecl, data);
+  m_annot_queue.push({t_fdecl, data});
   annotate_attr(t_fdecl);
 
   return {};
@@ -604,7 +638,7 @@ auto SemanticChecker::visit(Arithmetic* t_arith) -> Any
   const auto ret{m_validator.validate_assignment(data)};
 
   // Annotate AST.
-  annotate_type(t_arith, ret);
+  m_annot_queue.push({t_arith, ret});
 
   return ret;
 }
@@ -623,7 +657,7 @@ auto SemanticChecker::visit(Assignment* t_assign) -> Any
   const auto ret{m_validator.validate_assignment(data)};
 
   // Annotate AST.
-  annotate_type(t_assign, ret);
+  m_annot_queue.push({t_assign, ret});
 
   return ret;
 }
@@ -641,7 +675,7 @@ auto SemanticChecker::visit(Comparison* t_comp) -> Any
   const auto ret{m_validator.validate_comparison(data)};
 
   // TODO: Annotate types.
-  annotate_type(t_comp, ret);
+  m_annot_queue.push({t_comp, ret});
 
   return ret;
 }
@@ -765,45 +799,51 @@ auto SemanticChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
 // Typing:
 auto SemanticChecker::visit(Method* t_meth) -> Any
 {
+  using symbol::MethodSymbol;
+
+  auto recv_type{str2type(t_meth->get_receiver())};
+
   const auto id{t_meth->identifier()};
-  const auto recv_type{str2type(t_meth->get_receiver())};
   const auto ret_type{str2type(t_meth->type())};
   const auto params{t_meth->params()};
 
-  // // Register function type signature to environment.
-  // const auto params_type_list{get_type_list(params)};
-  // const SymbolData data{symbol::make_function(params_type_list, ret_type)};
+  // // Register function type signature to Struct.
+  const auto params_type_list{get_type_list(params)};
+  const SymbolData data{symbol::make_function(params_type_list, ret_type)};
 
-  // // Add the function and ID to the environment.
-  // add_symbol_definition(id, data);
-  // DBG_INFO("Function: ", id, "(", params_type_list, ") -> ", ret_type);
+  // Add the function and ID to the environment.
+  MethodSymbol sym{id, data};
+  add_struct_method_definition(recv_type, sym);
+  DBG_INFO("Method: (", recv_type, ") ", id, "(", params_type_list, ") -> ",
+           ret_type);
 
-  // // Annotate AST.
-  // annotate_type(t_meth, data);
-  // annotate_attr(t_meth);
+  // Annotate AST.
+  m_annot_queue.push({t_meth, data});
+  annotate_attr(t_meth);
 
-  // // Register parameters to environment.
-  // push_env();
-  // for(const auto& node : *params) {
-  //   // Gain a raw ptr (non owning).
-  //   // If the AST changes the assertion will be triggered.
-  //   const auto* param{dynamic_cast<Parameter*>(node.get())};
-  //   DEBUG_ASSERT(param, R"(Was unable to cast to "Parameter*"!)", param,
-  //   node,
-  //                params);
+  // Register parameters to environment.
+  push_env();
+  for(const auto& node : *params) {
+    using symbol::Mutability;
 
-  //   const auto id{param->identifier()};
-  //   const auto type{str2nativetype(param->type())};
+    // Gain a raw ptr (non owning).
+    // If the AST changes the assertion will be triggered.
+    const auto* param{dynamic_cast<Parameter*>(node.get())};
+    DEBUG_ASSERT(param, R"(Was unable to cast to "Parameter*"!)", param, node,
+                 params);
 
-  //   const SymbolData data{symbol::make_variable(false, type)};
+    const auto id{param->identifier()};
+    const auto type{str2nativetype(param->type())};
 
-  //   // Add parameter to environment.
-  //   add_symbol_definition(id, data);
-  // }
+    const SymbolData data{symbol::make_variable(Mutability::MUTABLE, type)};
 
-  // // Run type checking on the function body.
-  // traverse(t_meth->body());
-  // pop_env();
+    // Add parameter to environment.
+    add_symbol_definition(id, data);
+  }
+
+  // Run type checking on the function body.
+  traverse(t_meth->body());
+  pop_env();
 
   return {};
 }
@@ -815,7 +855,7 @@ auto SemanticChecker::visit(MemberDecl* t_member) -> Any
   const auto type{str2type(t_member->type())};
 
   // Annotate AST.
-  annotate_type(t_member, type);
+  m_annot_queue.push({t_member, type});
 
   return {};
 }
@@ -852,7 +892,7 @@ auto SemanticChecker::visit(Struct* t_struct) -> Any
   DBG_INFO("Struct: ", struct_data);
 
   // Annotate AST.
-  annotate_type(t_struct, struct_data);
+  m_annot_queue.push({t_struct, struct_data});
 
   return {};
 }
@@ -873,7 +913,7 @@ auto SemanticChecker::visit(Member* t_member) -> Any
   // DBG_INFO("Member ", std::quoted(id), " of type ", var_data);
 
   // Annotate AST.
-  // annotate_type(t_member, var_data);
+  // m_annot_queue.push({t_member, var_data});
 
   // return {var_data};
   return SymbolData{NativeType::INT}; // FIXME: hardcoded cuz stupid.
@@ -891,15 +931,12 @@ auto SemanticChecker::visit(MemberAccess* t_access) -> Any
 auto SemanticChecker::check(NodePtr t_ast) -> void
 {
   // Semantically check the AST for correctness.
-  // This also constructs the global symbol table.
   traverse(t_ast);
 
-  // Create the return value containing the AST and the global SymbolTable.
-  // const auto ptr{retrieve_symbol_table()};
+  // Annotate AST nodes with type info.
+  m_annot_queue.annotate_ast();
 
   // Clear EnvState and release old SymbolTable ptr.
   clear_env();
-
-  // return ptr;
 }
 } // namespace semantic

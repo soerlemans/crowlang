@@ -30,8 +30,8 @@ using TerminalMap = boost::bimap<Key, TokenType>;
 // Language reserved keywords
 namespace keywords {
   // Variables:
-  DEFINE_TERMINAL(g_let, "let", LET);
-  DEFINE_TERMINAL(g_var, "var", VAR);
+  DEFINE_TERMINAL(g_let, "let", LET); // Immutable var init.
+  DEFINE_TERMINAL(g_var, "var", VAR); // Mutable var init.
 
   // Package:
   DEFINE_TERMINAL(g_module, "module", MODULE);
@@ -40,9 +40,9 @@ namespace keywords {
 
 	// Meta:
 	// TODO: Consider renaming to just decl.
-  DEFINE_TERMINAL(g_declare, "declare", DECLARE);
+  DEFINE_TERMINAL(g_declare, "decl", DECLARE);
   DEFINE_TERMINAL(g_macro,   "macro",   MACRO);
-  DEFINE_TERMINAL(g_const,   "const",   CONST);
+  DEFINE_TERMINAL(g_const,   "const",   CONST); // Compile time constants.
 
   // Typing:
   DEFINE_TERMINAL(g_alias,  "alias",  ALIAS);
@@ -54,6 +54,7 @@ namespace keywords {
 
   // Control statements:
   DEFINE_TERMINAL(g_func,  "func",  FUNCTION);
+  DEFINE_TERMINAL(g_meth,  "meth",  METHOD);
   DEFINE_TERMINAL(g_match, "match", MATCH);
   DEFINE_TERMINAL(g_if,    "if",    IF);
   DEFINE_TERMINAL(g_else,  "else",  ELSE);

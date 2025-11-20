@@ -21,7 +21,11 @@ class SymbolData;
 
 // Aliases:
 using MemberMap = std::map<std::string, SymbolData>;
+using MethodMap = std::map<std::string, SymbolData>;
 using IdentifierSet = std ::set<std::string>;
+
+using MemberSymbol = MethodMap::value_type;
+using MethodSymbol = MethodMap::value_type;
 
 // Enums:
 enum class Mutability {
@@ -41,7 +45,7 @@ struct StructType {
   std::string m_identifier;
 
   MemberMap m_members;
-  // MethodMap m_methods.
+  MethodMap m_methods;
 
   auto native_type() const -> NativeTypeOpt;
   auto type_variant() const -> TypeVariant;

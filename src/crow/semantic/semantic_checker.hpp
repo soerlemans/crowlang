@@ -14,6 +14,7 @@
 #include "crow/types/semantic/symbol.hpp"
 
 // Local Includes:
+#include "annotation_queue.hpp"
 #include "semantic_validator.hpp"
 #include "symbol_env_state.hpp"
 #include "type_promoter.hpp"
@@ -46,16 +47,15 @@ using types::core::NativeType;
 using types::core::NativeTypeOpt;
 
 // Aliases:
-//! Stores active contributes.
+//! Stores active contexts.
 using AttributeContext = AttributeSeq;
 
 // Classes:
-// TODO: Add check for checking if the AST only has a single module declaration.
-// We should either way, have some kind of entity which merges multiple
-// translation units.
-// Into a single Module Unit.
-// Maybe force module declarations to be at the top of the file?
-// To be considered when enforcing modules.
+// TODO: Add check for checking if the AST only has a single module
+// declaration. We should either way, have some kind of entity which merges
+// multiple translation units. Into a single Module Unit. Maybe force module
+// declarations to be at the top of the file? To be considered when enforcing
+// modules.
 /*!
  * The semantic checker validates the semantic validity of the AST.
  * This performs type inference and type checking.
@@ -69,9 +69,10 @@ class SemanticChecker : public NodeVisitor {
   private:
   SemanticValidator m_validator;
 
-  // TODO: Remove (now in SemanticValidator):
   SymbolEnvState m_symbol_state;
   AttributeContext m_active_attrs;
+
+  AnnotationQueue m_annot_queue;
 
   protected:
   // Environment related methods:
@@ -87,9 +88,9 @@ class SemanticChecker : public NodeVisitor {
   auto annotate_attr(AttributeData* t_node) -> void;
 
   /*!
-   * Annotate a node with its type data.
+   * Queue annotation for later.
    */
-  auto annotate_type(TypeData* t_node, const SymbolData& t_data) -> void;
+  auto queue_annotation(TypeData* t_node, const SymbolData& t_data) -> void;
 
   auto add_symbol_declaration(std::string_view t_id, const SymbolData& t_data)
     -> void;
@@ -103,8 +104,14 @@ class SemanticChecker : public NodeVisitor {
   auto add_symbol_definition(std::string_view t_id, const SymbolData& t_data)
     -> void;
 
+  auto add_struct_member_definition(SymbolData& t_struct,
+                                    const symbol::MemberSymbol& t_sym) -> void;
+
+  auto add_struct_method_definition(SymbolData& t_struct,
+                                    const symbol::MethodSymbol& t_sym) -> void;
+
   [[nodiscard("Pure method must use result.")]]
-  auto get_symbol_data_from_env(std::string_view t_id) const -> SymbolData;
+  auto get_symbol_data_from_env(std::string_view t_id) -> SymbolData&;
 
   // Helper methods for type promotion:
   //! Handle type conversion for conditionals.

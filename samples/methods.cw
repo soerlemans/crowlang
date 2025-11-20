@@ -17,12 +17,19 @@ struct ExampleStruct {
   m_range: int
 }
 
+// meth (ExampleStruct: ExampleInterface) num() -> void {
+// }
+
+// meth (ExampleStruct) num() -> void {
+// }
+
 // [[implements[ExampleInterface]()]]
 // [[implements(<Exampleinterface>)]]
 // [[implements(type Exampleinterface)]]
 // [[implements(Exampleinterface)]]
 func (ExampleStruct) num() -> void {
 }
+
 
 func main() -> int {
   var example: ExampleStruct

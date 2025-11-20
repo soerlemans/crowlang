@@ -93,7 +93,7 @@ auto type_variant2cpp(const TypeVariant& t_variant) -> std::string
 
   if(const auto opt{t_variant.native_type()}; opt) {
     str = native_type2cpp(opt.value());
-  } else if(const auto struct_ptr{t_variant.struct_()}; struct_ptr) {
+  } else if(const auto struct_ptr{t_variant.as_struct()}; struct_ptr) {
     str = struct_ptr->m_identifier;
   }
 

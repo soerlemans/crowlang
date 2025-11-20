@@ -3,15 +3,24 @@
 
 // STL Includes:
 #include <iosfwd>
+#include <map>
+#include <string>
 
 // Local Includes:
 #include "type_variant.hpp"
 
 namespace types::core {
+// Aliases:
+using MemberMap = std::map<std::string, TypeVariant>;
+using MethodMap = std::map<std::string, TypeVariant>;
+
 // Structs:
 // TODO: use VarTypePtr and FnTypePtr in combination with a map?
 struct StructType {
   std::string m_identifier;
+
+  MemberMap m_members;
+  MethodMap m_methods;
 
   auto native_type() const -> core::NativeTypeOpt;
 };

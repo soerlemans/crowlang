@@ -29,9 +29,9 @@ class TypeVariant : public Variant {
   // Use the constructors of the parent class.
   using Variant::Variant;
 
-  auto struct_() const -> StructTypePtr;
-  auto function() const -> FnTypePtr;
-  auto var() const -> VarTypePtr;
+  auto as_struct() const -> StructTypePtr;
+  auto as_function() const -> FnTypePtr;
+  auto as_var() const -> VarTypePtr;
 
   auto native_type() const -> core::NativeTypeOpt;
 

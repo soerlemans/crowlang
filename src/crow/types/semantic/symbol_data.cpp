@@ -61,17 +61,17 @@ auto nullptr_check(const std::string_view t_str,
 
 namespace semantic::symbol {
 // Methods:
-auto SymbolData::struct_() const -> StructTypePtr
+auto SymbolData::as_struct() const -> StructTypePtr
 {
   return std::get<StructTypePtr>(*this);
 }
 
-auto SymbolData::function() const -> FnTypePtr
+auto SymbolData::as_function() const -> FnTypePtr
 {
   return std::get<FnTypePtr>(*this);
 }
 
-auto SymbolData::var() const -> VarTypePtr
+auto SymbolData::as_var() const -> VarTypePtr
 {
   return std::get<VarTypePtr>(*this);
 }

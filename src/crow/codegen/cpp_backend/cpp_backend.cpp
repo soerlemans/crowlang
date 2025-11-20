@@ -201,7 +201,7 @@ auto CppBackend::visit(Function* t_fn) -> Any
 
   const auto identifier{t_fn->identifier()};
 
-  const auto fn_type{t_fn->get_type().function()};
+  const auto fn_type{t_fn->get_type().as_function()};
   const auto ret_type{type_variant2cpp(fn_type->m_return_type)};
 
   std::stringstream param_ss{};
@@ -383,7 +383,7 @@ auto CppBackend::visit(FunctionDecl* t_fdecl) -> Any
 {
   const auto identifier{t_fdecl->identifier()};
 
-  const auto fn_type{t_fdecl->get_type().function()};
+  const auto fn_type{t_fdecl->get_type().as_function()};
   const auto ret_type{type_variant2cpp(fn_type->m_return_type)};
 
   std::stringstream param_ss{};
@@ -544,6 +544,7 @@ auto CppBackend::visit(Method* t_meth) -> Any
   using node::node_traits::AttributeType;
 
   const auto identifier{t_meth->identifier()};
+  const auto receiver_type{t_meth->get_receiver()};
 
   // const auto fn_type{t_meth->get_type()};
   // const auto ret_type{type_variant2cpp(fn_type->m_return_type)};
@@ -570,7 +571,7 @@ auto CppBackend::visit(Method* t_meth) -> Any
 
   // clang-format off
   // ss << std::format("auto {}({}) -> {}\n", identifier, param_ss.str(), ret_type)
-  ss << std::format("auto {}({}) -> {}\n", identifier, param_ss.str(), "void")
+  ss << std::format("auto {}::{}({}) -> {}\n", receiver_type, identifier, param_ss.str(), "void")
      << "{\n"
      << resolve(t_meth->body())
      << "}\n";
@@ -601,10 +602,36 @@ auto CppBackend::visit(Struct* t_struct) -> Any
   const auto identifier{t_struct->identifier()};
   const auto members{t_struct->body()};
 
+  const auto struct_type{t_struct->get_type().as_struct()};
+  const auto& methods{struct_type->m_methods};
+
   std::stringstream ss{};
 
   ss << std::format("struct {} {{\n", identifier);
   ss << resolve(members);
+
+
+  ss << "// Methods:\n";
+
+  for(auto& [meth_identifier, method] : methods) {
+    const auto meth_type{method.as_function()};
+
+    const auto ret_type{type_variant2cpp(meth_type->m_return_type)};
+
+    std::stringstream param_ss{};
+
+    auto sep{""sv};
+    const auto params{meth_type->m_params};
+    for(const auto& param : params) {
+      param_ss << sep << type_variant2cpp(param);
+
+      sep = ", ";
+    }
+
+    ss << std::format("auto {}({}) -> {};\n", meth_identifier, param_ss.str(),
+                      ret_type);
+  }
+
   ss << "};\n";
 
   return ss.str();

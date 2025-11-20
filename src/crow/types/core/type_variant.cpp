@@ -12,17 +12,17 @@
 
 namespace types::core {
 // Methods:
-auto TypeVariant::struct_() const -> StructTypePtr
+auto TypeVariant::as_struct() const -> StructTypePtr
 {
   return std::get<StructTypePtr>(*this);
 }
 
-auto TypeVariant::function() const -> FnTypePtr
+auto TypeVariant::as_function() const -> FnTypePtr
 {
   return std::get<FnTypePtr>(*this);
 }
 
-auto TypeVariant::var() const -> VarTypePtr
+auto TypeVariant::as_var() const -> VarTypePtr
 {
   return std::get<VarTypePtr>(*this);
 }
