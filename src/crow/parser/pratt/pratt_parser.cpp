@@ -156,7 +156,7 @@ auto PrattParser::function_call() -> NodePtr
     const auto id{token.str()};
     DBG_TRACE_PRINT(INFO, "Found a 'FUNCTION CALL': ", id);
 
-    node = make_node<FunctionCall>(id, std::move(args));
+    node = make_node<MethodCall>(id, std::move(args));
   }
 
   return node;
@@ -184,7 +184,7 @@ auto PrattParser::method_call() -> NodePtr
     const auto id{token.str()};
     DBG_TRACE_PRINT(INFO, "Found a 'METHOD CALL': ", id);
 
-    node = make_node<FunctionCall>(id, std::move(args));
+    node = make_node<MethodCall>(id, std::move(args));
   }
 
   return node;

@@ -245,7 +245,9 @@ auto SemanticChecker::handle_condition(const SymbolData& t_data,
 
 auto SemanticChecker::get_symbol_data(NodePtr t_ptr) -> SymbolData
 {
-  SymbolData data;
+  using lib::stdexcept::throw_bad_any_cast;
+
+  SymbolData data{};
 
   const auto any{traverse(t_ptr)};
   if(any.has_value()) {
@@ -254,8 +256,8 @@ auto SemanticChecker::get_symbol_data(NodePtr t_ptr) -> SymbolData
     } catch(const std::bad_any_cast& err) {
       DBG_CRITICAL(err.what());
 
-      // TODO: Print elegant error message and terminate.
-      throw err;
+
+      throw_bad_any_cast(err.what());
     }
   }
 
@@ -915,7 +917,7 @@ auto SemanticChecker::visit(Self* t_self) -> Any
       "Keyword self used without active struct in method context.");
   }
 
-  return m_active_struct.value();
+  return {m_active_struct.value()};
 }
 
 auto SemanticChecker::visit(Member* t_member) -> Any
@@ -941,10 +943,11 @@ auto SemanticChecker::visit(MemberAccess* t_access) -> Any
 
   const auto lhs{get_resolved_type(left)};
 
+  // dynamic_cast<MethodCall>(right);
+  // const auto rhs{get_resolved_type(right)};
 
-  const auto rhs{get_resolved_type(right)};
-
-  return rhs;
+  // return rhs;
+  return SymbolData{NativeType::INT};
 }
 
 auto SemanticChecker::check(NodePtr t_ast) -> void

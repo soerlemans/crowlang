@@ -7,6 +7,7 @@
 #include "member_access.hpp"
 #include "member_decl.hpp"
 #include "method.hpp"
+#include "method_call.hpp"
 #include "self.hpp"
 #include "struct.hpp"
 

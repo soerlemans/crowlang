@@ -3,6 +3,7 @@
 
 namespace ast::node::typing {
 class Method;
+class MethodCall;
 class Interface;
 
 class MemberDecl;
@@ -11,6 +12,7 @@ class Self;
 
 class MemberAccess;
 class Member;
+
 } // namespace ast::node::typing
 
 #endif // CROW_CROW_AST_NODE_TYPING_FDECL_HPP
