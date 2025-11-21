@@ -807,6 +807,10 @@ auto SemanticChecker::visit(Method* t_meth) -> Any
   const auto ret_type{str2type(t_meth->type())};
   const auto params{t_meth->params()};
 
+  if(!recv_type.is_struct()) {
+    throw_type_error("Receiver type for method is not a struct.");
+  }
+
   // // Register function type signature to Struct.
   const auto params_type_list{get_type_list(params)};
   const SymbolData data{symbol::make_function(params_type_list, ret_type)};
@@ -841,8 +845,12 @@ auto SemanticChecker::visit(Method* t_meth) -> Any
     add_symbol_definition(id, data);
   }
 
+  m_active_struct = recv_type.as_struct();
+
   // Run type checking on the function body.
   traverse(t_meth->body());
+
+  m_active_struct = std::nullopt;
   pop_env();
 
   return {};
@@ -900,8 +908,14 @@ auto SemanticChecker::visit(Struct* t_struct) -> Any
 // TODO: Rename SelfAcceptor?
 auto SemanticChecker::visit(Self* t_self) -> Any
 {
+  using lib::stdexcept::throw_runtime_error;
 
-  return {};
+  if(!m_active_struct) {
+    throw_runtime_error(
+      "Keyword self used without active struct in method context.");
+  }
+
+  return m_active_struct.value();
 }
 
 auto SemanticChecker::visit(Member* t_member) -> Any
@@ -921,9 +935,14 @@ auto SemanticChecker::visit(Member* t_member) -> Any
 
 auto SemanticChecker::visit(MemberAccess* t_access) -> Any
 {
-  const auto lhs{get_resolved_type(t_access->left())};
-  const auto rhs{get_resolved_type(t_access->right())};
+  const auto left{t_access->left()};
+  const auto right{t_access->right()};
   const auto pos{t_access->position()};
+
+  const auto lhs{get_resolved_type(left)};
+
+
+  const auto rhs{get_resolved_type(right)};
 
   return rhs;
 }

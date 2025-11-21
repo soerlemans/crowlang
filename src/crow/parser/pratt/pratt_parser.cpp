@@ -30,7 +30,7 @@ auto PrattParser::prefix_expr(const TokenType t_type) -> NodePtr
 auto PrattParser::lvalue() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
+  NodePtr node{};
 
   const auto token{get_token()};
   if(next_if(TokenType::IDENTIFIER)) {
@@ -47,7 +47,7 @@ auto PrattParser::lvalue() -> NodePtr
 auto PrattParser::literal() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
+  NodePtr node{};
 
   const auto token{get_token()};
   if(next_if(TokenType::FLOAT)) {
@@ -80,7 +80,7 @@ auto PrattParser::literal() -> NodePtr
 auto PrattParser::grouping() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
+  NodePtr node{};
 
   if(check(TokenType::PAREN_OPEN)) {
     DBG_TRACE_PRINT(VERBOSE, "Found 'GROUPING'");
@@ -96,7 +96,7 @@ auto PrattParser::grouping() -> NodePtr
 auto PrattParser::negation() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
+  NodePtr node{};
 
   const auto pos{get_position()};
   if(next_if(TokenType::NOT)) {
@@ -116,7 +116,7 @@ auto PrattParser::negation() -> NodePtr
 auto PrattParser::unary_prefix() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
+  NodePtr node{};
 
   const auto token{get_token()};
   if(next_if(TokenType::PLUS, TokenType::MINUS)) {
@@ -137,7 +137,7 @@ auto PrattParser::unary_prefix() -> NodePtr
 auto PrattParser::function_call() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
+  NodePtr node{};
 
   const auto token{get_token()};
 
@@ -162,10 +162,38 @@ auto PrattParser::function_call() -> NodePtr
   return node;
 }
 
+auto PrattParser::method_call() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node{};
+
+  const auto token{get_token()};
+
+  if(next_if(TokenType::IDENTIFIER)) {
+    // Dont prematurely confuse variables and function calls
+    if(!check(TokenType::PAREN_OPEN)) {
+      prev();
+
+      return node;
+    }
+
+    auto args{parens([this] {
+      return this->expr_list_opt();
+    })};
+
+    const auto id{token.str()};
+    DBG_TRACE_PRINT(INFO, "Found a 'METHOD CALL': ", id);
+
+    node = make_node<FunctionCall>(id, std::move(args));
+  }
+
+  return node;
+}
+
 auto PrattParser::prefix() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
+  NodePtr node{};
 
   if(auto ptr{grouping()}; ptr) {
     node = std::move(ptr);
@@ -187,7 +215,7 @@ auto PrattParser::prefix() -> NodePtr
 auto PrattParser::prefix_chain_expr() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
+  NodePtr node{};
 
   if(auto ptr{function_call()}; ptr) {
     node = std::move(ptr);
@@ -240,7 +268,7 @@ auto PrattParser::infix_chain_expr(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 auto PrattParser::arithmetic(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
+  NodePtr node{};
 
   const auto pos{get_position()};
   const auto lambda{[&](ArithmeticOp t_op) {
@@ -279,7 +307,7 @@ auto PrattParser::arithmetic(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 auto PrattParser::logical(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
+  NodePtr node{};
 
   const auto pos{get_position()};
   auto lambda{[&]<typename T>() {
@@ -306,7 +334,7 @@ auto PrattParser::logical(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 auto PrattParser::comparison(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
+  NodePtr node{};
 
   if(t_lhs) {
     const auto pos{get_position()};
@@ -352,7 +380,7 @@ auto PrattParser::comparison(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 auto PrattParser::infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
+  NodePtr node{};
 
   // Guard clause:
   if(t_lhs == nullptr) {
@@ -468,13 +496,15 @@ auto PrattParser::field_access() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
 
-  // TODO: Add method call.
-  // And Array Subscript.
+  // TODO: Add method call and Array Subscript.
 
   const auto token{get_token()};
-  if(next_if(TokenType::IDENTIFIER)) {
+  if(auto ptr{function_call()}; ptr) {
+    node = std::move(ptr);
+  } else if(next_if(TokenType::IDENTIFIER)) {
     const auto id{token.str()};
     const auto pos{token.position()};
+
     DBG_TRACE_PRINT(INFO, "Found 'MEMBER': ", id);
     node = make_node<Member>(pos, id);
   }
@@ -509,7 +539,7 @@ auto PrattParser::lvalue_chain_expr(NodePtr& t_lhs, const RhsFn& t_fn)
 auto PrattParser::lvalue_infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePtr node;
+  NodePtr node{};
 
   if(t_lhs) {
     if(auto ptr{lvalue_chain_expr(t_lhs, t_fn)}; ptr) {
@@ -561,9 +591,7 @@ auto PrattParser::lvalue_expr(const int t_min_bp) -> NodePtr
   NodePtr lhs{lvalue()};
 
   if(!lhs) {
-    // TODO: Check for self keyword.
-    // Should we not terminate early, if no lhs?
-		// Almost 90% sure.
+    lhs = self();
   }
 
   // Infix:

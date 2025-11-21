@@ -25,7 +25,7 @@ func init_example_struct() -> ExampleStruct {
 func main() -> int {
   var example: ExampleStruct = init_example_struct()
 
-  example.num()
+  // example.num()
 
   let test = example.m_num1
 

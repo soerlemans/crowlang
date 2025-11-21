@@ -36,6 +36,7 @@ class PrattParser : public Parser {
   // Grammar:
   virtual auto newline_opt() -> void = 0;
   virtual auto expr_list_opt() -> NodeListPtr = 0;
+  virtual auto self() -> NodePtr = 0;
 
   // Prefix parsing:
   virtual auto prefix_expr(TokenType t_type) -> NodePtr;
@@ -45,6 +46,7 @@ class PrattParser : public Parser {
   virtual auto unary_prefix() -> NodePtr;
   virtual auto negation() -> NodePtr;
   virtual auto function_call() -> NodePtr;
+  virtual auto method_call() -> NodePtr;
 
   virtual auto prefix() -> NodePtr;
   virtual auto prefix_chain_expr() -> NodePtr;

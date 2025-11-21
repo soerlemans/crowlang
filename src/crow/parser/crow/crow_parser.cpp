@@ -558,6 +558,22 @@ auto CrowParser::type_def() -> NodePtr
   return node;
 }
 
+auto CrowParser::self() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node{};
+
+  const auto token{get_token()};
+  if(next_if(TokenType::SELF)) {
+    context_check(Context::METHOD);
+
+    DBG_TRACE_PRINT(INFO, "Found 'SELF'.");
+    node = make_node<Self>();
+  }
+
+  return node;
+}
+
 // Function:
 auto CrowParser::param_list() -> NodeListPtr
 {
@@ -671,6 +687,9 @@ auto CrowParser::function() -> NodePtr
       expect(TokenType::PAREN_CLOSE);
 
       const auto return_type{return_type_opt()};
+
+      // We are in the method context now.
+      CONTEXT_GUARD(METHOD);
       auto body_ptr{body()};
       if(!body_ptr) {
         throw_syntax_error("Expected a method body");

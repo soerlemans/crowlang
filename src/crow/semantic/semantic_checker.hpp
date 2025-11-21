@@ -49,6 +49,7 @@ using types::core::NativeTypeOpt;
 // Aliases:
 //! Stores active contexts.
 using AttributeContext = AttributeSeq;
+using ActiveStruct = std::optional<symbol::StructTypePtr>;
 
 // Classes:
 // TODO: Add check for checking if the AST only has a single module
@@ -71,6 +72,9 @@ class SemanticChecker : public NodeVisitor {
 
   SymbolEnvState m_symbol_state;
   AttributeContext m_active_attrs;
+
+  // Used to resolve self to type.
+  ActiveStruct m_active_struct;
 
   AnnotationQueue m_annot_queue;
 

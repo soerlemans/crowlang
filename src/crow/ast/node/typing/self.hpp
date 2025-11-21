@@ -9,16 +9,14 @@
 
 namespace ast::node::typing {
 // Aliases:
-using node_traits::Identifier;
-using node_traits::TypeAnnotation;
 using node_traits::TypeData;
 
 // Classes:
-class Self : public Identifier, public TypeAnnotation, public TypeData {
+class Self : public TypeData {
   public:
-  Self(std::string_view t_identifier, std::string_view t_type);
+  Self();
 
-  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Self, Identifier, TypeAnnotation)
+  AST_ARCHIVE_DEFINE_SERIALIZE_METHOD_NIL()
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Self() = default;

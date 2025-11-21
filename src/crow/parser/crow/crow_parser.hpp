@@ -90,6 +90,8 @@ class CrowParser : public pratt::PrattParser {
 
   virtual auto type_def() -> NodePtr;
 
+  auto self() -> NodePtr override;
+
   // Function:
   virtual auto param_list() -> NodeListPtr;
   virtual auto param_list_opt() -> NodeListPtr;
