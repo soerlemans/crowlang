@@ -20,10 +20,14 @@ func init_example_struct() -> ExampleStruct {
   example.m_num1 = 10
   example.m_num2 = 10
   example.m_num3 = 10
+
+  return example;
 }
 
 func main() -> int {
-  var example: ExampleStruct = init_example_struct()
+  // var example: ExampleStruct = init_example_struct()
+  var example: ExampleStruct
+  example = init_example_struct()
 
   // example.num()
 

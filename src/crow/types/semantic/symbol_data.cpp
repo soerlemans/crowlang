@@ -34,6 +34,8 @@ struct MonoStateHandler {
 
     throw_unexpected_monostate("Illegal occurrence of std::monostate.");
 
+    // std::unreachable();
+
     // Will never be reached.
     return T{};
   }
@@ -106,17 +108,32 @@ auto SymbolData::is_mutable() const -> bool
   return result;
 }
 
-auto SymbolData::resolve_type() const -> SymbolData
+auto SymbolData::resolve_result_type() const -> SymbolData
 {
-  SymbolData data;
+  using lib::Overload;
 
-  // If we can resolve to a native type then return that.
-  // Else just return the instance itself.
-  if(const auto opt{native_type()}; opt) {
-    data = opt.value();
-  } else {
-    data = *this;
-  }
+  SymbolData data{};
+
+  const auto native{[&](const NativeType t_type) -> SymbolData {
+    return SymbolData{t_type};
+  }};
+
+  const auto struct_handler{[&](const StructTypePtr& t_ptr) {
+    nullptr_check("Resolve result type", t_ptr);
+
+    return SymbolData{t_ptr};
+  }};
+
+  const auto rest{[&](const std::shared_ptr<auto>& t_ptr) {
+    nullptr_check("Resolve result type", t_ptr);
+
+    return t_ptr->resolve_result_type();
+  }};
+
+  data = std::visit(
+    Overload{native, struct_handler, rest, MonoStateHandler<SymbolData>{}},
+    *this);
+
 
   return data;
 }

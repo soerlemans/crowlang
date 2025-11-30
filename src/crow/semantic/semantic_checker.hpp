@@ -130,10 +130,10 @@ class SemanticChecker : public NodeVisitor {
   // Helper methods for dealing with resolving nodes to SymbolData:
   // NodeVisitor visitation is not marked const so these methods cant be const.
   auto get_symbol_data(NodePtr t_ptr) -> SymbolData;
-  auto get_resolved_type(NodePtr t_ptr) -> SymbolData;
+  auto get_resolved_result_type(NodePtr t_ptr) -> SymbolData;
   auto get_native_type(NodePtr t_ptr) -> NativeTypeOpt;
   auto get_type_list(NodeListPtr t_list) -> SymbolDataList;
-  auto get_resolved_type_list(NodeListPtr t_list) -> SymbolDataList;
+  auto get_resolved_result_type_list(NodeListPtr t_list) -> SymbolDataList;
 
   public:
   SemanticChecker();

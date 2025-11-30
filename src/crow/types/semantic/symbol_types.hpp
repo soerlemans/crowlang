@@ -41,11 +41,16 @@ struct EnumType {
 
 // TODO: use VarTypePtr and FnTypePtr in combination with a map?
 // This way we will be able to couple id's to type info.
+/*!
+ */
 struct StructType {
   std::string m_identifier;
 
   MemberMap m_members;
   MethodMap m_methods;
+
+	// We dont need a resolve_result_type() function cause a struct.
+	// Is already a result type.
 
   auto native_type() const -> NativeTypeOpt;
   auto type_variant() const -> TypeVariant;
@@ -57,6 +62,8 @@ struct StructType {
 struct FnType {
   SymbolDataList m_params;
   SymbolData m_return_type;
+
+  auto resolve_result_type() const -> SymbolData;
 
   auto native_type() const -> NativeTypeOpt;
   auto type_variant() const -> TypeVariant;
@@ -70,6 +77,8 @@ struct VarType {
   SymbolData m_type;
 
   auto is_mutable() const -> bool;
+  auto resolve_result_type() const -> SymbolData;
+
   auto native_type() const -> NativeTypeOpt;
   auto type_variant() const -> TypeVariant;
 

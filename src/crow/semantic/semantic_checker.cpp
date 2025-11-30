@@ -264,9 +264,9 @@ auto SemanticChecker::get_symbol_data(NodePtr t_ptr) -> SymbolData
   return data;
 }
 
-auto SemanticChecker::get_resolved_type(NodePtr t_ptr) -> SymbolData
+auto SemanticChecker::get_resolved_result_type(NodePtr t_ptr) -> SymbolData
 {
-  return get_symbol_data(t_ptr).resolve_type();
+  return get_symbol_data(t_ptr).resolve_result_type();
 }
 
 auto SemanticChecker::get_native_type(NodePtr t_ptr) -> NativeTypeOpt
@@ -285,13 +285,13 @@ auto SemanticChecker::get_type_list(NodeListPtr t_list) -> SymbolDataList
   return list;
 }
 
-auto SemanticChecker::get_resolved_type_list(NodeListPtr t_list)
+auto SemanticChecker::get_resolved_result_type_list(NodeListPtr t_list)
   -> SymbolDataList
 {
   SymbolDataList list;
 
   for(const auto& ptr : *t_list) {
-    list.push_back(get_resolved_type(ptr));
+    list.push_back(get_resolved_result_type(ptr));
   }
 
   return list;
@@ -365,9 +365,9 @@ auto SemanticChecker::visit(Return* t_return) -> Any
 // Function:
 auto SemanticChecker::visit(Parameter* t_param) -> Any
 {
-  const auto type{str2nativetype(t_param->type())};
+  const auto type{str2type(t_param->type())};
 
-  t_param->set_type({type});
+  t_param->set_type(type.type_variant());
 
   return SymbolData{type};
 }
@@ -375,7 +375,7 @@ auto SemanticChecker::visit(Parameter* t_param) -> Any
 auto SemanticChecker::visit(Function* t_fn) -> Any
 {
   const auto id{t_fn->identifier()};
-  const auto ret_type{str2nativetype(t_fn->type())};
+  const auto ret_type{str2type(t_fn->type())};
   const auto params{t_fn->params()};
   const auto body{t_fn->body()};
 
@@ -430,7 +430,7 @@ auto SemanticChecker::visit(FunctionCall* t_fn_call) -> Any
   }
 
   const auto fn_data{get_symbol_data_from_env(id)};
-  const auto args{get_resolved_type_list(t_fn_call->args())};
+  const auto args{get_resolved_result_type_list(t_fn_call->args())};
 
   const auto fn{fn_data.as_function()};
   const auto params{fn->m_params};
@@ -455,7 +455,9 @@ auto SemanticChecker::visit(FunctionCall* t_fn_call) -> Any
 
 auto SemanticChecker::visit(ReturnType* t_rt) -> Any
 {
-  return SymbolData{str2nativetype(t_rt->type())};
+  const auto type{t_rt->type()};
+
+  return SymbolData{str2type(type)};
 }
 
 // Lvalue:
@@ -574,7 +576,7 @@ auto SemanticChecker::visit(LetDecl* t_ldecl) -> Any
   using symbol::Mutability;
 
   const auto id{t_ldecl->identifier()};
-  const auto type_data{str2nativetype(t_ldecl->type())};
+  const auto type_data{str2type(t_ldecl->type())};
 
   // Create the SymbolData for a variable.
   const SymbolData data{
@@ -593,7 +595,7 @@ auto SemanticChecker::visit(VarDecl* t_vdecl) -> Any
   using symbol::Mutability;
 
   const auto id{t_vdecl->identifier()};
-  const auto type_data{str2nativetype(t_vdecl->type())};
+  const auto type_data{str2type(t_vdecl->type())};
 
   // Create the SymbolData for a variable.
   const SymbolData data{symbol::make_variable(Mutability::MUTABLE, type_data)};
@@ -609,7 +611,7 @@ auto SemanticChecker::visit(VarDecl* t_vdecl) -> Any
 auto SemanticChecker::visit(FunctionDecl* t_fdecl) -> Any
 {
   const auto id{t_fdecl->identifier()};
-  const auto ret_type{str2nativetype(t_fdecl->type())};
+  const auto ret_type{str2type(t_fdecl->type())};
   const auto params{t_fdecl->params()};
 
   // Register function type signature to environment.
@@ -629,8 +631,9 @@ auto SemanticChecker::visit(FunctionDecl* t_fdecl) -> Any
 // Operators:
 auto SemanticChecker::visit(Arithmetic* t_arith) -> Any
 {
-  const auto lhs{get_resolved_type(t_arith->left())};
-  const auto rhs{get_resolved_type(t_arith->right())};
+	const auto op{t_arith->op()};
+  const auto lhs{get_symbol_data(t_arith->left())};
+  const auto rhs{get_symbol_data(t_arith->right())};
   const auto pos{t_arith->position()};
 
   DBG_INFO("Typeof lhs: ", lhs);
@@ -648,7 +651,7 @@ auto SemanticChecker::visit(Arithmetic* t_arith) -> Any
 auto SemanticChecker::visit(Assignment* t_assign) -> Any
 {
   const auto var{get_symbol_data(t_assign->left())};
-  const auto expr{get_resolved_type(t_assign->right())};
+  const auto expr{get_resolved_result_type(t_assign->right())};
 
   const auto pos{t_assign->position()};
 
@@ -839,7 +842,7 @@ auto SemanticChecker::visit(Method* t_meth) -> Any
                  params);
 
     const auto id{param->identifier()};
-    const auto type{str2nativetype(param->type())};
+    const auto type{str2type(param->type())};
 
     const SymbolData data{symbol::make_variable(Mutability::MUTABLE, type)};
 
@@ -890,7 +893,7 @@ auto SemanticChecker::visit(Struct* t_struct) -> Any
                  member_decl, node, struct_body);
 
     const std::string member_id{member_decl->identifier()};
-    const SymbolData member_type{str2nativetype(member_decl->type())};
+    const SymbolData member_type{str2type(member_decl->type())};
 
     members.insert({member_id, member_type});
   }
@@ -908,7 +911,7 @@ auto SemanticChecker::visit(Struct* t_struct) -> Any
 }
 
 // TODO: Rename SelfAcceptor?
-auto SemanticChecker::visit(Self* t_self) -> Any
+auto SemanticChecker::visit([[maybe_unused]] Self* t_self) -> Any
 {
   using lib::stdexcept::throw_runtime_error;
 
@@ -917,7 +920,7 @@ auto SemanticChecker::visit(Self* t_self) -> Any
       "Keyword self used without active struct in method context.");
   }
 
-  return {m_active_struct.value()};
+  return SymbolData{m_active_struct.value()};
 }
 
 auto SemanticChecker::visit(Member* t_member) -> Any
@@ -941,10 +944,10 @@ auto SemanticChecker::visit(MemberAccess* t_access) -> Any
   const auto right{t_access->right()};
   const auto pos{t_access->position()};
 
-  const auto lhs{get_resolved_type(left)};
+  const auto lhs{get_resolved_result_type(left)};
 
   // dynamic_cast<MethodCall>(right);
-  // const auto rhs{get_resolved_type(right)};
+  // const auto rhs{get_resolved_result_type(right)};
 
   // return rhs;
   return SymbolData{NativeType::INT};

@@ -20,7 +20,6 @@ class Parameter : public NodePosition,
                   public Identifier,
                   public TypeAnnotation,
                   public TypeData
-
 {
   public:
   Parameter(TextPosition t_pos, std::string_view t_identifier,

@@ -420,7 +420,7 @@ auto CppBackend::visit(Assignment* t_assign) -> Any
   const auto op{t_assign->op2str()};
 
   const auto left{resolve(t_assign->left())};
-  const auto right{resolve(t_assign->right())};
+  const auto right{resolve(t_assign->right(), false)};
 
   return std::format("{} {} {};\n", left, op, right);
 }
@@ -639,7 +639,7 @@ auto CppBackend::visit(Struct* t_struct) -> Any
 
 auto CppBackend::visit(Self* t_self) -> Any
 {
-  return std::string{"this"};
+  return std::string{"(*this)"};
 }
 
 auto CppBackend::visit(Member* t_member) -> Any
@@ -651,10 +651,10 @@ auto CppBackend::visit(Member* t_member) -> Any
 
 auto CppBackend::visit(MemberAccess* t_access) -> Any
 {
-  const auto left{resolve(t_access->left())};
-  const auto right{resolve(t_access->right())};
+  const auto lhs{resolve(t_access->left())};
+  const auto rhs{resolve(t_access->right())};
 
-  return std::format("({}.{})", left, right);
+  return std::format("({}.{})", lhs, rhs);
 }
 
 // Misc:

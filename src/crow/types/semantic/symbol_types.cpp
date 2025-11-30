@@ -29,6 +29,12 @@ auto StructType::type_variant() const -> TypeVariant
 }
 
 // FnType:
+auto FnType::resolve_result_type() const -> SymbolData
+{
+	// Get return type as it is the result of a function call.
+	return SymbolData{m_return_type};
+}
+
 auto FnType::native_type() const -> NativeTypeOpt
 {
   return {};
@@ -50,6 +56,13 @@ auto VarType::is_mutable() const -> bool
 {
   return (m_mutability == Mutability::MUTABLE);
 }
+
+auto VarType::resolve_result_type() const -> SymbolData
+{
+	// Get underlying type.
+	return SymbolData{m_type};
+}
+
 
 auto VarType::native_type() const -> NativeTypeOpt
 {
