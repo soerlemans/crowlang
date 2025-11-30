@@ -237,13 +237,16 @@ auto PrattParser::infix_chain_expr(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
     return nullptr;
   }
 
+  // TODO: Eliminate as many dynamic_cast calls as possible.
   // Chain expressions can only be performed on the following:
   const auto* is_variable{dynamic_cast<Variable*>(t_lhs.get())};
   const auto* is_function_call{dynamic_cast<FunctionCall*>(t_lhs.get())};
+  const auto* is_method_call{dynamic_cast<MethodCall*>(t_lhs.get())};
   const auto* is_member_access{dynamic_cast<MemberAccess*>(t_lhs.get())};
 
   // Guard clause:
-  if(!is_variable && !is_function_call && !is_member_access) {
+  if(!is_variable && !is_function_call && !is_method_call
+     && !is_member_access) {
     return node;
   }
 
@@ -499,7 +502,7 @@ auto PrattParser::field_access() -> NodePtr
   // TODO: Add method call and Array Subscript.
 
   const auto token{get_token()};
-  if(auto ptr{function_call()}; ptr) {
+  if(auto ptr{method_call()}; ptr) {
     node = std::move(ptr);
   } else if(next_if(TokenType::IDENTIFIER)) {
     const auto id{token.str()};

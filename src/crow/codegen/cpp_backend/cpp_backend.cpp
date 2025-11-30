@@ -403,7 +403,6 @@ auto CppBackend::visit(FunctionDecl* t_fdecl) -> Any
 // Operators:
 auto CppBackend::visit(Arithmetic* t_arith) -> Any
 {
-
   const auto op{t_arith->op2str()};
 
   const auto left{resolve(t_arith->left())};
@@ -416,7 +415,6 @@ auto CppBackend::visit(Arithmetic* t_arith) -> Any
 
 auto CppBackend::visit(Assignment* t_assign) -> Any
 {
-
   const auto op{t_assign->op2str()};
 
   const auto left{resolve(t_assign->left())};

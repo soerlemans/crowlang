@@ -631,7 +631,7 @@ auto SemanticChecker::visit(FunctionDecl* t_fdecl) -> Any
 // Operators:
 auto SemanticChecker::visit(Arithmetic* t_arith) -> Any
 {
-	const auto op{t_arith->op()};
+  const auto op{t_arith->op()};
   const auto lhs{get_symbol_data(t_arith->left())};
   const auto rhs{get_symbol_data(t_arith->right())};
   const auto pos{t_arith->position()};
@@ -945,6 +945,8 @@ auto SemanticChecker::visit(MemberAccess* t_access) -> Any
   const auto pos{t_access->position()};
 
   const auto lhs{get_resolved_result_type(left)};
+
+  // Evaluate chain expressions by setting an active access var.
 
   // dynamic_cast<MethodCall>(right);
   // const auto rhs{get_resolved_result_type(right)};
