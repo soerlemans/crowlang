@@ -522,6 +522,13 @@ auto PrattParser::member_access() -> NodePtr
   return node;
 }
 
+auto PrattParser::method_access() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+
+  return method_call();
+}
+
 auto PrattParser::field_access() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -530,7 +537,7 @@ auto PrattParser::field_access() -> NodePtr
   // TODO: Add method call and Array Subscript.
 
   const auto token{get_token()};
-  if(auto ptr{method_call()}; ptr) {
+  if(auto ptr{method_access()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{member_access()}; ptr) {
     node = std::move(ptr);
@@ -653,6 +660,21 @@ auto PrattParser::lvalue_expr(const int t_min_bp) -> NodePtr
   }
 
   return lhs;
+}
+
+auto PrattParser::method_call_infix(NodePtr& t_lhs, const RhsFn& t_fn)
+  -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node{};
+
+  if(t_lhs) {
+    if(auto ptr{lvalue_chain_expr(t_lhs, t_fn)}; ptr) {
+      node = std::move(ptr);
+    }
+  }
+
+  return node;
 }
 
 auto PrattParser::method_call_expr(int t_min_bp = 0) -> NodePtr
