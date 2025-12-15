@@ -43,7 +43,7 @@ class CrowParser : public pratt::PrattParser {
 
   // Grammar:
   auto newline_opt() -> void override;
-  virtual auto terminator() -> void;
+  auto terminator() -> void override;
 
   // Expressions:
   virtual auto literal_list() -> NodeListPtr;

@@ -21,7 +21,7 @@ func init_example_struct() -> ExampleStruct {
   example.m_num2 = 10
   example.m_num3 = 10
 
-  return example;
+  return example
 }
 
 func main() -> int {
@@ -29,7 +29,10 @@ func main() -> int {
   var example: ExampleStruct
   example = init_example_struct()
 
-  // example.num()
+  init_example_struct()
+
+  // Need to deal with this in grammar.
+  example.set()
 
   let test = example.m_num1
 

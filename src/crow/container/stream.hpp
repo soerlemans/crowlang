@@ -14,14 +14,16 @@ namespace container {
 template<typename T>
   requires std::bidirectional_iterator<typename T::iterator>
 class Stream : public T {
-  private:
+  public:
   using Iterator = typename T::iterator;
   using Value = typename T::value_type;
   using ValueOpt = std::optional<Value>;
 
+  private:
   Iterator m_iter;
 
   public:
+  // Methods:
   Stream(): m_iter{this->begin()}
   {}
 

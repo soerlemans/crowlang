@@ -10,6 +10,7 @@
 #include "lib/stdtypes.hpp"
 
 // Local Includes:
+#include "backtrack_guard.hpp"
 #include "binding/maps.hpp"
 
 namespace parser::pratt {
@@ -35,6 +36,7 @@ class PrattParser : public Parser {
 
   // Grammar:
   virtual auto newline_opt() -> void = 0;
+  virtual auto terminator() -> void = 0;
   virtual auto expr_list_opt() -> NodeListPtr = 0;
   virtual auto self() -> NodePtr = 0;
 
@@ -65,6 +67,7 @@ class PrattParser : public Parser {
   virtual auto expr(int t_min_bp = 0) -> NodePtr;
 
   // Lvalue specific:
+  virtual auto member_access() -> NodePtr;
   virtual auto field_access() -> NodePtr;
 
   virtual auto lvalue_chain_expr(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
@@ -72,15 +75,27 @@ class PrattParser : public Parser {
 
   /*!
    * Continue's a member access chain.
+   * Which derives from an lvalue_expr().
    */
   virtual auto lvalue_member_expr(int t_min_bp = 0) -> NodePtr;
 
   /*!
    * Generally an expression is universal.
    * But when we are dealing with precedence as the destination for a value.
-   * We only allow assignable statements on the left side.
+   * We only allow assignable statements on the left hand side.
+   * So no assigning to the result of function calls.
    */
   virtual auto lvalue_expr(int t_min_bp = 0) -> NodePtr;
+
+  // Method call specific.
+  virtual auto method_call_infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
+
+  /*!
+   * The only free standing chain expr which we do not assign to.
+   * Is a method_call at the end of a long chain expression.
+   * We need backtracking in order to get this to work.
+   */
+  virtual auto method_call_expr(int t_min_bp = 0) -> NodePtr;
 
   virtual ~PrattParser() = default;
 };

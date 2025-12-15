@@ -635,7 +635,7 @@ auto CppBackend::visit(Struct* t_struct) -> Any
   return ss.str();
 }
 
-auto CppBackend::visit(Self* t_self) -> Any
+auto CppBackend::visit([[maybe_unused]] Self* t_self) -> Any
 {
   return std::string{"(*this)"};
 }
