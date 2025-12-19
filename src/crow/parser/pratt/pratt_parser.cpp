@@ -243,11 +243,12 @@ auto PrattParser::infix_chain(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   const auto* is_function_call{dynamic_cast<FunctionCall*>(t_lhs.get())};
   const auto* is_method_call{dynamic_cast<MethodCall*>(t_lhs.get())};
   const auto* is_member_access{dynamic_cast<MemberAccess*>(t_lhs.get())};
+  const auto* is_member{dynamic_cast<Member*>(t_lhs.get())};
 
   // Guard clause:
   // Only allow chain infix on following.
-  if(!is_variable && !is_function_call && !is_method_call
-     && !is_member_access) {
+  if(!is_variable && !is_function_call && !is_method_call && !is_member_access
+     && !is_member) {
     return node;
   }
 
@@ -264,11 +265,6 @@ auto PrattParser::infix_chain(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
     // }else if(after_newlines(TokenType::BRACKET_OPEN)) {
     // } else if(after_newlines(TokenType::PAREN_OPEN)) {
     // TODO: Add for '[]' and '()'.
-  } else {
-    // Just eat newlines or terminating characters.
-    // FIXME: Figure out why this is necessary for only methods and not for
-    // normal function calls.
-    // terminator();
   }
 
   return node;
@@ -546,8 +542,7 @@ auto PrattParser::field_access() -> NodePtr
   return node;
 }
 
-auto PrattParser::lvalue_chain(NodePtr& t_lhs, const RhsFn& t_fn)
-  -> NodePtr
+auto PrattParser::lvalue_chain(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
@@ -679,11 +674,12 @@ auto PrattParser::infix_method_call(NodePtr& t_lhs, const RhsFn& t_fn)
   const auto* is_function_call{dynamic_cast<FunctionCall*>(t_lhs.get())};
   const auto* is_method_call{dynamic_cast<MethodCall*>(t_lhs.get())};
   const auto* is_member_access{dynamic_cast<MemberAccess*>(t_lhs.get())};
+  const auto* is_member{dynamic_cast<Member*>(t_lhs.get())};
 
   // Guard clause:
   // Only allow chain infix on following.
-  if(!is_variable && !is_function_call && !is_method_call
-     && !is_member_access) {
+  if(!is_variable && !is_function_call && !is_method_call && !is_member_access
+     && !is_member) {
     return node;
   }
 
@@ -705,7 +701,7 @@ auto PrattParser::infix_method_call(NodePtr& t_lhs, const RhsFn& t_fn)
   return node;
 }
 
-auto PrattParser::method_call_expr(int t_min_bp = 0) -> NodePtr
+auto PrattParser::method_call_expr(int t_min_bp) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr lhs{prefix_chain()};
