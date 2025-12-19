@@ -252,6 +252,8 @@ auto CrowParser::assignment() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
 
+  PRATT_BACKTRACK_GUARD(node);
+
   if(auto lhs{lvalue_expr()}; lhs) {
     const auto pos{get_position()};
     const auto lambda{[&](const AssignmentOp t_op) {
@@ -308,6 +310,8 @@ auto CrowParser::result_statement() -> NodePtr
   } else if(auto ptr{binding_expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{assignment()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{method_call_expr()}; ptr) {
     node = std::move(ptr);
   }
 

@@ -32,6 +32,7 @@ func main() -> int {
   init_example_struct()
 
   // Need to deal with this in grammar.
+  let test1 = example.set()
   example.set()
 
   let test = example.m_num1

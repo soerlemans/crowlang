@@ -51,10 +51,10 @@ class PrattParser : public Parser {
   virtual auto method_call() -> NodePtr;
 
   virtual auto prefix() -> NodePtr;
-  virtual auto prefix_chain_expr() -> NodePtr;
+  virtual auto prefix_chain() -> NodePtr;
 
   // Infix parsing:
-  virtual auto infix_chain_expr(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
+  virtual auto infix_chain(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
 
   virtual auto arithmetic(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
   virtual auto logical(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
@@ -71,7 +71,7 @@ class PrattParser : public Parser {
   virtual auto field_access() -> NodePtr;
 
   // Lvalue specific:
-  virtual auto lvalue_chain_expr(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
+  virtual auto lvalue_chain(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
   virtual auto lvalue_infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
 
   /*!
@@ -89,7 +89,7 @@ class PrattParser : public Parser {
   virtual auto lvalue_expr(int t_min_bp = 0) -> NodePtr;
 
   // Method call specific.
-  virtual auto method_call_infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
+  virtual auto infix_method_call(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
 
   /*!
    * The only free standing chain expr which we do not assign to.
