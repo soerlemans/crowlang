@@ -54,12 +54,16 @@ function macos_install
 
     # CLI11, Boost, LLVM and libclang  are dynamically linked.
     # And must be installed.
-    sudo apt install -y \
-				 libcurl4 \
-				 libcli11-dev \
-				 llvm-17-dev \
-				 libboost-all-dev \
-				 libzstd-dev
+    # sudo apt install -y \
+	# 			 libcurl4 \
+	# 			 libcli11-dev \
+	# 			 llvm-17-dev \
+	# 			 libboost-all-dev \
+	# 			 libzstd-dev
+
+    brew install boost
+
+    # TODO: Add the rest of the deps.
 }
 
 # Script:
