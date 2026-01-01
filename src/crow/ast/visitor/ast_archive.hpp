@@ -75,7 +75,8 @@ class AstArchive : public NodeVisitor {
       t_archive(std::forward<Args>(t_args)...);
     }};
 
-    const auto fn_monostate{[]([[maybe_unused]] std::monostate t_state) {
+    const auto fn_monostate{[]([[maybe_unused]]
+                               std::monostate t_state) {
       lib::stdexcept::throw_exception("Attempted to archive std::monostate.");
     }};
 
