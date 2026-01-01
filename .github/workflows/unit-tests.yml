@@ -3,11 +3,12 @@ name: Run Unit Tests.
 on:
   pull_request:
     paths:
-      - '**/*.cpp'
-      - '**/*.h'
-      - '**/*.c'
-      - '**/*.hpp'
-      - '**/*'
+      - 'CMakeLists.txt'
+      - 'cmake/*'
+      - 'samples/*'
+      - 'src/*'
+      - 'tools/*'
+      - 'tests/*'
 
 jobs:
  run-unit-tests:
@@ -46,3 +47,4 @@ jobs:
       id: run-tests
       run: |
         # inv build --mode=test-build --parallel
+        ./test-build/crow_tests
