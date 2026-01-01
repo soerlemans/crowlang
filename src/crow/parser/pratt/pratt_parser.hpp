@@ -13,12 +13,15 @@
 #include "binding/maps.hpp"
 
 namespace parser::pratt {
+class PrattParser;
+
 // Using Statements:
 using binding::InfixMap;
 using binding::PrefixMap;
 
 //! This type is used to get the right hand side of a binary expressions
 using RhsFn = std::function<NodePtr(TokenType)>;
+using PrattParserPtr = std::unique_ptr<PrattParser>;
 
 // Classes:
 class PrattParser : public Parser {
