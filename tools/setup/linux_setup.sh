@@ -36,6 +36,34 @@ function log
     echo "[+] $@"
 }
 
+function ubuntu_install
+{
+    print_title 'Installing dependencies for Ubuntu.'
+
+    log 'Installing build-system dependencies:'
+    sudo apt install -y \
+				 build-essential \
+				 clang \
+				 cmake extra-cmake-modules
+
+    log 'Installing interoperability dependencies'
+    # pipx install pybind11
+
+    # We need the headers on the system.
+    sudo apt install -y python3-pybind11 python3-dev
+
+    log 'Installing dynamically linked dependencies:'
+
+    # CLI11, Boost, LLVM and libclang  are dynamically linked.
+    # And must be installed.
+    sudo apt install -y \
+				 libcurl4 \
+				 libcli11-dev \
+				 llvm-17-dev \
+				 libboost-all-dev \
+				 libzstd-dev
+}
+
 function debian_install
 {
     print_title 'Installing dependencies for Debian.'
@@ -74,6 +102,10 @@ fi
 source "$OS_RELEASE"
 
 case "$ID" in
+    ubuntu)
+	ubuntu_install
+	;;
+
     debian)
 	debian_install
 	;;

@@ -36,3 +36,9 @@ jobs:
       id: invoke-setup
       run: |
         inv setup
+
+
+    - name: Build tests.
+      id: invoke-setup
+      run: |
+        inv setup
