@@ -3,6 +3,6 @@ target_sources(${TARGET_CROW} PRIVATE
 	benchmark.cpp
 )
 
-# Add directorie:
-add_subdirectory(pratt_parser)
+# Add directories:
 add_subdirectory(visitor)
+add_subdirectory(parser)
