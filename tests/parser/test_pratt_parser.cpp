@@ -56,9 +56,17 @@ auto prep_pratt_parser(const std::string_view t_program) -> PrattParserPtr
 TEST(TestPrattParser, BasicExpressions)
 {
   PrattExprs exprs = {
-    "2 + 2"sv,       "2 * 2"sv,         "2 * 2 + 3"sv,
-    "2 * (2 + 3)"sv, "2 * 6 - 4 / 2"sv, "(2 * 6 - 3) + 10 / 2"sv,
+    "2 + 2"sv,
+    "2 * 2"sv,
+    "2 * 2 + 3"sv,
+    "2 * (2 + 3)"sv,
+    "2 * 6 - 4 / 2"sv,
+    "(2 * 6 - 3) + 10 / 2"sv,
     "6 / 2 - 3"sv,
+    "2 * num1"sv,
+    "2 * num1 + num2"sv,
+    "num1 / 2 - num2"sv,
+    "(2 * num1 - 3) + num2 / num3"sv,
   };
 
   for(auto&& program : exprs) {
@@ -78,6 +86,8 @@ TEST(TestPrattParser, BasicInvalidExpressions)
   PrattExprs exprs = {
     "2 + "sv,
     "2 + * 2"sv,
+    "( 2 + * 2"sv,
+    "( num1 + num2"sv,
   };
 
   for(auto&& program : exprs) {
@@ -85,6 +95,9 @@ TEST(TestPrattParser, BasicInvalidExpressions)
 
     try {
       auto node{parser->expr()};
+
+      FAIL() << "Program " << std::quoted(program)
+             << " should have failed to parse.";
     } catch(SyntaxError& err) {
       SUCCEED();
 
