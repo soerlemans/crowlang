@@ -78,7 +78,7 @@ auto test_archive(const std::string_view t_program) -> void
 } // namespace
 
 // Test Cases:
-TEST_CASE("AstArchive", "[visitor]")
+TEST_CASE("AstArchive", "[.]")
 {
   using ast::node::NodePtr;
   using ast::node::rvalue::Integer;
