@@ -5,15 +5,13 @@
 #include <string_view>
 
 // Library Includes:
-#include <catch2/catch_test_macros.hpp>
+#include <gtest/gtest.h>
 
 // Crow Absolute Includes:
 #include "crow/ast/node/include.hpp"
-#include "crow/ast/visitor/ast_archive.hpp"
-#include "crow/ast/visitor/ast_printer.hpp"
 #include "crow/container/text_buffer.hpp"
 #include "crow/lexer/lexer.hpp"
-#include "crow/parser/crow/crow_parser.hpp"
+#include "crow/parser/crow/pratt_parser.hpp"
 
 /*!
  * @file
@@ -26,12 +24,13 @@ using namespace std::literals::string_view_literals;
 
 // Helper functions:
 namespace {
-auto test_pratt_parser(const std::string_view t_program) -> void
+auto prep_pratt_parser(const std::string_view t_program)
+  -> parser::pratt::PrattParser
 {
   using ast::node::NodePtr;
   using container::TextBuffer;
   using lexer::Lexer;
-  using parser::crow::CrowParser;
+  using parser::pratt::PrattParser;
   using token::TokenStream;
 
   std::stringstream ss;
@@ -43,29 +42,28 @@ auto test_pratt_parser(const std::string_view t_program) -> void
   // Create AST from TextBuffer.
   Lexer lexer{stream_ptr};
   TokenStream tokenstream{lexer.tokenize()};
-  CrowParser parser{tokenstream};
+  PrattParser parser{tokenstream};
 
-  NodePtr ast{parser.parse()};
-  NodePtr ast_new{};
+  return parser;
 }
 } // namespace
 
 // Test Cases:
-TEST_CASE("PrattParser_basic", "[.]")
+TEST(TestPrattParser, BasicExpressions)
 {
   using ast::node::NodePtr;
   using ast::node::rvalue::Integer;
 
   // Printer.
-  SECTION("Basic main")
+  SECTION("Basic addition")
   {
-    const auto program{"fn main() -> int { return 0; }"sv};
-    test_pratt_parser(program);
+    const auto program{""sv};
+    prep_pratt_parser(program);
   }
 
   SECTION("Basic arithmetic")
   {
-    const auto program{"fn main() -> int { return 10 + 10; }"sv};
-    test_pratt_parser(program);
+    const auto program{""sv};
+    prep_pratt_parser(program);
   }
 }
