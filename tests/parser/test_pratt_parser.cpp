@@ -24,6 +24,8 @@ using namespace std::literals::string_view_literals;
 
 using parser::pratt::PrattParserPtr;
 
+using PrattExprs = std::vector<std::string_view>;
+
 // Helper functions:
 namespace {
 auto prep_pratt_parser(const std::string_view t_program) -> PrattParserPtr
@@ -51,73 +53,53 @@ auto prep_pratt_parser(const std::string_view t_program) -> PrattParserPtr
 } // namespace
 
 // Test Cases:
-TEST(TestPrattParser, BasicAddition)
+TEST(TestPrattParser, BasicExpressions)
 {
-  // We only need to add.
-  const auto program{"2 + 2"sv};
-  const auto parser{prep_pratt_parser(program)};
+  PrattExprs exprs = {
+    "2 + 2"sv,
+    "2 * 2"sv,
+    "2 * 2 + 3"sv,
+    "2 * (2 + 3)"sv,
+    "2 * 6 - 4 / 2"sv,
+    "(2 * 6 - 3) + 10 / 2"sv,
+    "6 / 2 - 3"sv,
+  };
 
-  auto node{parser->expr()};
+  for(auto&& program : exprs) {
+    const auto parser{prep_pratt_parser(program)};
 
-  EXPECT_TRUE(node != nullptr)
-    << "Expression failed to parse: " << std::quoted(program) << '.';
+    auto node{parser->expr()};
+
+    EXPECT_TRUE(node != nullptr)
+      << "Expression failed to parse: " << std::quoted(program) << '.';
+  }
 }
 
-TEST(TestPrattParser, BasicMultiplication)
+TEST(TestPrattParser, BasicInvalidExpressions)
 {
-  // We only need to add.
-  const auto program{"2 * 2"sv};
-  const auto parser{prep_pratt_parser(program)};
+  using diagnostic::SyntaxError;
 
-  auto node{parser->expr()};
+  PrattExprs exprs = {
+    "2 + "sv,
+    "2 + * 2"sv,
+  };
 
-  EXPECT_TRUE(node != nullptr)
-    << "Expression failed to parse: " << std::quoted(program) << '.';
-}
+  for(auto&& program : exprs) {
+    const auto parser{prep_pratt_parser(program)};
 
-TEST(TestPrattParser, BasicPredenceTest)
-{
-  // We only need to add.
-  const auto program{"2 * 2 + 3"sv};
-  const auto parser{prep_pratt_parser(program)};
+    try {
+      auto node{parser->expr()};
+    } catch(SyntaxError& err) {
 
-  auto node{parser->expr()};
+    } catch(std::exception& err) {
+      FAIL() << "Exception for program " << std::quoted(program)
+             << " error: " << err.what() << '.';
 
-  EXPECT_TRUE(node != nullptr)
-    << "Expression failed to parse: " << std::quoted(program) << '.';
-}
-
-TEST(TestPrattParser, BasicLongExpression)
-{
-  // We only need to add.
-  const auto program{"2 * 6 - 3 / 2 "sv};
-  const auto parser{prep_pratt_parser(program)};
-
-  auto node{parser->expr()};
-
-  EXPECT_TRUE(node != nullptr)
-    << "Expression failed to parse: " << std::quoted(program) << '.';
-}
-
-TEST(TestPrattParser, BasicGroupingExpression)
-{
-  // We only need to add.
-  const auto program{"2 * (2 + 3) "sv};
-  const auto parser{prep_pratt_parser(program)};
-
-  auto node{parser->expr()};
-
-  EXPECT_TRUE(node != nullptr)
-    << "Expression failed to parse: " << std::quoted(program) << '.';
-}
-
-TEST(TestPrattParser, BasicInvalidExpression)
-{
-  // We only need to add.
-  const auto program{"2 + "sv};
-  const auto parser{prep_pratt_parser(program)};
-
-  auto node{parser->expr()};
+    } catch(...) {
+      FAIL() << "Uncaught exception for program " << std::quoted(program)
+             << '.';
+    }
+  }
 
   EXPECT_TRUE(node == nullptr)
     << "Expression should be illegitimate: " << std::quoted(program) << '.';
