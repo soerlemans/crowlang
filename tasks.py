@@ -219,7 +219,7 @@ def setup(ctx):
     'Setup dependencies.'
     match sys.platform:
         case 'linux':
-            ctx.run('bash tools/setup/setup.sh')
+            ctx.run('bash tools/setup/linux_setup.sh')
             pass
 
         case 'win32':
@@ -227,7 +227,7 @@ def setup(ctx):
             pass
 
         case 'darwin':
-            print('Currently the setup script does not support MacOS.')
+            ctx.run('bash tools/setup/macos_setup.sh')
             pass
 
         case _:
