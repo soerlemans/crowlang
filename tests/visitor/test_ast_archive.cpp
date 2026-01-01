@@ -5,7 +5,7 @@
 #include <string_view>
 
 // Library Includes:
-#include <catch2/catch_test_macros.hpp>
+#include <gtest/gtest.h>
 
 // Crow Absolute Includes:
 #include "crow/ast/node/include.hpp"
@@ -78,8 +78,10 @@ auto test_archive(const std::string_view t_program) -> void
 } // namespace
 
 // Test Cases:
-TEST_CASE("AstArchive", "[.]")
+TEST(TestAstArchive, Basic)
 {
+  SKIP();
+
   using ast::node::NodePtr;
   using ast::node::rvalue::Integer;
 
@@ -89,17 +91,18 @@ TEST_CASE("AstArchive", "[.]")
   NodePtr ast{std::make_shared<Integer>(10)};
   NodePtr ast_new{};
 
-  SECTION("Basic main")
-  {
-    const auto program{"fn main() -> int { return 0; }"sv};
-    test_archive(program);
-  }
+  // FIXME: Moving from catch2 to Google test.
+  // SECTION("Basic main")
+  // {
+  //   const auto program{"fn main() -> int { return 0; }"sv};
+  //   test_archive(program);
+  // }
 
-  SECTION("Basic arithmetic")
-  {
-    const auto program{"fn main() -> int { return 10 + 10; }"sv};
-    test_archive(program);
-  }
+  // SECTION("Basic arithmetic")
+  // {
+  //   const auto program{"fn main() -> int { return 10 + 10; }"sv};
+  //   test_archive(program);
+  // }
 
   printer.print(ast_new);
 }
