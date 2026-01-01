@@ -80,7 +80,7 @@ auto test_archive(const std::string_view t_program) -> void
 // Test Cases:
 TEST(TestAstArchive, Basic)
 {
-  SKIP();
+  GTEST_SKIP();
 
   using ast::node::NodePtr;
   using ast::node::rvalue::Integer;

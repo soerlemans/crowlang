@@ -10,6 +10,7 @@
 #include "crow/ast/node/include.hpp"
 #include "crow/container/text_buffer.hpp"
 #include "crow/lexer/lexer.hpp"
+#include "crow/parser/crow/crow_parser.hpp"
 #include "crow/parser/pratt/pratt_parser.hpp"
 
 /*!
@@ -21,13 +22,18 @@
 // Using namespace Declarations:
 using namespace std::literals::string_view_literals;
 
+using parser::pratt::PrattParser;
+using parser::pratt::PrattParserPtr;
+
 // Helper functions:
 namespace {
-auto prep_pratt_parser(const std::string_view t_program)
-  -> parser::pratt::PrattParser
+auto prep_pratt_parser(const std::string_view t_program) -> PrattParserPtr
 {
+  // PrattParser is abstract so
+
   using container::TextBuffer;
   using lexer::Lexer;
+  using parser::crow::CrowParser;
   using parser::pratt::PrattParser;
   using token::TokenStream;
 
@@ -38,7 +44,8 @@ auto prep_pratt_parser(const std::string_view t_program)
   // Create AST from TextBuffer.
   Lexer lexer{stream_ptr};
   TokenStream tokenstream{lexer.tokenize()};
-  PrattParser parser{tokenstream};
+
+  PrattParserPtr parser{std::make_unique<CrowParser>(tokenstream)};
 
   return parser;
 }
