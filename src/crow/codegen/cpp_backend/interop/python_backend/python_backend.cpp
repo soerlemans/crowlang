@@ -3,7 +3,6 @@
 // STL Includes:
 #include <format>
 
-
 namespace codegen::cpp_backend::interop::python_backend {
 PythonBackend::PythonBackend(): m_ss{}, m_symbols{}
 {
