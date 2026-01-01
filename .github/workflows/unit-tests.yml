@@ -5,13 +5,16 @@ on:
     branches:
     - main
   pull_request:
-    paths:
-      - 'CMakeLists.txt'
-      - 'cmake/*'
-      - 'samples/*'
-      - 'src/*'
-      - 'tools/*'
-      - 'tests/*'
+    branches:
+      - main
+
+#    paths:
+#      - 'CMakeLists.txt'
+#      - 'cmake/*'
+#      - 'samples/*'
+#      - 'src/*'
+#      - 'tools/*'
+#      - 'tests/*'
 
 jobs:
  run-unit-tests:
