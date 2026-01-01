@@ -11,7 +11,7 @@
 #include "crow/ast/node/include.hpp"
 #include "crow/container/text_buffer.hpp"
 #include "crow/lexer/lexer.hpp"
-#include "crow/parser/crow/pratt_parser.hpp"
+#include "crow/parser/pratt/pratt_parser.hpp"
 
 /*!
  * @file
