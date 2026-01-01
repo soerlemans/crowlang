@@ -56,12 +56,8 @@ auto prep_pratt_parser(const std::string_view t_program) -> PrattParserPtr
 TEST(TestPrattParser, BasicExpressions)
 {
   PrattExprs exprs = {
-    "2 + 2"sv,
-    "2 * 2"sv,
-    "2 * 2 + 3"sv,
-    "2 * (2 + 3)"sv,
-    "2 * 6 - 4 / 2"sv,
-    "(2 * 6 - 3) + 10 / 2"sv,
+    "2 + 2"sv,       "2 * 2"sv,         "2 * 2 + 3"sv,
+    "2 * (2 + 3)"sv, "2 * 6 - 4 / 2"sv, "(2 * 6 - 3) + 10 / 2"sv,
     "6 / 2 - 3"sv,
   };
 
@@ -90,6 +86,7 @@ TEST(TestPrattParser, BasicInvalidExpressions)
     try {
       auto node{parser->expr()};
     } catch(SyntaxError& err) {
+      SUCCEED();
 
     } catch(std::exception& err) {
       FAIL() << "Exception for program " << std::quoted(program)
@@ -100,7 +97,4 @@ TEST(TestPrattParser, BasicInvalidExpressions)
              << '.';
     }
   }
-
-  EXPECT_TRUE(node == nullptr)
-    << "Expression should be illegitimate: " << std::quoted(program) << '.';
 }
