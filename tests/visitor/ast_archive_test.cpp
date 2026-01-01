@@ -102,5 +102,4 @@ TEST_CASE("AstArchive", "[visitor]")
   }
 
   printer.print(ast_new);
-  //
 }
