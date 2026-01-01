@@ -1,0 +1,37 @@
+name: Run Unit Tests.
+
+on:
+  pull_request:
+    paths:
+      - '**/*.cpp'
+      - '**/*.h'
+      - '**/*.c'
+      - '**/*.hpp'
+
+jobs:
+ run-unit-tests:
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Check out repository code.
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+
+    - name: Install Pipx.
+      id: install-pipx
+      run: |
+        sudo apt update && sudo apt install pipx
+        sudo apt install -y pipx
+
+        pipx --version
+
+    - name: Install Invoke.
+      id: install-invoke
+      run: |
+        pipx install invoke
+
+    - name: Run setup.
+      id: invoke-setup
+      run: |
+        inv setup
