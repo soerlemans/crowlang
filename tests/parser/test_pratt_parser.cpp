@@ -19,22 +19,21 @@
  */
 
 
-// Using namespace Declarations:
+// Using:
 using namespace std::literals::string_view_literals;
 
-using parser::pratt::PrattParser;
 using parser::pratt::PrattParserPtr;
 
 // Helper functions:
 namespace {
 auto prep_pratt_parser(const std::string_view t_program) -> PrattParserPtr
 {
-  // PrattParser is abstract so
+  // PrattParser is abstract so we.
+  // Init a crow parser and parse back an interface ptr.
 
   using container::TextBuffer;
   using lexer::Lexer;
   using parser::crow::CrowParser;
-  using parser::pratt::PrattParser;
   using token::TokenStream;
 
   // Write program.
@@ -86,4 +85,40 @@ TEST(TestPrattParser, BasicPredenceTest)
 
   EXPECT_TRUE(node != nullptr)
     << "Expression failed to parse: " << std::quoted(program) << '.';
+}
+
+TEST(TestPrattParser, BasicLongExpression)
+{
+  // We only need to add.
+  const auto program{"2 * 6 - 3 / 2 "sv};
+  const auto parser{prep_pratt_parser(program)};
+
+  auto node{parser->expr()};
+
+  EXPECT_TRUE(node != nullptr)
+    << "Expression failed to parse: " << std::quoted(program) << '.';
+}
+
+TEST(TestPrattParser, BasicGroupingExpression)
+{
+  // We only need to add.
+  const auto program{"2 * (2 + 3) "sv};
+  const auto parser{prep_pratt_parser(program)};
+
+  auto node{parser->expr()};
+
+  EXPECT_TRUE(node != nullptr)
+    << "Expression failed to parse: " << std::quoted(program) << '.';
+}
+
+TEST(TestPrattParser, BasicInvalidExpression)
+{
+  // We only need to add.
+  const auto program{"2 + "sv};
+  const auto parser{prep_pratt_parser(program)};
+
+  auto node{parser->expr()};
+
+  EXPECT_TRUE(node == nullptr)
+    << "Expression should be illegitimate: " << std::quoted(program) << '.';
 }
