@@ -37,8 +37,12 @@ jobs:
       run: |
         inv setup
 
-
     - name: Build tests.
-      id: invoke-setup
+      id: build-tests
       run: |
-        inv setup
+        inv build --mode=test-build --parallel
+
+    - name: Run tests.
+      id: run-tests
+      run: |
+        # inv build --mode=test-build --parallel
