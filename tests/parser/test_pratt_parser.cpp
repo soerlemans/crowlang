@@ -1,7 +1,6 @@
 // STL Includes:
 #include <fstream>
 #include <iostream>
-#include <sstream>
 #include <string_view>
 
 // Library Includes:
@@ -27,13 +26,10 @@ namespace {
 auto prep_pratt_parser(const std::string_view t_program)
   -> parser::pratt::PrattParser
 {
-  using ast::node::NodePtr;
   using container::TextBuffer;
   using lexer::Lexer;
   using parser::pratt::PrattParser;
   using token::TokenStream;
-
-  std::stringstream ss;
 
   // Write program.
   auto stream_ptr{std::make_shared<TextBuffer>()};
@@ -49,21 +45,38 @@ auto prep_pratt_parser(const std::string_view t_program)
 } // namespace
 
 // Test Cases:
-TEST(TestPrattParser, BasicExpressions)
+TEST(TestPrattParser, BasicAddition)
 {
-  using ast::node::NodePtr;
-  using ast::node::rvalue::Integer;
+  // We only need to add.
+  const auto program{"2 + 2"sv};
+  const auto parser{prep_pratt_parser(program)};
 
-  // Printer.
-  SECTION("Basic addition")
-  {
-    const auto program{""sv};
-    prep_pratt_parser(program);
-  }
+  auto node{parser->expr()};
 
-  SECTION("Basic arithmetic")
-  {
-    const auto program{""sv};
-    prep_pratt_parser(program);
-  }
+  EXPECT_TRUE(node != nullptr)
+    << "Expression failed to parse: " << std::quoted(program) << '.';
+}
+
+TEST(TestPrattParser, BasicMultiplication)
+{
+  // We only need to add.
+  const auto program{"2 * 2"sv};
+  const auto parser{prep_pratt_parser(program)};
+
+  auto node{parser->expr()};
+
+  EXPECT_TRUE(node != nullptr)
+    << "Expression failed to parse: " << std::quoted(program) << '.';
+}
+
+TEST(TestPrattParser, BasicPredenceTest)
+{
+  // We only need to add.
+  const auto program{"2 * 2 + 3"sv};
+  const auto parser{prep_pratt_parser(program)};
+
+  auto node{parser->expr()};
+
+  EXPECT_TRUE(node != nullptr)
+    << "Expression failed to parse: " << std::quoted(program) << '.';
 }
