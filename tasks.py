@@ -95,6 +95,8 @@ def cmake(t_ctx, t_mode: str, t_parallel: bool, t_lint=False):
     if t_lint:
         build_args += '-DCROW_CLANG_TIDY=TRUE'
 
+    # Always print version info.
+    run(t_ctx, 'cmake --version')
     run(t_ctx, f'cmake -S . -B {t_mode}/ {build_args}')
     run(t_ctx, f'cmake --build {t_mode}/ {parallel_arg}')
     pass

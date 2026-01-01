@@ -4,6 +4,13 @@
 include(FetchContent)
 set(FETCHCONTENT_QUIET FALSE)
 
+# Check homebrew deps on MacOS.
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  message(STATUS "[+] Adding cmake search path for /opt/homebrew.")
+  set(CMAKE_PREFIX_PATH "/opt/homebrew" ${CMAKE_PREFIX_PATH})
+endif()
+
+
 # Includes:
 # TODO: Figure out a way to include these relatively.
 include(cmake/dependencies/tomlplusplus.cmake)
