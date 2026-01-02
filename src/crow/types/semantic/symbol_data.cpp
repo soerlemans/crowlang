@@ -124,7 +124,7 @@ auto SymbolData::resolve_result_type() const -> SymbolData
     return SymbolData{t_ptr};
   }};
 
-  const auto rest{[&](const std::shared_ptr<auto>& t_ptr) {
+  const auto rest{[&]<typename T>(const std::shared_ptr<T>& t_ptr) {
     nullptr_check("Resolve result type", t_ptr);
 
     return t_ptr->resolve_result_type();

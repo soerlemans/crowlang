@@ -11,4 +11,4 @@ BacktrackGuard::~BacktrackGuard()
     m_stream.set(m_iter);
   }
 }
-} // namespace parser::pratt
+} // namespace parser

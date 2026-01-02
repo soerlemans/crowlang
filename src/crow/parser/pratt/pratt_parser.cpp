@@ -542,8 +542,7 @@ auto PrattParser::field_access() -> NodePtr
   return node;
 }
 
-auto PrattParser::lvalue_chain(NodePtr& t_lhs, const RhsFn& t_fn)
-  -> NodePtr
+auto PrattParser::lvalue_chain(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
