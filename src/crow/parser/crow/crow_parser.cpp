@@ -252,6 +252,8 @@ auto CrowParser::assignment() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
 
+  PARSER_BACKTRACK_GUARD(node);
+
   if(auto lhs{lvalue_expr()}; lhs) {
     const auto pos{get_position()};
     const auto lambda{[&](const AssignmentOp t_op) {
@@ -308,6 +310,8 @@ auto CrowParser::result_statement() -> NodePtr
   } else if(auto ptr{binding_expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{assignment()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{method_call_expr()}; ptr) {
     node = std::move(ptr);
   }
 
@@ -558,6 +562,22 @@ auto CrowParser::type_def() -> NodePtr
   return node;
 }
 
+auto CrowParser::self() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node{};
+
+  const auto token{get_token()};
+  if(next_if(TokenType::SELF)) {
+    context_check(Context::METHOD);
+
+    DBG_TRACE_PRINT(INFO, "Found 'SELF'.");
+    node = make_node<Self>();
+  }
+
+  return node;
+}
+
 // Function:
 auto CrowParser::param_list() -> NodeListPtr
 {
@@ -671,6 +691,9 @@ auto CrowParser::function() -> NodePtr
       expect(TokenType::PAREN_CLOSE);
 
       const auto return_type{return_type_opt()};
+
+      // We are in the method context now.
+      CONTEXT_GUARD(METHOD);
       auto body_ptr{body()};
       if(!body_ptr) {
         throw_syntax_error("Expected a method body");

@@ -9,6 +9,7 @@ namespace parser::crow::context {
 //! Possible contexts to be parsing in.
 enum class Context {
   LOOP,
+  METHOD,
 };
 
 // Aliases:

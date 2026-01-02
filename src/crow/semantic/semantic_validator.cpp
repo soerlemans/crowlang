@@ -168,10 +168,6 @@ auto SemanticValidator::validate_assignment(const BinaryOperationData& t_data)
 {
   auto [lhs, expr, pos] = t_data;
 
-  // We need to resolve to the underlying type of the variable.
-  // For type validation purposes.
-  const auto var_resolved{lhs.resolve_type()};
-
   std::stringstream ss{};
 
   if(lhs.is_mutable()) {
@@ -186,15 +182,20 @@ auto SemanticValidator::validate_assignment(const BinaryOperationData& t_data)
     throw_type_error(ss.str());
   }
 
+  // We need to resolve to the underlying type of the variable.
+  // For type validation purposes.
+  const auto var_resolved{lhs.resolve_result_type()};
+  const auto expr_resolved{expr.resolve_result_type()};
+
   // The right hand side must be promoteable or castable to the left hand side.
   // We dont care about the value, only if it is promoteable.
   const auto opt{promote(lhs, expr, PromotionMode::PROMOTE_TO_LHS)};
-  if(!opt && var_resolved != expr) {
+  if(!opt && var_resolved != expr_resolved) {
     ss << "Types do not match on assignment.\n\n";
 
     ss << "<lhs> = <expr>\n";
-    ss << "typeof lhs = " << lhs << "\n";
-    ss << "typeof expr = " << expr << "\n\n";
+    ss << "typeof lhs = " << var_resolved << "\n";
+    ss << "typeof expr = " << expr_resolved << "\n\n";
 
     ss << pos;
 

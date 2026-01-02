@@ -57,10 +57,10 @@ class SymbolData : public Variant {
   auto is_mutable() const -> bool;
 
   /*!
-   * Stripts non type related information from the @ref SymbolData.
-   * Variables are resolved to their underlying types.
+   * Resolves a @ref SymbolData to its underlying result type.
+   * Used to compare the results of expressions for type validation purposes.
    */
-  auto resolve_type() const -> SymbolData;
+  auto resolve_result_type() const -> SymbolData;
 
   /*!
    * Resolves a Symbol's data  to a @ref NativeType if possible.

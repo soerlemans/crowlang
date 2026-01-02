@@ -1,6 +1,7 @@
 # Add source files
 target_sources(${TARGET_CROW_LIB} PRIVATE
-	parser.cpp
+  parser.cpp
+  backtrack_guard.cpp
 )
 
 # Add subdirectories

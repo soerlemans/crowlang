@@ -306,6 +306,16 @@ auto AstPrinter::visit(Method* t_meth) -> Any
   return {};
 }
 
+auto AstPrinter::visit(MethodCall* t_meth_call) -> Any
+{
+  COUNTG_INIT();
+
+  print("MethodCall");
+  print_traits(t_meth_call);
+
+  return {};
+}
+
 DEFINE_PRINTER_METHOD(Interface)
 DEFINE_PRINTER_METHOD(MemberDecl)
 DEFINE_PRINTER_METHOD(Struct)

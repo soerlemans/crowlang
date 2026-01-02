@@ -1,5 +1,5 @@
-#ifndef ANNOTATION_QUEUE_HPP
-#define ANNOTATION_QUEUE_HPP
+#ifndef CROW_CROW_SEMANTIC_ANNOTATION_QUEUE_HPP
+#define CROW_CROW_SEMANTIC_ANNOTATION_QUEUE_HPP
 
 // STL Includes:
 #include <queue>
@@ -42,4 +42,4 @@ class AnnotationQueue {
 };
 } // namespace semantic
 
-#endif // ANNOTATION_QUEUE_HPP
+#endif // CROW_CROW_SEMANTIC_ANNOTATION_QUEUE_HPP
