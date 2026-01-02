@@ -24,7 +24,9 @@ set(CMAKE_CXX_WARNING_FLAGS
     # So until this is fixed it will be disabled.
     # "-Wshadow"
     "-Wconversion"
-    "-Wlogical-op"
+    # $<$<CXX_COMPILER_ID:GNU>:"-Wlogical-op"> # Flag only present on GCC. FIXME
+    # "-Wlogical-op-parentheses" # Not present???? FIXME.
+    "-Wlogical-not-parentheses"
     "-Wfloat-equal"
     "-Wcast-qual"
     "-Wcast-align"
