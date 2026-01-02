@@ -2,16 +2,21 @@
 #define BACKTRACK_GUARD_HPP
 
 // Absolute Includes:
-#include "crow/parser/parser.hpp"
+#include "crow/ast/node/fdecl.hpp"
+#include "crow/token/token_stream.hpp"
 
 // Macros;
-#define PRATT_BACKTRACK_GUARD(t_node)                                \
-  parser::pratt::BacktrackGuard CONCAT(pratt_backtrack, __COUNTER__) \
-  {                                                                  \
-    get_token_stream(), t_node                                        \
+#define PARSER_BACKTRACK_GUARD(t_node)                        \
+  parser::BacktrackGuard CONCAT(pratt_backtrack, __COUNTER__) \
+  {                                                           \
+    get_token_stream(), t_node                                \
   }
 
-namespace parser::pratt {
+namespace parser {
+// Using Statements:
+using ast::node::NodePtr;
+using token::TokenStream;
+
 // Need to make sure this is a safe construct.
 /*!
  * Roll back the tokenstream to where it was before attempting to parse
@@ -35,6 +40,6 @@ class BacktrackGuard {
   virtual ~BacktrackGuard();
 };
 
-} // namespace parser::pratt
+} // namespace parser
 
 #endif // BACKTRACK_GUARD_HPP

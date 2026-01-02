@@ -10,7 +10,6 @@
 #include "lib/stdtypes.hpp"
 
 // Local Includes:
-#include "backtrack_guard.hpp"
 #include "binding/maps.hpp"
 
 namespace parser::pratt {

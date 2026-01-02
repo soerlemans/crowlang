@@ -252,7 +252,7 @@ auto CrowParser::assignment() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
 
-  PRATT_BACKTRACK_GUARD(node);
+  PARSER_BACKTRACK_GUARD(node);
 
   if(auto lhs{lvalue_expr()}; lhs) {
     const auto pos{get_position()};
