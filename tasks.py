@@ -83,6 +83,13 @@ def cmake_mode_args(t_mode: str) -> str:
 
         case _:
             raise Exception(f'Unknown build configuration {t_mode}')
+
+    # FIXME: rang and zstd have a minim policy version below 3.5.
+    # CMake 3.5 breaks backwards compatbility with these really old versions.
+    # So this is a temporary measure of sidestepping this, but it should be.
+    # Fixed in the dependencies.
+    args += '-DCMAKE_POLICY_VERSION_MINIMUM=3.5 '
+
     return args
 
 
@@ -95,6 +102,8 @@ def cmake(t_ctx, t_mode: str, t_parallel: bool, t_lint=False):
     if t_lint:
         build_args += '-DCROW_CLANG_TIDY=TRUE'
 
+    # Always print version info.
+    run(t_ctx, 'cmake --version')
     run(t_ctx, f'cmake -S . -B {t_mode}/ {build_args}')
     run(t_ctx, f'cmake --build {t_mode}/ {parallel_arg}')
     pass
@@ -219,7 +228,7 @@ def setup(ctx):
     'Setup dependencies.'
     match sys.platform:
         case 'linux':
-            ctx.run('bash tools/setup/setup.sh')
+            ctx.run('bash tools/setup/linux_setup.sh')
             pass
 
         case 'win32':
@@ -227,7 +236,7 @@ def setup(ctx):
             pass
 
         case 'darwin':
-            print('Currently the setup script does not support MacOS.')
+            ctx.run('bash tools/setup/macos_setup.sh')
             pass
 
         case _:

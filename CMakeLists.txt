@@ -57,7 +57,7 @@ target_link_libraries(
 
 # Build tests:
 if(DEFINED CROW_BUILD_TESTS)
-  include(cmake/dependencies/catch2.cmake)
+  include(cmake/dependencies/gtest.cmake)
 
   add_subdirectory(tests)
 endif()

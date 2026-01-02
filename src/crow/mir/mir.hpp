@@ -331,9 +331,9 @@ auto operator<<(std::ostream& t_os, const mir::ModulePtr& t_mod)
   -> std::ostream&;
 
 // Format specializations:
+// struct std::formatter<mir::SsaVar> { // Doesnt work for MacOS.
 template<>
-// struct std::formatter<mir::SsaVar> : std::formatter<std::string_view> {
-struct std::formatter<mir::SsaVar> {
+struct std::formatter<mir::SsaVar> : std::formatter<std::string_view> {
   template<typename FormatContext>
   auto format(const mir::SsaVar& t_var, FormatContext& ctx)
     -> std::formatter<std::string_view>

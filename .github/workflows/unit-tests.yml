@@ -1,0 +1,55 @@
+name: Run unit tests.
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+      - main
+
+#    paths:
+#      - 'CMakeLists.txt'
+#      - 'cmake/*'
+#      - 'samples/*'
+#      - 'src/*'
+#      - 'tools/*'
+#      - 'tests/*'
+
+jobs:
+ run-unit-tests:
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Check out repository code.
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+
+    - name: Install Pipx.
+      id: install-pipx
+      run: |
+        sudo apt update && sudo apt install pipx
+        sudo apt install -y pipx
+
+        pipx --version
+
+    - name: Install Invoke.
+      id: install-invoke
+      run: |
+        pipx install invoke
+
+    - name: Run setup.
+      id: invoke-setup
+      run: |
+        inv setup
+
+    - name: Build tests.
+      id: build-tests
+      run: |
+        inv build --mode=test-build --parallel
+
+    - name: Run tests.
+      id: run-tests
+      run: |
+        ./test-build/crow_tests

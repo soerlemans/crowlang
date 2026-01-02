@@ -3,8 +3,8 @@ message(STATUS "[+] Finding Boost library.")
 
 find_package(
   Boost
-  1.74
-  COMPONENTS system program_options filesystem iostreams thread
+  1.83
+  COMPONENTS program_options filesystem iostreams thread
   REQUIRED
 )
 

@@ -11,6 +11,9 @@
 #include "context/context_guard.hpp"
 
 namespace parser::crow {
+// Forward Declarations:
+class CrowParser;
+
 // Using Statements:
 using ast::node::packaging::Import;
 using context::Context;
@@ -18,6 +21,7 @@ using context::ContextStore;
 
 // Aliases:
 using EvalPair = std::pair<NodePtr, NodePtr>;
+using CrowParserPtr = std::unique_ptr<CrowParser>;
 
 // Classes:
 /*!

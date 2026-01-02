@@ -36,7 +36,7 @@ class Assignment : public NodePosition,
   Assignment(TextPosition t_pos, AssignmentOp t_op, NodePtr&& t_left,
              NodePtr&& t_right);
 
-  auto op2str() const -> std::string_view;
+  auto op2str() const -> std::string_view override;
 
   AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Assignment, NodePosition,
                                       Op<AssignmentOp>, BinaryOperator)

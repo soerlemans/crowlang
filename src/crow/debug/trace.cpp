@@ -10,9 +10,10 @@ namespace debug {
 // Methods:
 auto Trace::indent_text() -> std::string
 {
-  std::stringstream ss;
+  std::stringstream ss{};
+
   if(m_counter > 0) {
-    ss << " " << std::string(m_counter, ' ');
+    ss << " " << std::string((std::size_t)m_counter, ' ');
   } else {
     ss << "#.";
   }

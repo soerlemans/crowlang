@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
 
-# Globals:
-readonly OS_RELEASE='/etc/os-release'
-
 # Functions:
 function err
 {
@@ -36,52 +33,38 @@ function log
     echo "[+] $@"
 }
 
-function debian_install
+function macos_install
 {
-    print_title 'Installing dependencies for Debian.'
+    print_title 'Installing dependencies for MacOs.'
+
+    log 'Check installed Xcode version:'
+    /usr/bin/xcodebuild -version || err "XCode not installed" 1
 
     log 'Installing build-system dependencies:'
-    sudo apt install -y \
-				 build-essential \
-				 clang \
-				 cmake extra-cmake-modules
+
+    brew install cmake extra-cmake-modules
 
     log 'Installing interoperability dependencies'
     # pipx install pybind11
 
     # We need the headers on the system.
-    sudo apt install -y python3-pybind11 python3-dev
+    # sudo apt install -y python3-pybind11 python3-dev
 
     log 'Installing dynamically linked dependencies:'
 
     # CLI11, Boost, LLVM and libclang  are dynamically linked.
     # And must be installed.
-    sudo apt install -y \
-				 libcurl4 \
-				 libcli11-dev \
-				 llvm-17-dev \
-				 libboost-all-dev \
-				 libzstd-dev
+    # Doxygen is needed for Boost serialization.
+    brew install \
+         cli11 \
+         llvm@17 \
+         boost \
+         doxygen \
+         zstd
 }
 
 # Script:
-if [[ ! -f "$OS_RELEASE" ]]
-then
-    err "'$OS_RELEASE' file not found."
-fi
-
-# Source the OS info from OS_RELEASE
-source "$OS_RELEASE"
-
-case "$ID" in
-    debian)
-	debian_install
-	;;
-
-    *)
-	err "Unsupported distro '$ID'."
-	;;
-esac
+macos_install
 
 cat << EOF
 

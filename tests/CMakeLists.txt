@@ -1,7 +1,7 @@
 # Add source files:
-target_sources(${TARGET_CROW} PRIVATE
-	benchmark.cpp
-)
+# target_sources(${TARGET_CROW} PRIVATE
+# )
 
-# Add directorie:
+# Add directories:
 add_subdirectory(visitor)
+add_subdirectory(parser)
