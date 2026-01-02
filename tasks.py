@@ -83,6 +83,13 @@ def cmake_mode_args(t_mode: str) -> str:
 
         case _:
             raise Exception(f'Unknown build configuration {t_mode}')
+
+    # FIXME: rang and zstd have a minim policy version below 3.5.
+    # CMake 3.5 breaks backwards compatbility with these really old versions.
+    # So this is a temporary measure of sidestepping this, but it should be.
+    # Fixed in the dependencies.
+    args += '-DCMAKE_POLICY_VERSION_MINIMUM=3.5 '
+
     return args
 
 

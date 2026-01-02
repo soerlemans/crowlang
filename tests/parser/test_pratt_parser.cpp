@@ -13,7 +13,7 @@
 #include "crow/parser/crow/crow_parser.hpp"
 #include "crow/parser/pratt/pratt_parser.hpp"
 #include "crow/diagnostic/diagnostic.hpp"
-#include "lib/stdexcept/stdexcep.hpp"
+#include "lib/stdexcept/stdexcept.hpp"
 
 /*!
  * @file
