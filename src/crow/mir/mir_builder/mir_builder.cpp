@@ -891,7 +891,7 @@ auto MirBuilder::visit(Integer* t_int) -> Any
 
   // TODO: Check if it fits ahead of time.
   // FIXME: Cast to int for now (assumed integer literal default type).
-  const auto value{int{value_i64}};
+  const auto value{(int)value_i64};
 
   // Add the literal, which assigns an SSA var for it.
   m_factory->add_literal(NativeType::INT, {value});
