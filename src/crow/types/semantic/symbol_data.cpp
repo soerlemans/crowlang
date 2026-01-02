@@ -148,7 +148,7 @@ auto SymbolData::native_type() const -> NativeTypeOpt
     return t_type;
   }};
 
-  const auto rest{[&](const std::shared_ptr<auto>& t_data) {
+  const auto rest{[&]<typename T>(const std::shared_ptr<T>& t_data) {
     nullptr_check("Non native", t_data);
 
     // Note this is a recursive call.
@@ -172,7 +172,7 @@ auto SymbolData::type_variant() const -> TypeVariant
   }};
 
   // Calls variant() method of types defined in symbol_types.hpp header.
-  const auto rest{[&](const std::shared_ptr<auto>& t_data) {
+  const auto rest{[&]<typename T>(const std::shared_ptr<T>& t_data) {
     nullptr_check("Non native", t_data);
 
     return t_data->type_variant();

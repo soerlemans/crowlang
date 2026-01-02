@@ -3,6 +3,7 @@
 
 // STL Includes:
 #include <filesystem>
+#include <sstream>
 
 // Absolute Includes:
 #include "lib/filesystem.hpp"

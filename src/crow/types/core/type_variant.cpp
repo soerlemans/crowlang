@@ -39,7 +39,7 @@ auto TypeVariant::native_type() const -> NativeTypeOpt
     return t_type;
   }};
 
-  const auto methods{[&](const std::shared_ptr<auto>& t_data) {
+  const auto methods{[&]<typename T>(const std::shared_ptr<T>& t_data) {
     if(!t_data) {
       // TODO: Improve error message.
       throw_unexpected_nullptr("ptr is nullptr!");
