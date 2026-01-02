@@ -13,7 +13,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(cereal)
 
 # Set options for cereal CMakeLists.txt.
-set(JUST_INSTALL_CEREAL ON CACHE "Only build Cereal.")
+set(JUST_INSTALL_CEREAL ON CACHE BOOL "Only build Cereal.")
 set(SKIP_PORTABILITY_TEST OFF CACHE BOOL "Skip portability (32 bit) tests.")
 set(BUILD_DOC OFF CACHE BOOL "Dont build documentation.")
 set(BUILD_SANDBOX OFF CACHE BOOL "Dont build sandbox examples.")
