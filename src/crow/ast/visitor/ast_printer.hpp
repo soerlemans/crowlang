@@ -36,7 +36,7 @@ class AstPrinter : public NodeVisitor {
   auto print(Args&&... t_args) -> void
   {
     // Construct the prefix
-    m_os << std::string(m_counter, ' ') << "-> ";
+    m_os << std::string((std::size_t)m_counter, ' ') << "-> ";
 
     // Print the arguments
     (m_os << ... << t_args);
