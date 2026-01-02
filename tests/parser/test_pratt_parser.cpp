@@ -9,10 +9,10 @@
 // Absolute Includes:
 #include "crow/ast/node/include.hpp"
 #include "crow/container/text_buffer.hpp"
+#include "crow/diagnostic/diagnostic.hpp"
 #include "crow/lexer/lexer.hpp"
 #include "crow/parser/crow/crow_parser.hpp"
 #include "crow/parser/pratt/pratt_parser.hpp"
-#include "crow/diagnostic/diagnostic.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
 
 /*!
@@ -81,11 +81,72 @@ TEST(TestPrattParser, BasicExpressions)
   }
 }
 
+TEST(TestPrattParser, AdvancedExpressions)
+{
+  PrattExprs exprs = {
+    "num1"sv,
+    "func()"sv,
+    "num1 + func()"sv,
+    "func1() + func2()"sv,
+  };
+
+  for(auto&& program : exprs) {
+    const auto parser{prep_pratt_parser(program)};
+
+    auto node{parser->expr()};
+
+    EXPECT_TRUE(node != nullptr)
+      << "Expression failed to parse: " << std::quoted(program) << '.';
+  }
+}
+
+
+TEST(TestPrattParser, LvalueExpressions)
+{
+  PrattExprs exprs = {
+    "name1"sv,
+    "name1.name2"sv,
+    "name1.name2.name3"sv,
+    "name1.name2.name3. name4"sv,
+  };
+
+  for(auto&& program : exprs) {
+    const auto parser{prep_pratt_parser(program)};
+
+    auto node{parser->expr()};
+
+    EXPECT_TRUE(node != nullptr)
+      << "Expression failed to parse: " << std::quoted(program) << '.';
+  }
+}
+
+
+
+TEST(TestPrattParser, BasicChainExpressions)
+{
+  PrattExprs exprs = {
+    "num1"sv,
+    "func()"sv,
+    "name1.func"sv,
+    "name1.func()"sv,
+  };
+
+  for(auto&& program : exprs) {
+    const auto parser{prep_pratt_parser(program)};
+
+    auto node{parser->chain_expr()};
+
+    EXPECT_TRUE(node != nullptr)
+      << "Expression failed to parse: " << std::quoted(program) << '.';
+  }
+}
+
 TEST(TestPrattParser, BasicInvalidExpressions)
 {
   using diagnostic::SyntaxError;
 
   PrattExprs exprs = {
+    ""sv,
     "2 + "sv,
     "2 + * 2"sv,
     "( 2 + * 2"sv,
@@ -98,8 +159,9 @@ TEST(TestPrattParser, BasicInvalidExpressions)
     try {
       auto node{parser->expr()};
 
-      FAIL() << "Program " << std::quoted(program)
-             << " should have failed to parse.";
+      EXPECT_TRUE(node == nullptr)
+        << "Program " << std::quoted(program)
+        << " should have failed to parse.";
     } catch(SyntaxError& err) {
       SUCCEED();
 
