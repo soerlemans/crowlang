@@ -30,7 +30,7 @@ class UnaryPrefix : public Op<UnaryPrefixOp>, public UnaryOperator {
   UnaryPrefix(token::TokenType t_op, NodePtr&& t_left);
   UnaryPrefix(UnaryPrefixOp t_op, NodePtr&& t_left);
 
-  auto op2str() const -> std::string_view;
+  auto op2str() const -> std::string_view override;
 
   AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(UnaryPrefix, Op<UnaryPrefixOp>,
                                       UnaryOperator)
