@@ -4,7 +4,7 @@ message(STATUS "[+] Fetching libassert.")
 FetchContent_Declare(
   libassert
   GIT_REPOSITORY https://github.com/jeremy-rifkin/libassert.git
-  GIT_TAG        v2.0.2
+  GIT_TAG        v2.2.1
   GIT_PROGRESS TRUE
 	SYSTEM
 )

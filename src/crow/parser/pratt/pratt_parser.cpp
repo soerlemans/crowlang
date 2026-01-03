@@ -409,8 +409,6 @@ auto PrattParser::chain_expr(const int t_min_bp) -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr lhs{prefix_chain()};
 
-  PARSER_BACKTRACK_GUARD(lhs);
-
   // Infix:
   while(!eos()) {
     const auto rhs_chain_fn{[&](const TokenType t_type) {
@@ -444,8 +442,6 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr lhs{prefix()};
-
-  PARSER_BACKTRACK_GUARD(lhs);
 
   // Infix:
   while(!eos()) {
@@ -584,8 +580,6 @@ auto PrattParser::lvalue_member_expr(const int t_min_bp) -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr lhs{member_access()};
 
-  PARSER_BACKTRACK_GUARD(lhs);
-
   // Infix:
   while(!eos()) {
     const auto rhs_fn{[&](const TokenType t_type) {
@@ -620,8 +614,6 @@ auto PrattParser::lvalue_expr(const int t_min_bp) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr lhs{lvalue()};
-
-  PARSER_BACKTRACK_GUARD(lhs);
 
   if(!lhs) {
     lhs = self();
@@ -705,8 +697,6 @@ auto PrattParser::method_call_expr(int t_min_bp) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr lhs{prefix_chain()};
-
-  PARSER_BACKTRACK_GUARD(lhs);
 
   if(!lhs) {
     lhs = self();

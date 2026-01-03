@@ -1,5 +1,5 @@
-#ifndef BACKTRACK_GUARD_HPP
-#define BACKTRACK_GUARD_HPP
+#ifndef CROW_CROW_PARSER_BACKTRACK_GUARD_HPP
+#define CROW_CROW_PARSER_BACKTRACK_GUARD_HPP
 
 // Absolute Includes:
 #include "crow/ast/node/fdecl.hpp"
@@ -42,4 +42,4 @@ class BacktrackGuard {
 
 } // namespace parser
 
-#endif // BACKTRACK_GUARD_HPP
+#endif // CROW_CROW_PARSER_BACKTRACK_GUARD_HPP
