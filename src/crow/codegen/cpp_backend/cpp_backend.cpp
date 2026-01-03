@@ -652,7 +652,7 @@ auto CppBackend::visit(MemberAccess* t_access) -> Any
   const auto lhs{resolve(t_access->left())};
   const auto rhs{resolve(t_access->right())};
 
-  return std::format("({}.{})", lhs, rhs);
+  return std::format("{}.{}", lhs, rhs);
 }
 
 // Misc:
