@@ -50,6 +50,7 @@ src/crow/definitions.hpp
 build/*
 debug-build/*
 reldebug-build/*
+minsizerel-build/*
 test-build/*
 
 # Docs
