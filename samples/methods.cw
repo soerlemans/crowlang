@@ -25,7 +25,7 @@ func init_example_struct() -> ExampleStruct {
 }
 
 func main() -> int {
-  let mega = 3 * int_func()
+  let mega = 4 + int_func()
 
   // var example: ExampleStruct = init_example_struct()
   var example: ExampleStruct

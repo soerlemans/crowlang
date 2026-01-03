@@ -83,7 +83,6 @@ inline auto report_uncaught_exception(std::string_view t_program) -> std::string
 
   return ss.str();
 }
-
 } // namespace
 
 // Test Cases:

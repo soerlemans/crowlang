@@ -1,7 +1,10 @@
 Crowlang
 ========
 ![Crowlang banner](assets/crowlang_banner.png)
+
 ![License](https://img.shields.io/github/license/soerlemans/crowlang)
+![Tests](https://img.shields.io/github/actions/workflow/status/soerlemans/crowlang/.github/workflows/unit-tests.yml)
+
 
 This project is me experimenting with creating my own programming language.
 For this project I am using C++23.
