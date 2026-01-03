@@ -651,6 +651,8 @@ auto PrattParser::method_call_expr(int t_min_bp) -> NodePtr
     lhs = self();
   }
 
+  // TODO: Somehow confirm that this is a method call at the end of the chain.
+
   // Infix:
   while(!eos()) {
     const auto rhs_fn{[&](const TokenType t_type) {
