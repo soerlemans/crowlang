@@ -6,7 +6,7 @@
 #include <sstream>
 
 namespace debug {
-#ifdef DEBUG
+#ifndef NDEBUG
 // Methods:
 auto Trace::indent_text() -> std::string
 {

@@ -44,11 +44,14 @@ set(CMAKE_CXX_WARNING_FLAGS
 
 # Functions:
 function(cxx_configure_target T_TARGET)
+    # TODO: Rename for more clarity.
+    # We now depend on NDEBUG as its in the C++ standard.
+
 	# Add DEBUG macro definition for debugging builds.
-	target_compile_definitions(${T_TARGET} PRIVATE
-		$<$<CONFIG:Debug>:DEBUG>
-		$<$<CONFIG:RelWithDebInfo>:DEBUG>
-	)
+	# target_compile_definitions(${T_TARGET} PRIVATE
+	# 	$<$<CONFIG:Debug>:DEBUG>
+	# 	$<$<CONFIG:RelWithDebInfo>:DEBUG>
+	# )
 
 	# All available and default enabled warnings in Gcc/Clang can be listed with:
 	# g++ -Q --help=warning | less

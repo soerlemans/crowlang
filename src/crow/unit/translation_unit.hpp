@@ -71,7 +71,7 @@ class TranslationUnit {
   //! Parse  the tokenized stream.
   virtual auto parse(const TokenStream& t_token_stream) -> NodePtr;
 
-  //! Print the AST, only available if @ref DEBUG is defined.
+  //! Print the AST, only available if @ref NDEBUG is not defined.
   virtual auto print_ast(NodePtr t_ast) const -> void;
 
   //! Analyse the semantics of the AST.
