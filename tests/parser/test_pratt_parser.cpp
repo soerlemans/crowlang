@@ -118,12 +118,12 @@ TEST(TestPrattParser, AdvancedExpressions)
 
   PrattExprs exprs = {
     "num1"sv,
-    "func()"sv,
+    "fun1()"sv,
     "num1 + num2"sv,
-    "func() + num2"sv,
-    "num1 + func() + num3"sv,
-    "num1 + func()"sv,
-    "func1() + func2()"sv,
+    "fun1() + num2"sv,
+    "num1 + fun1() + num3"sv,
+    "num1 + fun1()"sv,
+    "fun1() + fun2()"sv,
   };
 
   for(auto&& program : exprs) {
@@ -177,9 +177,9 @@ TEST(TestPrattParser, BasicChainExpressions)
 
   PrattExprs exprs = {
     "num1"sv,
-    "func()"sv,
-    "name1.func"sv,
-    "name1.func()"sv,
+    "func1()"sv,
+    "name1.member1"sv,
+    "name1.func1()"sv,
   };
 
   for(auto&& program : exprs) {

@@ -7,7 +7,8 @@ BacktrackGuard::BacktrackGuard(TokenStream& t_stream, NodePtr& t_node)
 
 BacktrackGuard::~BacktrackGuard()
 {
-  if(!m_node) {
+  // Reset stream to original position.
+  if(m_node == nullptr) {
     m_stream.set(m_iter);
   }
 }
