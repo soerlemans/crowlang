@@ -1,6 +1,7 @@
 // STL Includes:
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string_view>
 
 // Library Includes:
@@ -52,6 +53,37 @@ auto prep_pratt_parser(const std::string_view t_program) -> PrattParserPtr
 
   return parser;
 }
+
+inline auto report_parse_failure(std::string_view t_program) -> std::string
+{
+  std::ostringstream ss{};
+
+  ss << "Failed to parse " << std::quoted(t_program);
+
+  return ss.str();
+}
+
+template<typename T>
+inline auto report_exception(std::string_view t_program, T& t_err)
+  -> std::string
+{
+  std::ostringstream ss{};
+
+  ss << "Exception for program " << std::quoted(t_program)
+     << " error: " << t_err.what() << '.';
+
+  return ss.str();
+}
+
+inline auto report_uncaught_exception(std::string_view t_program) -> std::string
+{
+  std::ostringstream ss{};
+
+  ss << "Uncaught exception for program " << std::quoted(t_program) << '.';
+
+  return ss.str();
+}
+
 } // namespace
 
 // Test Cases:
@@ -83,6 +115,8 @@ TEST(TestPrattParser, BasicExpressions)
 
 TEST(TestPrattParser, AdvancedExpressions)
 {
+  using diagnostic::SyntaxError;
+
   PrattExprs exprs = {
     "num1"sv,
     "func()"sv,
@@ -93,13 +127,19 @@ TEST(TestPrattParser, AdvancedExpressions)
   for(auto&& program : exprs) {
     const auto parser{prep_pratt_parser(program)};
 
-    auto node{parser->expr()};
+    try {
+      auto node{parser->expr()};
 
-    EXPECT_TRUE(node != nullptr)
-      << "Expression failed to parse: " << std::quoted(program) << '.';
+      EXPECT_TRUE(node != nullptr) << report_parse_failure(program);
+    } catch(SyntaxError& err) {
+      FAIL() << report_exception(program, err);
+    } catch(std::exception& err) {
+      FAIL() << report_exception(program, err);
+    } catch(...) {
+      FAIL() << report_uncaught_exception(program);
+    }
   }
 }
-
 
 TEST(TestPrattParser, LvalueExpressions)
 {
@@ -113,14 +153,19 @@ TEST(TestPrattParser, LvalueExpressions)
   for(auto&& program : exprs) {
     const auto parser{prep_pratt_parser(program)};
 
-    auto node{parser->expr()};
+    try {
+      auto node{parser->expr()};
 
-    EXPECT_TRUE(node != nullptr)
-      << "Expression failed to parse: " << std::quoted(program) << '.';
+      EXPECT_TRUE(node != nullptr) << report_parse_failure(program);
+    } catch(SyntaxError& err) {
+      FAIL() << report_exception(program, err);
+    } catch(std::exception& err) {
+      FAIL() << report_exception(program, err);
+    } catch(...) {
+      FAIL() << report_uncaught_exception(program);
+    }
   }
 }
-
-
 
 TEST(TestPrattParser, BasicChainExpressions)
 {
@@ -134,10 +179,17 @@ TEST(TestPrattParser, BasicChainExpressions)
   for(auto&& program : exprs) {
     const auto parser{prep_pratt_parser(program)};
 
-    auto node{parser->chain_expr()};
+    try {
+      auto node{parser->chain_expr()};
 
-    EXPECT_TRUE(node != nullptr)
-      << "Expression failed to parse: " << std::quoted(program) << '.';
+      EXPECT_TRUE(node != nullptr) << report_parse_failure(program);
+    } catch(SyntaxError& err) {
+      FAIL() << report_exception(program, err);
+    } catch(std::exception& err) {
+      FAIL() << report_exception(program, err);
+    } catch(...) {
+      FAIL() << report_uncaught_exception(program);
+    }
   }
 }
 
@@ -146,11 +198,7 @@ TEST(TestPrattParser, BasicInvalidExpressions)
   using diagnostic::SyntaxError;
 
   PrattExprs exprs = {
-    ""sv,
-    "2 + "sv,
-    "2 + * 2"sv,
-    "( 2 + * 2"sv,
-    "( num1 + num2"sv,
+    ""sv, "2 + "sv, "2 + * 2"sv, "( 2 + * 2"sv, "( num1 + num2"sv,
   };
 
   for(auto&& program : exprs) {
@@ -159,19 +207,13 @@ TEST(TestPrattParser, BasicInvalidExpressions)
     try {
       auto node{parser->expr()};
 
-      EXPECT_TRUE(node == nullptr)
-        << "Program " << std::quoted(program)
-        << " should have failed to parse.";
+      EXPECT_TRUE(node == nullptr) << report_parse_failure(program);
     } catch(SyntaxError& err) {
-      SUCCEED();
-
+      SUCCEED(); // We expect these to fail.
     } catch(std::exception& err) {
-      FAIL() << "Exception for program " << std::quoted(program)
-             << " error: " << err.what() << '.';
-
+      FAIL() << report_exception(program, err);
     } catch(...) {
-      FAIL() << "Uncaught exception for program " << std::quoted(program)
-             << '.';
+      FAIL() << report_uncaught_exception(program);
     }
   }
 }

@@ -399,8 +399,7 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
     // Gain a raw ptr (non owning).
     // If the AST changes the assertion will be triggered.
     const auto* param{dynamic_cast<Parameter*>(node.get())};
-    DEBUG_ASSERT(param, R"(Was unable to cast to "*Parameter"!)", param, node,
-                 params);
+    DEBUG_ASSERT(param != nullptr, R"(Was unable to cast to "*Parameter"!)");
 
     const auto id{param->identifier()};
     const auto type{str2type(param->type())};
@@ -838,8 +837,7 @@ auto SemanticChecker::visit(Method* t_meth) -> Any
     // Gain a raw ptr (non owning).
     // If the AST changes the assertion will be triggered.
     const auto* param{dynamic_cast<Parameter*>(node.get())};
-    DEBUG_ASSERT(param, R"(Was unable to cast to "Parameter*"!)", param, node,
-                 params);
+    DEBUG_ASSERT(param != nullptr, R"(Was unable to cast to "Parameter*"!)");
 
     const auto id{param->identifier()};
     const auto type{str2type(param->type())};
@@ -889,8 +887,7 @@ auto SemanticChecker::visit(Struct* t_struct) -> Any
     // Gain a raw ptr (non owning).
     // If the AST changes the assertion will be triggered.
     const auto* member_decl{dynamic_cast<MemberDecl*>(node.get())};
-    DEBUG_ASSERT(member_decl, R"(Was unable to cast to "*MemberDecl"!)",
-                 member_decl, node, struct_body);
+    DEBUG_ASSERT(member_decl != nullptr, R"(Was unable to cast to "*MemberDecl"!)");
 
     const std::string member_id{member_decl->identifier()};
     const SymbolData member_type{str2type(member_decl->type())};

@@ -414,7 +414,7 @@ auto PrattParser::chain_expr(const int t_min_bp) -> NodePtr
   // Infix:
   while(!eos()) {
     const auto rhs_chain_fn{[&](const TokenType t_type) {
-      NodePtr rhs;
+      NodePtr rhs{};
 
       const auto [lbp, rbp] = m_infix.at(t_type);
       if(lbp < t_min_bp) {
@@ -450,7 +450,7 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
   // Infix:
   while(!eos()) {
     const auto rhs_chain_fn{[&](const TokenType t_type) {
-      NodePtr rhs;
+      NodePtr rhs{};
 
       // If we see a chain expression we need to defer into first parsing it.
       // And then resume normal operation.
@@ -473,7 +473,7 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
     }
 
     const auto rhs_fn{[&](const TokenType t_type) {
-      NodePtr rhs;
+      NodePtr rhs{};
 
       const auto [lbp, rbp] = m_infix.at(t_type);
       if(lbp < t_min_bp) {
@@ -589,7 +589,7 @@ auto PrattParser::lvalue_member_expr(const int t_min_bp) -> NodePtr
   // Infix:
   while(!eos()) {
     const auto rhs_fn{[&](const TokenType t_type) {
-      NodePtr rhs;
+      NodePtr rhs{};
 
       const auto [lbp, rbp] = m_infix.at(t_type);
       if(lbp < t_min_bp) {
@@ -630,7 +630,7 @@ auto PrattParser::lvalue_expr(const int t_min_bp) -> NodePtr
   // Infix:
   while(!eos()) {
     const auto rhs_fn{[&](const TokenType t_type) {
-      NodePtr rhs;
+      NodePtr rhs{};
 
       const auto [lbp, rbp] = m_infix.at(t_type);
       if(lbp < t_min_bp) {
@@ -715,7 +715,7 @@ auto PrattParser::method_call_expr(int t_min_bp) -> NodePtr
   // Infix:
   while(!eos()) {
     const auto rhs_fn{[&](const TokenType t_type) {
-      NodePtr rhs;
+      NodePtr rhs{};
 
       const auto [lbp, rbp] = m_infix.at(t_type);
       if(lbp < t_min_bp) {
