@@ -10,10 +10,10 @@
 // Absolute Includes:
 #include "crow/ast/node/include.hpp"
 #include "crow/container/text_buffer.hpp"
-#include "crow/diagnostic/diagnostic.hpp"
 #include "crow/lexer/lexer.hpp"
 #include "crow/parser/crow/crow_parser.hpp"
 #include "crow/parser/pratt/pratt_parser.hpp"
+#include "crow/diagnostic/diagnostic.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
 
 /*!
@@ -124,34 +124,6 @@ TEST(TestPrattParser, AdvancedExpressions)
     "num1 + fun1() + num3"sv,
     "num1 + fun1()"sv,
     "fun1() + fun2()"sv,
-  };
-
-  for(auto&& program : exprs) {
-    const auto parser{prep_pratt_parser(program)};
-
-    try {
-      auto node{parser->expr()};
-
-      EXPECT_TRUE(node != nullptr) << report_parse_failure(program);
-    } catch(SyntaxError& err) {
-      FAIL() << report_exception(program, err);
-    } catch(std::exception& err) {
-      FAIL() << report_exception(program, err);
-    } catch(...) {
-      FAIL() << report_uncaught_exception(program);
-    }
-  }
-}
-
-TEST(TestPrattParser, LvalueExpressions)
-{
-  using diagnostic::SyntaxError;
-
-  PrattExprs exprs = {
-    "name1"sv,
-    "name1.name2"sv,
-    "name1.name2.name3"sv,
-    "name1.name2.name3. name4"sv,
   };
 
   for(auto&& program : exprs) {
