@@ -212,8 +212,8 @@ TEST(TestPrattParser, BasicInvalidExpressions)
       auto node{parser->expr()};
 
       EXPECT_TRUE(node == nullptr) << report_parse_failure(program);
-    } catch(SyntaxError& err) {
-      SUCCEED(); // We expect these to fail.
+    } catch([[maybe_unused]] SyntaxError& err) {
+      // Ignore and continue, we expect failure to parse.
     } catch(std::exception& err) {
       FAIL() << report_exception(program, err);
     } catch(...) {
