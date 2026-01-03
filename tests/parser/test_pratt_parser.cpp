@@ -10,10 +10,10 @@
 // Absolute Includes:
 #include "crow/ast/node/include.hpp"
 #include "crow/container/text_buffer.hpp"
+#include "crow/diagnostic/diagnostic.hpp"
 #include "crow/lexer/lexer.hpp"
 #include "crow/parser/crow/crow_parser.hpp"
 #include "crow/parser/pratt/pratt_parser.hpp"
-#include "crow/diagnostic/diagnostic.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
 
 /*!
@@ -190,7 +190,8 @@ TEST(TestPrattParser, BasicInvalidExpressions)
       auto node{parser->expr()};
 
       EXPECT_TRUE(node == nullptr) << report_parse_failure(program);
-    } catch([[maybe_unused]] SyntaxError& err) {
+    } catch([[maybe_unused]]
+            SyntaxError& err) {
       // Ignore and continue, we expect failure to parse.
     } catch(std::exception& err) {
       FAIL() << report_exception(program, err);
