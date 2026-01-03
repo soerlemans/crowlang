@@ -143,6 +143,8 @@ TEST(TestPrattParser, AdvancedExpressions)
 
 TEST(TestPrattParser, LvalueExpressions)
 {
+  using diagnostic::SyntaxError;
+
   PrattExprs exprs = {
     "name1"sv,
     "name1.name2"sv,
@@ -169,6 +171,8 @@ TEST(TestPrattParser, LvalueExpressions)
 
 TEST(TestPrattParser, BasicChainExpressions)
 {
+  using diagnostic::SyntaxError;
+
   PrattExprs exprs = {
     "num1"sv,
     "func()"sv,
