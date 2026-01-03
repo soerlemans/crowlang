@@ -56,6 +56,12 @@ class PrattParser : public Parser {
   virtual auto prefix() -> NodePtr;
   virtual auto prefix_chain() -> NodePtr;
 
+  /*!
+   * Once we are in a chain expression subsequent prefixes.
+   * Will need to return method calls instead of function calls.
+   */
+  virtual auto prefix_continuation_chain() -> NodePtr;
+
   // Infix parsing:
   virtual auto infix_chain(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
 
@@ -66,6 +72,7 @@ class PrattParser : public Parser {
   virtual auto infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
 
   // Expressions:
+  virtual auto chain_continuation_expr(int t_min_bp = 0) -> NodePtr;
   virtual auto chain_expr(int t_min_bp = 0) -> NodePtr;
   virtual auto expr(int t_min_bp = 0) -> NodePtr;
 

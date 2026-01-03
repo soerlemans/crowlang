@@ -226,6 +226,21 @@ auto PrattParser::prefix_chain() -> NodePtr
   return node;
 }
 
+auto PrattParser::prefix_continuation_chain() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node{};
+
+  if(auto ptr{method_call()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{member_access()}; ptr) {
+    node = std::move(ptr);
+  }
+
+  return node;
+}
+
+
 // Infix parsing:
 auto PrattParser::infix_chain(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 {
@@ -404,6 +419,40 @@ auto PrattParser::infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 }
 
 // Expressions:
+auto PrattParser::chain_continuation_expr(const int t_min_bp) -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr lhs{prefix_continuation_chain()};
+
+  // Infix:
+  while(!eos()) {
+    const auto rhs_chain_fn{[&](const TokenType t_type) {
+      NodePtr rhs{};
+
+      const auto [lbp, rbp] = m_infix.at(t_type);
+      if(lbp < t_min_bp) {
+        prev();
+      } else {
+        rhs = chain_continuation_expr(rbp);
+        if(!rhs) {
+          throw_syntax_error(
+            "Chain continuation infix operations require a right hand side");
+        }
+      }
+
+      return rhs;
+    }};
+
+    if(auto ptr{infix_chain(lhs, rhs_chain_fn)}; ptr) {
+      lhs = std::move(ptr);
+    } else {
+      break;
+    }
+  }
+
+  return lhs;
+}
+
 auto PrattParser::chain_expr(const int t_min_bp) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -418,7 +467,7 @@ auto PrattParser::chain_expr(const int t_min_bp) -> NodePtr
       if(lbp < t_min_bp) {
         prev();
       } else {
-        rhs = chain_expr(rbp);
+        rhs = chain_continuation_expr(rbp);
         if(!rhs) {
           throw_syntax_error(
             "Chain infix operations require a right hand side");
@@ -445,6 +494,7 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
 
   // Infix:
   while(!eos()) {
+    // Chain infix parsing.
     const auto rhs_chain_fn{[&](const TokenType t_type) {
       NodePtr rhs{};
 
@@ -454,7 +504,7 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
       if(lbp < t_min_bp) {
         prev();
       } else {
-        rhs = chain_expr(rbp);
+        rhs = chain_continuation_expr(rbp);
         if(!rhs) {
           throw_syntax_error(
             "Chain infix operations require a right hand side");
@@ -468,6 +518,7 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
       lhs = std::move(ptr);
     }
 
+    // Normal infix parsing.
     const auto rhs_fn{[&](const TokenType t_type) {
       NodePtr rhs{};
 
@@ -681,6 +732,7 @@ auto PrattParser::infix_method_call(NodePtr& t_lhs, const RhsFn& t_fn)
     const auto token{get_token()};
     next();
 
+
     if(auto rhs{t_fn(token.type())}; rhs) {
       node = make_node<MemberAccess>(pos, std::move(t_lhs), std::move(rhs));
     }
@@ -711,7 +763,8 @@ auto PrattParser::method_call_expr(int t_min_bp) -> NodePtr
       if(lbp < t_min_bp) {
         prev();
       } else {
-        rhs = method_call_expr(rbp);
+        // rhs = method_call_expr(rbp);
+        rhs = chain_continuation_expr(rbp);
         if(!rhs) {
           throw_syntax_error(
             "Lvalue infix operations require a right hand side");

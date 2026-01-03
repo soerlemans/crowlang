@@ -8,10 +8,12 @@ struct ExampleStruct {
   m_num3: int
 }
 
-func (ExampleStruct) set() -> void {
+func (ExampleStruct) set() -> int {
   self.m_num1 = 20
   self.m_num2 = 40
   self.m_num3 = 60
+
+  return -1
 }
 
 func init_example_struct() -> ExampleStruct {
