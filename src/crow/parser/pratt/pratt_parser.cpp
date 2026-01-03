@@ -162,6 +162,23 @@ auto PrattParser::function_call() -> NodePtr
   return node;
 }
 
+auto PrattParser::member_access() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node{};
+
+  const auto token{get_token()};
+  if(next_if(TokenType::IDENTIFIER)) {
+    const auto id{token.str()};
+    const auto pos{token.position()};
+
+    DBG_TRACE_PRINT(INFO, "Found 'MEMBER': ", id);
+    node = make_node<Member>(pos, id);
+  }
+
+  return node;
+}
+
 auto PrattParser::method_call() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -212,7 +229,7 @@ auto PrattParser::prefix() -> NodePtr
   return node;
 }
 
-auto PrattParser::prefix_chain() -> NodePtr
+auto PrattParser::prefix_chainable() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
@@ -226,7 +243,7 @@ auto PrattParser::prefix_chain() -> NodePtr
   return node;
 }
 
-auto PrattParser::prefix_continuation_chain() -> NodePtr
+auto PrattParser::prefix_chain() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
@@ -419,40 +436,6 @@ auto PrattParser::infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 }
 
 // Expressions:
-auto PrattParser::chain_continuation_expr(const int t_min_bp) -> NodePtr
-{
-  DBG_TRACE_FN(VERBOSE);
-  NodePtr lhs{prefix_continuation_chain()};
-
-  // Infix:
-  while(!eos()) {
-    const auto rhs_chain_fn{[&](const TokenType t_type) {
-      NodePtr rhs{};
-
-      const auto [lbp, rbp] = m_infix.at(t_type);
-      if(lbp < t_min_bp) {
-        prev();
-      } else {
-        rhs = chain_continuation_expr(rbp);
-        if(!rhs) {
-          throw_syntax_error(
-            "Chain continuation infix operations require a right hand side");
-        }
-      }
-
-      return rhs;
-    }};
-
-    if(auto ptr{infix_chain(lhs, rhs_chain_fn)}; ptr) {
-      lhs = std::move(ptr);
-    } else {
-      break;
-    }
-  }
-
-  return lhs;
-}
-
 auto PrattParser::chain_expr(const int t_min_bp) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -467,7 +450,7 @@ auto PrattParser::chain_expr(const int t_min_bp) -> NodePtr
       if(lbp < t_min_bp) {
         prev();
       } else {
-        rhs = chain_continuation_expr(rbp);
+        rhs = chain_expr(rbp);
         if(!rhs) {
           throw_syntax_error(
             "Chain infix operations require a right hand side");
@@ -504,7 +487,7 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
       if(lbp < t_min_bp) {
         prev();
       } else {
-        rhs = chain_continuation_expr(rbp);
+        rhs = chain_expr(rbp);
         if(!rhs) {
           throw_syntax_error(
             "Chain infix operations require a right hand side");
@@ -547,48 +530,6 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
 }
 
 // Lvalue specific:
-
-auto PrattParser::member_access() -> NodePtr
-{
-  DBG_TRACE_FN(VERBOSE);
-  NodePtr node{};
-
-  const auto token{get_token()};
-  if(next_if(TokenType::IDENTIFIER)) {
-    const auto id{token.str()};
-    const auto pos{token.position()};
-
-    DBG_TRACE_PRINT(INFO, "Found 'MEMBER': ", id);
-    node = make_node<Member>(pos, id);
-  }
-
-  return node;
-}
-
-auto PrattParser::method_access() -> NodePtr
-{
-  DBG_TRACE_FN(VERBOSE);
-
-  return method_call();
-}
-
-auto PrattParser::field_access() -> NodePtr
-{
-  DBG_TRACE_FN(VERBOSE);
-  NodePtr node{};
-
-  // TODO: Add method call and Array Subscript.
-
-  const auto token{get_token()};
-  if(auto ptr{method_access()}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{member_access()}; ptr) {
-    node = std::move(ptr);
-  }
-
-  return node;
-}
-
 auto PrattParser::lvalue_chain(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
@@ -667,6 +608,7 @@ auto PrattParser::lvalue_expr(const int t_min_bp) -> NodePtr
   NodePtr lhs{lvalue()};
 
   if(!lhs) {
+    // FIXME: Makes self.self.self a valid expression.
     lhs = self();
   }
 
@@ -700,57 +642,13 @@ auto PrattParser::lvalue_expr(const int t_min_bp) -> NodePtr
   return lhs;
 }
 
-auto PrattParser::infix_method_call(NodePtr& t_lhs, const RhsFn& t_fn)
-  -> NodePtr
-{
-  DBG_TRACE_FN(VERBOSE);
-  NodePtr node{};
-
-  // Guard clause:
-  if(t_lhs == nullptr) {
-    return nullptr;
-  }
-
-  // TODO: Eliminate as many dynamic_cast calls as possible.
-  // Chain expressions can only be performed on the following:
-  const auto* is_variable{dynamic_cast<Variable*>(t_lhs.get())};
-  const auto* is_function_call{dynamic_cast<FunctionCall*>(t_lhs.get())};
-  const auto* is_method_call{dynamic_cast<MethodCall*>(t_lhs.get())};
-  const auto* is_member_access{dynamic_cast<MemberAccess*>(t_lhs.get())};
-  const auto* is_member{dynamic_cast<Member*>(t_lhs.get())};
-
-  // Guard clause:
-  // Only allow chain infix on following.
-  if(!is_variable && !is_function_call && !is_method_call && !is_member_access
-     && !is_member) {
-    return node;
-  }
-
-  const auto pos{get_position()};
-  if(after_newlines(TokenType::DOT)) {
-    PARSER_FOUND(TokenType::DOT);
-    const auto token{get_token()};
-    next();
-
-
-    if(auto rhs{t_fn(token.type())}; rhs) {
-      node = make_node<MemberAccess>(pos, std::move(t_lhs), std::move(rhs));
-    }
-
-    // }else if(after_newlines(TokenType::BRACKET_OPEN)) {
-    // } else if(after_newlines(TokenType::PAREN_OPEN)) {
-    // TODO: Add for '[]' and '()'.
-  }
-
-  return node;
-}
-
 auto PrattParser::method_call_expr(int t_min_bp) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
-  NodePtr lhs{prefix_chain()};
+  NodePtr lhs{prefix_chainable()};
 
   if(!lhs) {
+    // FIXME: Makes self.self.self a valid expression.
     lhs = self();
   }
 
@@ -763,8 +661,7 @@ auto PrattParser::method_call_expr(int t_min_bp) -> NodePtr
       if(lbp < t_min_bp) {
         prev();
       } else {
-        // rhs = method_call_expr(rbp);
-        rhs = chain_continuation_expr(rbp);
+        rhs = chain_expr(rbp);
         if(!rhs) {
           throw_syntax_error(
             "Lvalue infix operations require a right hand side");
@@ -775,7 +672,7 @@ auto PrattParser::method_call_expr(int t_min_bp) -> NodePtr
     }};
 
     // If we do not find the expression quit.
-    if(auto ptr{infix_method_call(lhs, rhs_fn)}; ptr) {
+    if(auto ptr{infix_chain(lhs, rhs_fn)}; ptr) {
       lhs = std::move(ptr);
     } else {
       break;

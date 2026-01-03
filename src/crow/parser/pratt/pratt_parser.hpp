@@ -51,16 +51,20 @@ class PrattParser : public Parser {
   virtual auto unary_prefix() -> NodePtr;
   virtual auto negation() -> NodePtr;
   virtual auto function_call() -> NodePtr;
+  virtual auto member_access() -> NodePtr;
   virtual auto method_call() -> NodePtr;
 
   virtual auto prefix() -> NodePtr;
-  virtual auto prefix_chain() -> NodePtr;
 
   /*!
-   * Once we are in a chain expression subsequent prefixes.
-   * Will need to return method calls instead of function calls.
+   * Prefixes/nodes that can be chained.
    */
-  virtual auto prefix_continuation_chain() -> NodePtr;
+  virtual auto prefix_chainable() -> NodePtr;
+
+  /*!
+   * Prefixes/nodes we match when we are actually in a chain.
+   */
+  virtual auto prefix_chain() -> NodePtr;
 
   // Infix parsing:
   virtual auto infix_chain(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
@@ -72,13 +76,8 @@ class PrattParser : public Parser {
   virtual auto infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
 
   // Expressions:
-  virtual auto chain_continuation_expr(int t_min_bp = 0) -> NodePtr;
   virtual auto chain_expr(int t_min_bp = 0) -> NodePtr;
   virtual auto expr(int t_min_bp = 0) -> NodePtr;
-
-  virtual auto member_access() -> NodePtr;
-  virtual auto method_access() -> NodePtr;
-  virtual auto field_access() -> NodePtr;
 
   // Lvalue specific:
   virtual auto lvalue_chain(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
@@ -99,12 +98,9 @@ class PrattParser : public Parser {
   virtual auto lvalue_expr(int t_min_bp = 0) -> NodePtr;
 
   // Method call specific.
-  virtual auto infix_method_call(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
-
   /*!
    * The only free standing chain expr which we do not assign to.
-   * Is a method_call at the end of a long chain expression.
-   * We need backtracking in order to get this to work.
+   * Is a method_call at the end of a chain expr.
    */
   virtual auto method_call_expr(int t_min_bp = 0) -> NodePtr;
 
