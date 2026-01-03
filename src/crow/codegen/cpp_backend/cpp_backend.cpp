@@ -403,7 +403,6 @@ auto CppBackend::visit(FunctionDecl* t_fdecl) -> Any
 // Operators:
 auto CppBackend::visit(Arithmetic* t_arith) -> Any
 {
-
   const auto op{t_arith->op2str()};
 
   const auto left{resolve(t_arith->left())};
@@ -416,11 +415,10 @@ auto CppBackend::visit(Arithmetic* t_arith) -> Any
 
 auto CppBackend::visit(Assignment* t_assign) -> Any
 {
-
   const auto op{t_assign->op2str()};
 
-  const auto left{resolve(t_assign->left())};
-  const auto right{resolve(t_assign->right())};
+  const auto left{resolve(t_assign->left(), false)};
+  const auto right{resolve(t_assign->right(), false)};
 
   return std::format("{} {} {};\n", left, op, right);
 }
@@ -587,6 +585,37 @@ auto CppBackend::visit(Method* t_meth) -> Any
   return ss.str();
 }
 
+auto CppBackend::visit(MethodCall* t_meth_call) -> Any
+{
+  // FIXME: When get non shitty import resolution.
+  // const auto identifier{t_meth_call->identifier()};
+  auto identifier{t_meth_call->identifier()};
+  const auto args{t_meth_call->args()};
+
+  // FIXME: This wont work for a raw function or method call.
+  // As when we assign it directly to a variable it will work but not else.
+  // As we need to append a semicolon.
+
+  // FIXME: Figure out a way to detect if this function call is inline.
+  // Or if this function is being called without as a statement.
+  // (I hope this is doable).
+
+  std::stringstream ss{};
+  std::string_view sep{""};
+
+  for(const auto& ptr : *args) {
+    const auto argument{resolve(ptr, false)};
+    ss << sep << argument;
+
+    sep = ", ";
+  }
+
+  const auto arguments{ss.str()};
+
+  return std::format("{}({}){}", identifier, arguments, terminate());
+}
+
+
 AST_VISITOR_STUB(CppBackend, Interface)
 
 auto CppBackend::visit(MemberDecl* t_member) -> Any
@@ -637,9 +666,9 @@ auto CppBackend::visit(Struct* t_struct) -> Any
   return ss.str();
 }
 
-auto CppBackend::visit(Self* t_self) -> Any
+auto CppBackend::visit([[maybe_unused]] Self* t_self) -> Any
 {
-  return std::string{"this"};
+  return std::string{"(*this)"};
 }
 
 auto CppBackend::visit(Member* t_member) -> Any
@@ -651,10 +680,10 @@ auto CppBackend::visit(Member* t_member) -> Any
 
 auto CppBackend::visit(MemberAccess* t_access) -> Any
 {
-  const auto left{resolve(t_access->left())};
-  const auto right{resolve(t_access->right())};
+  const auto lhs{resolve(t_access->left())};
+  const auto rhs{resolve(t_access->right(), false)};
 
-  return std::format("({}.{})", left, right);
+  return std::format("{}.{}{}", lhs, rhs, terminate());
 }
 
 // Misc:

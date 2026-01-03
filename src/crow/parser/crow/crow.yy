@@ -61,6 +61,7 @@ lvalue           : IDENTIFIER
 // Lvalue Infix:
 lvalue_expr      : lvalue
                  | lvalue lvalue_chain_expr
+								 | Self lvalue_chain_expr
                  ;
 
 // Chain:

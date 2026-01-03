@@ -39,7 +39,9 @@ class PrattParser : public Parser {
 
   // Grammar:
   virtual auto newline_opt() -> void = 0;
+  virtual auto terminator() -> void = 0;
   virtual auto expr_list_opt() -> NodeListPtr = 0;
+  virtual auto self() -> NodePtr = 0;
 
   // Prefix parsing:
   virtual auto prefix_expr(TokenType t_type) -> NodePtr;
@@ -49,12 +51,23 @@ class PrattParser : public Parser {
   virtual auto unary_prefix() -> NodePtr;
   virtual auto negation() -> NodePtr;
   virtual auto function_call() -> NodePtr;
+  virtual auto member_access() -> NodePtr;
+  virtual auto method_call() -> NodePtr;
 
   virtual auto prefix() -> NodePtr;
-  virtual auto prefix_chain_expr() -> NodePtr;
+
+  /*!
+   * Prefixes/nodes that can be chained.
+   */
+  virtual auto prefix_chainable() -> NodePtr;
+
+  /*!
+   * Prefixes/nodes we match when we are actually in a chain.
+   */
+  virtual auto prefix_chain() -> NodePtr;
 
   // Infix parsing:
-  virtual auto infix_chain_expr(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
+  virtual auto infix_chain(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
 
   virtual auto arithmetic(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
   virtual auto logical(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
@@ -67,22 +80,29 @@ class PrattParser : public Parser {
   virtual auto expr(int t_min_bp = 0) -> NodePtr;
 
   // Lvalue specific:
-  virtual auto field_access() -> NodePtr;
-
-  virtual auto lvalue_chain_expr(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
+  virtual auto lvalue_chain(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
   virtual auto lvalue_infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
 
   /*!
    * Continue's a member access chain.
+   * Which derives from an lvalue_expr().
    */
   virtual auto lvalue_member_expr(int t_min_bp = 0) -> NodePtr;
 
   /*!
    * Generally an expression is universal.
    * But when we are dealing with precedence as the destination for a value.
-   * We only allow assignable statements on the left side.
+   * We only allow assignable statements on the left hand side.
+   * So no assigning to the result of function calls.
    */
   virtual auto lvalue_expr(int t_min_bp = 0) -> NodePtr;
+
+  // Method call specific.
+  /*!
+   * The only free standing chain expr which we do not assign to.
+   * Is a method_call at the end of a chain expr.
+   */
+  virtual auto method_call_expr(int t_min_bp = 0) -> NodePtr;
 
   virtual ~PrattParser() = default;
 };

@@ -35,7 +35,7 @@ inline auto println(Args &&...t_args) -> void
 }
 
 // Logging faciltiies
-#ifdef DEBUG
+#ifndef NDEBUG
 /*!
  * @brief Used to log the compiler.
  *
@@ -61,7 +61,7 @@ inline auto log(SourcePosition &&t_pos, LogLevel t_loglevel, Args &&...t_args)
     println(std::forward<Args>(t_args)...);
   }
 }
-#endif // DEBUG
+#endif // NDEBUG
 } // namespace debug
 
 #endif // CROW_CROW_DEBUG_LOG_HPP

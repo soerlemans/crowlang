@@ -81,7 +81,10 @@ STUB(Float)
 STUB(Integer)
 STUB(String)
 STUB(Boolean)
+
+// Typing:
 STUB(Method)
+STUB(MethodCall)
 STUB(Interface)
 STUB(MemberDecl)
 STUB(Struct)

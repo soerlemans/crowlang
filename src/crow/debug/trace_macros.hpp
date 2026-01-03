@@ -6,7 +6,7 @@
 
 
 // Macros:
-#ifdef DEBUG
+#ifndef NDEBUG
 #define DBG_TRACE_INIT() int m_counter__{0}
 
 // TRACE is intended for showing which functions call which in a tree like
@@ -37,7 +37,7 @@
   do {                                 \
   } while(false)
 
-#endif // DEBUG
+#endif // NDEBUG
 
 #define DBG_TRACE_FN(t_loglevel) DBG_TRACE(t_loglevel, __func__)
 

@@ -26,7 +26,7 @@ enum ExitCode {
 //! Do not absorb cpptrace errors on debug builds.
 static auto disable_absorb_exceptions() -> void
 {
-#ifdef DEBUG
+#ifndef NDEBUG
   // Do not absorb cpptrace errors on debug build.
   cpptrace::absorb_trace_exceptions(false);
 #endif

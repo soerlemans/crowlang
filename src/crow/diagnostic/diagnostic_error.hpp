@@ -9,7 +9,8 @@ namespace diagnostic {
 // Classes:
 /*!
  * Base diagnostic error class.
- * Includes a stacktrace when compiling with the @ref DEBUG macro defined.
+ * Includes a stacktrace when compiling.
+ * As long as the @ref NDEBUG macro is not defined.
  * Used to signal when a user has made a mistake.
  */
 class DiagnosticError {

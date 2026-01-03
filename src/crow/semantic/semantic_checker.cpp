@@ -245,7 +245,9 @@ auto SemanticChecker::handle_condition(const SymbolData& t_data,
 
 auto SemanticChecker::get_symbol_data(NodePtr t_ptr) -> SymbolData
 {
-  SymbolData data;
+  using lib::stdexcept::throw_bad_any_cast;
+
+  SymbolData data{};
 
   const auto any{traverse(t_ptr)};
   if(any.has_value()) {
@@ -254,17 +256,17 @@ auto SemanticChecker::get_symbol_data(NodePtr t_ptr) -> SymbolData
     } catch(const std::bad_any_cast& err) {
       DBG_CRITICAL(err.what());
 
-      // TODO: Print elegant error message and terminate.
-      throw err;
+
+      throw_bad_any_cast(err.what());
     }
   }
 
   return data;
 }
 
-auto SemanticChecker::get_resolved_type(NodePtr t_ptr) -> SymbolData
+auto SemanticChecker::get_resolved_result_type(NodePtr t_ptr) -> SymbolData
 {
-  return get_symbol_data(t_ptr).resolve_type();
+  return get_symbol_data(t_ptr).resolve_result_type();
 }
 
 auto SemanticChecker::get_native_type(NodePtr t_ptr) -> NativeTypeOpt
@@ -283,13 +285,13 @@ auto SemanticChecker::get_type_list(NodeListPtr t_list) -> SymbolDataList
   return list;
 }
 
-auto SemanticChecker::get_resolved_type_list(NodeListPtr t_list)
+auto SemanticChecker::get_resolved_result_type_list(NodeListPtr t_list)
   -> SymbolDataList
 {
   SymbolDataList list;
 
   for(const auto& ptr : *t_list) {
-    list.push_back(get_resolved_type(ptr));
+    list.push_back(get_resolved_result_type(ptr));
   }
 
   return list;
@@ -363,9 +365,9 @@ auto SemanticChecker::visit(Return* t_return) -> Any
 // Function:
 auto SemanticChecker::visit(Parameter* t_param) -> Any
 {
-  const auto type{str2nativetype(t_param->type())};
+  const auto type{str2type(t_param->type())};
 
-  t_param->set_type({type});
+  t_param->set_type(type.type_variant());
 
   return SymbolData{type};
 }
@@ -373,7 +375,7 @@ auto SemanticChecker::visit(Parameter* t_param) -> Any
 auto SemanticChecker::visit(Function* t_fn) -> Any
 {
   const auto id{t_fn->identifier()};
-  const auto ret_type{str2nativetype(t_fn->type())};
+  const auto ret_type{str2type(t_fn->type())};
   const auto params{t_fn->params()};
   const auto body{t_fn->body()};
 
@@ -397,8 +399,7 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
     // Gain a raw ptr (non owning).
     // If the AST changes the assertion will be triggered.
     const auto* param{dynamic_cast<Parameter*>(node.get())};
-    DEBUG_ASSERT(param, R"(Was unable to cast to "*Parameter"!)", param, node,
-                 params);
+    DEBUG_ASSERT(param != nullptr, R"(Was unable to cast to "*Parameter"!)");
 
     const auto id{param->identifier()};
     const auto type{str2type(param->type())};
@@ -428,7 +429,7 @@ auto SemanticChecker::visit(FunctionCall* t_fn_call) -> Any
   }
 
   const auto fn_data{get_symbol_data_from_env(id)};
-  const auto args{get_resolved_type_list(t_fn_call->args())};
+  const auto args{get_resolved_result_type_list(t_fn_call->args())};
 
   const auto fn{fn_data.as_function()};
   const auto params{fn->m_params};
@@ -453,7 +454,9 @@ auto SemanticChecker::visit(FunctionCall* t_fn_call) -> Any
 
 auto SemanticChecker::visit(ReturnType* t_rt) -> Any
 {
-  return SymbolData{str2nativetype(t_rt->type())};
+  const auto type{t_rt->type()};
+
+  return SymbolData{str2type(type)};
 }
 
 // Lvalue:
@@ -572,7 +575,7 @@ auto SemanticChecker::visit(LetDecl* t_ldecl) -> Any
   using symbol::Mutability;
 
   const auto id{t_ldecl->identifier()};
-  const auto type_data{str2nativetype(t_ldecl->type())};
+  const auto type_data{str2type(t_ldecl->type())};
 
   // Create the SymbolData for a variable.
   const SymbolData data{
@@ -591,7 +594,7 @@ auto SemanticChecker::visit(VarDecl* t_vdecl) -> Any
   using symbol::Mutability;
 
   const auto id{t_vdecl->identifier()};
-  const auto type_data{str2nativetype(t_vdecl->type())};
+  const auto type_data{str2type(t_vdecl->type())};
 
   // Create the SymbolData for a variable.
   const SymbolData data{symbol::make_variable(Mutability::MUTABLE, type_data)};
@@ -607,7 +610,7 @@ auto SemanticChecker::visit(VarDecl* t_vdecl) -> Any
 auto SemanticChecker::visit(FunctionDecl* t_fdecl) -> Any
 {
   const auto id{t_fdecl->identifier()};
-  const auto ret_type{str2nativetype(t_fdecl->type())};
+  const auto ret_type{str2type(t_fdecl->type())};
   const auto params{t_fdecl->params()};
 
   // Register function type signature to environment.
@@ -627,8 +630,9 @@ auto SemanticChecker::visit(FunctionDecl* t_fdecl) -> Any
 // Operators:
 auto SemanticChecker::visit(Arithmetic* t_arith) -> Any
 {
-  const auto lhs{get_resolved_type(t_arith->left())};
-  const auto rhs{get_resolved_type(t_arith->right())};
+  const auto op{t_arith->op()};
+  const auto lhs{get_symbol_data(t_arith->left())};
+  const auto rhs{get_symbol_data(t_arith->right())};
   const auto pos{t_arith->position()};
 
   DBG_INFO("Typeof lhs: ", lhs);
@@ -646,7 +650,7 @@ auto SemanticChecker::visit(Arithmetic* t_arith) -> Any
 auto SemanticChecker::visit(Assignment* t_assign) -> Any
 {
   const auto var{get_symbol_data(t_assign->left())};
-  const auto expr{get_resolved_type(t_assign->right())};
+  const auto expr{get_resolved_result_type(t_assign->right())};
 
   const auto pos{t_assign->position()};
 
@@ -807,6 +811,10 @@ auto SemanticChecker::visit(Method* t_meth) -> Any
   const auto ret_type{str2type(t_meth->type())};
   const auto params{t_meth->params()};
 
+  if(!recv_type.is_struct()) {
+    throw_type_error("Receiver type for method is not a struct.");
+  }
+
   // // Register function type signature to Struct.
   const auto params_type_list{get_type_list(params)};
   const SymbolData data{symbol::make_function(params_type_list, ret_type)};
@@ -829,11 +837,10 @@ auto SemanticChecker::visit(Method* t_meth) -> Any
     // Gain a raw ptr (non owning).
     // If the AST changes the assertion will be triggered.
     const auto* param{dynamic_cast<Parameter*>(node.get())};
-    DEBUG_ASSERT(param, R"(Was unable to cast to "Parameter*"!)", param, node,
-                 params);
+    DEBUG_ASSERT(param != nullptr, R"(Was unable to cast to "Parameter*"!)");
 
     const auto id{param->identifier()};
-    const auto type{str2nativetype(param->type())};
+    const auto type{str2type(param->type())};
 
     const SymbolData data{symbol::make_variable(Mutability::MUTABLE, type)};
 
@@ -841,8 +848,12 @@ auto SemanticChecker::visit(Method* t_meth) -> Any
     add_symbol_definition(id, data);
   }
 
+  m_active_struct = recv_type.as_struct();
+
   // Run type checking on the function body.
   traverse(t_meth->body());
+
+  m_active_struct = std::nullopt;
   pop_env();
 
   return {};
@@ -876,11 +887,11 @@ auto SemanticChecker::visit(Struct* t_struct) -> Any
     // Gain a raw ptr (non owning).
     // If the AST changes the assertion will be triggered.
     const auto* member_decl{dynamic_cast<MemberDecl*>(node.get())};
-    DEBUG_ASSERT(member_decl, R"(Was unable to cast to "*MemberDecl"!)",
-                 member_decl, node, struct_body);
+    DEBUG_ASSERT(member_decl != nullptr,
+                 R"(Was unable to cast to "*MemberDecl"!)");
 
     const std::string member_id{member_decl->identifier()};
-    const SymbolData member_type{str2nativetype(member_decl->type())};
+    const SymbolData member_type{str2type(member_decl->type())};
 
     members.insert({member_id, member_type});
   }
@@ -898,10 +909,16 @@ auto SemanticChecker::visit(Struct* t_struct) -> Any
 }
 
 // TODO: Rename SelfAcceptor?
-auto SemanticChecker::visit(Self* t_self) -> Any
+auto SemanticChecker::visit([[maybe_unused]] Self* t_self) -> Any
 {
+  using lib::stdexcept::throw_runtime_error;
 
-  return {};
+  if(!m_active_struct) {
+    throw_runtime_error(
+      "Keyword self used without active struct in method context.");
+  }
+
+  return SymbolData{m_active_struct.value()};
 }
 
 auto SemanticChecker::visit(Member* t_member) -> Any
@@ -921,11 +938,19 @@ auto SemanticChecker::visit(Member* t_member) -> Any
 
 auto SemanticChecker::visit(MemberAccess* t_access) -> Any
 {
-  const auto lhs{get_resolved_type(t_access->left())};
-  const auto rhs{get_resolved_type(t_access->right())};
+  const auto left{t_access->left()};
+  const auto right{t_access->right()};
   const auto pos{t_access->position()};
 
-  return rhs;
+  const auto lhs{get_resolved_result_type(left)};
+
+  // Evaluate chain expressions by setting an active access var.
+
+  // dynamic_cast<MethodCall>(right);
+  // const auto rhs{get_resolved_result_type(right)};
+
+  // return rhs;
+  return SymbolData{NativeType::INT};
 }
 
 auto SemanticChecker::check(NodePtr t_ast) -> void

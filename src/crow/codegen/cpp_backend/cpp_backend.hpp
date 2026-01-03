@@ -25,6 +25,12 @@ using visitor::Any;
 using InteropBackends = std::vector<CppInteropBackendPtr>;
 using TerminateStack = std::stack<bool>;
 
+// Enums:
+enum class CouldTerminate {
+  ALLOW, //< Allow an expression to terminate if needed.
+  NO     //< Dont allow nested expression resolution to terminate.
+};
+
 // Classes:
 /*!
  * @brief Tree walk codegenerator generating safe C++ code.
@@ -141,6 +147,7 @@ class CppBackend : public NodeVisitor, public BackendInterface {
 
   // Typing:
   auto visit(node::typing::Method* t_meth) -> Any override;
+  auto visit(node::typing::MethodCall* t_meth_call) -> Any override;
   auto visit(node::typing::Interface* t_ifc) -> Any override;
   auto visit(node::typing::MemberDecl* t_meth) -> Any override;
   auto visit(node::typing::Struct* t_struct) -> Any override;

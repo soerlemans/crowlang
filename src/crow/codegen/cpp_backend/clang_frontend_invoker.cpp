@@ -70,7 +70,7 @@ auto ClangFrontendInvoker::compile(const fs::path &t_source) -> void
   DBG_INFO("out: ", out);
 
   // Print generated code (lazy implementation).
-#ifdef DEBUG
+#ifndef NDEBUG
   DBG_PRINTLN("# C++ codegeneration:");
 
   const auto cmd_cat{
@@ -78,7 +78,7 @@ auto ClangFrontendInvoker::compile(const fs::path &t_source) -> void
   std::system(cmd_cat.c_str());
 
   DBG_PRINTLN();
-#endif // DEBUG
+#endif // NDEBUG
 
   DBG_PRINTLN("# Clang Compilation:");
 

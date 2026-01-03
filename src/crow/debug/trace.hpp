@@ -10,7 +10,7 @@
 
 
 // Only facilitate Trace if we are on the DEBUG build
-#ifdef DEBUG
+#ifndef NDEBUG
 namespace debug {
 /*! Trace class is used for printing nested structures using a lifetime
  *!
@@ -42,5 +42,5 @@ class Trace {
 };
 } // namespace debug
 
-#endif // DEBUG
+#endif // NDEBUG
 #endif // CROW_CROW_DEBUG_TRACE_HPP

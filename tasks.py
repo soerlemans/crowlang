@@ -17,11 +17,12 @@ from enum import StrEnum
 
 
 # Globals:
-class BuildMode(StrEnum):
+class BuildProfile(StrEnum):
     'Enumeration containing the different build configurations.'
     BUILD = 'build'
     DEBUG = 'debug-build'
     RELEASEDEBUG = 'reldebug-build'
+    MINSIZEREL = 'minsizerel-build'
     TEST = 'test-build'
     pass
 
@@ -65,18 +66,22 @@ def cmake_mode_args(t_mode: str) -> str:
     'Get the cmake arguments for a specific build mode.'
     args = ''
     match t_mode:
-        case BuildMode.BUILD:
+        case BuildProfile.BUILD:
             pass
 
-        case BuildMode.DEBUG:
+        case BuildProfile.DEBUG:
             args += '-DCMAKE_BUILD_TYPE=Debug '
             pass
 
-        case BuildMode.RELEASEDEBUG:
+        case BuildProfile.RELEASEDEBUG:
             args += '-DCMAKE_BUILD_TYPE=RelWithDebInfo '
             pass
 
-        case BuildMode.TEST:
+        case BuildProfile.MINSIZEREL:
+            args += '-DCMAKE_BUILD_TYPE=MinSizeRel '
+            pass
+
+        case BuildProfile.TEST:
             args += '-DCMAKE_BUILD_TYPE=Debug '
             args += '-DCROW_BUILD_TESTS=TRUE '
             pass
@@ -123,7 +128,7 @@ def all(ctx, parallel=True, lint=False):
     log('Building all.')
     log_args(parallel=parallel, lint=lint)
 
-    for mode in BuildMode:
+    for mode in BuildProfile:
         print(f'@Invoke: Building \'{mode}\'')
         build(ctx, mode, parallel)
         pass
@@ -135,7 +140,7 @@ def install(ctx, mode='', parallel=True, lint=False):
     log('Building project.')
     log_args(mode=mode, parallel=parallel, lint=lint)
 
-    enum_values = [ item.value for item in BuildMode ]
+    enum_values = [ item.value for item in BuildProfile ]
     mode = mode if mode in enum_values else 'build'
     cmake(ctx, mode, parallel, lint)
 
@@ -176,7 +181,7 @@ def build(ctx, mode='', parallel=True, lint=False):
     log('Building project.')
     log_args(mode=mode, parallel=parallel, lint=lint)
 
-    enum_values = [ item.value for item in BuildMode ]
+    enum_values = [ item.value for item in BuildProfile ]
     mode = mode if mode in enum_values else 'build'
     cmake(ctx, mode, parallel, lint)
     pass
@@ -185,7 +190,7 @@ def build(ctx, mode='', parallel=True, lint=False):
 @task
 def clean(ctx, objects=False):
     'Cleans the build files.'
-    for directory in BuildMode:
+    for directory in BuildProfile:
         path = directory
         path += '/CMakeFiles' if objects else ''
         path += '/*'

@@ -16,14 +16,14 @@ DiagnosticError::DiagnosticError(const std::string_view t_msg): m_error{}
   // Set the given message.
   ss << t_msg;
 
-#ifdef DEBUG
+#ifndef NDEBUG
   ss << '\n';
 
   // TODO: Disable colors when --no-color is passed.
   // Print the stacktrace with colors.
   auto stacktrace{cpptrace::stacktrace::current()};
   stacktrace.print(ss, true);
-#endif
+#endif // NDEBUG
 
   // Set the final error message string.
   m_error = ss.str();

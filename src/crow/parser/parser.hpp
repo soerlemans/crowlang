@@ -10,6 +10,9 @@
 #include "crow/token/token_stream.hpp"
 #include "crow/token/tokentype2str.hpp"
 
+// Local Includes:
+#include "backtrack_guard.hpp"
+
 
 // Macros:
 #define PARSER_FOUND(t_tokentype, ...)                    \
