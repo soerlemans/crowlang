@@ -96,7 +96,7 @@ auto TranslationUnit::print_ast([[maybe_unused]] const NodePtr t_ast) const
 {
   using ast::visitor::AstPrinter;
 
-#ifdef DEBUG
+#ifndef NDEBUG
   // Pretty print the AST
   DBG_PRINTLN("<print_ast>");
   std::stringstream ss;
@@ -108,7 +108,7 @@ auto TranslationUnit::print_ast([[maybe_unused]] const NodePtr t_ast) const
   DBG_INFO(ss.str());
 
   DBG_PRINTLN("</print_ast>");
-#endif // DEBUG
+#endif // NDEBUG
 }
 
 auto TranslationUnit::semantic(NodePtr t_ast) -> void

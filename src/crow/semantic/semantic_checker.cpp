@@ -887,7 +887,8 @@ auto SemanticChecker::visit(Struct* t_struct) -> Any
     // Gain a raw ptr (non owning).
     // If the AST changes the assertion will be triggered.
     const auto* member_decl{dynamic_cast<MemberDecl*>(node.get())};
-    DEBUG_ASSERT(member_decl != nullptr, R"(Was unable to cast to "*MemberDecl"!)");
+    DEBUG_ASSERT(member_decl != nullptr,
+                 R"(Was unable to cast to "*MemberDecl"!)");
 
     const std::string member_id{member_decl->identifier()};
     const SymbolData member_type{str2type(member_decl->type())};

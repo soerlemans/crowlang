@@ -30,7 +30,7 @@ auto add_positional_flags(CLI::App& t_app, Settings& t_settings) -> void
 auto add_loglevel_flag([[maybe_unused]] CLI::App& t_app, Settings& t_settings)
   -> void
 {
-#ifdef DEBUG
+#ifndef NDEBUG
   using settings::loglevel_map;
   using settings::LogLevelMap;
 
@@ -38,12 +38,12 @@ auto add_loglevel_flag([[maybe_unused]] CLI::App& t_app, Settings& t_settings)
 
   t_app.add_option("-l,--log-level", t_settings.m_level, "Set the LogLevel.")
     ->transform(CLI::CheckedTransformer(map));
-#endif // DEBUG
+#endif // NDEBUG
 }
 
 auto add_log_multiline_flag([[maybe_unused]] CLI::App& t_app) -> void
 {
-#ifdef DEBUG
+#ifndef NDEBUG
 
   using namespace lib;
 
@@ -51,7 +51,7 @@ auto add_log_multiline_flag([[maybe_unused]] CLI::App& t_app) -> void
     "--log-multiline", iomanip::CondNl::enable,
     "Enable printing objects over multiple lines, when logging.");
 
-#endif // DEBUG
+#endif // NDEBUG
 }
 
 auto add_backend_flag(CLI::App& t_app, Settings& t_settings) -> void

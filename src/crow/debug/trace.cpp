@@ -31,5 +31,5 @@ Trace::~Trace()
   }
 }
 
-#endif // DEBUG
+#endif // NDEBUG
 } // namespace debug

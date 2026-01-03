@@ -120,6 +120,9 @@ TEST(TestPrattParser, AdvancedExpressions)
   PrattExprs exprs = {
     "num1"sv,
     "func()"sv,
+    "num1 + num2"sv,
+    "func() + num2"sv,
+    "num1 + func() + num3"sv,
     "num1 + func()"sv,
     "func1() + func2()"sv,
   };

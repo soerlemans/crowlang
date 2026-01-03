@@ -10,7 +10,7 @@
 
 
 // Macros:
-#ifdef DEBUG
+#ifndef NDEBUG
 #define DBG_PRINTLN(...) debug::println(__VA_ARGS__)
 
 //! Create a @ref SourcePosition of the line the macro is located on.
@@ -40,7 +40,7 @@
   do {                          \
   } while(false)
 
-#endif // DEBUG
+#endif // NDEBUG
 
 // Utility macros for logging:
 #define DBG_CRITICAL(...) DBG_LOG(CRITICAL, __VA_ARGS__)
