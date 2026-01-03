@@ -257,7 +257,6 @@ auto PrattParser::prefix_chain() -> NodePtr
   return node;
 }
 
-
 // Infix parsing:
 auto PrattParser::infix_chain(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 {
