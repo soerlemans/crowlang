@@ -180,6 +180,8 @@ TEST(TestPrattParser, BasicChainExpressions)
     "func1()"sv,
     "name1.member1"sv,
     "name1.func1()"sv,
+    "name1.member1.func1()"sv,
+    "name1.member1().func1()"sv,
   };
 
   for(auto&& program : exprs) {
