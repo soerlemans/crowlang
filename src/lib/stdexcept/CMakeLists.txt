@@ -8,3 +8,8 @@ target_sources(${TARGET_CROW_LIB} PRIVATE
 	runtime_error.cpp
 	logic_error.cpp
 )
+
+# Included a lot, rarely changes.
+target_precompile_headers(${TARGET_CROW_LIB} PRIVATE
+  stdexcept.hpp
+)

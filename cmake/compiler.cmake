@@ -61,7 +61,38 @@ function(cxx_configure_target T_TARGET)
 		${CMAKE_CXX_WARNING_FLAGS}
 		$<$<CONFIG:Release>:${CMAKE_CXX_RELEASE_FLAGS}>
 		$<$<CONFIG:RelWithDebInfo>:${CMAKE_CXX_RELEASE_FLAGS}>
-	)
+	  )
+
+      # Precompile commonly used STL headers.
+      target_precompile_headers(${T_TARGET} PRIVATE
+        <any>
+        <array>
+        <algorithm>
+        <exception>
+        <filesystem>
+        <functional>
+        <fstream>
+        <format>
+        <iomanip>
+        <iosfwd>
+        <iostream>
+        <list>
+        <map>
+        <memory>
+        <optional>
+        <ostream>
+        <vector>
+        <ranges>
+        <stack>
+        <string>
+        <string_view>
+        <sstream>
+        <type_traits>
+        <stdexcept>
+        <tuple>
+        <unordered_map>
+        <variant>
+      )
 endfunction()
 
 
