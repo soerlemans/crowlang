@@ -76,7 +76,10 @@ class PrattParser : public Parser {
   virtual auto infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
 
   // Expressions:
+  //! Continues a chain expression not an entry.
   virtual auto chain_expr(int t_min_bp = 0) -> NodePtr;
+
+  //! Entry for normal expressions.
   virtual auto expr(int t_min_bp = 0) -> NodePtr;
 
   // Lvalue specific:
@@ -86,6 +89,7 @@ class PrattParser : public Parser {
   /*!
    * Continue's a member access chain.
    * Which derives from an lvalue_expr().
+   * Not an entry.
    */
   virtual auto lvalue_member_expr(int t_min_bp = 0) -> NodePtr;
 
@@ -94,6 +98,7 @@ class PrattParser : public Parser {
    * But when we are dealing with precedence as the destination for a value.
    * We only allow assignable statements on the left hand side.
    * So no assigning to the result of function calls.
+   * Entry for Lvalue expressions.
    */
   virtual auto lvalue_expr(int t_min_bp = 0) -> NodePtr;
 
@@ -101,6 +106,7 @@ class PrattParser : public Parser {
   /*!
    * The only free standing chain expr which we do not assign to.
    * Is a method_call at the end of a chain expr.
+   * This is an entry for Method Call expressions.
    */
   virtual auto method_call_expr(int t_min_bp = 0) -> NodePtr;
 

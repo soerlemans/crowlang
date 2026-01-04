@@ -547,9 +547,6 @@ auto CppBackend::visit(Method* t_meth) -> Any
   const auto meth_type{t_meth->get_type().as_function()};
   const auto ret_type{type_variant2cpp(meth_type->m_return_type)};
 
-  // const auto fn_type{t_meth->get_type()};
-  // const auto ret_type{type_variant2cpp(fn_type->m_return_type)};
-
   std::stringstream param_ss{};
 
   auto sep{""sv};
@@ -571,7 +568,6 @@ auto CppBackend::visit(Method* t_meth) -> Any
   }
 
   // clang-format off
-  // ss << std::format("auto {}({}) -> {}\n", identifier, param_ss.str(), ret_type)
   ss << std::format("auto {}::{}({}) -> {}\n", receiver_type, identifier, param_ss.str(), ret_type)
      << "{\n"
      << resolve(t_meth->body())
