@@ -24,7 +24,7 @@ jobs:
     - name: Check out repository code.
       uses: actions/checkout@v4
       with:
-        fetch-depth: 2
+        fetch-depth: 1
 
     - name: Install Pipx.
       id: install-pipx
