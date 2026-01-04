@@ -98,14 +98,17 @@ def cmake_mode_args(t_mode: str) -> str:
     return args
 
 
-def cmake(t_ctx, t_mode: str, t_parallel: bool, t_lint=False):
+def cmake(t_ctx, t_mode: str, t_parallel: bool, t_lint=False, t_ci_build=False):
     'TODO: Document.'
     parallel_arg = cmake_parallel_arg(t_parallel)
     build_args = cmake_mode_args(t_mode)
 
     # Perform static analysis if specified.
     if t_lint:
-        build_args += '-DCROW_CLANG_TIDY=TRUE'
+        build_args += '-DCROW_CLANG_TIDY=TRUE '
+
+    if t_ci_build:
+        build_args += '-DCROW_CI_BUILD=TRUE '
 
     # Always print version info.
     run(t_ctx, 'cmake --version')
@@ -176,14 +179,14 @@ def uninstall(ctx):
 
 # TODO: Shorten help string, possibly use a global?
 @task(help={'mode': '', 'parallel': 'Flag indicating concurrent builds.', 'lint': 'Perform static analysis on source code using clang-tidy'})
-def build(ctx, mode='', parallel=True, lint=False):
+def build(ctx, mode='', parallel=True, lint=False, ci_build=False):
     'Build the project.'
     log('Building project.')
-    log_args(mode=mode, parallel=parallel, lint=lint)
+    log_args(mode=mode, parallel=parallel, lint=lint, ci_build=ci_build)
 
     enum_values = [ item.value for item in BuildProfile ]
     mode = mode if mode in enum_values else 'build'
-    cmake(ctx, mode, parallel, lint)
+    cmake(ctx, mode, parallel, lint, ci_build)
     pass
 
 

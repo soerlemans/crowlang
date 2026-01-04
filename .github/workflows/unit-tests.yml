@@ -62,7 +62,7 @@ jobs:
     - name: Build tests.
       id: build-tests
       run: |
-        inv build --mode=test-build --parallel
+        inv build --mode=test-build --parallel --ci-build
 
     - name: Save build cache
       uses: actions/cache@v3

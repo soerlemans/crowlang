@@ -31,7 +31,7 @@ using PrattExprs = std::vector<std::string_view>;
 
 // Helper functions:
 namespace {
-auto prep_pratt_parser(const std::string_view t_program) -> PrattParserPtr
+auto prep_pratt_parser(const std::string_view t_program) -> CrowParserPtr
 {
   // PrattParser is abstract so we.
   // Init a crow parser and parse back an interface ptr.
@@ -49,7 +49,7 @@ auto prep_pratt_parser(const std::string_view t_program) -> PrattParserPtr
   Lexer lexer{stream_ptr};
   TokenStream tokenstream{lexer.tokenize()};
 
-  PrattParserPtr parser{std::make_unique<CrowParser>(tokenstream)};
+  CrowParserPtr parser{std::make_unique<CrowParser>(tokenstream)};
 
   return parser;
 }
