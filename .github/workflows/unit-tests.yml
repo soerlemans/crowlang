@@ -44,10 +44,31 @@ jobs:
       run: |
         inv setup
 
+    - name: Restore PCH cache.
+      uses: actions/cache@v3
+      with:
+        path: test-build/CMakeFiles/*.dir/cmake_pch.hxx*
+        key: ${{ runner.os }}-pch
+
+    - name: List PCH.
+      id: list-pch
+      run: |
+        if [ "${{ steps.cache.outputs.cache-hit }}" == "true" ]; then
+          find test-build/ -iname 'cmake_pch.hxx*'
+        else
+          echo "No cache hit. PCH files will be rebuilt."
+        fi
+
     - name: Build tests.
       id: build-tests
       run: |
         inv build --mode=test-build --parallel
+
+    - name: Save build cache
+      uses: actions/cache@v3
+      with:
+        path: test-build/CMakeFiles/
+        key: ${{ runner.os }}-pch
 
     - name: Run tests.
       id: run-tests
