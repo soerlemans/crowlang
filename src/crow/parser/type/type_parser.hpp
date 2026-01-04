@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_PARSER_PRATT_PRATT_PARSER_HPP
-#define CROW_CROW_PARSER_PRATT_PRATT_PARSER_HPP
+#ifndef CROW_CROW_PARSER_TYPE_TYPE_PARSER_HPP
+#define CROW_CROW_PARSER_TYPE_TYPE_PARSER_HPP
 
 // STL Includes:
 #include <memory>
@@ -20,12 +20,12 @@ using TypeParserPtr = std::unique_ptr<TypeParser>;
 // Classes:
 class TypeParser : public Parser {
   public:
-  TypeParser(TokenStream&& t_token_stream);
+  explicit TypeParser(ParserContextPtr t_ctx);
 
   virtual auto type_spec() -> NodePtr;
 
   virtual ~TypeParser() = default;
 };
-} // namespace parser::pratt
+} // namespace parser::type
 
-#endif // CROW_CROW_PARSER_PRATT_PRATT_PARSER_HPP
+#endif // CROW_CROW_PARSER_TYPE_TYPE_PARSER_HPP

@@ -5,6 +5,7 @@
 #include "crow/diagnostic/syntax_error.hpp"
 #include "crow/token/tokentype2str.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
+#include <memory>
 
 namespace parser {
 // Using statements:
@@ -14,7 +15,7 @@ using ast::node::NodeListPtr;
 // Protected Methods:
 auto Parser::get_token_stream() -> TokenStream&
 {
-  return m_token_stream;
+  return m_ctx->m_token_stream;
 }
 
 auto Parser::throw_syntax_error(const std::string_view t_msg) const -> void
@@ -29,7 +30,7 @@ auto Parser::throw_syntax_error(const std::string_view t_msg) const -> void
 // FIXME: This function should be replaced with the printing of a stacktrace
 auto Parser::throw_if_eos(const std::string_view t_msg) const -> void
 {
-  if(m_token_stream.eos()) {
+  if(m_ctx->m_token_stream.eos()) {
     using lib::stdexcept::throw_runtime_error;
 
     std::stringstream ss{};
@@ -44,14 +45,14 @@ auto Parser::throw_if_eos(const std::string_view t_msg) const -> void
 
 auto Parser::eos() const -> bool
 {
-  return m_token_stream.eos();
+  return m_ctx->m_token_stream.eos();
 }
 
 auto Parser::check(const TokenType t_type) -> bool
 {
   throw_if_eos("Tried to check for token at EOS!");
 
-  const auto token{m_token_stream.current()};
+  const auto token{m_ctx->m_token_stream.current()};
 
   return token.type() == t_type;
 }
@@ -60,7 +61,7 @@ auto Parser::next() -> Token&
 {
   throw_if_eos("Tried to move to next Token at EOS!");
 
-  return m_token_stream.next();
+  return m_ctx->m_token_stream.next();
 }
 
 auto Parser::expect(const TokenType t_type) -> Token&
@@ -82,14 +83,14 @@ auto Parser::expect(const TokenType t_type) -> Token&
 
 auto Parser::prev() -> Token&
 {
-  return m_token_stream.prev();
+  return m_ctx->m_token_stream.prev();
 }
 
 auto Parser::get_token() const -> Token&
 {
   throw_if_eos("Tried to return get token at EOS!");
 
-  return m_token_stream.current();
+  return m_ctx->m_token_stream.current();
 }
 
 auto Parser::get_position() const -> const TextPosition&
@@ -104,16 +105,18 @@ auto Parser::after_newlines(const TokenType t_type) -> bool
 
   bool found{false};
 
-  for(auto iter{m_token_stream.iter()}; iter != m_token_stream.end(); iter++) {
+  for(auto iter{m_ctx->m_token_stream.iter()};
+      iter != m_ctx->m_token_stream.end(); iter++) {
     if(iter->type() != TokenType::NEWLINE) {
       if(iter->type() == t_type) {
         found = true;
 
-        DBG_TRACE_PRINT(VERBOSE,
-                        "Found: ", std::quoted(tokentype2str(t_type), '\''));
+        DBG_TRACE_PRINT(VERBOSE, "Found ",
+                        std::quoted(tokentype2str(t_type), '\''),
+                        " after newlines");
 
         // Update iterator
-        m_token_stream.set(iter);
+        m_ctx->m_token_stream.set(iter);
       }
 
       break;
@@ -140,8 +143,18 @@ auto Parser::list_of(const ParseFn t_fn) -> NodeListPtr
   return nodes;
 }
 
+auto Parser::context() -> ParserContextPtr
+{
+  return m_ctx;
+}
+
 // Methods:
-Parser::Parser(TokenStream&& t_token_stream)
-  : m_token_stream{std::forward<TokenStream>(t_token_stream)}
+Parser::Parser(ParserContextPtr t_ctx): m_ctx{t_ctx}
 {}
+
+// Functions:
+auto make_parser_context(TokenStream&& t_token_stream) -> ParserContextPtr
+{
+  return std::make_shared<ParserContext>(std::move(t_token_stream), 0);
+}
 } // namespace parser

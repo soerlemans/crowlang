@@ -56,7 +56,7 @@ def cmake_parallel_arg(t_parallel: bool) -> str:
         # max_jobs = multiprocessing.cpu_count() // 3
         # arg = f'--parallel {max_jobs}'
 
-        arg = f'--parallel 14'
+        arg = f'--parallel 6 '
         pass
 
     return arg
@@ -237,7 +237,7 @@ def setup(ctx):
             pass
 
         case 'win32':
-            print('Currently the setup script does not support Windows.')
+            print('Error: Currently the setup script does not support Windows.')
             pass
 
         case 'darwin':

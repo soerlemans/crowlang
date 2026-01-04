@@ -13,8 +13,7 @@ namespace parser::type {
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-TypeParser::TypeParser(TokenStream&& t_token_stream)
-  : Parser{std::move(t_token_stream)}
+TypeParser::TypeParser(ParserContextPtr t_ctx): Parser{t_ctx}
 {}
 
 auto TypeParser::type_spec() -> NodePtr

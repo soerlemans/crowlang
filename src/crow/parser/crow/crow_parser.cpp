@@ -31,7 +31,10 @@ auto CrowParser::context_check(const Context t_context) -> void
 
 // Public Methods:
 CrowParser::CrowParser(TokenStream t_token_stream)
-  : PrattParser{std::move(t_token_stream)}, m_store{}
+  : Parser{make_parser_context(std::move(t_token_stream))},
+    m_pratt{context(), (PrattParserDelegate*)this},
+    m_type{context()},
+    m_store{}
 {}
 
 auto CrowParser::newline_opt() -> void
@@ -70,12 +73,12 @@ auto CrowParser::literal_list() -> NodeListPtr
   auto nodes{make_node<List>()};
 
   auto pos{get_position()};
-  if(auto first_ptr{literal()}; first_ptr) {
+  if(auto first_ptr{m_pratt.literal()}; first_ptr) {
     nodes->push_back(std::move(first_ptr));
 
     while(!eos()) {
       if(next_if(TokenType::COMMA)) {
-        auto ptr{literal()};
+        auto ptr{m_pratt.literal()};
         if(!ptr) {
           throw_syntax_error("Expected another literal!");
         }
@@ -98,7 +101,7 @@ auto CrowParser::expr_opt() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
 
-  return expr();
+  return m_pratt.expr();
 }
 
 // FIXME: This is "temporary method", improve later.
@@ -119,7 +122,7 @@ auto CrowParser::init_expr(const TokenType t_type) -> NodePtr
 
     const auto get_expr{[&]() {
       newline_opt();
-      expr_ptr = expr();
+      expr_ptr = m_pratt.expr();
     }};
 
     if(next_if(TokenType::COLON)) {
@@ -179,13 +182,14 @@ auto CrowParser::binding_expr() -> NodePtr
 auto CrowParser::eval_expr() -> EvalPair
 {
   DBG_TRACE_FN(VERBOSE);
-  EvalPair pair;
+  EvalPair pair{};
 
   if(auto ptr{binding_expr()}; ptr) {
     expect(TokenType::SEMICOLON);
+    auto cond_expr{m_pratt.expr()};
 
-    pair = {std::move(ptr), expr()};
-  } else if(auto ptr{expr()}; ptr) {
+    pair = {std::move(ptr), cond_expr};
+  } else if(auto ptr{m_pratt.expr()}; ptr) {
     pair.second = std::move(ptr);
   }
 
@@ -197,7 +201,7 @@ auto CrowParser::expr_statement() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
 
-  if(auto ptr{expr()}; ptr) {
+  if(auto ptr{m_pratt.expr()}; ptr) {
     terminator();
     node = std::move(ptr);
   }
@@ -222,7 +226,7 @@ auto CrowParser::expr_list_opt() -> NodeListPtr
   DBG_TRACE_FN(VERBOSE);
   auto nodes{make_node<List>()};
 
-  if(auto ptr{expr()}; ptr) {
+  if(auto ptr{m_pratt.expr()}; ptr) {
     DBG_TRACE_PRINT(INFO, "Found 'EXPR");
 
     nodes->push_back(std::move(ptr));
@@ -231,7 +235,7 @@ auto CrowParser::expr_list_opt() -> NodeListPtr
   while(!eos()) {
     if(next_if(TokenType::COMMA)) {
       newline_opt();
-      if(auto ptr{expr()}; ptr) {
+      if(auto ptr{m_pratt.expr()}; ptr) {
         DBG_TRACE_PRINT(INFO, "Found ',' 'EXPR'");
 
         nodes->push_back(std::move(ptr));
@@ -254,11 +258,11 @@ auto CrowParser::assignment() -> NodePtr
 
   PARSER_BACKTRACK_GUARD(node);
 
-  if(auto lhs{lvalue_expr()}; lhs) {
+  if(auto lhs{m_pratt.lvalue_expr()}; lhs) {
     const auto pos{get_position()};
     const auto lambda{[&](const AssignmentOp t_op) {
       newline_opt();
-      if(auto rhs{expr()}; rhs) {
+      if(auto rhs{m_pratt.expr()}; rhs) {
         node = make_node<Assignment>(pos, t_op, std::move(lhs), std::move(rhs));
       }
     }};
@@ -305,13 +309,13 @@ auto CrowParser::result_statement() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
 
-  if(auto ptr{function_call()}; ptr) {
+  if(auto ptr{m_pratt.function_call()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{binding_expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{assignment()}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{method_call_expr()}; ptr) {
+  } else if(auto ptr{m_pratt.method_call_expr()}; ptr) {
     node = std::move(ptr);
   }
 

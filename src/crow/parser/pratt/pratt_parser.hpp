@@ -2,6 +2,7 @@
 #define CROW_CROW_PARSER_PRATT_PRATT_PARSER_HPP
 
 // STL Includes:
+#include <memory>
 #include <unordered_map>
 #include <utility>
 
@@ -14,6 +15,7 @@
 
 namespace parser::pratt {
 // Forward Declarations:
+struct PrattParserDelegate;
 class PrattParser;
 
 // Using Statements:
@@ -24,25 +26,32 @@ using binding::PrefixMap;
 using RhsFn = std::function<NodePtr(TokenType)>;
 using PrattParserPtr = std::unique_ptr<PrattParser>;
 
+// Structs:
+struct PrattParserDelegate {
+  PrattParserDelegate() = default;
+
+  virtual auto expr_list_opt() -> NodeListPtr = 0;
+  virtual auto self() -> NodePtr = 0;
+
+  virtual ~PrattParserDelegate() = default;
+};
+
 // Classes:
 class PrattParser : public Parser {
   private:
+  PrattParserDelegate* m_delegate;
+
   // Note these come from the binding submodule.
   PrefixMap m_prefix;
   InfixMap m_infix;
 
   public:
-  PrattParser(TokenStream&& t_token_stream);
+  explicit PrattParser(ParserContextPtr t_ctx, PrattParserDelegate* t_delegate);
 
   // TODO: The chain expression stuff needs to be cleaned.
   // Up and gain some clarity.
 
   // Grammar:
-  virtual auto newline_opt() -> void = 0;
-  virtual auto terminator() -> void = 0;
-  virtual auto expr_list_opt() -> NodeListPtr = 0;
-  virtual auto self() -> NodePtr = 0;
-
   // Prefix parsing:
   virtual auto prefix_expr(TokenType t_type) -> NodePtr;
   virtual auto lvalue() -> NodePtr;

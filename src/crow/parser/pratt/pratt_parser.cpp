@@ -13,8 +13,9 @@ namespace parser::pratt {
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
-PrattParser::PrattParser(TokenStream&& t_token_stream)
-  : Parser{std::move(t_token_stream)}
+PrattParser::PrattParser(ParserContextPtr t_ctx,
+                         PrattParserDelegate* t_delegate)
+  : Parser{t_ctx}, m_delegate{t_delegate}, m_prefix{}, m_infix{}
 {}
 
 // Prefix parsing:
@@ -150,7 +151,7 @@ auto PrattParser::function_call() -> NodePtr
     }
 
     auto args{parens([this] {
-      return this->expr_list_opt();
+      return m_delegate->expr_list_opt();
     })};
 
     const auto id{token.str()};
@@ -195,7 +196,7 @@ auto PrattParser::method_call() -> NodePtr
     }
 
     auto args{parens([this] {
-      return this->expr_list_opt();
+      return m_delegate->expr_list_opt();
     })};
 
     const auto id{token.str()};
@@ -608,7 +609,7 @@ auto PrattParser::lvalue_expr(const int t_min_bp) -> NodePtr
 
   if(!lhs) {
     // FIXME: Makes self.self.self a valid expression.
-    lhs = self();
+    lhs = m_delegate->self();
   }
 
   // Infix:
@@ -648,7 +649,7 @@ auto PrattParser::method_call_expr(int t_min_bp) -> NodePtr
 
   if(!lhs) {
     // FIXME: Makes self.self.self a valid expression.
-    lhs = self();
+    lhs = m_delegate->self();
   }
 
   // TODO: Somehow confirm that this is a method call at the end of the chain.
