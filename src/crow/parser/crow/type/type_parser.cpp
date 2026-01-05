@@ -26,6 +26,7 @@ auto TypeParser::type_name() -> NodePtr
     PARSER_FOUND(TokenType::ASTERISK);
 
     const auto pos{token.position()};
+    const auto id{token.str()};
 
     node = make_node<TypeName>(pos, id);
   }
@@ -43,14 +44,14 @@ auto TypeParser::type_pointer() -> NodePtr
     PARSER_FOUND(TokenType::IDENTIFIER);
 
     const auto pos{token.position()};
+    auto nested_type{type_expr()};
 
-    const auto type_id{type_name()};
-    if(!type_id) {
-      throw_syntax_error("Expected type identifier after *");
+    if(!nested_type) {
+      throw_syntax_error("Expected a type expression after *.");
     }
 
     // TODO: For now we always expect a typename.
-    node = make_node<Pointer>(pos, type_id);
+    node = make_node<Pointer>(pos, std::move(nested_type));
   }
 
   return node;

@@ -125,7 +125,7 @@ auto PrattParser::unary_prefix() -> NodePtr
 
     NodePtr rhs{prefix_expr(token.type())};
     if(!rhs) {
-      throw_syntax_error("Expected an expression after + or -");
+      throw_syntax_error("Expected an expression after + or -.");
     }
 
     node = make_node<UnaryPrefix>(token.type(), std::move(rhs));

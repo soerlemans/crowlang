@@ -517,10 +517,14 @@ auto CrowParser::member_decl() -> NodePtr
     const auto id{token.str()};
     expect(TokenType::COLON);
 
-    const auto type{expect(TokenType::IDENTIFIER).str()};
+    // Test.
+    node = m_type.type_expr();
     terminator();
 
-    node = make_node<MemberDecl>(id, type);
+    // const auto type{expect(TokenType::IDENTIFIER).str()};
+    // terminator();
+
+    // node = make_node<MemberDecl>(id, type);
   }
 
   return node;
