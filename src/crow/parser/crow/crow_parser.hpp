@@ -4,9 +4,9 @@
 // STL Includes:
 #include <string>
 
-// Absolute Includes:
-#include "crow/parser/pratt/pratt_parser.hpp"
-#include "crow/parser/type/type_parser.hpp"
+// Relative Includes:
+#include "pratt/pratt_parser.hpp"
+#include "type/type_parser.hpp"
 
 // Local Includes:
 #include "context/context_guard.hpp"

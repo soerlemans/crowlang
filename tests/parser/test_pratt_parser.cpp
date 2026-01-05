@@ -13,7 +13,6 @@
 #include "crow/diagnostic/diagnostic.hpp"
 #include "crow/lexer/lexer.hpp"
 #include "crow/parser/crow/crow_parser.hpp"
-#include "crow/parser/pratt/pratt_parser.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
 
 /*!
@@ -230,6 +229,9 @@ TEST(TestPrattParser, BasicInvalidExpressions)
   PrattExprs exprs = {""sv,          "2 + "sv,          "2 + * 2"sv,
                       "( 2 + * 2"sv, "( num1 + num2"sv, "func("sv,
                       "(fun"sv};
+
+  // FIXME: "fun)" is parsed as IDENTIFIER and then).
+  // This might only be like this in testing.
 
   for(auto&& program : exprs) {
     auto parser{prep_parser(program)};

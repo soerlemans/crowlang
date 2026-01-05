@@ -4,4 +4,6 @@ target_sources(${TARGET_CROW_LIB} PRIVATE
 )
 
 # Add subdirectories.
+add_subdirectory(pratt)
+add_subdirectory(type)
 add_subdirectory(context)
