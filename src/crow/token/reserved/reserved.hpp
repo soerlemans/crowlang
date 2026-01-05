@@ -44,7 +44,7 @@ namespace keywords {
   DEFINE_TERMINAL(g_macro,   "macro",   MACRO);
   DEFINE_TERMINAL(g_const,   "const",   CONST); // Compile time constants.
 
-  // Typing:
+  // User Types:
   DEFINE_TERMINAL(g_alias,  "alias",  ALIAS);
   DEFINE_TERMINAL(g_enum,   "enum",   ENUM);
   DEFINE_TERMINAL(g_struct, "struct", STRUCT);

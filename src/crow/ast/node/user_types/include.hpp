@@ -1,7 +1,7 @@
 #ifndef CROW_CROW_AST_NODE_TYPING_INCLUDE_HPP
 #define CROW_CROW_AST_NODE_TYPING_INCLUDE_HPP
 
-// Typing:
+// User Types:
 #include "interface.hpp"
 #include "member.hpp"
 #include "member_access.hpp"

@@ -536,7 +536,7 @@ auto CppBackend::visit([[maybe_unused]] Boolean* t_bool) -> Any
   return std::format("{}", value);
 }
 
-// Typing:
+// User Types:
 auto CppBackend::visit(Method* t_meth) -> Any
 {
   using node::node_traits::AttributeType;

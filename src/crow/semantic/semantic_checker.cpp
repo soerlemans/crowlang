@@ -800,7 +800,7 @@ auto SemanticChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
   return SymbolData{NativeType::BOOL};
 }
 
-// Typing:
+// User Types:
 auto SemanticChecker::visit(Method* t_meth) -> Any
 {
   using symbol::MethodSymbol;

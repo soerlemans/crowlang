@@ -11,7 +11,7 @@
 %token Declare
 %token ATTRIBUTE_OPEN ATTRIBUTE_CLOSE
 
-// Typing:
+// User Types:
 %token Enum Struct Self Proto
 
 // Control Statements:
@@ -273,7 +273,7 @@ body             : newline_opt '{' newline_opt '}'
                  | newline_opt '{' newline_opt statement_list newline_opt '}'
                  ;
 
-// Typing:
+// User Types:
 // TODO: Deal with more complex type specifications/expressions.
 // Just looking at an identifier is not enough anymore (or it wont be).
 type_expr        :

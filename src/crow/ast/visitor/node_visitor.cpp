@@ -82,7 +82,7 @@ STUB(Integer)
 STUB(String)
 STUB(Boolean)
 
-// Typing:
+// User Types:
 STUB(Method)
 STUB(MethodCall)
 STUB(Interface)

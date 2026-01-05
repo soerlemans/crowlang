@@ -16,18 +16,18 @@ using node_traits::NodePosition;
 using node_traits::TypeData;
 
 // Classes:
-class Member : public NodePosition, public Identifier, public TypeData {
+class Pointer : public NodePosition, public Identifier, public TypeData {
   public:
-  Member(TextPosition t_pos, std::string_view t_identifier);
+  Pointer(TextPosition t_pos, std::string_view t_identifier);
 
-  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Member, NodePosition, Identifier)
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Pointer, NodePosition, Identifier)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
-  virtual ~Member() = default;
+  virtual ~Pointer() = default;
 };
 } // namespace ast::node::user_types
 
 // Cereal type registration:
-REGISTER_ARCHIVEABLE_TYPE(ast::node::user_types, Member);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::user_types, Pointer);
 
 #endif // CROW_CROW_AST_NODE_TYPING_MEMBER_HPP

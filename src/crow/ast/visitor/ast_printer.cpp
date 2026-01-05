@@ -294,7 +294,7 @@ auto AstPrinter::visit(Boolean* t_bool) -> Any
   return {};
 }
 
-// Typing:
+// User Types:
 auto AstPrinter::visit(Method* t_meth) -> Any
 {
   COUNTG_INIT();

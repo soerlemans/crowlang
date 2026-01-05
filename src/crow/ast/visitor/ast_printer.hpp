@@ -189,7 +189,7 @@ class AstPrinter : public NodeVisitor {
   auto visit(node::rvalue::String* t_str) -> Any override;
   auto visit(node::rvalue::Boolean* t_bool) -> Any override;
 
-  // Typing:
+  // User Types:
   auto visit(node::user_types::Method* t_meth) -> Any override;
   auto visit(node::user_types::MethodCall* t_meth_call) -> Any override;
   auto visit(node::user_types::Interface* t_ifc) -> Any override;
