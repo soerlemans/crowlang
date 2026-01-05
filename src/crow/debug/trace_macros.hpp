@@ -14,7 +14,7 @@
     return counter;                     \
   }
 
-#define DBG_TRACE_INIT_EXPR(expr)         \
+#define DBG_TRACE_INIT_EXPR(expr)       \
   inline auto trace_counter__() -> int& \
   {                                     \
     return expr;                        \
