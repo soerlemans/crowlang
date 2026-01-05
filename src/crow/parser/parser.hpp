@@ -57,7 +57,7 @@ class Parser {
   ParserContextPtr m_ctx;
 
   protected:
-  DBG_TRACE_INIT();
+  DBG_TRACE_INIT_EXPR(m_ctx->m_counter)
 
   auto get_token_stream() -> TokenStream&;
 
