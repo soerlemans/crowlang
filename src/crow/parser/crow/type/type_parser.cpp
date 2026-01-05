@@ -16,14 +16,14 @@ NODE_USING_ALL_NAMESPACES()
 TypeParser::TypeParser(ParserContextPtr t_ctx): Parser{t_ctx}
 {}
 
-auto TypeParser::type_name() -> NodePtr
+auto TypeParser::type_id() -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
 
   const auto token{get_token()};
-  if(next_if(TokenType::ASTERISK)) {
-    PARSER_FOUND(TokenType::ASTERISK);
+  if(next_if(TokenType::IDENTIFIER)) {
+    PARSER_FOUND(TokenType::IDENTIFIER);
 
     const auto pos{token.position()};
     const auto id{token.str()};
@@ -40,8 +40,8 @@ auto TypeParser::type_pointer() -> NodePtr
   NodePtr node{};
 
   const auto token{get_token()};
-  if(next_if(TokenType::IDENTIFIER)) {
-    PARSER_FOUND(TokenType::IDENTIFIER);
+  if(next_if(TokenType::ASTERISK)) {
+    PARSER_FOUND(TokenType::ASTERISK);
 
     const auto pos{token.position()};
     auto nested_type{type_expr()};
@@ -64,7 +64,7 @@ auto TypeParser::type_expr() -> NodePtr
 
   if(auto ptr{type_pointer()}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{type_name()}; ptr) {
+  } else if(auto ptr{type_id()}; ptr) {
     node = std::move(ptr);
   }
 
