@@ -86,6 +86,8 @@ inline auto report_uncaught_exception(std::string_view t_program) -> std::string
 // Test Cases:
 TEST(TestPrattParser, BasicExpressions)
 {
+  using diagnostic::SyntaxError;
+
   PrattExprs exprs = {
     "2 + 2"sv,
     "2 * 2"sv,
