@@ -8,7 +8,7 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-namespace ast::node::typing {
+namespace ast::node::user_types {
 // Using Statements:
 using node_traits::Identifier;
 
@@ -27,9 +27,9 @@ class Interface : public Identifier {
 
   virtual ~Interface() = default;
 };
-} // namespace ast::node::typing
+} // namespace ast::node::user_types
 
 // Cereal type registration:
-REGISTER_ARCHIVEABLE_TYPE(ast::node::typing, Interface);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::user_types, Interface);
 
 #endif // CROW_CROW_AST_NODE_TYPING_INTERFACE_HPP

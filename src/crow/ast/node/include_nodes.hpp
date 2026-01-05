@@ -4,6 +4,7 @@
 // Includes:
 #include "include.hpp"
 
+#include "builtin_types/include.hpp"
 #include "control/include.hpp"
 #include "function/include.hpp"
 #include "lvalue/include.hpp"
@@ -12,6 +13,6 @@
 #include "operators/include.hpp"
 #include "packaging/include.hpp"
 #include "rvalue/include.hpp"
-#include "typing/include.hpp"
+#include "user_types/include.hpp"
 
 #endif // CROW_CROW_AST_NODE_INCLUDE_NODES_HPP

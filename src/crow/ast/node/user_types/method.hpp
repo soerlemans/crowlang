@@ -9,7 +9,7 @@
 #include "fdecl.hpp"
 #include <string_view>
 
-namespace ast::node::typing {
+namespace ast::node::user_types {
 // Using Statements:
 using node_traits::AttributeData;
 using node_traits::Body;
@@ -43,9 +43,9 @@ class Method : public Identifier,
 
   virtual ~Method() = default;
 };
-} // namespace ast::node::typing
+} // namespace ast::node::user_types
 
 // Cereal type registration:
-REGISTER_ARCHIVEABLE_TYPE(ast::node::typing, Method);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::user_types, Method);
 
 #endif // CROW_CROW_AST_NODE_TYPING_METHOD_HPP

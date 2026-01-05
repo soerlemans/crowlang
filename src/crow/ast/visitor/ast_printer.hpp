@@ -190,14 +190,14 @@ class AstPrinter : public NodeVisitor {
   auto visit(node::rvalue::Boolean* t_bool) -> Any override;
 
   // Typing:
-  auto visit(node::typing::Method* t_meth) -> Any override;
-  auto visit(node::typing::MethodCall* t_meth_call) -> Any override;
-  auto visit(node::typing::Interface* t_ifc) -> Any override;
-  auto visit(node::typing::MemberDecl* t_meth) -> Any override;
-  auto visit(node::typing::Struct* t_struct) -> Any override;
-  auto visit(node::typing::Self* t_self) -> Any override;
-  auto visit(node::typing::Member* t_member) -> Any override;
-  auto visit(node::typing::MemberAccess* t_access) -> Any override;
+  auto visit(node::user_types::Method* t_meth) -> Any override;
+  auto visit(node::user_types::MethodCall* t_meth_call) -> Any override;
+  auto visit(node::user_types::Interface* t_ifc) -> Any override;
+  auto visit(node::user_types::MemberDecl* t_meth) -> Any override;
+  auto visit(node::user_types::Struct* t_struct) -> Any override;
+  auto visit(node::user_types::Self* t_self) -> Any override;
+  auto visit(node::user_types::Member* t_member) -> Any override;
+  auto visit(node::user_types::MemberAccess* t_access) -> Any override;
 
   // Misc:
   auto visit(node::List* t_list) -> Any override;

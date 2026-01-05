@@ -7,7 +7,7 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-namespace ast::node::typing {
+namespace ast::node::user_types {
 // Using Statements:
 using node_traits::Identifier;
 using node_traits::TypeAnnotation;
@@ -23,9 +23,9 @@ class MemberDecl : public Identifier, public TypeAnnotation, public TypeData {
 
   virtual ~MemberDecl() = default;
 };
-} // namespace ast::node::typing
+} // namespace ast::node::user_types
 
 // Cereal type registration:
-REGISTER_ARCHIVEABLE_TYPE(ast::node::typing, MemberDecl);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::user_types, MemberDecl);
 
 #endif // CROW_CROW_AST_NODE_TYPING_MEMBER_DECL_HPP

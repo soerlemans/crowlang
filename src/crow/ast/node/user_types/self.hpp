@@ -7,7 +7,7 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-namespace ast::node::typing {
+namespace ast::node::user_types {
 // Aliases:
 using node_traits::TypeData;
 
@@ -21,9 +21,9 @@ class Self : public TypeData {
 
   virtual ~Self() = default;
 };
-} // namespace ast::node::typing
+} // namespace ast::node::user_types
 
 // Cereal type registration:
-REGISTER_ARCHIVEABLE_TYPE(ast::node::typing, Self);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::user_types, Self);
 
 #endif // CROW_CROW_AST_NODE_TYPING_SELF_HPP

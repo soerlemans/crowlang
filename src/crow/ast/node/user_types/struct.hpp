@@ -7,7 +7,7 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-namespace ast::node::typing {
+namespace ast::node::user_types {
 // Using Statements:
 using node_traits::Body;
 using node_traits::Identifier;
@@ -23,9 +23,9 @@ class Struct : public Identifier, public Body, public TypeData {
 
   virtual ~Struct() = default;
 };
-} // namespace ast::node::typing
+} // namespace ast::node::user_types
 
 // Cereal type registration:
-REGISTER_ARCHIVEABLE_TYPE(ast::node::typing, Struct);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::user_types, Struct);
 
 #endif // CROW_CROW_AST_NODE_TYPING_STRUCT_HPP

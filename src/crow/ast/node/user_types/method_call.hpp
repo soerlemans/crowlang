@@ -8,7 +8,7 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-namespace ast::node::typing {
+namespace ast::node::user_types {
 // Using Statements:
 using node_traits::Args;
 using node_traits::Identifier;
@@ -23,9 +23,9 @@ class MethodCall : public Identifier, public Args {
 
   virtual ~MethodCall() = default;
 };
-} // namespace ast::node::typing
+} // namespace ast::node::user_types
 
 // Cereal type registration:
-REGISTER_ARCHIVEABLE_TYPE(ast::node::typing, MethodCall);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::user_types, MethodCall);
 
 #endif // CROW_CROW_AST_NODE_TYPING_METHOD_CALL_HPP

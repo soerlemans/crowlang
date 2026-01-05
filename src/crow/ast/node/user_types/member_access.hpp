@@ -7,7 +7,7 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-namespace ast::node::typing {
+namespace ast::node::user_types {
 // Using Statements:
 using container::TextPosition;
 using node_traits::BinaryOperator;
@@ -27,9 +27,9 @@ class MemberAccess : public NodePosition,
 
   virtual ~MemberAccess() = default;
 };
-} // namespace ast::node::typing
+} // namespace ast::node::user_types
 
 // Cereal type registration:
-REGISTER_ARCHIVEABLE_TYPE(ast::node::typing, MemberAccess);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::user_types, MemberAccess);
 
 #endif // CROW_CROW_AST_NODE_TYPING_MEMBER_ACCESS_HPP

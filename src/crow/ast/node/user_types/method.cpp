@@ -1,6 +1,6 @@
 #include "method.hpp"
 
-namespace ast::node::typing {
+namespace ast::node::user_types {
 Method::Method(const std::string_view t_identifier,
                std::string_view t_receiver_type, NodeListPtr&& t_params,
                const std::string_view t_type, NodeListPtr&& t_body)
@@ -15,4 +15,4 @@ auto Method::get_receiver() const -> std::string_view
 {
   return m_receiver_type;
 }
-} // namespace ast::node::typing
+} // namespace ast::node::user_types

@@ -8,7 +8,7 @@
 // Local Includes:
 #include "fdecl.hpp"
 
-namespace ast::node::typing {
+namespace ast::node::user_types {
 // Aliases:
 using container::TextPosition;
 using node_traits::Identifier;
@@ -25,9 +25,9 @@ class Member : public NodePosition, public Identifier, public TypeData {
 
   virtual ~Member() = default;
 };
-} // namespace ast::node::typing
+} // namespace ast::node::user_types
 
 // Cereal type registration:
-REGISTER_ARCHIVEABLE_TYPE(ast::node::typing, Member);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::user_types, Member);
 
 #endif // CROW_CROW_AST_NODE_TYPING_MEMBER_HPP
