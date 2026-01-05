@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_AST_NODE_TYPING_SELF_HPP
-#define CROW_CROW_AST_NODE_TYPING_SELF_HPP
+#ifndef CROW_CROW_AST_NODE_USER_TYPES_SELF_HPP
+#define CROW_CROW_AST_NODE_USER_TYPES_SELF_HPP
 
 // Includes:
 #include "../node_traits/include.hpp"
@@ -26,4 +26,4 @@ class Self : public TypeData {
 // Cereal type registration:
 REGISTER_ARCHIVEABLE_TYPE(ast::node::user_types, Self);
 
-#endif // CROW_CROW_AST_NODE_TYPING_SELF_HPP
+#endif // CROW_CROW_AST_NODE_USER_TYPES_SELF_HPP

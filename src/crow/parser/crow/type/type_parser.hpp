@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_PARSER_TYPE_TYPE_PARSER_HPP
-#define CROW_CROW_PARSER_TYPE_TYPE_PARSER_HPP
+#ifndef CROW_CROW_PARSER_CROW_TYPE_TYPE_PARSER_HPP
+#define CROW_CROW_PARSER_CROW_TYPE_TYPE_PARSER_HPP
 
 // STL Includes:
 #include <memory>
@@ -25,4 +25,4 @@ class TypeParser : public Parser {
 };
 } // namespace parser::type
 
-#endif // CROW_CROW_PARSER_TYPE_TYPE_PARSER_HPP
+#endif // CROW_CROW_PARSER_CROW_TYPE_TYPE_PARSER_HPP

@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_AST_NODE_TYPING_INTERFACE_HPP
-#define CROW_CROW_AST_NODE_TYPING_INTERFACE_HPP
+#ifndef CROW_CROW_AST_NODE_USER_TYPES_INTERFACE_HPP
+#define CROW_CROW_AST_NODE_USER_TYPES_INTERFACE_HPP
 
 
 // Includes:
@@ -32,4 +32,4 @@ class Interface : public Identifier {
 // Cereal type registration:
 REGISTER_ARCHIVEABLE_TYPE(ast::node::user_types, Interface);
 
-#endif // CROW_CROW_AST_NODE_TYPING_INTERFACE_HPP
+#endif // CROW_CROW_AST_NODE_USER_TYPES_INTERFACE_HPP

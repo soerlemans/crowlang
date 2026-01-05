@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_PARSER_PRATT_BINDING_MAPS_HPP
-#define CROW_CROW_PARSER_PRATT_BINDING_MAPS_HPP
+#ifndef CROW_CROW_PARSER_CROW_PRATT_BINDING_MAPS_HPP
+#define CROW_CROW_PARSER_CROW_PRATT_BINDING_MAPS_HPP
 
 // Local Includes:
 #include "binding_map.hpp"
@@ -71,4 +71,4 @@ class InfixMap : public BindingMap {
 };
 } // namespace parser::pratt::binding
 
-#endif // CROW_CROW_PARSER_PRATT_BINDING_MAPS_HPP
+#endif // CROW_CROW_PARSER_CROW_PRATT_BINDING_MAPS_HPP

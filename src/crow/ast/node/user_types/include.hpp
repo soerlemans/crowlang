@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_AST_NODE_TYPING_INCLUDE_HPP
-#define CROW_CROW_AST_NODE_TYPING_INCLUDE_HPP
+#ifndef CROW_CROW_AST_NODE_USER_TYPES_INCLUDE_HPP
+#define CROW_CROW_AST_NODE_USER_TYPES_INCLUDE_HPP
 
 // User Types:
 #include "interface.hpp"
@@ -11,4 +11,4 @@
 #include "self.hpp"
 #include "struct.hpp"
 
-#endif // CROW_CROW_AST_NODE_TYPING_INCLUDE_HPP
+#endif // CROW_CROW_AST_NODE_USER_TYPES_INCLUDE_HPP

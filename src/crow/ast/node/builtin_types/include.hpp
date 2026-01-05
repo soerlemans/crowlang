@@ -1,8 +1,8 @@
-#ifndef INCLUDE_HPP
-#define INCLUDE_HPP
+#ifndef CROW_CROW_AST_NODE_BUILTIN_TYPES_INCLUDE_HPP
+#define CROW_CROW_AST_NODE_BUILTIN_TYPES_INCLUDE_HPP
 
 // Builtin Types:
 #include "pointer"
 #include "type_name.hpp"
 
-#endif // INCLUDE_HPP
+#endif // CROW_CROW_AST_NODE_BUILTIN_TYPES_INCLUDE_HPP

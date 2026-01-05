@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_AST_NODE_TYPING_STRUCT_HPP
-#define CROW_CROW_AST_NODE_TYPING_STRUCT_HPP
+#ifndef CROW_CROW_AST_NODE_USER_TYPES_STRUCT_HPP
+#define CROW_CROW_AST_NODE_USER_TYPES_STRUCT_HPP
 
 // Includes:
 #include "../node_traits/include.hpp"
@@ -28,4 +28,4 @@ class Struct : public Identifier, public Body, public TypeData {
 // Cereal type registration:
 REGISTER_ARCHIVEABLE_TYPE(ast::node::user_types, Struct);
 
-#endif // CROW_CROW_AST_NODE_TYPING_STRUCT_HPP
+#endif // CROW_CROW_AST_NODE_USER_TYPES_STRUCT_HPP

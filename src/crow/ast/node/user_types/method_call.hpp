@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_AST_NODE_TYPING_METHOD_CALL_HPP
-#define CROW_CROW_AST_NODE_TYPING_METHOD_CALL_HPP
+#ifndef CROW_CROW_AST_NODE_USER_TYPES_METHOD_CALL_HPP
+#define CROW_CROW_AST_NODE_USER_TYPES_METHOD_CALL_HPP
 
 // Includes:
 #include "../list.hpp"
@@ -28,4 +28,4 @@ class MethodCall : public Identifier, public Args {
 // Cereal type registration:
 REGISTER_ARCHIVEABLE_TYPE(ast::node::user_types, MethodCall);
 
-#endif // CROW_CROW_AST_NODE_TYPING_METHOD_CALL_HPP
+#endif // CROW_CROW_AST_NODE_USER_TYPES_METHOD_CALL_HPP

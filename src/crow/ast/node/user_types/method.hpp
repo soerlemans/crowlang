@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_AST_NODE_TYPING_METHOD_HPP
-#define CROW_CROW_AST_NODE_TYPING_METHOD_HPP
+#ifndef CROW_CROW_AST_NODE_USER_TYPES_METHOD_HPP
+#define CROW_CROW_AST_NODE_USER_TYPES_METHOD_HPP
 
 
 // Includes:
@@ -48,4 +48,4 @@ class Method : public Identifier,
 // Cereal type registration:
 REGISTER_ARCHIVEABLE_TYPE(ast::node::user_types, Method);
 
-#endif // CROW_CROW_AST_NODE_TYPING_METHOD_HPP
+#endif // CROW_CROW_AST_NODE_USER_TYPES_METHOD_HPP

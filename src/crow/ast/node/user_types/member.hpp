@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_AST_NODE_TYPING_MEMBER_HPP
-#define CROW_CROW_AST_NODE_TYPING_MEMBER_HPP
+#ifndef CROW_CROW_AST_NODE_USER_TYPES_MEMBER_HPP
+#define CROW_CROW_AST_NODE_USER_TYPES_MEMBER_HPP
 
 
 // Includes:
@@ -30,4 +30,4 @@ class Member : public NodePosition, public Identifier, public TypeData {
 // Cereal type registration:
 REGISTER_ARCHIVEABLE_TYPE(ast::node::user_types, Member);
 
-#endif // CROW_CROW_AST_NODE_TYPING_MEMBER_HPP
+#endif // CROW_CROW_AST_NODE_USER_TYPES_MEMBER_HPP

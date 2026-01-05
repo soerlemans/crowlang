@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_PARSER_PRATT_PRATT_PARSER_HPP
-#define CROW_CROW_PARSER_PRATT_PRATT_PARSER_HPP
+#ifndef CROW_CROW_PARSER_CROW_PRATT_PRATT_PARSER_HPP
+#define CROW_CROW_PARSER_CROW_PRATT_PRATT_PARSER_HPP
 
 // STL Includes:
 #include <memory>
@@ -118,4 +118,4 @@ class PrattParser : public Parser {
 };
 } // namespace parser::pratt
 
-#endif // CROW_CROW_PARSER_PRATT_PRATT_PARSER_HPP
+#endif // CROW_CROW_PARSER_CROW_PRATT_PRATT_PARSER_HPP

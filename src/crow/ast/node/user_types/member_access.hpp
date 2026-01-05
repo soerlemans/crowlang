@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_AST_NODE_TYPING_MEMBER_ACCESS_HPP
-#define CROW_CROW_AST_NODE_TYPING_MEMBER_ACCESS_HPP
+#ifndef CROW_CROW_AST_NODE_USER_TYPES_MEMBER_ACCESS_HPP
+#define CROW_CROW_AST_NODE_USER_TYPES_MEMBER_ACCESS_HPP
 
 // Includes:
 #include "../node_traits/include.hpp"
@@ -32,4 +32,4 @@ class MemberAccess : public NodePosition,
 // Cereal type registration:
 REGISTER_ARCHIVEABLE_TYPE(ast::node::user_types, MemberAccess);
 
-#endif // CROW_CROW_AST_NODE_TYPING_MEMBER_ACCESS_HPP
+#endif // CROW_CROW_AST_NODE_USER_TYPES_MEMBER_ACCESS_HPP

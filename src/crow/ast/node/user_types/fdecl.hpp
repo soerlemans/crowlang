@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_AST_NODE_TYPING_FDECL_HPP
-#define CROW_CROW_AST_NODE_TYPING_FDECL_HPP
+#ifndef CROW_CROW_AST_NODE_USER_TYPES_FDECL_HPP
+#define CROW_CROW_AST_NODE_USER_TYPES_FDECL_HPP
 
 namespace ast::node::user_types {
 class Method;
@@ -15,4 +15,4 @@ class Member;
 
 } // namespace ast::node::user_types
 
-#endif // CROW_CROW_AST_NODE_TYPING_FDECL_HPP
+#endif // CROW_CROW_AST_NODE_USER_TYPES_FDECL_HPP

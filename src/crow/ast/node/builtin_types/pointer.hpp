@@ -1,5 +1,5 @@
-#ifndef CROW_CROW_AST_NODE_TYPING_MEMBER_HPP
-#define CROW_CROW_AST_NODE_TYPING_MEMBER_HPP
+#ifndef CROW_CROW_AST_NODE_BUILTIN_TYPES_POINTER_HPP
+#define CROW_CROW_AST_NODE_BUILTIN_TYPES_POINTER_HPP
 
 
 // Includes:
@@ -16,11 +16,11 @@ using node_traits::NodePosition;
 using node_traits::TypeData;
 
 // Classes:
-class Pointer : public NodePosition, public Identifier, public TypeData {
+class Pointer : public NodePosition {
   public:
-  Pointer(TextPosition t_pos, std::string_view t_identifier);
+  Pointer(TextPosition t_pos);
 
-  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Pointer, NodePosition, Identifier)
+  AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Pointer, NodePosition)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Pointer() = default;
@@ -30,4 +30,4 @@ class Pointer : public NodePosition, public Identifier, public TypeData {
 // Cereal type registration:
 REGISTER_ARCHIVEABLE_TYPE(ast::node::user_types, Pointer);
 
-#endif // CROW_CROW_AST_NODE_TYPING_MEMBER_HPP
+#endif // CROW_CROW_AST_NODE_BUILTIN_TYPES_POINTER_HPP
