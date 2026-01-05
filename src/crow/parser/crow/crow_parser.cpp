@@ -31,9 +31,13 @@ auto CrowParser::context_check(const Context t_context) -> void
 
 // Public Methods:
 CrowParser::CrowParser(TokenStream t_token_stream)
-  : Parser{make_parser_context(std::move(t_token_stream))},
-    m_pratt{context(), (PrattParserDelegate*)this},
-    m_type{context()},
+  : CrowParser{make_parser_context(std::move(t_token_stream))}
+{}
+
+CrowParser::CrowParser(ParserContextPtr t_ctx)
+  : Parser{t_ctx},
+    m_pratt{t_ctx, (PrattParserDelegate*)this},
+    m_type{t_ctx},
     m_store{}
 {}
 

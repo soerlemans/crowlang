@@ -31,7 +31,7 @@ using AccessorFn = std::function<NodePtr(T&)>;
  * Top down parser of the Crow language.
  * See crow.yy for grammar specification (BNF).
  */
-class CrowParser : public Parser {
+class CrowParser : public Parser, public PrattParserDelegate {
   private:
   PrattParser m_pratt;
   TypeParser m_type;
@@ -50,6 +50,7 @@ class CrowParser : public Parser {
 
   public:
   CrowParser(TokenStream t_token_stream);
+  CrowParser(ParserContextPtr t_ctx);
 
   // Grammar:
   virtual auto newline_opt() -> void;

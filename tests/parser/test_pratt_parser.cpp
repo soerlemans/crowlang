@@ -45,9 +45,7 @@ auto prep_parser(const std::string_view t_program) -> CrowParser
 
   // Create AST from TextBuffer.
   Lexer lexer{stream_ptr};
-  TokenStream tokenstream{lexer.tokenize()};
-
-  CrowParser parser{tokenstream};
+  CrowParser parser{lexer.tokenize()};
 
   return parser;
 }
