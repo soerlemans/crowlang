@@ -136,6 +136,7 @@ TEST(TestPrattParser, AdvancedExpressions)
     "num1 + fun1()"sv,
     "num1 + fun1(100)"sv,
     "fun1() + fun2(22)"sv,
+    "fun1(func2(fun3(0)))"sv,
   };
 
   for(auto&& program : exprs) {
@@ -192,13 +193,43 @@ TEST(TestPrattParser, BasicChainExpressions)
   }
 }
 
-TEST(TestPrattParser, BasicInvalidExpressions)
+TEST(TestPrattParser, AdvancedChainExpressions)
 {
   using diagnostic::SyntaxError;
 
   PrattExprs exprs = {
-    ""sv, "2 + "sv, "2 + * 2"sv, "( 2 + * 2"sv, "( num1 + num2"sv,
+    "name1.fun1(name2.fun2()).func3()"sv,
+    "name1.fun1(name2.fun2(0)).func3(3 + 2, 3)"sv,
+    "name1.fun1(name2.fun2(0)).func3(3 + 2, 3, num3 + 32)"sv,
+    "name1.fun1(name2.fun2(0)).func3(3 + 2, 3, num3 * 32)"sv,
   };
+
+  for(auto&& program : exprs) {
+    auto parser{prep_parser(program)};
+
+    try {
+      auto node{parser.pratt_parse([](PrattParser& pratt) {
+        return pratt.chain_expr();
+      })};
+
+      EXPECT_TRUE(node != nullptr) << report_parse_failure(program);
+    } catch(SyntaxError& err) {
+      FAIL() << report_exception(program, err);
+    } catch(std::exception& err) {
+      FAIL() << report_exception(program, err);
+    } catch(...) {
+      FAIL() << report_uncaught_exception(program);
+    }
+  }
+}
+
+TEST(TestPrattParser, BasicInvalidExpressions)
+{
+  using diagnostic::SyntaxError;
+
+  PrattExprs exprs = {""sv,          "2 + "sv,          "2 + * 2"sv,
+                      "( 2 + * 2"sv, "( num1 + num2"sv, "func("sv,
+                      "(fun"sv};
 
   for(auto&& program : exprs) {
     auto parser{prep_parser(program)};

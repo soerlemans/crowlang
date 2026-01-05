@@ -121,8 +121,8 @@ auto CrowParser::init_expr(const TokenType t_type) -> NodePtr
     PARSER_FOUND(t_type);
 
     const auto id{expect(TokenType::IDENTIFIER)};
-    std::string type;
-    NodePtr expr_ptr;
+    std::string type{};
+    NodePtr expr_ptr{};
 
     const auto get_expr{[&]() {
       newline_opt();
