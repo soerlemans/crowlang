@@ -16,8 +16,9 @@ import json
 import multiprocessing
 from enum import StrEnum
 
-ABS_TASKS = os.path.abspath(sys.argv[0])
-ABS_TASKS = os.path.abspath(sys.argv[0])
+# Change current working directory to location of the tasks.py dir.
+ABS_SCRIPT_DIR = os.path.dirname(os.path.abspath(sys.argv[0]))
+os.chdir(ABS_SCRIPT_DIR)
 
 
 # Globals:
