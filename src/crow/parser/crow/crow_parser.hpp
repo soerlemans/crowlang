@@ -12,9 +12,6 @@
 #include "context/context_guard.hpp"
 
 namespace parser::crow {
-// Forward Declarations:
-class CrowParser;
-
 // Using Statements:
 using ast::node::packaging::Import;
 using context::Context;
@@ -25,7 +22,9 @@ using type::TypeParser;
 
 // Aliases:
 using EvalPair = std::pair<NodePtr, NodePtr>;
-using CrowParserPtr = std::unique_ptr<CrowParser>;
+
+template<typename T>
+using AccessorFn = std::function<NodePtr(T&)>;
 
 // Classes:
 /*!
@@ -136,6 +135,11 @@ class CrowParser : public Parser {
 
   //! Produces AST.
   virtual auto parse() -> NodePtr;
+
+  // Used to expose pratt and type parsing.
+  // As the parsers are cyclicly dependent on eachother.
+  virtual auto pratt_parse(AccessorFn<PrattParser> t_fn) -> NodePtr;
+  virtual auto type_parse(AccessorFn<TypeParser> t_fn) -> NodePtr;
 
   virtual ~CrowParser() = default;
 };

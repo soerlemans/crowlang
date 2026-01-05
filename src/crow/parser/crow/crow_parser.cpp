@@ -1028,4 +1028,14 @@ auto CrowParser::parse() -> NodePtr
 
   return ast;
 }
+
+auto CrowParser::pratt_parse(AccessorFn<PrattParser> t_fn) -> NodePtr
+{
+  return t_fn(m_pratt);
+}
+
+auto CrowParser::type_parse(AccessorFn<TypeParser> t_fn) -> NodePtr
+{
+  return t_fn(m_type);
+}
 } // namespace parser::crow

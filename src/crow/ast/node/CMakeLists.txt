@@ -4,10 +4,11 @@ target_sources(${TARGET_CROW_LIB} PRIVATE
 )
 
 if(NOT DEFINED CROW_CI_BUILD)
-  # Includes a lot, rarely changes.
-  target_precompile_headers(${TARGET_CROW_LIB} PRIVATE
-    include_nodes.hpp
-  )
+  # Included a lot, rarely changes.
+  # Keep commented out for now.
+  # target_precompile_headers(${TARGET_CROW_LIB} PRIVATE
+  #   include_nodes.hpp
+  # )
 endif()
 
 # Add subdirectories:

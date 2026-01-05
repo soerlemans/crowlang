@@ -10,10 +10,14 @@ TODO: Document.
 from invoke import task
 
 # Standard Imports:
+import os
 import sys
 import json
 import multiprocessing
 from enum import StrEnum
+
+ABS_TASKS = os.path.abspath(sys.argv[0])
+ABS_TASKS = os.path.abspath(sys.argv[0])
 
 
 # Globals:

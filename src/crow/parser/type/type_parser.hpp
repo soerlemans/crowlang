@@ -11,12 +11,6 @@
 #include "lib/stdtypes.hpp"
 
 namespace parser::type {
-// Forward Declarations:
-class TypeParser;
-
-// Using Statements:
-using TypeParserPtr = std::unique_ptr<TypeParser>;
-
 // Classes:
 class TypeParser : public Parser {
   public:

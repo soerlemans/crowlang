@@ -25,17 +25,15 @@
 // Using:
 using namespace std::literals::string_view_literals;
 
-using parser::pratt::PrattParserPtr;
+using parser::crow::CrowParser;
+using parser::pratt::PrattParser;
 
 using PrattExprs = std::vector<std::string_view>;
 
 // Helper functions:
 namespace {
-auto prep_pratt_parser(const std::string_view t_program) -> CrowParserPtr
+auto prep_parser(const std::string_view t_program) -> CrowParser
 {
-  // PrattParser is abstract so we.
-  // Init a crow parser and parse back an interface ptr.
-
   using container::TextBuffer;
   using lexer::Lexer;
   using parser::crow::CrowParser;
@@ -49,7 +47,7 @@ auto prep_pratt_parser(const std::string_view t_program) -> CrowParserPtr
   Lexer lexer{stream_ptr};
   TokenStream tokenstream{lexer.tokenize()};
 
-  CrowParserPtr parser{std::make_unique<CrowParser>(tokenstream)};
+  CrowParser parser{tokenstream};
 
   return parser;
 }
@@ -103,12 +101,22 @@ TEST(TestPrattParser, BasicExpressions)
   };
 
   for(auto&& program : exprs) {
-    const auto parser{prep_pratt_parser(program)};
+    auto parser{prep_parser(program)};
 
-    auto node{parser->expr()};
+    try {
+      auto node{parser.pratt_parse([](PrattParser& pratt) {
+        return pratt.expr();
+      })};
 
-    EXPECT_TRUE(node != nullptr)
-      << "Expression failed to parse: " << std::quoted(program) << '.';
+      EXPECT_TRUE(node != nullptr)
+        << "Expression failed to parse: " << std::quoted(program) << '.';
+    } catch(SyntaxError& err) {
+      FAIL() << report_exception(program, err);
+    } catch(std::exception& err) {
+      FAIL() << report_exception(program, err);
+    } catch(...) {
+      FAIL() << report_uncaught_exception(program);
+    }
   }
 }
 
@@ -127,10 +135,12 @@ TEST(TestPrattParser, AdvancedExpressions)
   };
 
   for(auto&& program : exprs) {
-    const auto parser{prep_pratt_parser(program)};
+    auto parser{prep_parser(program)};
 
     try {
-      auto node{parser->expr()};
+      auto node{parser.pratt_parse([](PrattParser& pratt) {
+        return pratt.expr();
+      })};
 
       EXPECT_TRUE(node != nullptr) << report_parse_failure(program);
     } catch(SyntaxError& err) {
@@ -159,10 +169,12 @@ TEST(TestPrattParser, BasicChainExpressions)
   };
 
   for(auto&& program : exprs) {
-    const auto parser{prep_pratt_parser(program)};
+    auto parser{prep_parser(program)};
 
     try {
-      auto node{parser->chain_expr()};
+      auto node{parser.pratt_parse([](PrattParser& pratt) {
+        return pratt.chain_expr();
+      })};
 
       EXPECT_TRUE(node != nullptr) << report_parse_failure(program);
     } catch(SyntaxError& err) {
@@ -184,10 +196,12 @@ TEST(TestPrattParser, BasicInvalidExpressions)
   };
 
   for(auto&& program : exprs) {
-    const auto parser{prep_pratt_parser(program)};
+    auto parser{prep_parser(program)};
 
     try {
-      auto node{parser->expr()};
+      auto node{parser.pratt_parse([](PrattParser& pratt) {
+        return pratt.expr();
+      })};
 
       EXPECT_TRUE(node == nullptr) << report_parse_failure(program);
     } catch([[maybe_unused]]
