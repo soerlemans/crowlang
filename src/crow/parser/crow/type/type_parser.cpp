@@ -21,10 +21,13 @@ auto TypeParser::type_name() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
 
+  const auto token{get_token()};
   if(next_if(TokenType::ASTERISK)) {
     PARSER_FOUND(TokenType::ASTERISK);
 
-    // TODO: Assign PointerTypeSpec node.
+    const auto pos{token.position()};
+
+    node = make_node<TypeName>(pos, id);
   }
 
   return node;
@@ -35,10 +38,19 @@ auto TypeParser::type_pointer() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
 
+  const auto token{get_token()};
   if(next_if(TokenType::IDENTIFIER)) {
     PARSER_FOUND(TokenType::IDENTIFIER);
 
-    // TODO: TypeName pointer node.
+    const auto pos{token.position()};
+
+    const auto type_id{type_name()};
+    if(!type_id) {
+      throw_syntax_error("Expected type identifier after *");
+    }
+
+    // TODO: For now we always expect a typename.
+    node = make_node<Pointer>(pos, type_id);
   }
 
   return node;

@@ -71,6 +71,13 @@ namespace keywords {
   DEFINE_TERMINAL(g_true,  "True",  TRUE);
   DEFINE_TERMINAL(g_false, "False", FALSE);
 
+  // FIXME: Make builtin types part of the lexer.
+  // Currently we dont do this.
+  // Each builtin type should have its own TokenType.
+
+  // const std::map g_builtin_types {
+  // };
+
   // TODO: Convert keywords to boost::bimap.
   // const TerminalMap g_keywords2 = boost::assign::list_of<TerminalMap<std::string_view>::relation>
   // 	(g_let.pair())
@@ -98,7 +105,6 @@ namespace keywords {
     g_break.pair(), g_continue.pair(), g_defer.pair(), g_return.pair(),
     g_true.pair(), g_false.pair()
 };
-
 } // namespace keywords
 
 // Language reserved symbols

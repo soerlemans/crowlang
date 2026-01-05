@@ -1,8 +1,8 @@
-#include "member.hpp"
+#include "pointer.hpp"
 
 namespace ast::node::user_types {
 // Methods:
-Pointer::Pointer(TextPosition t_pos, const std::string_view t_identifier)
-  : NodePosition{std::move(t_pos)}, Identifier{t_identifier}
+Pointer::Pointer(TextPosition t_pos, NodePtr&& t_left)
+  : NodePosition{std::move(t_pos)}, UnaryOperator{std::move(t_left)}
 {}
 } // namespace ast::node::user_types

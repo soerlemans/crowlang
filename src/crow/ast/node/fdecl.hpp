@@ -22,17 +22,18 @@
 
 // Macros:
 //! This macro allows you to include all node namespaces
-#define NODE_USING_ALL_NAMESPACES()       \
-  using namespace ast::node;              \
-  using namespace ast::node::control;     \
-  using namespace ast::node::function;    \
-  using namespace ast::node::lvalue;      \
-  using namespace ast::node::meta;        \
-  using namespace ast::node::operators;   \
-  using namespace ast::node::packaging;   \
-  using namespace ast::node::rvalue;      \
-  using namespace ast::node::user_types;  \
-  using namespace ast::node::node_traits; \
+#define NODE_USING_ALL_NAMESPACES()         \
+  using namespace ast::node;                \
+  using namespace ast::node::control;       \
+  using namespace ast::node::function;      \
+  using namespace ast::node::lvalue;        \
+  using namespace ast::node::meta;          \
+  using namespace ast::node::operators;     \
+  using namespace ast::node::packaging;     \
+  using namespace ast::node::rvalue;        \
+  using namespace ast::node::user_types;    \
+  using namespace ast::node::builtin_types; \
+  using namespace ast::node::node_traits;   \
   using namespace types::core;
 
 namespace ast::node {

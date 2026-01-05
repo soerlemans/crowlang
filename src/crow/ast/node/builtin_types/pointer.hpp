@@ -14,11 +14,12 @@ using container::TextPosition;
 using node_traits::Identifier;
 using node_traits::NodePosition;
 using node_traits::TypeData;
+using node_traits::UnaryOperator;
 
 // Classes:
-class Pointer : public NodePosition {
+class Pointer : public NodePosition, public UnaryOperator {
   public:
-  Pointer(TextPosition t_pos);
+  Pointer(TextPosition t_pos, NodePtr&& t_left);
 
   AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Pointer, NodePosition)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);
