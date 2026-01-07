@@ -15,7 +15,7 @@
 
 namespace semantic {
 // Using:
-	using types::symbol::SymbolData;
+using types::symbol::SymbolData;
 
 // Enums:
 enum class SymbolStatus {

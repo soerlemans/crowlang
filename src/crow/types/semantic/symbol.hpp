@@ -35,8 +35,7 @@ auto operator<<(std::ostream& t_os, types::symbol::PointerTypePtr t_ptr)
 auto operator<<(std::ostream& t_os, types::symbol::VarTypePtr t_var)
   -> std::ostream&;
 
-auto operator<<(std::ostream& t_os,
-                const types::symbol::SymbolDataList& t_list)
+auto operator<<(std::ostream& t_os, const types::symbol::SymbolDataList& t_list)
   -> std::ostream&;
 
 #endif // CROW_CROW_TYPES_SEMANTIC_SYMBOL_HPP

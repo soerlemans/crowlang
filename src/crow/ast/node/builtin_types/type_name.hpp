@@ -25,7 +25,7 @@ class TypeName : public NodePosition, public Identifier {
 
   virtual ~TypeName() = default;
 };
-} // namespace ast::node::user_types
+} // namespace ast::node::builtin_types
 
 // Cereal type registration:
 // REGISTER_ARCHIVEABLE_TYPE(ast::node::user_types, TypeName);

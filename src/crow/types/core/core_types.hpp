@@ -38,7 +38,6 @@ struct PointerType {
   auto native_type() const -> core::NativeTypeOpt;
 };
 
-
 struct VarType {
   TypeVariant m_type;
 

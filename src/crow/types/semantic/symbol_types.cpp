@@ -93,4 +93,4 @@ auto VarType::type_variant() const -> TypeVariant
 
   return {make_variable(m_type.type_variant())};
 }
-} // namespace types::semantic::symbol
+} // namespace types::symbol

@@ -1,5 +1,5 @@
-#ifndef TYPE_NODE_EVALUATOR_HPP
-#define TYPE_NODE_EVALUATOR_HPP
+#ifndef CROW_CROW_SEMANTIC_TYPE_NODE_EVALUATOR_HPP
+#define CROW_CROW_SEMANTIC_TYPE_NODE_EVALUATOR_HPP
 
 // Absolute Includes:
 #include "crow/ast/visitor/node_visitor.hpp"
@@ -37,4 +37,4 @@ class TypeNodeEvaluator : public NodeVisitor {
 };
 } // namespace semantic
 
-#endif // TYPE_NODE_EVALUATOR_HPP
+#endif // CROW_CROW_SEMANTIC_TYPE_NODE_EVALUATOR_HPP

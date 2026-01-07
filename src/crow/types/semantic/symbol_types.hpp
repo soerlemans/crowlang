@@ -114,6 +114,6 @@ auto make_variable(Args&&... t_args) -> SymbolData
 {
   return {std::make_shared<VarType>(std::forward<Args>(t_args)...)};
 }
-} // namespace semantic::symbol
+} // namespace types::symbol
 
 #endif // CROW_CROW_TYPES_SEMANTIC_SYMBOL_TYPES_HPP

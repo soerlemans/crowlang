@@ -44,6 +44,42 @@ auto SemanticChecker::clear_env() -> void
   m_symbol_state.clear();
 }
 
+auto SemanticChecker::str2type(const std::string_view t_type_id) -> SymbolData
+{
+  const auto quoted_name{std::quoted(t_type_id)};
+
+  // First check for native type.
+  const auto opt{str2nativetype_opt(t_type_id)};
+  if(opt) {
+    return {opt.value()};
+  }
+
+  // Then check for user defined types.
+  // If this type does not exist, we should error.
+  const auto [iter, exists] = m_symbol_state.find(t_type_id);
+  if(exists) {
+    const auto& symbol{iter->second};
+    const auto& symbol_data{symbol.m_data};
+
+    // Make sure this is a symbol data object related to type info.
+    if(symbol_data.is_struct()) {
+      return symbol_data;
+    } else {
+      const auto msg{
+        std::format(R"(Given specifier is not a type "{}".)", t_type_id)};
+
+      throw_type_error(msg);
+    }
+  } else {
+    const auto msg{
+      std::format(R"(No type found for specifier "{}".)", t_type_id)};
+
+    throw_type_error(msg);
+  }
+
+  return {};
+}
+
 auto SemanticChecker::node2type(NodePtr t_type_node) -> SymbolData
 {
   return m_node_evaluator.evaluate(t_type_node);
@@ -459,7 +495,7 @@ auto SemanticChecker::visit(Let* t_let) -> Any
   }
 
   SymbolDataOpt type_opt{};
-  if(!type()) {
+  if(!type) {
     type_opt = node2type(type);
   }
 
@@ -791,7 +827,7 @@ auto SemanticChecker::visit(Method* t_meth) -> Any
   using types::symbol::make_variable;
   using types::symbol::MethodSymbol;
 
-  auto recv_type{node2type(t_meth->get_receiver())};
+  auto recv_type{str2type(t_meth->get_receiver())};
 
   const auto id{t_meth->identifier()};
   const auto ret_type{node2type(t_meth->type())};
