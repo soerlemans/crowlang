@@ -616,7 +616,7 @@ auto CrowParser::param_list_opt() -> NodeListPtr
     expect(TokenType::COLON);
     auto type{m_type.type_expr()};
 
-    nodes->push_back(make_node<Parameter>(pos, id, type));
+    nodes->push_back(make_node<Parameter>(pos, id, std::move(type)));
 
     while(!eos()) {
       if(next_if(TokenType::COMMA)) {
@@ -833,7 +833,7 @@ auto CrowParser::declare() -> NodePtr
   if(next_if(TokenType::DECLARE)) {
     PARSER_FOUND(TokenType::DECLARE);
     std::string id{};
-    std::string type{};
+    NodePtr type{};
     NodePtr ret_type{};
 
     if(next_if(TokenType::FUNCTION)) {
@@ -850,15 +850,15 @@ auto CrowParser::declare() -> NodePtr
     } else if(next_if(TokenType::LET)) {
       id = expect(TokenType::IDENTIFIER).str();
       expect(TokenType::COLON);
-      type = expect(TokenType::IDENTIFIER).str();
+      type = m_type.type_expr();
 
-      node = make_node<LetDecl>(id, type);
+      node = make_node<LetDecl>(id, std::move(type));
     } else if(next_if(TokenType::VAR)) {
       id = expect(TokenType::IDENTIFIER).str();
       expect(TokenType::COLON);
-      type = expect(TokenType::IDENTIFIER).str();
+      type = m_type.type_expr();
 
-      node = make_node<VarDecl>(id, type);
+      node = make_node<VarDecl>(id, std::move(type));
     } else {
       // TODO: Error handle.
     }

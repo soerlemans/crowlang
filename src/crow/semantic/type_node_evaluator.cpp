@@ -3,6 +3,7 @@
 // Absolute Includes:
 #include "crow/diagnostic/diagnostic.hpp"
 
+namespace semantic {
 // Using:
 using diagnostic::throw_type_error;
 
@@ -62,5 +63,4 @@ auto TypeNodeEvaluator::evaluate(NodePtr t_ast) -> SymbolData
 {
   return SymbolData{};
 }
-
 } // namespace semantic
