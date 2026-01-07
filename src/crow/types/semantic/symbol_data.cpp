@@ -61,7 +61,7 @@ auto nullptr_check(const std::string_view t_str,
 }
 } // namespace
 
-namespace semantic::symbol {
+namespace types::symbol {
 // Methods:
 auto SymbolData::as_struct() const -> StructTypePtr
 {
@@ -102,7 +102,8 @@ auto SymbolData::is_mutable() const -> bool
     return (t_data->m_mutability == Mutability::IMMUTABLE);
   }};
 
-  const auto immutable_types{[]([[maybe_unused]] const auto& t_data) {
+  const auto immutable_types{[]([[maybe_unused]]
+                                const auto& t_data) {
     return false;
   }};
 
@@ -241,10 +242,10 @@ auto SymbolData::operator!=(const SymbolData& t_rhs) const -> bool
   // Reuse operator== logic.
   return !(lhs == t_rhs);
 }
-} // namespace semantic::symbol
+} // namespace types::symbol
 
 // Functions:
-auto operator<<(std::ostream& t_os, const semantic::symbol::SymbolData& t_data)
+auto operator<<(std::ostream& t_os, const types::symbol::SymbolData& t_data)
   -> std::ostream&
 {
   std::visit(

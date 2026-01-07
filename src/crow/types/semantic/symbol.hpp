@@ -7,7 +7,7 @@
 #include <memory>
 #include <optional>
 
-namespace semantic::symbol {
+namespace types::symbol {
 // Forward Declarations:
 class SymbolData;
 
@@ -23,20 +23,20 @@ using PointerTypePtr = std::shared_ptr<PointerType>;
 using VarTypePtr = std::shared_ptr<VarType>;
 
 using SymbolDataList = std::list<SymbolData>;
-} // namespace semantic::symbol
+} // namespace types::symbol
 
 // Functions:
-auto operator<<(std::ostream& t_os, semantic::symbol::StructTypePtr t_struct)
+auto operator<<(std::ostream& t_os, types::symbol::StructTypePtr t_struct)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, semantic::symbol::FnTypePtr t_fn)
+auto operator<<(std::ostream& t_os, types::symbol::FnTypePtr t_fn)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, semantic::symbol::PointerTypePtr t_ptr)
+auto operator<<(std::ostream& t_os, types::symbol::PointerTypePtr t_ptr)
   -> std::ostream&;
-auto operator<<(std::ostream& t_os, semantic::symbol::VarTypePtr t_var)
+auto operator<<(std::ostream& t_os, types::symbol::VarTypePtr t_var)
   -> std::ostream&;
 
 auto operator<<(std::ostream& t_os,
-                const semantic::symbol::SymbolDataList& t_list)
+                const types::symbol::SymbolDataList& t_list)
   -> std::ostream&;
 
 #endif // CROW_CROW_TYPES_SEMANTIC_SYMBOL_HPP

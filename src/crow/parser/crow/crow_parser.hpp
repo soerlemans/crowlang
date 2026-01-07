@@ -107,8 +107,8 @@ class CrowParser : public Parser, public PrattParserDelegate {
   virtual auto param_list() -> NodeListPtr;
   virtual auto param_list_opt() -> NodeListPtr;
 
-  virtual auto return_type() -> std::string;
-  virtual auto return_type_opt() -> std::string;
+  virtual auto return_type() -> NodePtr;
+  virtual auto return_type_opt() -> NodePtr;
 
   virtual auto lambda() -> NodePtr;
   virtual auto function() -> NodePtr;

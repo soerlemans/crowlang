@@ -15,8 +15,8 @@ using node_traits::BindingExpr;
 // Classes:
 class Let : public BindingExpr {
   public:
-  Let(TextPosition t_pos, std::string_view t_identifier,
-      std::string_view t_type, NodePtr&& t_init);
+  Let(TextPosition t_pos, std::string_view t_identifier, NodePtr&& t_type,
+      NodePtr&& t_init);
 
   AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Let, BindingExpr)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);

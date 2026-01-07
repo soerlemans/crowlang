@@ -23,7 +23,7 @@
   }
 
 namespace ast::visitor {
-// Using statements:
+// Using:
 NODE_USING_ALL_NAMESPACES()
 
 // Methods:
@@ -81,6 +81,10 @@ STUB(Float)
 STUB(Integer)
 STUB(String)
 STUB(Boolean)
+
+// Builtin Types:
+STUB(Pointer)
+STUB(TypeName)
 
 // User Types:
 STUB(Method)

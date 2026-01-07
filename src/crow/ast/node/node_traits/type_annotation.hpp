@@ -13,13 +13,13 @@
 namespace ast::node::node_traits {
 class TypeAnnotation : virtual public NodeInterface {
   protected:
-  std::string m_type;
+  NodePtr m_type;
 
   public:
   TypeAnnotation() = default;
-  TypeAnnotation(std::string_view t_type);
+  TypeAnnotation(NodePtr&& t_type);
 
-  virtual auto type() const -> std::string_view;
+  virtual auto type() const -> NodePtr;
 
   template<typename Archive>
   auto serialize(Archive& t_archive) -> void

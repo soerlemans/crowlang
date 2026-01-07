@@ -2,10 +2,10 @@
 
 namespace ast::node::node_traits {
 // Methods:
-TypeAnnotation::TypeAnnotation(const std::string_view t_type): m_type{t_type}
+TypeAnnotation::TypeAnnotation(NodePtr&& t_type): m_type{t_type}
 {}
 
-auto TypeAnnotation::type() const -> std::string_view
+auto TypeAnnotation::type() const -> NodePtr
 {
   return m_type;
 }

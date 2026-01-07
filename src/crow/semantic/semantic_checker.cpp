@@ -19,11 +19,11 @@
 namespace semantic {
 // Using Statements:
 using diagnostic::throw_type_error;
-using symbol::FnTypePtr;
-using symbol::StructTypePtr;
-using symbol::SymbolData;
-using symbol::VarTypePtr;
 using types::core::NativeType;
+using types::symbol::FnTypePtr;
+using types::symbol::StructTypePtr;
+using types::symbol::SymbolData;
+using types::symbol::VarTypePtr;
 
 NODE_USING_ALL_NAMESPACES()
 
@@ -44,39 +44,9 @@ auto SemanticChecker::clear_env() -> void
   m_symbol_state.clear();
 }
 
-auto SemanticChecker::str2type(const std::string_view t_type) -> SymbolData
+auto SemanticChecker::node2type(NodePtr t_type_node) -> SymbolData
 {
-  const auto quoted_name{std::quoted(t_type)};
-
-  // First check for native type.
-  const auto opt{str2nativetype_opt(t_type)};
-  if(opt) {
-    return {opt.value()};
-  }
-
-  // Then check for user defined types.
-  // If this type does not exist, we should error.
-  const auto [iter, exists] = m_symbol_state.find(t_type);
-  if(exists) {
-    const auto& symbol{iter->second};
-    const auto& symbol_data{symbol.m_data};
-
-    // Make sure this is a symbol data object related to type info.
-    if(symbol_data.is_struct()) {
-      return symbol_data;
-    } else {
-      const auto msg{
-        std::format(R"(Given specifier is not a type "{}".)", t_type)};
-
-      throw_type_error(msg);
-    }
-  } else {
-    const auto msg{std::format(R"(No type found for specifier "{}".)", t_type)};
-
-    throw_type_error(msg);
-  }
-
-  return {};
+  return m_node_evaluator.evaluate(t_type_node);
 }
 
 auto SemanticChecker::annotate_attr(AttributeData* t_node) -> void
@@ -168,8 +138,9 @@ auto SemanticChecker::add_symbol_definition(const std::string_view t_key,
   }
 }
 
-auto SemanticChecker::add_struct_member_definition(
-  SymbolData& t_struct, const symbol::MemberSymbol& t_sym) -> void
+auto SemanticChecker::add_struct_member_definition(SymbolData& t_struct,
+                                                   const MemberSymbol& t_sym)
+  -> void
 {
   using lib::stdexcept::throw_runtime_error;
 
@@ -190,8 +161,9 @@ auto SemanticChecker::add_struct_member_definition(
   }
 }
 
-auto SemanticChecker::add_struct_method_definition(
-  SymbolData& t_struct, const symbol::MethodSymbol& t_sym) -> void
+auto SemanticChecker::add_struct_method_definition(SymbolData& t_struct,
+                                                   const MethodSymbol& t_sym)
+  -> void
 {
   using lib::stdexcept::throw_runtime_error;
 
@@ -298,7 +270,13 @@ auto SemanticChecker::get_resolved_result_type_list(NodeListPtr t_list)
 }
 
 // Public methods:
-SemanticChecker::SemanticChecker(): m_symbol_state{}, m_active_attrs{}
+SemanticChecker::SemanticChecker()
+  : m_validator{},
+    m_symbol_state{},
+    m_node_evaluator{m_symbol_state},
+    m_active_attrs{},
+    m_active_struct{},
+    m_annot_queue{}
 {}
 
 // Control:
@@ -365,7 +343,7 @@ auto SemanticChecker::visit(Return* t_return) -> Any
 // Function:
 auto SemanticChecker::visit(Parameter* t_param) -> Any
 {
-  const auto type{str2type(t_param->type())};
+  const auto type{node2type(t_param->type())};
 
   t_param->set_type(type.type_variant());
 
@@ -374,14 +352,17 @@ auto SemanticChecker::visit(Parameter* t_param) -> Any
 
 auto SemanticChecker::visit(Function* t_fn) -> Any
 {
+  using types::symbol::make_function;
+  using types::symbol::make_variable;
+
   const auto id{t_fn->identifier()};
-  const auto ret_type{str2type(t_fn->type())};
+  const auto ret_type{node2type(t_fn->type())};
   const auto params{t_fn->params()};
   const auto body{t_fn->body()};
 
   // Register function type signature to environment.
   const auto params_type_list{get_type_list(params)};
-  const SymbolData data{symbol::make_function(params_type_list, ret_type)};
+  const SymbolData data{make_function(params_type_list, ret_type)};
 
   // Add the function and ID to the environment.
   add_symbol_definition(id, data);
@@ -394,7 +375,7 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
   // Register parameters to environment.
   push_env();
   for(const auto& node : *params) {
-    using symbol::Mutability;
+    using types::symbol::Mutability;
 
     // Gain a raw ptr (non owning).
     // If the AST changes the assertion will be triggered.
@@ -402,9 +383,9 @@ auto SemanticChecker::visit(Function* t_fn) -> Any
     DEBUG_ASSERT(param != nullptr, R"(Was unable to cast to "*Parameter"!)");
 
     const auto id{param->identifier()};
-    const auto type{str2type(param->type())};
+    const auto type{node2type(param->type())};
 
-    const SymbolData data{symbol::make_variable(Mutability::IMMUTABLE, type)};
+    const SymbolData data{make_variable(Mutability::IMMUTABLE, type)};
 
     // Add parameter to environment.
     add_symbol_definition(id, data);
@@ -456,18 +437,19 @@ auto SemanticChecker::visit(ReturnType* t_rt) -> Any
 {
   const auto type{t_rt->type()};
 
-  return SymbolData{str2type(type)};
+  return SymbolData{node2type(type)};
 }
 
 // Lvalue:
 // TODO: FIXME Disallow redeclaration of variables.
 auto SemanticChecker::visit(Let* t_let) -> Any
 {
-  using symbol::Mutability;
+  using types::symbol::make_variable;
+  using types::symbol::Mutability;
 
   const auto init_expr{t_let->init_expr()};
   const std::string id{t_let->identifier()};
-  const std::string type{t_let->type()};
+  const auto type{t_let->type()};
   const auto pos{t_let->position()};
 
   // Extract the SymbolData if an init expression was given.
@@ -477,15 +459,14 @@ auto SemanticChecker::visit(Let* t_let) -> Any
   }
 
   SymbolDataOpt type_opt{};
-  if(!type.empty()) {
-    type_opt = str2type(type);
+  if(!type()) {
+    type_opt = node2type(type);
   }
 
   const BindingExprData data{init_opt, id, type_opt, pos};
   const auto type_data{m_validator.validate_binding_expr(data)};
 
-  const SymbolData var_data{
-    symbol::make_variable(Mutability::IMMUTABLE, type_data)};
+  const SymbolData var_data{make_variable(Mutability::IMMUTABLE, type_data)};
   add_symbol_definition(id, var_data);
 
   // Annotate AST.
@@ -497,11 +478,12 @@ auto SemanticChecker::visit(Let* t_let) -> Any
 
 auto SemanticChecker::visit(Var* t_var) -> Any
 {
-  using symbol::Mutability;
+  using types::symbol::make_variable;
+  using types::symbol::Mutability;
 
   const auto init_expr{t_var->init_expr()};
   const std::string id{t_var->identifier()};
-  const std::string type{t_var->type()};
+  const auto type{t_var->type()};
   const auto pos{t_var->position()};
 
   // Extract the SymbolData if an init expression was given.
@@ -511,15 +493,14 @@ auto SemanticChecker::visit(Var* t_var) -> Any
   }
 
   SymbolDataOpt type_opt{};
-  if(!type.empty()) {
-    type_opt = str2type(type);
+  if(!type) {
+    type_opt = node2type(type);
   }
 
   const BindingExprData data{init_opt, id, type_opt, pos};
   const auto type_data{m_validator.validate_binding_expr(data)};
 
-  const SymbolData var_data{
-    symbol::make_variable(Mutability::MUTABLE, type_data)};
+  const SymbolData var_data{make_variable(Mutability::MUTABLE, type_data)};
   add_symbol_definition(id, var_data);
 
   // Annotate AST.
@@ -572,14 +553,14 @@ auto SemanticChecker::visit(Attribute* t_attr) -> Any
 
 auto SemanticChecker::visit(LetDecl* t_ldecl) -> Any
 {
-  using symbol::Mutability;
+  using types::symbol::make_variable;
+  using types::symbol::Mutability;
 
   const auto id{t_ldecl->identifier()};
-  const auto type_data{str2type(t_ldecl->type())};
+  const auto type_data{node2type(t_ldecl->type())};
 
   // Create the SymbolData for a variable.
-  const SymbolData data{
-    symbol::make_variable(Mutability::IMMUTABLE, type_data)};
+  const SymbolData data{make_variable(Mutability::IMMUTABLE, type_data)};
   add_symbol_declaration(id, data);
 
   // Annotate AST.
@@ -591,13 +572,14 @@ auto SemanticChecker::visit(LetDecl* t_ldecl) -> Any
 
 auto SemanticChecker::visit(VarDecl* t_vdecl) -> Any
 {
-  using symbol::Mutability;
+  using types::symbol::make_variable;
+  using types::symbol::Mutability;
 
   const auto id{t_vdecl->identifier()};
-  const auto type_data{str2type(t_vdecl->type())};
+  const auto type_data{node2type(t_vdecl->type())};
 
   // Create the SymbolData for a variable.
-  const SymbolData data{symbol::make_variable(Mutability::MUTABLE, type_data)};
+  const SymbolData data{make_variable(Mutability::MUTABLE, type_data)};
   add_symbol_declaration(id, data);
 
   // Annotate AST.
@@ -609,13 +591,15 @@ auto SemanticChecker::visit(VarDecl* t_vdecl) -> Any
 
 auto SemanticChecker::visit(FunctionDecl* t_fdecl) -> Any
 {
+  using types::symbol::make_function;
+
   const auto id{t_fdecl->identifier()};
-  const auto ret_type{str2type(t_fdecl->type())};
+  const auto ret_type{node2type(t_fdecl->type())};
   const auto params{t_fdecl->params()};
 
   // Register function type signature to environment.
   const auto params_type_list{get_type_list(params)};
-  const SymbolData data{symbol::make_function(params_type_list, ret_type)};
+  const SymbolData data{make_function(params_type_list, ret_type)};
 
   add_symbol_declaration(id, data);
   DBG_INFO("FunctionDecl: ", id, "(", params_type_list, ") -> ", ret_type);
@@ -803,12 +787,14 @@ auto SemanticChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
 // User Types:
 auto SemanticChecker::visit(Method* t_meth) -> Any
 {
-  using symbol::MethodSymbol;
+  using types::symbol::make_function;
+  using types::symbol::make_variable;
+  using types::symbol::MethodSymbol;
 
-  auto recv_type{str2type(t_meth->get_receiver())};
+  auto recv_type{node2type(t_meth->get_receiver())};
 
   const auto id{t_meth->identifier()};
-  const auto ret_type{str2type(t_meth->type())};
+  const auto ret_type{node2type(t_meth->type())};
   const auto params{t_meth->params()};
 
   if(!recv_type.is_struct()) {
@@ -817,7 +803,7 @@ auto SemanticChecker::visit(Method* t_meth) -> Any
 
   // // Register function type signature to Struct.
   const auto params_type_list{get_type_list(params)};
-  const SymbolData data{symbol::make_function(params_type_list, ret_type)};
+  const SymbolData data{make_function(params_type_list, ret_type)};
 
   // Add the function and ID to the environment.
   MethodSymbol sym{id, data};
@@ -832,7 +818,7 @@ auto SemanticChecker::visit(Method* t_meth) -> Any
   // Register parameters to environment.
   push_env();
   for(const auto& node : *params) {
-    using symbol::Mutability;
+    using types::symbol::Mutability;
 
     // Gain a raw ptr (non owning).
     // If the AST changes the assertion will be triggered.
@@ -840,9 +826,9 @@ auto SemanticChecker::visit(Method* t_meth) -> Any
     DEBUG_ASSERT(param != nullptr, R"(Was unable to cast to "Parameter*"!)");
 
     const auto id{param->identifier()};
-    const auto type{str2type(param->type())};
+    const auto type{node2type(param->type())};
 
-    const SymbolData data{symbol::make_variable(Mutability::MUTABLE, type)};
+    const SymbolData data{make_variable(Mutability::MUTABLE, type)};
 
     // Add parameter to environment.
     add_symbol_definition(id, data);
@@ -863,7 +849,7 @@ AST_VISITOR_STUB(SemanticChecker, Interface)
 
 auto SemanticChecker::visit(MemberDecl* t_member) -> Any
 {
-  const auto type{str2type(t_member->type())};
+  const auto type{node2type(t_member->type())};
 
   // Annotate AST.
   m_annot_queue.push({t_member, type});
@@ -873,7 +859,8 @@ auto SemanticChecker::visit(MemberDecl* t_member) -> Any
 
 auto SemanticChecker::visit(Struct* t_struct) -> Any
 {
-  using symbol::MemberMap;
+  using types::symbol::make_struct;
+  using types::symbol::MemberMap;
 
   const std::string struct_id{t_struct->identifier()};
   const auto struct_body{t_struct->body()};
@@ -891,12 +878,12 @@ auto SemanticChecker::visit(Struct* t_struct) -> Any
                  R"(Was unable to cast to "*MemberDecl"!)");
 
     const std::string member_id{member_decl->identifier()};
-    const SymbolData member_type{str2type(member_decl->type())};
+    const SymbolData member_type{node2type(member_decl->type())};
 
     members.insert({member_id, member_type});
   }
 
-  const auto struct_data{symbol::make_struct(struct_id, members)};
+  const auto struct_data{make_struct(struct_id, members)};
 
   add_symbol_definition(struct_id, struct_data);
 

@@ -15,7 +15,7 @@
  * TODO: Describe @ref TypeVariant usage and why it is a good idea.
  */
 
-namespace semantic::symbol {
+namespace types::symbol {
 // Forward Declarations;
 class SymbolData;
 

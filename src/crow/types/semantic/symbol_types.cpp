@@ -4,7 +4,7 @@
 #include "crow/debug/log.hpp"
 
 // Using Statements:
-namespace semantic::symbol {
+namespace types::symbol {
 // StructType:
 auto StructType::native_type() const -> NativeTypeOpt
 {
@@ -54,8 +54,8 @@ auto FnType::type_variant() const -> TypeVariant
 // PointerType:
 auto PointerType::resolve_result_type() const -> SymbolData
 {
-	// Get underlying type.
-	return SymbolData{m_type};
+  // Get underlying type.
+  return SymbolData{m_type};
 }
 
 auto PointerType::native_type() const -> NativeTypeOpt
@@ -93,4 +93,4 @@ auto VarType::type_variant() const -> TypeVariant
 
   return {make_variable(m_type.type_variant())};
 }
-} // namespace semantic::symbol
+} // namespace types::semantic::symbol

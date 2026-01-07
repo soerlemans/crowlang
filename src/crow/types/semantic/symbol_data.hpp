@@ -19,7 +19,7 @@
  * And @ref SymbolData.
  */
 
-namespace semantic::symbol {
+namespace types::symbol {
 // Using Statements:
 using types::core::NativeType;
 using types::core::NativeTypeOpt;
@@ -84,10 +84,10 @@ class SymbolData : public Variant {
 
   virtual ~SymbolData() = default;
 };
-} // namespace semantic::symbol
+} // namespace types::symbol
 
 // Functions:
-auto operator<<(std::ostream& t_os, const semantic::symbol::SymbolData& t_data)
+auto operator<<(std::ostream& t_os, const types::symbol::SymbolData& t_data)
   -> std::ostream&;
 
 #endif // CROW_CROW_TYPES_SEMANTIC_SYMBOL_DATA_HPP

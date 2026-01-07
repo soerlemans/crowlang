@@ -11,7 +11,7 @@
 
 
 // Using Statements:
-using namespace semantic::symbol;
+using namespace types::symbol;
 using namespace std::literals::string_view_literals;
 
 // Functions:

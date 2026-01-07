@@ -14,7 +14,7 @@ namespace semantic {
 namespace node = ast::node;
 
 using node::node_traits::TypeData;
-using symbol::SymbolData;
+using types::symbol::SymbolData;
 
 // Structs:
 /*!

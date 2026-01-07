@@ -30,7 +30,7 @@ class Method : public Identifier,
 
   public:
   Method(std::string_view t_identifier, std::string_view t_receiver_type,
-         NodeListPtr&& t_params, std::string_view t_type, NodeListPtr&& t_body);
+         NodeListPtr&& t_params, NodePtr&& t_type, NodeListPtr&& t_body);
 
   // TODO: replace the receiver being a string with something more elegant.
   // Maybe its own node type?

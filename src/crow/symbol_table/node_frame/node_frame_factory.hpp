@@ -8,7 +8,7 @@
 #include "node_frame.hpp"
 
 namespace symbol_table::node_frame {
-// Using Declarations:
+// Using:
 using ast::node::NodePtr;
 using ast::visitor::Any;
 using ast::visitor::NodeVisitor;
@@ -16,7 +16,6 @@ using symbol_tree::SymbolTreeFactory;
 using symbol_tree::SymbolTreePtr;
 using symbol_tree::SymbolTreeResult;
 
-// Aliases:
 namespace node = ast::node;
 
 // Classes:
