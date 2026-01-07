@@ -51,6 +51,25 @@ auto FnType::type_variant() const -> TypeVariant
   return {make_function(params, m_return_type.type_variant())};
 }
 
+// PointerType:
+auto PointerType::resolve_result_type() const -> SymbolData
+{
+	// Get underlying type.
+	return SymbolData{m_type};
+}
+
+auto PointerType::native_type() const -> NativeTypeOpt
+{
+  return m_type.native_type();
+}
+
+auto PointerType::type_variant() const -> TypeVariant
+{
+  using types::core::make_pointer;
+
+  return {make_pointer(m_type.type_variant())};
+}
+
 // VarType:
 auto VarType::is_mutable() const -> bool
 {

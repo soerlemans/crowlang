@@ -73,6 +73,11 @@ auto SymbolData::as_function() const -> FnTypePtr
   return std::get<FnTypePtr>(*this);
 }
 
+auto SymbolData::as_ptr() const -> PointerTypePtr
+{
+  return std::get<PointerTypePtr>(*this);
+}
+
 auto SymbolData::as_var() const -> VarTypePtr
 {
   return std::get<VarTypePtr>(*this);
@@ -123,16 +128,21 @@ auto SymbolData::resolve_result_type() const -> SymbolData
     return SymbolData{t_ptr};
   }};
 
-  const auto rest{[&]<typename T>(const std::shared_ptr<T>& t_ptr) {
+  const auto ptr_handler{[&](const PointerTypePtr& t_ptr) {
+    nullptr_check("Resolve result type", t_ptr);
+
+    return SymbolData{t_ptr};
+  }};
+
+  const auto rest{[&](const std::shared_ptr<auto>& t_ptr) {
     nullptr_check("Resolve result type", t_ptr);
 
     return t_ptr->resolve_result_type();
   }};
 
-  data = std::visit(
-    Overload{native, struct_handler, rest, MonoStateHandler<SymbolData>{}},
-    *this);
-
+  data = std::visit(Overload{native, struct_handler, ptr_handler, rest,
+                             MonoStateHandler<SymbolData>{}},
+                    *this);
 
   return data;
 }
@@ -201,7 +211,7 @@ auto SymbolData::operator==(const SymbolData& t_rhs) const -> bool
         // NativeType is just a simple compare.
         return (t_l == t_r);
       } else if constexpr(lib::IsAnyOf<L, StructTypePtr, FnTypePtr,
-                                       VarTypePtr>) {
+                                       PointerTypePtr, VarTypePtr>) {
         if(t_l && t_r) {
           // Compare resolved pointers.
           return (*t_l == *t_r);

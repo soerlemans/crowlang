@@ -71,6 +71,17 @@ struct FnType {
   auto operator==(const FnType&) const -> bool = default;
 };
 
+struct PointerType {
+  SymbolData m_type;
+
+  auto resolve_result_type() const -> SymbolData;
+
+  auto native_type() const -> NativeTypeOpt;
+  auto type_variant() const -> TypeVariant;
+
+  auto operator==(const PointerType&) const -> bool = default;
+};
+
 // TODO: Ignore m_const value when comparing
 struct VarType {
   Mutability m_mutability;

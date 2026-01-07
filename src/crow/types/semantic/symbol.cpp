@@ -63,6 +63,19 @@ auto operator<<(std::ostream& t_os, FnTypePtr t_fn) -> std::ostream&
   return t_os;
 }
 
+auto operator<<(std::ostream& t_os, PointerTypePtr t_ptr) -> std::ostream&
+{
+  if(t_ptr) {
+    t_os << t_ptr->m_type;
+  } else {
+    DBG_ERROR("(PointerTypePtr) nullptr!");
+
+    t_os << "nullptr";
+  }
+
+  return t_os;
+}
+
 auto operator<<(std::ostream& t_os, VarTypePtr t_var) -> std::ostream&
 {
   if(t_var) {
