@@ -68,7 +68,6 @@ inline auto make_pointer(Args&&... t_args) -> TypeVariant
 {
   return std::make_shared<PointerType>(std::forward<Args>(t_args)...);
 }
-
 } // namespace types::core
 
 // Functions:

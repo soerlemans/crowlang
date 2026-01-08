@@ -60,7 +60,7 @@ auto PointerType::resolve_result_type() const -> SymbolData
 
 auto PointerType::native_type() const -> NativeTypeOpt
 {
-  return m_type.native_type();
+  return {std::nullopt};
 }
 
 auto PointerType::type_variant() const -> TypeVariant

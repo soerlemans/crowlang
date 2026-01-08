@@ -102,16 +102,16 @@ class AstPrinter : public NodeVisitor {
     });
 
     when_derived<TypeAnnotation>(t_ptr, [&](auto t_ptr) {
-      lambda("| Type Annotation: ", t_ptr->type());
+      lambda("Type Annotation: ", t_ptr->type());
 
-      print("| Type Annotation:");
+      // print("| Type Annotation:");
 
-      const auto type{t_ptr->type()};
-      if(type) {
-        traverse(t_ptr->type());
-      } else {
-        print("Nil");
-      }
+      // const auto type{t_ptr->type()};
+      // if(type) {
+      //   traverse(t_ptr->type());
+      // } else {
+      //   print("Nil");
+      // }
     });
 
     when_derived<TypeData>(t_ptr, [&](auto t_ptr) {

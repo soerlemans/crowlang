@@ -4,5 +4,7 @@ func main() -> int {
   let target = 100
   let pointer: *int = target
 
+  let pointer: *int
+
   return 0
 }
