@@ -110,6 +110,12 @@ auto make_function(Args&&... t_args) -> SymbolData
 }
 
 template<typename... Args>
+auto make_pointer(Args&&... t_args) -> SymbolData
+{
+  return {std::make_shared<PointerType>(std::forward<Args>(t_args)...)};
+}
+
+template<typename... Args>
 auto make_variable(Args&&... t_args) -> SymbolData
 {
   return {std::make_shared<VarType>(std::forward<Args>(t_args)...)};

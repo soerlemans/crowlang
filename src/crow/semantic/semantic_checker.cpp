@@ -495,7 +495,7 @@ auto SemanticChecker::visit(Let* t_let) -> Any
   }
 
   SymbolDataOpt type_opt{};
-  if(!type) {
+  if(type) {
     type_opt = node2type(type);
   }
 
@@ -529,7 +529,7 @@ auto SemanticChecker::visit(Var* t_var) -> Any
   }
 
   SymbolDataOpt type_opt{};
-  if(!type) {
+  if(type) {
     type_opt = node2type(type);
   }
 

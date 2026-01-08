@@ -190,7 +190,7 @@ auto CppBackend::visit(Return* t_ret) -> Any
 auto CppBackend::visit(Parameter* t_param) -> Any
 {
   const auto id{t_param->identifier()};
-  const auto type{t_param->type()};
+  const auto type{type_variant2cpp(t_param->get_type())};
 
   return std::format("{} {}", type, id);
 }

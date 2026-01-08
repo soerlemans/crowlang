@@ -1,13 +1,32 @@
 #include "type_node_evaluator.hpp"
 
 // Absolute Includes:
+#include "crow/ast/node/include_nodes.hpp"
 #include "crow/diagnostic/diagnostic.hpp"
+#include "lib/stdexcept/stdexcept.hpp"
 
 namespace semantic {
 // Using:
 using diagnostic::throw_type_error;
 
 NODE_USING_ALL_NAMESPACES()
+
+auto TypeNodeEvaluator::resolve(NodePtr t_node) -> SymbolData
+{
+  SymbolData type{};
+
+  const auto any{traverse(t_node)};
+
+  try {
+    type = std::any_cast<SymbolData>(any);
+  } catch(std::bad_any_cast& exception) {
+    using lib::stdexcept::throw_bad_any_cast;
+
+    throw_bad_any_cast(exception.what());
+  }
+
+  return type;
+}
 
 TypeNodeEvaluator::TypeNodeEvaluator(SymbolEnvState& t_symbol_state)
   : m_symbol_state{t_symbol_state}
@@ -51,16 +70,19 @@ auto TypeNodeEvaluator::str2type(const std::string_view t_type_id) -> SymbolData
 
 auto TypeNodeEvaluator::visit(Pointer* t_ptr) -> Any
 {
-  return {};
+  const auto left{t_ptr->left()};
+  const auto pointer_to{resolve(left)};
+
+  return SymbolData{types::symbol::make_pointer(pointer_to)};
 }
 
 auto TypeNodeEvaluator::visit(TypeName* t_type) -> Any
 {
-  return {};
+  return SymbolData{str2type(t_type->identifier())};
 }
 
 auto TypeNodeEvaluator::evaluate(NodePtr t_ast) -> SymbolData
 {
-  return SymbolData{};
+  return resolve(t_ast);
 }
 } // namespace semantic

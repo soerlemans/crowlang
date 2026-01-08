@@ -22,6 +22,9 @@ class TypeNodeEvaluator : public NodeVisitor {
   private:
   SymbolEnvState& m_symbol_state;
 
+  protected:
+  virtual auto resolve(NodePtr t_node) -> SymbolData;
+
   public:
   TypeNodeEvaluator(SymbolEnvState& t_symbol_state);
 

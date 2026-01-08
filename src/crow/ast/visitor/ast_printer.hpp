@@ -102,7 +102,16 @@ class AstPrinter : public NodeVisitor {
     });
 
     when_derived<TypeAnnotation>(t_ptr, [&](auto t_ptr) {
-      print("| Type Annotation: ", t_ptr->type());
+      lambda("| Type Annotation: ", t_ptr->type());
+
+      print("| Type Annotation:");
+
+      const auto type{t_ptr->type()};
+      if(type) {
+        traverse(t_ptr->type());
+      } else {
+        print("Nil");
+      }
     });
 
     when_derived<TypeData>(t_ptr, [&](auto t_ptr) {
@@ -188,6 +197,10 @@ class AstPrinter : public NodeVisitor {
   auto visit(node::rvalue::Integer* t_int) -> Any override;
   auto visit(node::rvalue::String* t_str) -> Any override;
   auto visit(node::rvalue::Boolean* t_bool) -> Any override;
+
+  // Builtin Types:
+  auto visit(node::builtin_types::Pointer* t_ptr) -> Any override;
+  auto visit(node::builtin_types::TypeName* t_type) -> Any override;
 
   // User Types:
   auto visit(node::user_types::Method* t_meth) -> Any override;
