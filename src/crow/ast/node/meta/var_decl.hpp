@@ -20,7 +20,7 @@ class VarDecl : public Identifier,
                 public TypeData,
                 public AttributeData {
   public:
-  VarDecl(std::string_view t_identifier, std::string_view t_type);
+  VarDecl(std::string_view t_identifier, NodePtr&& t_type);
 
   AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(VarDecl, Identifier, TypeAnnotation)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);

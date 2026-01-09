@@ -23,7 +23,7 @@ class FunctionDecl : public Identifier,
                      public AttributeData {
   public:
   FunctionDecl(std::string_view t_identifier, NodeListPtr&& t_params,
-               std::string_view t_type);
+               NodePtr&& t_type);
 
   AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(FunctionDecl, Identifier, Params,
                                       TypeAnnotation)

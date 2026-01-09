@@ -15,7 +15,7 @@
 namespace semantic {
 // Using:
 using container::TextPosition;
-using symbol::SymbolData;
+using types::symbol::SymbolData;
 
 // Aliases:
 using SymbolDataOpt = std::optional<SymbolData>;

@@ -3,6 +3,7 @@
 
 // STL Includes:
 #include <functional>
+#include <memory>
 
 // Absolute Includes:
 #include "crow/ast/node/fdecl.hpp"
@@ -23,6 +24,9 @@
   } while(false)
 
 namespace parser {
+// Forward Decl:
+struct ParserContext;
+
 // Using Statements:
 using ast::node::NodeListPtr;
 using ast::node::NodePtr;
@@ -36,17 +40,24 @@ using token::tokentype2str;
 
 // Aliases:
 using ParseFn = std::function<ast::node::NodePtr()>;
+using ParserContextPtr = std::shared_ptr<ParserContext>;
+
+struct ParserContext {
+  TokenStream m_token_stream;
+  int m_counter;
+};
 
 // Classes:
-/*! Abstract parser class provides utilities that a parser would need to
+/*!
+ * Abstract parser class provides utilities that a parser would need to
  * implement
  */
 class Parser {
   private:
-  TokenStream m_token_stream;
+  ParserContextPtr m_ctx;
 
   protected:
-  DBG_TRACE_INIT();
+  DBG_TRACE_INIT_EXPR(m_ctx->m_counter)
 
   auto get_token_stream() -> TokenStream&;
 
@@ -118,13 +129,17 @@ class Parser {
 
   auto list_of(ParseFn t_fn) -> ast::node::NodeListPtr;
 
-  public:
-  Parser(TokenStream&& t_token_stream);
+  auto context() -> ParserContextPtr;
 
-  virtual auto parse() -> NodePtr = 0;
+  public:
+  Parser(ParserContextPtr t_ctx);
 
   virtual ~Parser() = default;
 };
+
+// Functions:
+[[nodiscard("Pure function must use result.")]]
+auto make_parser_context(TokenStream&& t_token_stream) -> ParserContextPtr;
 } // namespace parser
 
 #endif // CROW_CROW_PARSER_PARSER_HPP

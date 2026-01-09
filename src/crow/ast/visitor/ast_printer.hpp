@@ -102,7 +102,16 @@ class AstPrinter : public NodeVisitor {
     });
 
     when_derived<TypeAnnotation>(t_ptr, [&](auto t_ptr) {
-      print("| Type Annotation: ", t_ptr->type());
+      lambda("Type Annotation: ", t_ptr->type());
+
+      // print("| Type Annotation:");
+
+      // const auto type{t_ptr->type()};
+      // if(type) {
+      //   traverse(t_ptr->type());
+      // } else {
+      //   print("Nil");
+      // }
     });
 
     when_derived<TypeData>(t_ptr, [&](auto t_ptr) {
@@ -170,6 +179,7 @@ class AstPrinter : public NodeVisitor {
   auto visit(node::operators::Increment* t_inc) -> Any override;
   auto visit(node::operators::Decrement* t_dec) -> Any override;
 
+  auto visit(node::operators::AddressOf* t_addr_of) -> Any override;
   auto visit(node::operators::UnaryPrefix* t_up) -> Any override;
 
   // Logical:
@@ -189,15 +199,19 @@ class AstPrinter : public NodeVisitor {
   auto visit(node::rvalue::String* t_str) -> Any override;
   auto visit(node::rvalue::Boolean* t_bool) -> Any override;
 
-  // Typing:
-  auto visit(node::typing::Method* t_meth) -> Any override;
-  auto visit(node::typing::MethodCall* t_meth_call) -> Any override;
-  auto visit(node::typing::Interface* t_ifc) -> Any override;
-  auto visit(node::typing::MemberDecl* t_meth) -> Any override;
-  auto visit(node::typing::Struct* t_struct) -> Any override;
-  auto visit(node::typing::Self* t_self) -> Any override;
-  auto visit(node::typing::Member* t_member) -> Any override;
-  auto visit(node::typing::MemberAccess* t_access) -> Any override;
+  // Builtin Types:
+  auto visit(node::builtin_types::Pointer* t_ptr) -> Any override;
+  auto visit(node::builtin_types::TypeName* t_type) -> Any override;
+
+  // User Types:
+  auto visit(node::user_types::Method* t_meth) -> Any override;
+  auto visit(node::user_types::MethodCall* t_meth_call) -> Any override;
+  auto visit(node::user_types::Interface* t_ifc) -> Any override;
+  auto visit(node::user_types::MemberDecl* t_meth) -> Any override;
+  auto visit(node::user_types::Struct* t_struct) -> Any override;
+  auto visit(node::user_types::Self* t_self) -> Any override;
+  auto visit(node::user_types::Member* t_member) -> Any override;
+  auto visit(node::user_types::MemberAccess* t_access) -> Any override;
 
   // Misc:
   auto visit(node::List* t_list) -> Any override;

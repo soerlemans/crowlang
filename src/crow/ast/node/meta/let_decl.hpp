@@ -20,7 +20,7 @@ class LetDecl : public Identifier,
                 public TypeData,
                 public AttributeData {
   public:
-  LetDecl(std::string_view t_identifier, std::string_view t_type);
+  LetDecl(std::string_view t_identifier, NodePtr&& t_type);
 
   AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(LetDecl, Identifier, TypeAnnotation)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);

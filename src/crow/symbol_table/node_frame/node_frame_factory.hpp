@@ -8,7 +8,7 @@
 #include "node_frame.hpp"
 
 namespace symbol_table::node_frame {
-// Using Declarations:
+// Using:
 using ast::node::NodePtr;
 using ast::visitor::Any;
 using ast::visitor::NodeVisitor;
@@ -16,7 +16,6 @@ using symbol_tree::SymbolTreeFactory;
 using symbol_tree::SymbolTreePtr;
 using symbol_tree::SymbolTreeResult;
 
-// Aliases:
 namespace node = ast::node;
 
 // Classes:
@@ -74,13 +73,13 @@ class NodeFrameFactory : public NodeVisitor {
   auto visit(node::rvalue::String* t_str) -> Any override;
   auto visit(node::rvalue::Boolean* t_bool) -> Any override;
 
-  // Typing:
-  auto visit(node::typing::Method* t_meth) -> Any override;
-  auto visit(node::typing::Interface* t_ifc) -> Any override;
-  auto visit(node::typing::MemberDecl* t_meth) -> Any override;
-  auto visit(node::typing::Struct* t_struct) -> Any override;
-  auto visit(node::typing::Self* t_self) -> Any override;
-  auto visit(node::typing::MemberAccess* t_dot_expr) -> Any override;
+  // User Types:
+  auto visit(node::user_types::Method* t_meth) -> Any override;
+  auto visit(node::user_types::Interface* t_ifc) -> Any override;
+  auto visit(node::user_types::MemberDecl* t_meth) -> Any override;
+  auto visit(node::user_types::Struct* t_struct) -> Any override;
+  auto visit(node::user_types::Self* t_self) -> Any override;
+  auto visit(node::user_types::MemberAccess* t_dot_expr) -> Any override;
 
   // Misc:
   virtual auto visit(node::List* t_list) -> Any override;

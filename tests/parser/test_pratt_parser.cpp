@@ -13,7 +13,6 @@
 #include "crow/diagnostic/diagnostic.hpp"
 #include "crow/lexer/lexer.hpp"
 #include "crow/parser/crow/crow_parser.hpp"
-#include "crow/parser/pratt/pratt_parser.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
 
 /*!
@@ -25,17 +24,15 @@
 // Using:
 using namespace std::literals::string_view_literals;
 
-using parser::pratt::PrattParserPtr;
+using parser::crow::CrowParser;
+using parser::pratt::PrattParser;
 
 using PrattExprs = std::vector<std::string_view>;
 
 // Helper functions:
 namespace {
-auto prep_pratt_parser(const std::string_view t_program) -> PrattParserPtr
+auto prep_parser(const std::string_view t_program) -> CrowParser
 {
-  // PrattParser is abstract so we.
-  // Init a crow parser and parse back an interface ptr.
-
   using container::TextBuffer;
   using lexer::Lexer;
   using parser::crow::CrowParser;
@@ -47,9 +44,7 @@ auto prep_pratt_parser(const std::string_view t_program) -> PrattParserPtr
 
   // Create AST from TextBuffer.
   Lexer lexer{stream_ptr};
-  TokenStream tokenstream{lexer.tokenize()};
-
-  PrattParserPtr parser{std::make_unique<CrowParser>(tokenstream)};
+  CrowParser parser{lexer.tokenize()};
 
   return parser;
 }
@@ -88,6 +83,8 @@ inline auto report_uncaught_exception(std::string_view t_program) -> std::string
 // Test Cases:
 TEST(TestPrattParser, BasicExpressions)
 {
+  using diagnostic::SyntaxError;
+
   PrattExprs exprs = {
     "2 + 2"sv,
     "2 * 2"sv,
@@ -103,12 +100,22 @@ TEST(TestPrattParser, BasicExpressions)
   };
 
   for(auto&& program : exprs) {
-    const auto parser{prep_pratt_parser(program)};
+    auto parser{prep_parser(program)};
 
-    auto node{parser->expr()};
+    try {
+      auto node{parser.pratt_parse([](PrattParser& pratt) {
+        return pratt.expr();
+      })};
 
-    EXPECT_TRUE(node != nullptr)
-      << "Expression failed to parse: " << std::quoted(program) << '.';
+      EXPECT_TRUE(node != nullptr)
+        << "Expression failed to parse: " << std::quoted(program) << '.';
+    } catch(SyntaxError& err) {
+      FAIL() << report_exception(program, err);
+    } catch(std::exception& err) {
+      FAIL() << report_exception(program, err);
+    } catch(...) {
+      FAIL() << report_uncaught_exception(program);
+    }
   }
 }
 
@@ -119,18 +126,25 @@ TEST(TestPrattParser, AdvancedExpressions)
   PrattExprs exprs = {
     "num1"sv,
     "fun1()"sv,
+    "fun1(1, 2, 3)"sv,
     "num1 + num2"sv,
     "fun1() + num2"sv,
+    "fun1(1, num, \"apple\") + num2"sv,
     "num1 + fun1() + num3"sv,
+    "num1 + fun1(\"banana\", 2, 3) + num3"sv,
     "num1 + fun1()"sv,
-    "fun1() + fun2()"sv,
+    "num1 + fun1(100)"sv,
+    "fun1() + fun2(22)"sv,
+    "fun1(func2(fun3(0)))"sv,
   };
 
   for(auto&& program : exprs) {
-    const auto parser{prep_pratt_parser(program)};
+    auto parser{prep_parser(program)};
 
     try {
-      auto node{parser->expr()};
+      auto node{parser.pratt_parse([](PrattParser& pratt) {
+        return pratt.expr();
+      })};
 
       EXPECT_TRUE(node != nullptr) << report_parse_failure(program);
     } catch(SyntaxError& err) {
@@ -151,6 +165,7 @@ TEST(TestPrattParser, BasicChainExpressions)
     "num1"sv,
     "func1()"sv,
     "func1().func2()"sv,
+    "func1(12).func2(21)"sv,
     "name1.member1"sv,
     "name1.func1()"sv,
     "name1.member1.func1()"sv,
@@ -159,10 +174,42 @@ TEST(TestPrattParser, BasicChainExpressions)
   };
 
   for(auto&& program : exprs) {
-    const auto parser{prep_pratt_parser(program)};
+    auto parser{prep_parser(program)};
 
     try {
-      auto node{parser->chain_expr()};
+      auto node{parser.pratt_parse([](PrattParser& pratt) {
+        return pratt.chain_expr();
+      })};
+
+      EXPECT_TRUE(node != nullptr) << report_parse_failure(program);
+    } catch(SyntaxError& err) {
+      FAIL() << report_exception(program, err);
+    } catch(std::exception& err) {
+      FAIL() << report_exception(program, err);
+    } catch(...) {
+      FAIL() << report_uncaught_exception(program);
+    }
+  }
+}
+
+TEST(TestPrattParser, AdvancedChainExpressions)
+{
+  using diagnostic::SyntaxError;
+
+  PrattExprs exprs = {
+    "name1.fun1(name2.fun2()).func3()"sv,
+    "name1.fun1(name2.fun2(0)).func3(3 + 2, 3)"sv,
+    "name1.fun1(name2.fun2(0)).func3(3 + 2, 3, num3 + 32)"sv,
+    "name1.fun1(name2.fun2(0)).func3(3 + 2, 3, num3 * 32)"sv,
+  };
+
+  for(auto&& program : exprs) {
+    auto parser{prep_parser(program)};
+
+    try {
+      auto node{parser.pratt_parse([](PrattParser& pratt) {
+        return pratt.chain_expr();
+      })};
 
       EXPECT_TRUE(node != nullptr) << report_parse_failure(program);
     } catch(SyntaxError& err) {
@@ -179,15 +226,20 @@ TEST(TestPrattParser, BasicInvalidExpressions)
 {
   using diagnostic::SyntaxError;
 
-  PrattExprs exprs = {
-    ""sv, "2 + "sv, "2 + * 2"sv, "( 2 + * 2"sv, "( num1 + num2"sv,
-  };
+  PrattExprs exprs = {""sv,          "2 + "sv,          "2 + * 2"sv,
+                      "( 2 + * 2"sv, "( num1 + num2"sv, "func("sv,
+                      "(fun"sv};
+
+  // FIXME: "fun)" is parsed as IDENTIFIER and then).
+  // This might only be like this in testing.
 
   for(auto&& program : exprs) {
-    const auto parser{prep_pratt_parser(program)};
+    auto parser{prep_parser(program)};
 
     try {
-      auto node{parser->expr()};
+      auto node{parser.pratt_parse([](PrattParser& pratt) {
+        return pratt.expr();
+      })};
 
       EXPECT_TRUE(node == nullptr) << report_parse_failure(program);
     } catch([[maybe_unused]]

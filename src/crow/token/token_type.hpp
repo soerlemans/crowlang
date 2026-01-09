@@ -32,7 +32,7 @@ enum class TokenType {
   MACRO,
   CONST,
 
-  // Typing:
+  // User Types:
   ALIAS,
   ENUM,
   STRUCT,

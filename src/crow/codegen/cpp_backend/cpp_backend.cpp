@@ -190,7 +190,7 @@ auto CppBackend::visit(Return* t_ret) -> Any
 auto CppBackend::visit(Parameter* t_param) -> Any
 {
   const auto id{t_param->identifier()};
-  const auto type{t_param->type()};
+  const auto type{type_variant2cpp(t_param->get_type())};
 
   return std::format("{} {}", type, id);
 }
@@ -449,6 +449,13 @@ auto CppBackend::visit(Decrement* t_dec) -> Any
   return std::format("{}--{}", left, terminate_str);
 }
 
+auto CppBackend::visit(AddressOf* t_addr_of) -> Any
+{
+  const auto left{resolve(t_addr_of->left())};
+
+  return std::format("&({})", left);
+}
+
 auto CppBackend::visit(UnaryPrefix* t_up) -> Any
 {
   const auto op{t_up->op2str()};
@@ -536,7 +543,7 @@ auto CppBackend::visit([[maybe_unused]] Boolean* t_bool) -> Any
   return std::format("{}", value);
 }
 
-// Typing:
+// User Types:
 auto CppBackend::visit(Method* t_meth) -> Any
 {
   using node::node_traits::AttributeType;
@@ -544,8 +551,8 @@ auto CppBackend::visit(Method* t_meth) -> Any
   const auto identifier{t_meth->identifier()};
   const auto receiver_type{t_meth->get_receiver()};
 
-  // const auto fn_type{t_meth->get_type()};
-  // const auto ret_type{type_variant2cpp(fn_type->m_return_type)};
+  const auto meth_type{t_meth->get_type().as_function()};
+  const auto ret_type{type_variant2cpp(meth_type->m_return_type)};
 
   std::stringstream param_ss{};
 
@@ -568,8 +575,7 @@ auto CppBackend::visit(Method* t_meth) -> Any
   }
 
   // clang-format off
-  // ss << std::format("auto {}({}) -> {}\n", identifier, param_ss.str(), ret_type)
-  ss << std::format("auto {}::{}({}) -> {}\n", receiver_type, identifier, param_ss.str(), "void")
+  ss << std::format("auto {}::{}({}) -> {}\n", receiver_type, identifier, param_ss.str(), ret_type)
      << "{\n"
      << resolve(t_meth->body())
      << "}\n";

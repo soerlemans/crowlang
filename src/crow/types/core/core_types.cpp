@@ -17,12 +17,17 @@ auto FnType::native_type() const -> core::NativeTypeOpt
   return {};
 }
 
+// PointerType:
+auto PointerType::native_type() const -> core::NativeTypeOpt
+{
+  return m_type.native_type();
+}
+
 // VarType:
 auto VarType::native_type() const -> core::NativeTypeOpt
 {
   return m_type.native_type();
 }
-
 } // namespace types::core
 
 // Functions:
@@ -57,6 +62,20 @@ auto operator<<(std::ostream& t_os, types::core::FnTypePtr t_fn)
 
   } else {
     DBG_ERROR("(FnTypePtr) nullptr!");
+
+    t_os << "nullptr";
+  }
+
+  return t_os;
+}
+
+auto operator<<(std::ostream& t_os, types::core::PointerTypePtr t_ptr)
+  -> std::ostream&
+{
+  if(t_ptr) {
+    t_os << t_ptr->m_type;
+  } else {
+    DBG_ERROR("(PointerTypePtr) nullptr!");
 
     t_os << "nullptr";
   }

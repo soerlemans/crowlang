@@ -26,6 +26,15 @@ func init_example_struct() -> ExampleStruct {
   return example
 }
 
+
+func pass_example_struct(param: ExampleStruct) -> ExampleStruct{
+  var example: ExampleStruct
+
+  param.m_num1 = 200
+
+  return param
+}
+
 func main() -> int {
   // var example: ExampleStruct = init_example_struct()
   var example: ExampleStruct
@@ -33,11 +42,9 @@ func main() -> int {
 
   init_example_struct()
 
-  // Need to deal with this in grammar.
-  let test1 = example.set()
-  example.set()
+  let returned_example = pass_example_struct(example)
 
-  let test = example.m_num1
+  let test = example.set()
 
   return test
 }

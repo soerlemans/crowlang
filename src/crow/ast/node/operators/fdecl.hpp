@@ -4,6 +4,7 @@
 // Forward Declarations:
 namespace ast::node::operators {
 // UnaryOperator derived classes:
+class AddressOf;
 class UnaryPrefix;
 class Increment;
 class Decrement;

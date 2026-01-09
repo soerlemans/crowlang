@@ -4,39 +4,45 @@
 // STL Includes:
 #include <string>
 
-// Absolute Includes:
-#include "crow/parser/pratt/pratt_parser.hpp"
+// Relative Includes:
+#include "pratt/pratt_parser.hpp"
+#include "type/type_parser.hpp"
 
 // Local Includes:
 #include "context/context_guard.hpp"
 
 namespace parser::crow {
-// Forward Declarations:
-class CrowParser;
-
 // Using Statements:
 using ast::node::packaging::Import;
 using context::Context;
 using context::ContextStore;
+using pratt::PrattParser;
+using pratt::PrattParserDelegate;
+using type::TypeParser;
 
 // Aliases:
 using EvalPair = std::pair<NodePtr, NodePtr>;
-using CrowParserPtr = std::unique_ptr<CrowParser>;
+
+template<typename T>
+using AccessorFn = std::function<NodePtr(T&)>;
 
 // Classes:
 /*!
  * Top down parser of the Crow language.
  * See crow.yy for grammar specification (BNF).
  */
-class CrowParser : public pratt::PrattParser {
+class CrowParser : public Parser, public PrattParserDelegate {
   private:
+  PrattParser m_pratt;
+  TypeParser m_type;
+
   ContextStore m_store;
 
   protected:
   /*!
-   * Check if a certain context is enabled.
+   * Check if a certain parsing context is enabled.
    *
-   * @note If the passed Context is not enabled throw a @ref SyntaxError.
+   * @note If the passed Context is not enabled throws a @ref SyntaxError.
    *
    * @param[in] t_context Context to check for.
    */
@@ -44,10 +50,11 @@ class CrowParser : public pratt::PrattParser {
 
   public:
   CrowParser(TokenStream t_token_stream);
+  CrowParser(ParserContextPtr t_ctx);
 
   // Grammar:
-  auto newline_opt() -> void override;
-  auto terminator() -> void override;
+  virtual auto newline_opt() -> void;
+  virtual auto terminator() -> void;
 
   // Expressions:
   virtual auto literal_list() -> NodeListPtr;
@@ -63,7 +70,7 @@ class CrowParser : public pratt::PrattParser {
 
   // Expression lists:
   virtual auto expr_list() -> NodeListPtr;
-  auto expr_list_opt() -> NodeListPtr override;
+  virtual auto expr_list_opt() -> NodeListPtr;
 
   // Result statement:
   virtual auto assignment() -> NodePtr;
@@ -94,14 +101,14 @@ class CrowParser : public pratt::PrattParser {
 
   virtual auto type_def() -> NodePtr;
 
-  auto self() -> NodePtr override;
+  virtual auto self() -> NodePtr;
 
   // Function:
   virtual auto param_list() -> NodeListPtr;
   virtual auto param_list_opt() -> NodeListPtr;
 
-  virtual auto return_type() -> std::string;
-  virtual auto return_type_opt() -> std::string;
+  virtual auto return_type() -> NodePtr;
+  virtual auto return_type_opt() -> NodePtr;
 
   virtual auto lambda() -> NodePtr;
   virtual auto function() -> NodePtr;
@@ -127,7 +134,13 @@ class CrowParser : public pratt::PrattParser {
 
   virtual auto program() -> NodeListPtr;
 
-  auto parse() -> NodePtr override;
+  //! Produces AST.
+  virtual auto parse() -> NodePtr;
+
+  // Used to expose pratt and type parsing.
+  // As the parsers are cyclicly dependent on eachother.
+  virtual auto pratt_parse(AccessorFn<PrattParser> t_fn) -> NodePtr;
+  virtual auto type_parse(AccessorFn<TypeParser> t_fn) -> NodePtr;
 
   virtual ~CrowParser() = default;
 };

@@ -15,7 +15,7 @@
  * TODO: Describe @ref TypeVariant usage and why it is a good idea.
  */
 
-namespace semantic::symbol {
+namespace types::symbol {
 // Forward Declarations;
 class SymbolData;
 
@@ -49,8 +49,7 @@ struct StructType {
   MemberMap m_members;
   MethodMap m_methods;
 
-  // We dont need a resolve_result_type() function cause a struct.
-  // Is already a result type.
+  auto resolve_result_type() const -> SymbolData;
 
   auto native_type() const -> NativeTypeOpt;
   auto type_variant() const -> TypeVariant;
@@ -69,6 +68,17 @@ struct FnType {
   auto type_variant() const -> TypeVariant;
 
   auto operator==(const FnType&) const -> bool = default;
+};
+
+struct PointerType {
+  SymbolData m_type;
+
+  auto resolve_result_type() const -> SymbolData;
+
+  auto native_type() const -> NativeTypeOpt;
+  auto type_variant() const -> TypeVariant;
+
+  auto operator==(const PointerType&) const -> bool = default;
 };
 
 // TODO: Ignore m_const value when comparing
@@ -99,10 +109,16 @@ auto make_function(Args&&... t_args) -> SymbolData
 }
 
 template<typename... Args>
+auto make_pointer(Args&&... t_args) -> SymbolData
+{
+  return {std::make_shared<PointerType>(std::forward<Args>(t_args)...)};
+}
+
+template<typename... Args>
 auto make_variable(Args&&... t_args) -> SymbolData
 {
   return {std::make_shared<VarType>(std::forward<Args>(t_args)...)};
 }
-} // namespace semantic::symbol
+} // namespace types::symbol
 
 #endif // CROW_CROW_TYPES_SEMANTIC_SYMBOL_TYPES_HPP

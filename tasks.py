@@ -10,10 +10,16 @@ TODO: Document.
 from invoke import task
 
 # Standard Imports:
+import os
 import sys
 import json
 import multiprocessing
 from enum import StrEnum
+
+
+# Change current working directory to location of the tasks.py dir.
+ABS_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+os.chdir(ABS_SCRIPT_DIR)
 
 
 # Globals:
@@ -56,7 +62,7 @@ def cmake_parallel_arg(t_parallel: bool) -> str:
         # max_jobs = multiprocessing.cpu_count() // 3
         # arg = f'--parallel {max_jobs}'
 
-        arg = f'--parallel 4'
+        arg = f'--parallel 6 '
         pass
 
     return arg
@@ -98,14 +104,17 @@ def cmake_mode_args(t_mode: str) -> str:
     return args
 
 
-def cmake(t_ctx, t_mode: str, t_parallel: bool, t_lint=False):
+def cmake(t_ctx, t_mode: str, t_parallel: bool, t_lint=False, t_ci_build=False):
     'TODO: Document.'
     parallel_arg = cmake_parallel_arg(t_parallel)
     build_args = cmake_mode_args(t_mode)
 
     # Perform static analysis if specified.
     if t_lint:
-        build_args += '-DCROW_CLANG_TIDY=TRUE'
+        build_args += '-DCROW_CLANG_TIDY=TRUE '
+
+    if t_ci_build:
+        build_args += '-DCROW_CI_BUILD=TRUE '
 
     # Always print version info.
     run(t_ctx, 'cmake --version')
@@ -176,14 +185,14 @@ def uninstall(ctx):
 
 # TODO: Shorten help string, possibly use a global?
 @task(help={'mode': '', 'parallel': 'Flag indicating concurrent builds.', 'lint': 'Perform static analysis on source code using clang-tidy'})
-def build(ctx, mode='', parallel=True, lint=False):
+def build(ctx, mode='', parallel=True, lint=False, ci_build=False):
     'Build the project.'
     log('Building project.')
-    log_args(mode=mode, parallel=parallel, lint=lint)
+    log_args(mode=mode, parallel=parallel, lint=lint, ci_build=ci_build)
 
     enum_values = [ item.value for item in BuildProfile ]
     mode = mode if mode in enum_values else 'build'
-    cmake(ctx, mode, parallel, lint)
+    cmake(ctx, mode, parallel, lint, ci_build)
     pass
 
 
@@ -237,7 +246,7 @@ def setup(ctx):
             pass
 
         case 'win32':
-            print('Currently the setup script does not support Windows.')
+            print('Error: Currently the setup script does not support Windows.')
             pass
 
         case 'darwin':

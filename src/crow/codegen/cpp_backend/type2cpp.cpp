@@ -16,18 +16,22 @@
 
 namespace {
 // Using Declarations:
+using types::core::FnTypePtr;
 using types::core::NativeType;
 using types::core::nativetype2str;
+using types::core::PointerTypePtr;
+using types::core::StructTypePtr;
+using types::core::VarTypePtr;
 
 // Functions:
 /*!
  * @warning Make sure that <cstdint> is included for the fixed width integers.
  */
-auto native_type2cpp(const NativeType t_type) -> std::string_view
+inline auto native_type2cpp(const NativeType t_type) -> std::string
 {
   using lib::stdexcept::throw_invalid_argument;
 
-  std::string_view str{};
+  std::string str{};
 
   // FIXME: Currently the C++ fixed width floating point types.
   // Are not yet supported by clang libc++.
@@ -67,18 +71,37 @@ auto native_type2cpp(const NativeType t_type) -> std::string_view
   return str;
 }
 
-/*!
- * FIXME: Implement type resolution to C++ types for user defined types.
- * This could be a function pointers or structs.
- *
- * @note @ref FnType when resolved will probably need to return its return type.
- * Resolving parameter types
- */
-template<typename T>
-auto user_type2cpp(const std::shared_ptr<T>& t_data) -> std::string_view
+inline auto struct2cpp(const StructTypePtr& t_struct) -> std::string
 {
+  return t_struct->m_identifier;
+}
+
+inline auto fn2cpp(const FnTypePtr& t_type) -> std::string
+{
+  // TODO: Throw?
+
   return {};
 }
+
+inline auto pointer2cpp(const PointerTypePtr& t_ptr) -> std::string
+{
+  using codegen::cpp_backend::type_variant2cpp;
+
+  auto base_type{type_variant2cpp(t_ptr->m_type)};
+
+  return std::format("{}*", base_type);
+}
+
+// Could be used for decltype() or similar.
+inline auto var2cpp(const VarTypePtr& t_var) -> std::string
+{
+  using codegen::cpp_backend::type_variant2cpp;
+
+  auto base_type{type_variant2cpp(t_var->m_type)};
+
+  return std::format("{}", base_type);
+}
+
 } // namespace
 
 namespace codegen::cpp_backend {
@@ -89,21 +112,25 @@ auto type_variant2cpp(const TypeVariant& t_variant) -> std::string
 {
   using lib::Overload;
 
-  std::string str{};
-
-  if(const auto opt{t_variant.native_type()}; opt) {
-    str = native_type2cpp(opt.value());
-  } else if(const auto struct_ptr{t_variant.as_struct()}; struct_ptr) {
-    str = struct_ptr->m_identifier;
-  }
-
-
-  // FIXME: Get the overloads to work.
-  // I am getting some strange template error fix this later.
-
-  // return std::visit(Overload{native_type2cpp_type, user_type2cpp_type},
-  //                   symbol_data);
-
-  return str;
+  // clang-format off
+  return std::visit(
+					Overload{
+						[](const NativeType t_native) {
+							return native_type2cpp(t_native);
+						},
+						[](const StructTypePtr& t_struct) {
+							return struct2cpp(t_struct);
+						},
+						[](const FnTypePtr& t_fn) {
+							return fn2cpp(t_fn);
+						},
+						[](const PointerTypePtr& t_ptr) {
+							return pointer2cpp(t_ptr);
+						},
+						[](const VarTypePtr& t_var) {
+							return var2cpp(t_var);
+						}},
+					t_variant);
+	// clang-format off
 }
 } // namespace codegen::cpp_backend

@@ -19,7 +19,7 @@
  * And @ref SymbolData.
  */
 
-namespace semantic::symbol {
+namespace types::symbol {
 // Using Statements:
 using types::core::NativeType;
 using types::core::NativeTypeOpt;
@@ -27,7 +27,7 @@ using types::core::TypeVariant;
 
 // Aliases:
 using Variant = std::variant<std::monostate, NativeType, StructTypePtr,
-                             FnTypePtr, VarTypePtr>;
+                             FnTypePtr, PointerTypePtr, VarTypePtr>;
 
 // Classes:
 // FIXME: We probably should probably not inherit from Variant.
@@ -48,6 +48,7 @@ class SymbolData : public Variant {
   // Only use these methods if you are sure about the underlying type.
   auto as_struct() const -> StructTypePtr;
   auto as_function() const -> FnTypePtr;
+  auto as_ptr() const -> PointerTypePtr;
   auto as_var() const -> VarTypePtr;
 
   //! Verify if a symbol is struct type.
@@ -83,10 +84,10 @@ class SymbolData : public Variant {
 
   virtual ~SymbolData() = default;
 };
-} // namespace semantic::symbol
+} // namespace types::symbol
 
 // Functions:
-auto operator<<(std::ostream& t_os, const semantic::symbol::SymbolData& t_data)
+auto operator<<(std::ostream& t_os, const types::symbol::SymbolData& t_data)
   -> std::ostream&;
 
 #endif // CROW_CROW_TYPES_SEMANTIC_SYMBOL_DATA_HPP

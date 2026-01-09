@@ -32,6 +32,12 @@ struct FnType {
   auto native_type() const -> core::NativeTypeOpt;
 };
 
+struct PointerType {
+  TypeVariant m_type;
+
+  auto native_type() const -> core::NativeTypeOpt;
+};
+
 struct VarType {
   TypeVariant m_type;
 
@@ -56,12 +62,20 @@ inline auto make_variable(Args&&... t_args) -> TypeVariant
 {
   return std::make_shared<VarType>(std::forward<Args>(t_args)...);
 }
+
+template<typename... Args>
+inline auto make_pointer(Args&&... t_args) -> TypeVariant
+{
+  return std::make_shared<PointerType>(std::forward<Args>(t_args)...);
+}
 } // namespace types::core
 
 // Functions:
 auto operator<<(std::ostream& t_os, types::core::StructTypePtr t_struct)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, types::core::FnTypePtr t_fn)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os, types::core::PointerTypePtr t_var)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, types::core::VarTypePtr t_var)
   -> std::ostream&;

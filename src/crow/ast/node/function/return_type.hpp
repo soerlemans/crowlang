@@ -15,7 +15,7 @@ using node_traits::TypeData;
 // Classes:
 class ReturnType : public TypeAnnotation, public TypeData {
   public:
-  ReturnType(std::string_view t_type);
+  ReturnType(NodePtr&& t_type);
 
   AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(ReturnType, TypeAnnotation)
   AST_VISITOR_MAKE_VISITABLE(visitor::NodeVisitor);

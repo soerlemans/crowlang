@@ -61,7 +61,7 @@ auto nullptr_check(const std::string_view t_str,
 }
 } // namespace
 
-namespace semantic::symbol {
+namespace types::symbol {
 // Methods:
 auto SymbolData::as_struct() const -> StructTypePtr
 {
@@ -71,6 +71,11 @@ auto SymbolData::as_struct() const -> StructTypePtr
 auto SymbolData::as_function() const -> FnTypePtr
 {
   return std::get<FnTypePtr>(*this);
+}
+
+auto SymbolData::as_ptr() const -> PointerTypePtr
+{
+  return std::get<PointerTypePtr>(*this);
 }
 
 auto SymbolData::as_var() const -> VarTypePtr
@@ -118,22 +123,15 @@ auto SymbolData::resolve_result_type() const -> SymbolData
     return SymbolData{t_type};
   }};
 
-  const auto struct_handler{[&](const StructTypePtr& t_ptr) {
-    nullptr_check("Resolve result type", t_ptr);
-
-    return SymbolData{t_ptr};
-  }};
-
   const auto rest{[&]<typename T>(const std::shared_ptr<T>& t_ptr) {
     nullptr_check("Resolve result type", t_ptr);
 
     return t_ptr->resolve_result_type();
   }};
 
-  data = std::visit(
-    Overload{native, struct_handler, rest, MonoStateHandler<SymbolData>{}},
-    *this);
 
+  data =
+    std::visit(Overload{native, rest, MonoStateHandler<SymbolData>{}}, *this);
 
   return data;
 }
@@ -202,7 +200,7 @@ auto SymbolData::operator==(const SymbolData& t_rhs) const -> bool
         // NativeType is just a simple compare.
         return (t_l == t_r);
       } else if constexpr(lib::IsAnyOf<L, StructTypePtr, FnTypePtr,
-                                       VarTypePtr>) {
+                                       PointerTypePtr, VarTypePtr>) {
         if(t_l && t_r) {
           // Compare resolved pointers.
           return (*t_l == *t_r);
@@ -232,10 +230,10 @@ auto SymbolData::operator!=(const SymbolData& t_rhs) const -> bool
   // Reuse operator== logic.
   return !(lhs == t_rhs);
 }
-} // namespace semantic::symbol
+} // namespace types::symbol
 
 // Functions:
-auto operator<<(std::ostream& t_os, const semantic::symbol::SymbolData& t_data)
+auto operator<<(std::ostream& t_os, const types::symbol::SymbolData& t_data)
   -> std::ostream&
 {
   std::visit(

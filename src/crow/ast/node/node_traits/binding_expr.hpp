@@ -26,7 +26,7 @@ class BindingExpr : public NodePosition,
                     public InitExpr {
   public:
   BindingExpr(TextPosition&& t_pos, std::string_view t_identifier,
-              std::string_view t_type, NodePtr&& t_init);
+              NodePtr&& t_type, NodePtr&& t_init);
 
   AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(BindingExpr, NodePosition, Identifier,
                                       TypeAnnotation, InitExpr)

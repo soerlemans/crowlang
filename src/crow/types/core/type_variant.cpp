@@ -22,6 +22,11 @@ auto TypeVariant::as_function() const -> FnTypePtr
   return std::get<FnTypePtr>(*this);
 }
 
+auto TypeVariant::as_ptr() const -> PointerTypePtr
+{
+  return std::get<PointerTypePtr>(*this);
+}
+
 auto TypeVariant::as_var() const -> VarTypePtr
 {
   return std::get<VarTypePtr>(*this);

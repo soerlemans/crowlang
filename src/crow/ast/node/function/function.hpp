@@ -25,7 +25,7 @@ class Function : public Identifier,
                  public AttributeData {
   public:
   Function(std::string_view t_identifier, NodeListPtr&& t_params,
-           std::string_view t_type, NodeListPtr&& t_body);
+           NodePtr&& t_type, NodeListPtr&& t_body);
 
   AST_ARCHIVE_MAKE_TRAITS_ARCHIVEABLE(Function, Identifier, Params,
                                       TypeAnnotation, Body)

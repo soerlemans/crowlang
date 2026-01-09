@@ -61,7 +61,43 @@ function(cxx_configure_target T_TARGET)
 		${CMAKE_CXX_WARNING_FLAGS}
 		$<$<CONFIG:Release>:${CMAKE_CXX_RELEASE_FLAGS}>
 		$<$<CONFIG:RelWithDebInfo>:${CMAKE_CXX_RELEASE_FLAGS}>
-	)
+	  )
+
+
+      # Github actions updates timestamp on checkout.
+      # Always invalidating the PCH.
+      if(NOT DEFINED CROW_CI_BUILD)
+        # Precompile commonly used STL headers.
+        target_precompile_headers(${T_TARGET} PRIVATE
+          <any>
+          <array>
+          <algorithm>
+          <exception>
+          <filesystem>
+          <functional>
+          <fstream>
+          <format>
+          <iomanip>
+          <iosfwd>
+          <iostream>
+          <list>
+          <map>
+          <memory>
+          <optional>
+          <ostream>
+          <vector>
+          <ranges>
+          <stack>
+          <string>
+          <string_view>
+          <sstream>
+          <type_traits>
+          <stdexcept>
+          <tuple>
+          <unordered_map>
+          <variant>
+        )
+      endif()
 endfunction()
 
 

@@ -67,23 +67,27 @@ auto SemanticValidator::validate_binding_expr(const BindingExprData& t_data)
     const auto type_data{type_opt.value()};
     const auto init_data{init_opt.value()};
 
-    const auto promote_opt{
-      promote(type_data, init_data, PromotionMode::PROMOTE_TO_LHS)};
-    if(promote_opt) {
-      binding_data = promote_opt.value();
+    if(type_data == init_data) {
+      binding_data = type_data;
     } else {
-      // Type annotation and expression deduced type do not match.
-      std::stringstream err_ss{};
-      const auto var{std::quoted(id)};
+      const auto promote_opt{
+        promote(type_data, init_data, PromotionMode::PROMOTE_TO_LHS)};
+      if(promote_opt) {
+        binding_data = promote_opt.value();
+      } else {
+        // Type annotation and expression deduced type do not match.
+        std::stringstream err_ss{};
+        const auto var{std::quoted(id)};
 
-      err_ss << "Init of " << var << " contains a type mismatch.\n\n";
+        err_ss << "Init of " << var << " contains a type mismatch.\n\n";
 
-      err_ss << "typeof " << var << " = " << type_data << "\n";
-      err_ss << "typeof init_expr_data = " << init_data << "\n\n";
+        err_ss << "typeof " << var << " = " << type_data << "\n";
+        err_ss << "typeof init_expr_data = " << init_data << "\n\n";
 
-      err_ss << pos;
+        err_ss << pos;
 
-      throw_type_error(err_ss.str());
+        throw_type_error(err_ss.str());
+      }
     }
 
     // <let|var> var: type

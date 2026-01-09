@@ -46,6 +46,9 @@ crow.toml
 # Generated version header:
 src/crow/definitions.hpp
 
+# Ignore any MacOS specific debug folders. 
+*.dSYM/*
+
 # Build directories
 build/*
 debug-build/*

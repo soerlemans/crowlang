@@ -17,6 +17,7 @@
 #include "annotation_queue.hpp"
 #include "semantic_validator.hpp"
 #include "symbol_env_state.hpp"
+#include "type_node_evaluator.hpp"
 #include "type_promoter.hpp"
 
 /*!
@@ -41,15 +42,17 @@ using node::node_traits::AttributeData;
 using node::node_traits::AttributeMetadata;
 using node::node_traits::AttributeSeq;
 using node::node_traits::TypeData;
-using symbol::SymbolData;
-using symbol::SymbolDataList;
 using types::core::NativeType;
 using types::core::NativeTypeOpt;
+using types::symbol::MemberSymbol;
+using types::symbol::MethodSymbol;
+using types::symbol::SymbolData;
+using types::symbol::SymbolDataList;
 
 // Aliases:
 //! Stores active contexts.
 using AttributeContext = AttributeSeq;
-using ActiveStruct = std::optional<symbol::StructTypePtr>;
+using ActiveStruct = std::optional<types::symbol::StructTypePtr>;
 
 // Classes:
 // TODO: Add check for checking if the AST only has a single module
@@ -71,6 +74,7 @@ class SemanticChecker : public NodeVisitor {
   SemanticValidator m_validator;
 
   SymbolEnvState m_symbol_state;
+  TypeNodeEvaluator m_node_evaluator;
   AttributeContext m_active_attrs;
 
   // Used to resolve self to type.
@@ -84,7 +88,8 @@ class SemanticChecker : public NodeVisitor {
   auto pop_env() -> void;
   auto clear_env() -> void;
 
-  auto str2type(std::string_view t_typename) -> SymbolData;
+  auto str2symbol_data(std::string_view t_type_id) -> SymbolData;
+  auto node2symbol_data(NodePtr t_type_node) -> SymbolData;
 
   /*!
    * Annotate a node with its attribute data.
@@ -109,10 +114,10 @@ class SemanticChecker : public NodeVisitor {
     -> void;
 
   auto add_struct_member_definition(SymbolData& t_struct,
-                                    const symbol::MemberSymbol& t_sym) -> void;
+                                    const MemberSymbol& t_sym) -> void;
 
   auto add_struct_method_definition(SymbolData& t_struct,
-                                    const symbol::MethodSymbol& t_sym) -> void;
+                                    const MethodSymbol& t_sym) -> void;
 
   [[nodiscard("Pure method must use result.")]]
   auto get_symbol_data_from_env(std::string_view t_id) -> SymbolData&;
@@ -171,6 +176,7 @@ class SemanticChecker : public NodeVisitor {
   auto visit(node::operators::Increment* t_inc) -> Any override;
   auto visit(node::operators::Decrement* t_dec) -> Any override;
 
+  auto visit(node::operators::AddressOf* t_addr_of) -> Any override;
   auto visit(node::operators::UnaryPrefix* t_up) -> Any override;
 
   // Logical:
@@ -190,14 +196,14 @@ class SemanticChecker : public NodeVisitor {
   auto visit(node::rvalue::String* t_str) -> Any override;
   auto visit(node::rvalue::Boolean* t_bool) -> Any override;
 
-  // Typing:
-  auto visit(node::typing::Method* t_meth) -> Any override;
-  auto visit(node::typing::Interface* t_ifc) -> Any override;
-  auto visit(node::typing::MemberDecl* t_meth) -> Any override;
-  auto visit(node::typing::Struct* t_struct) -> Any override;
-  auto visit(node::typing::Self* t_self) -> Any override;
-  auto visit(node::typing::Member* t_member) -> Any override;
-  auto visit(node::typing::MemberAccess* t_access) -> Any override;
+  // User Types:
+  auto visit(node::user_types::Method* t_meth) -> Any override;
+  auto visit(node::user_types::Interface* t_ifc) -> Any override;
+  auto visit(node::user_types::MemberDecl* t_meth) -> Any override;
+  auto visit(node::user_types::Struct* t_struct) -> Any override;
+  auto visit(node::user_types::Self* t_self) -> Any override;
+  auto visit(node::user_types::Member* t_member) -> Any override;
+  auto visit(node::user_types::MemberAccess* t_access) -> Any override;
 
   auto check(NodePtr t_ast) -> void;
 

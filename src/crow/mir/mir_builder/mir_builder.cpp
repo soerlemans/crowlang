@@ -919,7 +919,7 @@ auto MirBuilder::visit(Boolean* t_bool) -> Any
   return {};
 }
 
-// Typing:
+// User Types:
 STUB(Method)
 STUB(Interface)
 STUB(MemberDecl)

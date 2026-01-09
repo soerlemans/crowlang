@@ -7,5 +7,6 @@ target_sources(${TARGET_CROW_LIB} PRIVATE
   increment.cpp
   logical.cpp
   ternary.cpp
+	address_of.cpp
   unary_prefix.cpp
 )

@@ -4,8 +4,15 @@
 #include "crow/debug/log.hpp"
 
 // Using Statements:
-namespace semantic::symbol {
+namespace types::symbol {
 // StructType:
+auto StructType::resolve_result_type() const -> SymbolData
+{
+  using types::symbol::make_struct;
+
+  return make_struct(*this);
+}
+
 auto StructType::native_type() const -> NativeTypeOpt
 {
   return {};
@@ -31,8 +38,9 @@ auto StructType::type_variant() const -> TypeVariant
 // FnType:
 auto FnType::resolve_result_type() const -> SymbolData
 {
-  // Get return type as it is the result of a function call.
-  return SymbolData{m_return_type};
+  using types::symbol::make_function;
+
+  return make_function(*this);
 }
 
 auto FnType::native_type() const -> NativeTypeOpt
@@ -51,6 +59,27 @@ auto FnType::type_variant() const -> TypeVariant
   return {make_function(params, m_return_type.type_variant())};
 }
 
+// PointerType:
+auto PointerType::resolve_result_type() const -> SymbolData
+{
+  using types::symbol::make_pointer;
+
+  // Make sure to resolve underlying type.
+  return make_pointer(m_type.resolve_result_type());
+}
+
+auto PointerType::native_type() const -> NativeTypeOpt
+{
+  return {std::nullopt};
+}
+
+auto PointerType::type_variant() const -> TypeVariant
+{
+  using types::core::make_pointer;
+
+  return {make_pointer(m_type.type_variant())};
+}
+
 // VarType:
 auto VarType::is_mutable() const -> bool
 {
@@ -60,7 +89,7 @@ auto VarType::is_mutable() const -> bool
 auto VarType::resolve_result_type() const -> SymbolData
 {
   // Get underlying type.
-  return SymbolData{m_type};
+  return m_type.resolve_result_type();
 }
 
 auto VarType::native_type() const -> NativeTypeOpt
@@ -74,4 +103,4 @@ auto VarType::type_variant() const -> TypeVariant
 
   return {make_variable(m_type.type_variant())};
 }
-} // namespace semantic::symbol
+} // namespace types::symbol

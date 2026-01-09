@@ -208,6 +208,16 @@ auto AstPrinter::visit(Decrement* t_dec) -> Any
   return {};
 }
 
+auto AstPrinter::visit(AddressOf* t_addr_of) -> Any
+{
+  COUNTG_INIT();
+
+  print("AddressOf");
+  print_traits(t_addr_of);
+
+  return {};
+}
+
 auto AstPrinter::visit(UnaryPrefix* t_up) -> Any
 {
   COUNTG_INIT();
@@ -294,7 +304,28 @@ auto AstPrinter::visit(Boolean* t_bool) -> Any
   return {};
 }
 
-// Typing:
+// Builtin Types:
+auto AstPrinter::visit(Pointer* t_ptr) -> Any
+{
+  COUNTG_INIT();
+
+  print("Pointer");
+  print_traits(t_ptr);
+
+  return {};
+}
+
+auto AstPrinter::visit(TypeName* t_type) -> Any
+{
+  COUNTG_INIT();
+
+  print("TypeName");
+  print_traits(t_type);
+
+  return {};
+}
+
+// User Types:
 auto AstPrinter::visit(Method* t_meth) -> Any
 {
   COUNTG_INIT();
