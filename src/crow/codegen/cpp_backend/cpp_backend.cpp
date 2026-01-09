@@ -449,6 +449,13 @@ auto CppBackend::visit(Decrement* t_dec) -> Any
   return std::format("{}--{}", left, terminate_str);
 }
 
+auto CppBackend::visit(AddressOf* t_addr_of) -> Any
+{
+  const auto left{resolve(t_addr_of->left())};
+
+  return std::format("&({})", left);
+}
+
 auto CppBackend::visit(UnaryPrefix* t_up) -> Any
 {
   const auto op{t_up->op2str()};

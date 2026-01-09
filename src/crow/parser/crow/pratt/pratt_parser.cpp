@@ -113,6 +113,26 @@ auto PrattParser::negation() -> NodePtr
   return node;
 }
 
+auto PrattParser::address_of() -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node{};
+
+  const auto token{get_token()};
+  if(next_if(TokenType::AMPERSAND)) {
+    DBG_TRACE_PRINT(VERBOSE, "Found 'ADDRESS OF'");
+
+    NodePtr rhs{prefix_expr(token.type())};
+    if(!rhs) {
+      throw_syntax_error("Expected an expression after &.");
+    }
+
+    node = make_node<AddressOf>(std::move(rhs));
+  }
+
+  return node;
+}
+
 //! Parses unary prefixes like having a + or - before an expression
 auto PrattParser::unary_prefix() -> NodePtr
 {
@@ -214,6 +234,8 @@ auto PrattParser::prefix() -> NodePtr
   NodePtr node{};
 
   if(auto ptr{grouping()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{address_of()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{unary_prefix()}; ptr) {
     node = std::move(ptr);

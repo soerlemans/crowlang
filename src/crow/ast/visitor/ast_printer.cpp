@@ -208,6 +208,16 @@ auto AstPrinter::visit(Decrement* t_dec) -> Any
   return {};
 }
 
+auto AstPrinter::visit(AddressOf* t_addr_of) -> Any
+{
+  COUNTG_INIT();
+
+  print("AddressOf");
+  print_traits(t_addr_of);
+
+  return {};
+}
+
 auto AstPrinter::visit(UnaryPrefix* t_up) -> Any
 {
   COUNTG_INIT();

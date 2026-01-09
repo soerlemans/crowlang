@@ -744,11 +744,22 @@ auto SemanticChecker::visit(Decrement* t_dec) -> Any
   return SymbolData{opt.value()};
 }
 
+auto SemanticChecker::visit(AddressOf* t_addr_of) -> Any
+{
+  using types::symbol::make_pointer;
+
+  const auto left{get_symbol_data(t_addr_of->left())};
+
+  /// TODO: Maybe annotate the type data to the AST?
+
+  return make_pointer(left);
+}
+
 auto SemanticChecker::visit(UnaryPrefix* t_up) -> Any
 {
   const auto left{get_symbol_data(t_up->left())};
 
-  // TODO: Implement
+  // TODO: Implement, check if it is a integer type.
 
   return left;
 }
