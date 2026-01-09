@@ -9,6 +9,7 @@
 #include "crow/ast/visitor/ast_printer.hpp"
 #include "crow/codegen/backend_interface.hpp"
 #include "crow/lexer/lexer.hpp"
+#include "crow/preprocessor/preprocessor.hpp"
 #include "crow/mir/mir_builder/mir_builder.hpp"
 #include "crow/parser/crow/crow_parser.hpp"
 #include "crow/semantic/semantic_checker.hpp"
@@ -58,6 +59,23 @@ TranslationUnit::TranslationUnit(BuildUnitPtr t_build_unit,
     m_ast{},
     m_mir{}
 {}
+
+auto TranslationUnit::preprocess(const TextStreamPtr& t_text_stream) -> TextStreamPtr
+{
+  using preprocessor::Preprocessor;
+
+  m_phase = TranslationUnitPhase::PREPROCESSING;
+
+  DBG_PRINTLN("<preprocessing>");
+
+  Preprocessor preprocessor{t_text_stream};
+  const auto processed_file{preprocessor.preprocess()};
+
+  DBG_PRINTLN("</preprocessing>");
+
+  return processed_file;
+}
+
 
 auto TranslationUnit::lex(const TextStreamPtr& t_text_stream) -> TokenStream
 {
@@ -179,9 +197,10 @@ auto TranslationUnit::execute() -> void
 
   m_text_stream = std::make_shared<TextBuffer>(read_file(m_source_file));
 
-  // TODO: Fix operator= for Stream..
+  // TODO: Fix operator= for Stream.
   // m_token_stream = lex(m_text_stream);
-  const auto ts{lex(m_text_stream)};
+  auto buffer{preprocess(m_text_stream)};
+  const auto ts{lex(buffer)};
   m_ast = parse(ts);
   print_ast(m_ast);
 

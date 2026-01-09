@@ -10,6 +10,10 @@
 #include "text_stream.hpp"
 
 namespace container {
+class TextBuffer;
+
+using TextBufferPtr = std::shared_ptr<TextBuffer>;
+
 class TextBuffer : public TextStream {
   private:
   std::vector<std::string> m_buffer;
@@ -25,6 +29,7 @@ class TextBuffer : public TextStream {
   TextBuffer(const std::string_view t_source);
 
   auto add_line(std::string t_line) -> void;
+
   auto next_line() const -> void override;
   auto prev_line() const -> void;
 
@@ -34,7 +39,7 @@ class TextBuffer : public TextStream {
   auto peek() const -> CharOpt override;
 
   auto character() const -> char override;
-  auto line() const -> std::string;
+  auto line() const -> std::string_view;
 
   auto eos() const -> bool override;
 

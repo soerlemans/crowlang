@@ -6,7 +6,7 @@ constexpr std::size_t default_buffer_reserve_size = 1'024;
 
 namespace container {
 // Methods:
-TextBuffer::TextBuffer(): m_lineno{0}, m_columnno{0}
+TextBuffer::TextBuffer(): m_source{}, m_lineno{0}, m_columnno{0}
 {
   m_buffer.reserve(default_buffer_reserve_size);
 }
@@ -78,7 +78,7 @@ auto TextBuffer::character() const -> char
   return m_buffer[m_lineno][m_columnno];
 }
 
-auto TextBuffer::line() const -> std::string
+auto TextBuffer::line() const -> std::string_view
 {
   return m_buffer[m_lineno];
 }

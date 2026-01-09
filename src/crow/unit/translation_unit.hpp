@@ -30,6 +30,7 @@ using token::TokenStream;
  */
 enum class TranslationUnitPhase {
   IDLE,
+  PREPROCESSING,
   LEXING,
   PARSING,
   SEMANTIC_ANALYSIS,
@@ -64,6 +65,9 @@ class TranslationUnit {
 
   public:
   TranslationUnit(BuildUnitPtr t_build_unit, path t_source_file);
+
+  //! Run the preprocessortoken_stream.
+  virtual auto preprocess(const TextStreamPtr& t_text_stream) -> TextStreamPtr;
 
   //! Tokenize the text buffer.
   virtual auto lex(const TextStreamPtr& t_text_stream) -> TokenStream;

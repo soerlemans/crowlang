@@ -31,7 +31,7 @@ class Lexer {
   auto throw_syntax_error(std::string_view t_msg) const -> void;
 
   public:
-  Lexer(TextStreamPtr t_text);
+  explicit Lexer(TextStreamPtr t_text);
 
   // Misc:
   auto newline() -> Token;

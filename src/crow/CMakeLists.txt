@@ -24,6 +24,8 @@ add_subdirectory(settings)
 add_subdirectory(unit)
 
 # Lexing phase:
+add_subdirectory(preprocessor)
+
 add_subdirectory(token)
 add_subdirectory(lexer)
 

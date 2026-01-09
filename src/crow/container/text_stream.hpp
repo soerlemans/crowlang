@@ -29,6 +29,7 @@ class TextStream {
   virtual auto peek() const -> CharOpt = 0;
 
   virtual auto character() const -> char = 0;
+  virtual auto line() const -> std::string_view = 0;
 
   virtual auto eos() const -> bool = 0;
 
