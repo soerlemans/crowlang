@@ -8,7 +8,7 @@
 namespace debug {
 #ifndef NDEBUG
 // Methods:
-auto Trace::indent_text() -> std::string
+auto Trace::indent_text() const -> std::string
 {
   std::stringstream ss{};
 

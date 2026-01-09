@@ -185,7 +185,7 @@ def uninstall(ctx):
 
 # TODO: Shorten help string, possibly use a global?
 @task(help={'mode': '', 'parallel': 'Flag indicating concurrent builds.', 'lint': 'Perform static analysis on source code using clang-tidy'})
-def build(ctx, mode='', parallel=True, lint=False, ci_build=False):
+def build(ctx, mode='build', parallel=True, lint=False, ci_build=False):
     'Build the project.'
     log('Building project.')
     log_args(mode=mode, parallel=parallel, lint=lint, ci_build=ci_build)

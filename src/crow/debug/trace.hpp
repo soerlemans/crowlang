@@ -36,7 +36,7 @@ class Trace {
     }
   }
 
-  auto indent_text() -> std::string;
+  auto indent_text() const -> std::string;
 
   virtual ~Trace();
 };
