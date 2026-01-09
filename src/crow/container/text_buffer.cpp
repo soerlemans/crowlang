@@ -97,7 +97,7 @@ auto TextBuffer::position() const -> TextPosition
 
 auto operator<<(std::ostream& t_os, const TextBuffer& t_tb) -> std::ostream&
 {
-  for(auto& line : t_tb.m_buffer) {
+  for(const auto& line : t_tb.m_buffer) {
     t_os << line;
   }
 
