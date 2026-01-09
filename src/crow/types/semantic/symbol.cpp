@@ -23,6 +23,7 @@ auto operator<<(std::ostream& t_os, StructTypePtr t_struct) -> std::ostream&
     // t_os << "Identifier: " << t_struct->m_identifier;
     // t_os << ", Members: {";
 
+    t_os << "(struct ";
     t_os << t_struct->m_identifier;
 
     std::string_view sep{""};
@@ -32,7 +33,7 @@ auto operator<<(std::ostream& t_os, StructTypePtr t_struct) -> std::ostream&
       sep = ", ";
     }
 
-    t_os << "}";
+    t_os << "})";
 
   } else {
     DBG_ERROR("(StructTypePtr) nullptr!");
@@ -66,7 +67,7 @@ auto operator<<(std::ostream& t_os, FnTypePtr t_fn) -> std::ostream&
 auto operator<<(std::ostream& t_os, PointerTypePtr t_ptr) -> std::ostream&
 {
   if(t_ptr) {
-    t_os << t_ptr->m_type;
+    t_os << "*" << t_ptr->m_type;
   } else {
     DBG_ERROR("(PointerTypePtr) nullptr!");
 
@@ -79,11 +80,13 @@ auto operator<<(std::ostream& t_os, PointerTypePtr t_ptr) -> std::ostream&
 auto operator<<(std::ostream& t_os, VarTypePtr t_var) -> std::ostream&
 {
   if(t_var) {
+    t_os << "(var ";
     if(t_var->is_mutable()) {
       t_os << "mutable ";
     }
 
     t_os << t_var->m_type;
+    t_os << ")";
   } else {
     DBG_ERROR("(VarTypePtr) nullptr!");
 

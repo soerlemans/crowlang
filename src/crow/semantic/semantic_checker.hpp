@@ -88,8 +88,8 @@ class SemanticChecker : public NodeVisitor {
   auto pop_env() -> void;
   auto clear_env() -> void;
 
-  auto str2type(std::string_view t_type_id) -> SymbolData;
-  auto node2type(NodePtr t_type_node) -> SymbolData;
+  auto str2symbol_data(std::string_view t_type_id) -> SymbolData;
+  auto node2symbol_data(NodePtr t_type_node) -> SymbolData;
 
   /*!
    * Annotate a node with its attribute data.

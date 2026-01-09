@@ -49,8 +49,7 @@ struct StructType {
   MemberMap m_members;
   MethodMap m_methods;
 
-  // We dont need a resolve_result_type() function cause a struct.
-  // Is already a result type.
+  auto resolve_result_type() const -> SymbolData;
 
   auto native_type() const -> NativeTypeOpt;
   auto type_variant() const -> TypeVariant;

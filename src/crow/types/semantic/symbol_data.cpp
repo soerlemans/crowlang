@@ -123,27 +123,15 @@ auto SymbolData::resolve_result_type() const -> SymbolData
     return SymbolData{t_type};
   }};
 
-  const auto struct_handler{[&](const StructTypePtr& t_ptr) {
-    nullptr_check("Resolve result type", t_ptr);
-
-    return SymbolData{t_ptr};
-  }};
-
-  const auto ptr_handler{[&](const PointerTypePtr& t_ptr) {
-    nullptr_check("Resolve result type", t_ptr);
-
-    return SymbolData{t_ptr};
-  }};
-
-  const auto rest{[&](const std::shared_ptr<auto>& t_ptr) {
+  const auto rest{[&]<typename T>(const std::shared_ptr<T>& t_ptr) {
     nullptr_check("Resolve result type", t_ptr);
 
     return t_ptr->resolve_result_type();
   }};
 
-  data = std::visit(Overload{native, struct_handler, ptr_handler, rest,
-                             MonoStateHandler<SymbolData>{}},
-                    *this);
+
+  data =
+    std::visit(Overload{native, rest, MonoStateHandler<SymbolData>{}}, *this);
 
   return data;
 }
