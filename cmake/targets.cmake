@@ -13,5 +13,5 @@ set(TARGET_CROW "crow")
 
 # Change the main target if we are building tests:
 if(DEFINED CROW_BUILD_TESTS)
-set(TARGET_CROW ${TARGET_CROW_TESTS})
+	set(TARGET_CROW ${TARGET_CROW_TESTS})
 endif()

@@ -1,2 +1,1 @@
-#target_sources(${TARGET_CROW_STDLIBCROW} PRIVATE
-#)
+add_subdirectory(core)

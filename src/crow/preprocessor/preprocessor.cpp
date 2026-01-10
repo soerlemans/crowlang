@@ -2,6 +2,9 @@
 
 // STL Includes:
 #include <cctype>
+#include <filesystem>
+#include <fstream>
+#include <iostream>
 #include <sstream>
 #include <string_view>
 
@@ -10,8 +13,37 @@
 
 using namespace std::string_view_literals;
 
+static const auto std_include_path{"/usr/local/include/stdlibcrow/"sv};
+
 static const auto include_once{"include_once"sv};
 static const auto include{"include"sv};
+
+// Using Statements:
+using container::TextBuffer;
+using container::TextBufferPtr;
+using std::filesystem::path;
+
+static auto read_file_into(TextBufferPtr& t_buffer, const path t_path) -> void
+{
+  using std::filesystem::exists;
+
+  if(!exists(t_path)) {
+    std::stringstream ss{};
+
+    ss << "File does not exist! ";
+    ss << std::quoted(t_path.string());
+
+    throw std::invalid_argument{ss.str()};
+  }
+
+  std::ifstream ifs{t_path};
+  while(ifs.good() && !ifs.eof()) {
+    std::string line{};
+    std::getline(ifs, line);
+
+    t_buffer->add_line(std::move(line));
+  }
+}
 
 namespace preprocessor {
 Preprocessor::Preprocessor(TextStreamPtr t_text)
@@ -25,13 +57,20 @@ auto Preprocessor::get_include_path() -> std::string
 {
   std::stringstream ss{};
 
+  unsigned char term_char{'"'};
+
   const auto ch{(unsigned char)m_text->character()};
-  if(ch == '<') {
+  if(ch == '<' || ch == '"') {
+    if(ch == '<') {
+      // Standard library include path.
+      ss << std_include_path;
+      term_char = '>';
+    }
     m_text->next();
 
     while(!m_text->eos()) {
       const auto ch{(unsigned char)m_text->character()};
-      if(ch == '>') {
+      if(ch == term_char) {
         break;
       }
 
@@ -46,7 +85,7 @@ auto Preprocessor::get_include_path() -> std::string
   return ss.str();
 }
 
-auto Preprocessor::perform_include_once(TextBufferPtr& t_buffer) -> void
+auto Preprocessor::handle_include_once(TextBufferPtr& t_buffer) -> void
 {
   while(!m_text->eos()) {
     const auto ch{(unsigned char)m_text->character()};
@@ -59,9 +98,11 @@ auto Preprocessor::perform_include_once(TextBufferPtr& t_buffer) -> void
 
   const auto include_path{get_include_path()};
   DBG_INFO("include_path: ", include_path);
+
+  read_file_into(t_buffer, path{include_path});
 }
 
-auto Preprocessor::perform_include(TextBufferPtr& t_buffer) -> void
+auto Preprocessor::handle_include(TextBufferPtr& t_buffer) -> void
 {
   while(!m_text->eos()) {
     const auto ch{(unsigned char)m_text->character()};
@@ -76,6 +117,8 @@ auto Preprocessor::perform_include(TextBufferPtr& t_buffer) -> void
 
   const auto include_path{get_include_path()};
   DBG_INFO("include_path: ", include_path);
+
+  read_file_into(t_buffer, path{include_path});
 }
 
 auto Preprocessor::preprocess() -> TextStreamPtr
@@ -105,9 +148,9 @@ auto Preprocessor::preprocess() -> TextStreamPtr
 
       const auto str{ss.view()};
       if(str == include_once) {
-        perform_include_once(buffer);
+        handle_include_once(buffer);
       } else if(str == include) {
-        perform_include(buffer);
+        handle_include(buffer);
       }
     } else {
       buffer->add_line(std::string{m_text->line()});

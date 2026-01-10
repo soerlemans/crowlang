@@ -9,9 +9,9 @@
 #include "crow/ast/visitor/ast_printer.hpp"
 #include "crow/codegen/backend_interface.hpp"
 #include "crow/lexer/lexer.hpp"
-#include "crow/preprocessor/preprocessor.hpp"
 #include "crow/mir/mir_builder/mir_builder.hpp"
 #include "crow/parser/crow/crow_parser.hpp"
+#include "crow/preprocessor/preprocessor.hpp"
 #include "crow/semantic/semantic_checker.hpp"
 
 // Internal Functions:
@@ -60,7 +60,8 @@ TranslationUnit::TranslationUnit(BuildUnitPtr t_build_unit,
     m_mir{}
 {}
 
-auto TranslationUnit::preprocess(const TextStreamPtr& t_text_stream) -> TextStreamPtr
+auto TranslationUnit::preprocess(const TextStreamPtr& t_text_stream)
+  -> TextStreamPtr
 {
   using preprocessor::Preprocessor;
 
@@ -75,7 +76,6 @@ auto TranslationUnit::preprocess(const TextStreamPtr& t_text_stream) -> TextStre
 
   return processed_file;
 }
-
 
 auto TranslationUnit::lex(const TextStreamPtr& t_text_stream) -> TokenStream
 {

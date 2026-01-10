@@ -1,7 +1,9 @@
 module preprocessor_sample
 
-#include_once <test>
-// #include_once <test>
+// Standard library include.
+#include_once <c_interop/c_interop.cw>
+
+// Relative path include.
 // #include_once "test"
 
 func main() -> int {

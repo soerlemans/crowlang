@@ -5,8 +5,8 @@
 #include <set>
 
 // Absolute Includes:
-#include "crow/container/text_stream.hpp"
 #include "crow/container/text_buffer.hpp"
+#include "crow/container/text_stream.hpp"
 
 namespace preprocessor {
 using container::TextBufferPtr;
@@ -21,10 +21,10 @@ class Preprocessor {
   public:
   explicit Preprocessor(TextStreamPtr t_text);
 
-	auto get_include_path() -> std::string;
+  auto get_include_path() -> std::string;
 
-  auto perform_include_once(TextBufferPtr& t_buffer) -> void;
-  auto perform_include(TextBufferPtr& t_buffer) -> void;
+  auto handle_include_once(TextBufferPtr& t_buffer) -> void;
+  auto handle_include(TextBufferPtr& t_buffer) -> void;
 
   auto preprocess() -> TextStreamPtr;
 
