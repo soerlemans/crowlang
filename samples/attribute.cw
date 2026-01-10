@@ -2,7 +2,7 @@ module attribute_module
 
 // Define a forward declaration for the libc abs function.
 [[extern("C")]] {
-  declare func abs(t_x: int) -> int
+  decl func abs(t_x: int) -> int
 }
 
 // Inline attribute block.

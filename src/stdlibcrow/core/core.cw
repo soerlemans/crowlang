@@ -1,6 +1,5 @@
 // module core
 
 
-[[extern("C")]]{
-  declare func pid(t_status: int) -> int
-}
+[[extern("C")]]
+decl func pid(t_status: int) -> int
