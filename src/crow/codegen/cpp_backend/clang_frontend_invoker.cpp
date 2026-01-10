@@ -25,6 +25,10 @@ ClangFrontendInvoker::ClangFrontendInvoker(): m_compiler_flags{}, m_out{}
 
   // Add C++23 standard flag.
   add_flags("-std=c++23"sv);
+
+  // Always link against our standard library.
+  // It must be installed.
+  add_flags("-L /usr/local/include/stdlibcrow/core stdlibcrow"sv);
 }
 
 auto ClangFrontendInvoker::add_flags(const std::string_view t_str) -> void

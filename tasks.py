@@ -165,6 +165,7 @@ def install(ctx, mode='', parallel=True, lint=False):
     stdlibcrow_path = '/usr/local/include/stdlibcrow'
     ctx.run(f'sudo mkdir -p {stdlibcrow_path}')
     ctx.run(f'sudo cp -rf ./src/stdlibcrow/* {stdlibcrow_path}')
+    ctx.run(f'sudo cp -rf ./{mode}/libstdlibcrow.so {stdlibcrow_path}/core')
 
     # TODO: Have CMake generate stdlibcrow.a.
     # TODO: Install shared stdlibcrow.a. 

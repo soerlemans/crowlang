@@ -53,17 +53,19 @@ Preprocessor::Preprocessor(TextStreamPtr t_text)
 // /usr/local/include/stdlibcrow/
 
 
-auto Preprocessor::get_include_path() -> std::string
+auto Preprocessor::get_include_path() -> IncludePack
 {
   std::stringstream ss{};
 
   unsigned char term_char{'"'};
 
+  IncludePack pack{};
+
   const auto ch{(unsigned char)m_text->character()};
   if(ch == '<' || ch == '"') {
     if(ch == '<') {
-      // Standard library include path.
-      ss << std_include_path;
+      // Library include path.
+      pack.m_is_lib = true;
       term_char = '>';
     }
     m_text->next();
@@ -82,7 +84,9 @@ auto Preprocessor::get_include_path() -> std::string
     // TODO: Throw.
   }
 
-  return ss.str();
+  pack.m_include = ss.str();
+
+  return pack;
 }
 
 auto Preprocessor::handle_include_once(TextBufferPtr& t_buffer) -> void
@@ -96,10 +100,22 @@ auto Preprocessor::handle_include_once(TextBufferPtr& t_buffer) -> void
     m_text->next();
   }
 
-  const auto include_path{get_include_path()};
-  DBG_INFO("include_path: ", include_path);
+  auto [is_lib, original] = get_include_path();
+  DBG_INFO("include: ", original);
 
-  read_file_into(t_buffer, path{include_path});
+  path include{};
+  if(is_lib) {
+    include = path{std::format("{}{}", std_include_path, original)};
+  } else {
+    include = path{original};
+  }
+  include = std::filesystem::absolute(include);
+
+  if(m_already_included.contains(include) == false) {
+    read_file_into(t_buffer, include);
+
+    m_already_included.insert(include);
+  }
 }
 
 auto Preprocessor::handle_include(TextBufferPtr& t_buffer) -> void
@@ -107,18 +123,24 @@ auto Preprocessor::handle_include(TextBufferPtr& t_buffer) -> void
   while(!m_text->eos()) {
     const auto ch{(unsigned char)m_text->character()};
     if(ch != ' ') {
-      DBG_INFO("ch: ", ch);
       break;
     }
 
     m_text->next();
   }
 
+  auto [is_lib, original] = get_include_path();
+  DBG_INFO("include: ", original);
 
-  const auto include_path{get_include_path()};
-  DBG_INFO("include_path: ", include_path);
+  path include{};
+  if(is_lib) {
+    include = path{std::format("{}{}", std_include_path, original)};
+  } else {
+    include = path{original};
+  }
+  include = std::filesystem::absolute(include);
 
-  read_file_into(t_buffer, path{include_path});
+  read_file_into(t_buffer, include);
 }
 
 auto Preprocessor::preprocess() -> TextStreamPtr

@@ -102,8 +102,7 @@ auto SymbolData::is_mutable() const -> bool
     return (t_data->m_mutability == Mutability::IMMUTABLE);
   }};
 
-  const auto immutable_types{[]([[maybe_unused]]
-                                const auto& t_data) {
+  const auto immutable_types{[]([[maybe_unused]] const auto& t_data) {
     return false;
   }};
 

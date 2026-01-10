@@ -92,7 +92,7 @@ inline auto toml_extract(NodeView<NodeType>&& t_node, Vec<ElemType>& t_vector,
     auto elem{t_transform(str)};
 
     t_vector.push_back(elem);
-  } else if(array * arr{t_node.as_array()}; arr) {
+  } else if(array* arr{t_node.as_array()}; arr) {
     arr->for_each(closure);
   } else {
     DBG_WARNING("Toml invalid value for field.");
