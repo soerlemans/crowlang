@@ -765,16 +765,16 @@ auto SemanticChecker::visit(Dereference* t_deref) -> Any
 
   const auto left{get_symbol_data(t_deref->left())};
 
-  // TODO: validate ahead of time if ptr.
-	// As we should error out on non pointer dereference.
-  const auto ptr{left.as_ptr()};
+  // Remove variable mapping.
+  const auto result_type{left.resolve_result_type()};
 
-  /// TODO: Maybe annotate the type data to the AST?
+  // TODO: Test to make sure if pointer type else error.
 
-	// Get underlying type and return it.
-	return ptr->m_type;
+  // Get underlying pointer.
+  const auto ptr{result_type.as_ptr()};
+
+  return ptr->m_type;
 }
-
 
 auto SemanticChecker::visit(UnaryPrefix* t_up) -> Any
 {

@@ -463,7 +463,6 @@ auto CppBackend::visit(Dereference* t_deref) -> Any
   return std::format("*({})", left);
 }
 
-
 auto CppBackend::visit(UnaryPrefix* t_up) -> Any
 {
   const auto op{t_up->op2str()};
