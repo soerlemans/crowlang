@@ -1,8 +1,8 @@
 #include "core.h"
 
-long read(int t_fd, unsigned char* t_buf, long t_count)
+ssize_t read(int t_fd, unsigned char* t_buf, size_t t_count)
 {
-  long err = 0;
+  ssize_t err = 0;
 
   __asm__("mov $1, %%rax\n" // read syscall is 0.
           "mov %0, %%rdi\n"
@@ -17,9 +17,9 @@ long read(int t_fd, unsigned char* t_buf, long t_count)
   return err;
 }
 
-long write(int t_fd, const unsigned char* t_buf, long t_count)
+ssize_t write(int t_fd, const unsigned char* t_buf, size_t t_count)
 {
-  long err = 0;
+  ssize_t err = 0;
 
   __asm__("mov $1, %%rax\n" // write syscall is 1.
           "mov %0, %%rdi\n"
@@ -34,7 +34,17 @@ long write(int t_fd, const unsigned char* t_buf, long t_count)
   return err;
 }
 
-int open(const char* t_path, int t_flags, unsigned int t_mode)
+ssize_t read_str(int t_fd, char* t_buf, size_t t_count)
+{
+  return read(t_fd, (unsigned char*)t_buf, t_count);
+}
+
+ssize_t write_str(int t_fd, const char* t_buf, size_t t_count)
+{
+  return write(t_fd, (const unsigned char*)t_buf, t_count);
+}
+
+int open(const char* t_path, int t_flags, umode_t t_mode)
 {
   int err = 0;
 
@@ -102,4 +112,17 @@ int getppid()
   // clang-format on
 
   return pid;
+}
+
+size_t strlen(const char* t_str)
+{
+  size_t count = 0;
+
+  const char* ch = t_str;
+  while(*ch != '\0') {
+		ch++;
+		count++;
+  }
+
+	return count;
 }

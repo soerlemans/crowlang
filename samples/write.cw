@@ -11,15 +11,10 @@ func main() -> int {
   // O_CREAT = 0x40
   let fd = open(path, flags, mode)
 
-  // let msg: *u8 = "Some message."
-  // let len = 13
+  var msg = "Hello World!."
+  let len = strlen(msg)
 
-  //write(fd, &msg, 13)
-
-  let msg: u8 = 43;
-  let len: i32 = 1
-
-  write(fd, &msg, len)
+  write_str(fd, msg, len)
 
   close(fd)
 

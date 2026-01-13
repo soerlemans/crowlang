@@ -97,6 +97,7 @@ TEST(TestPrattParser, BasicExpressions)
     "2 * num1 + num2"sv,
     "num1 / 2 - num2"sv,
     "(2 * num1 - 3) + num2 / num3"sv,
+    "(2 * -num1 - 3) + +num2 / -num3"sv,
   };
 
   for(auto&& program : exprs) {
@@ -136,6 +137,7 @@ TEST(TestPrattParser, AdvancedExpressions)
     "num1 + fun1(100)"sv,
     "fun1() + fun2(22)"sv,
     "fun1(func2(fun3(0)))"sv,
+    "fun1(+func2(-fun3(0)))"sv,
   };
 
   for(auto&& program : exprs) {
