@@ -4,6 +4,7 @@ target_sources(${TARGET_CROW_LIB} PRIVATE
   assignment.cpp
   comparison.cpp
   decrement.cpp
+  dereference.cpp
   increment.cpp
   logical.cpp
   ternary.cpp

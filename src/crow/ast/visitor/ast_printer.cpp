@@ -218,6 +218,16 @@ auto AstPrinter::visit(AddressOf* t_addr_of) -> Any
   return {};
 }
 
+auto AstPrinter::visit(Dereference* t_deref) -> Any
+{
+  COUNTG_INIT();
+
+  print("Dereference");
+  print_traits(t_deref);
+
+  return {};
+}
+
 auto AstPrinter::visit(UnaryPrefix* t_up) -> Any
 {
   COUNTG_INIT();

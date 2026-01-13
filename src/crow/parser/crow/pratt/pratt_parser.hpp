@@ -53,6 +53,7 @@ class PrattParser : public Parser {
   virtual auto literal() -> NodePtr;
   virtual auto grouping() -> NodePtr;
   virtual auto address_of() -> NodePtr;
+  virtual auto dereference() -> NodePtr;
   virtual auto unary_prefix() -> NodePtr;
   virtual auto negation() -> NodePtr;
   virtual auto function_call() -> NodePtr;

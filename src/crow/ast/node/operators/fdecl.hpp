@@ -5,6 +5,7 @@
 namespace ast::node::operators {
 // UnaryOperator derived classes:
 class AddressOf;
+class Dereference;
 class UnaryPrefix;
 class Increment;
 class Decrement;

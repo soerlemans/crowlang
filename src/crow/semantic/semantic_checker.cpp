@@ -759,6 +759,23 @@ auto SemanticChecker::visit(AddressOf* t_addr_of) -> Any
   return make_pointer(left);
 }
 
+auto SemanticChecker::visit(Dereference* t_deref) -> Any
+{
+  using types::symbol::make_pointer;
+
+  const auto left{get_symbol_data(t_deref->left())};
+
+  // TODO: validate ahead of time if ptr.
+	// As we should error out on non pointer dereference.
+  const auto ptr{left.as_ptr()};
+
+  /// TODO: Maybe annotate the type data to the AST?
+
+	// Get underlying type and return it.
+	return ptr->m_type;
+}
+
+
 auto SemanticChecker::visit(UnaryPrefix* t_up) -> Any
 {
   const auto left{get_symbol_data(t_up->left())};
