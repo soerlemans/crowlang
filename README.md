@@ -28,6 +28,9 @@ Here is a simple sample program.
 ```go
 module main
 
+// Standard library includes:
+#include_once <core/core.cw>
+
 func main() -> int {
   defer {
     println("Defer!")

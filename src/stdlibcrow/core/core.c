@@ -1,8 +1,9 @@
 #include "core.h"
 
-ssize_t read(int t_fd, unsigned char* t_buf, size_t t_count)
+
+isize_t read(int_t t_fd, unsigned char* t_buf, usize_t t_count)
 {
-  ssize_t err = 0;
+  isize_t err = 0;
 
   __asm__("mov $1, %%rax\n" // read syscall is 0.
           "mov %0, %%rdi\n"
@@ -17,9 +18,9 @@ ssize_t read(int t_fd, unsigned char* t_buf, size_t t_count)
   return err;
 }
 
-ssize_t write(int t_fd, const unsigned char* t_buf, size_t t_count)
+isize_t write(int_t t_fd, const unsigned char* t_buf, usize_t t_count)
 {
-  ssize_t err = 0;
+  isize_t err = 0;
 
   __asm__("mov $1, %%rax\n" // write syscall is 1.
           "mov %0, %%rdi\n"
@@ -34,19 +35,19 @@ ssize_t write(int t_fd, const unsigned char* t_buf, size_t t_count)
   return err;
 }
 
-ssize_t read_str(int t_fd, char* t_buf, size_t t_count)
+isize_t read_str(int_t t_fd, char* t_buf, usize_t t_count)
 {
   return read(t_fd, (unsigned char*)t_buf, t_count);
 }
 
-ssize_t write_str(int t_fd, const char* t_buf, size_t t_count)
+isize_t write_str(int_t t_fd, const char* t_buf, usize_t t_count)
 {
   return write(t_fd, (const unsigned char*)t_buf, t_count);
 }
 
-int open(const char* t_path, int t_flags, umode_t t_mode)
+int_t open(const char* t_path, int_t t_flags, umode_t t_mode)
 {
-  int err = 0;
+  int_t err = 0;
 
   // clang-format off
   __asm__("mov $2, %%rax\n" // open syscall is 2.
@@ -63,9 +64,9 @@ int open(const char* t_path, int t_flags, umode_t t_mode)
   return err;
 }
 
-int close(int t_fd)
+int_t close(int_t t_fd)
 {
-  int err = 0;
+  int_t err = 0;
 
   // clang-format off
   __asm__("mov $3, %%rax\n" // close syscall is 3.
@@ -80,9 +81,9 @@ int close(int t_fd)
   return err;
 }
 
-int getpid()
+int_t getpid()
 {
-  int pid = 0;
+  int_t pid = 0;
 
   // clang-format off
   __asm__(
@@ -97,9 +98,9 @@ int getpid()
   return pid;
 }
 
-int getppid()
+int_t getppid()
 {
-  int pid = 0;
+  int_t pid = 0;
 
   // clang-format off
   __asm__(
@@ -114,15 +115,12 @@ int getppid()
   return pid;
 }
 
-size_t strlen(const char* t_str)
+usize_t strlen(const char* t_str)
 {
-  size_t count = 0;
-
-  const char* ch = t_str;
-  while(*ch != '\0') {
-		ch++;
-		count++;
+  const char* ptr = t_str;
+  while(*ptr != '\0') {
+    ptr++;
   }
 
-	return count;
+  return (usize_t)(ptr - t_str);
 }

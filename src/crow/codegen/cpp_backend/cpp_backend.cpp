@@ -33,13 +33,12 @@ auto CppBackend::prologue() -> std::string
   // Crow's native types often translate.
   // To C++ fixed width integers and floats.
   ss << "// STL Includes:\n";
-  ss << "#include <cstdint>\n";
   // ss << "#include <stdfloat>\n"; // TODO: Uncommnet when supported by clang.
   ss << "\n";
 
   // FIXME: Temporary input for printing purposes.
   ss << "// Stdlibcrow Includes:\n";
-  ss << R"(#include "stdlibcrow/io.hpp")" << '\n';
+  ss << R"(#include "stdlibcrow/core/types.h")" << "\n";
   ss << R"(#include "stdlibcrow/internal/defer.hpp")" << "\n\n";
 
   // Loop through the interop backends and add the prologue from each backend.
@@ -79,7 +78,8 @@ auto CppBackend::terminate() -> std::string_view
   // Remove semicolon if we should not terminate.
   [[unlikely]]
   if(!should_terminate()) {
-    terminate = "\n";
+    // Dont print anything.
+    terminate = "";
   }
 
   return terminate;
@@ -225,7 +225,9 @@ auto CppBackend::visit(Function* t_fn) -> Any
   }
 
   // clang-format off
-  ss << std::format("auto {}({}) -> {}\n", identifier, param_ss.str(), ret_type)
+	// We use regular function syntax instead trailing return type.
+	// Cause trailing return
+  ss << std::format("{} {}({})\n", ret_type, identifier, param_ss.str())
      << "{\n"
      << resolve(t_fn->body())
      << "}\n";
@@ -247,13 +249,6 @@ auto CppBackend::visit(FunctionCall* t_call) -> Any
   // const auto identifier{t_call->identifier()};
   auto identifier{t_call->identifier()};
   const auto args{t_call->args()};
-
-  // Temporary measures (I fucking hope).
-  if(identifier == "print") {
-    identifier = "stdlibcrow::print";
-  } else if(identifier == "println") {
-    identifier = "stdlibcrow::println";
-  }
 
   // FIXME: This wont work for a raw function or method call.
   // As when we assign it directly to a variable it will work but not else.
@@ -396,8 +391,7 @@ auto CppBackend::visit(FunctionDecl* t_fdecl) -> Any
     sep = ", ";
   }
 
-  return std::format("auto {}({}) -> {};\n", identifier, param_ss.str(),
-                     ret_type);
+  return std::format("{} {}({});\n", ret_type, identifier, param_ss.str());
 }
 
 // Operators:
