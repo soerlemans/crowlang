@@ -4,7 +4,7 @@
 set(TARGET_CROW_BIN "crow")    # Compiler binary.
 set(TARGET_CROW_LIB "crowlib") # Compiler library.
 
-set(TARGET_CROW_STDLIBCROW "stdlibcrow") # Standard library for generated C++.
+set(TARGET_CROW_STDCROW "stdcrow") # Standard library for generated C++.
 
 set(TARGET_CROW_TESTS "crow_tests") # Unit test binary
 

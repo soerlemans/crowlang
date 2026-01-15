@@ -1,5 +1,5 @@
-#ifndef CROW_STDLIBCROW_INTERNAL_DEFER_HPP
-#define CROW_STDLIBCROW_INTERNAL_DEFER_HPP
+#ifndef CROW_STDCROW_INTERNAL_DEFER_HPP
+#define CROW_STDCROW_INTERNAL_DEFER_HPP
 
 // Include STL:
 #include <functional>
@@ -27,4 +27,4 @@ class Defer {
 };
 } // namespace stdlibcrow::internal
 
-#endif // CROW_STDLIBCROW_INTERNAL_DEFER_HPP
+#endif // CROW_STDCROW_INTERNAL_DEFER_HPP

@@ -22,9 +22,13 @@ isize_t write_str(int_t t_fd, const char* t_buf, usize_t t_count);
 int_t open(const char* t_path, const int_t t_flags, const umode_t t_mode);
 int_t close(int_t t_fd);
 int_t getpid();
+void exit(int_t t_errc);
 int_t getppid();
 
 usize_t strlen(const char* t_str);
+
+int main(int t_argc, char* t_argv[]);
+void _start(int t_argc, char* t_argv[]);
 
 #ifdef __cplusplus
 }

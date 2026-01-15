@@ -5,4 +5,4 @@ add_subdirectory(crow)
 add_subdirectory(lib)
 
 # Standard library for Crow.
-add_subdirectory(stdlibcrow)
+add_subdirectory(stdcrow)

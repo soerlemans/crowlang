@@ -162,13 +162,15 @@ def install(ctx, mode='', parallel=True, lint=False):
 
     # Install lbicrow headers.
     # TODO: Automate this.
-    stdlibcrow_path = '/usr/local/include/stdlibcrow'
-    ctx.run(f'sudo mkdir -p {stdlibcrow_path}')
-    ctx.run(f'sudo cp -rf ./src/stdlibcrow/* {stdlibcrow_path}')
-    ctx.run(f'sudo cp -rf ./{mode}/libstdlibcrow.so {stdlibcrow_path}/core')
+    local_stdcrow = '/usr/local/include/stdcrow'
+    local_lib = '/usr/local/lib'
 
-    # TODO: Have CMake generate stdlibcrow.a.
-    # TODO: Install shared stdlibcrow.a. 
+    ctx.run(f'sudo mkdir -p {local_stdcrow}')
+    ctx.run(f'sudo cp -rf ./src/stdcrow/* {local_stdcrow}')
+    ctx.run(f'sudo cp -f ./{mode}/libstdcrow.so {local_lib}')
+
+    # TODO: Have CMake generate stdcrow.a.
+    # TODO: Install shared stdcrow.a. 
     # ctx.run(f'sudo mkdir -p /usr/local/lib/crow/')
     #ctx.run(f'sudo cp -f ./{mode}/stdlibcrowlib.a /usr/local/lib/crow/')
     pass
@@ -177,7 +179,8 @@ def install(ctx, mode='', parallel=True, lint=False):
 def uninstall(ctx):
     '''Uninstall crow from /usr/local/'''
     ctx.run('sudo rm -f /usr/local/bin/crow')
-    ctx.run('sudo rm -rf /usr/local/include/stdlibcrow')
+    ctx.run('sudo rm -rf /usr/local/include/stdcrow')
+    ctx.run('sudo rm -f /usr/local/lib/libstdcrow.so')
     pass
 
 
