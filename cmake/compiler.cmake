@@ -42,10 +42,15 @@ set(CMAKE_CXX_WARNING_FLAGS
     "-Wwrite-strings"
 )
 
+# Set the flags for debugging.
+set(CMAKE_CXX_FLAGS_DEBUG
+	"-g3 -gdwarf"
+)
+
 # Functions:
 function(cxx_configure_target T_TARGET)
-    # TODO: Rename for more clarity.
-    # We now depend on NDEBUG as its in the C++ standard.
+  # TODO: Rename for more clarity.
+  # We now depend on NDEBUG as its in the C++ standard.
 
 	# Add DEBUG macro definition for debugging builds.
 	# target_compile_definitions(${T_TARGET} PRIVATE
@@ -61,43 +66,43 @@ function(cxx_configure_target T_TARGET)
 		${CMAKE_CXX_WARNING_FLAGS}
 		$<$<CONFIG:Release>:${CMAKE_CXX_RELEASE_FLAGS}>
 		$<$<CONFIG:RelWithDebInfo>:${CMAKE_CXX_RELEASE_FLAGS}>
-	  )
+	)
 
 
-      # Github actions updates timestamp on checkout.
-      # Always invalidating the PCH.
-      if(NOT DEFINED CROW_CI_BUILD)
-        # Precompile commonly used STL headers.
-        target_precompile_headers(${T_TARGET} PRIVATE
-          <any>
-          <array>
-          <algorithm>
-          <exception>
-          <filesystem>
-          <functional>
-          <fstream>
-          <format>
-          <iomanip>
-          <iosfwd>
-          <iostream>
-          <list>
-          <map>
-          <memory>
-          <optional>
-          <ostream>
-          <vector>
-          <ranges>
-          <stack>
-          <string>
-          <string_view>
-          <sstream>
-          <type_traits>
-          <stdexcept>
-          <tuple>
-          <unordered_map>
-          <variant>
-        )
-      endif()
+  # Github actions updates timestamp on checkout.
+  # Always invalidating the PCH.
+  if(NOT DEFINED CROW_CI_BUILD)
+    # Precompile commonly used STL headers.
+    target_precompile_headers(${T_TARGET} PRIVATE
+      <any>
+      <array>
+      <algorithm>
+      <exception>
+      <filesystem>
+      <functional>
+      <fstream>
+      <format>
+      <iomanip>
+      <iosfwd>
+      <iostream>
+      <list>
+      <map>
+      <memory>
+      <optional>
+      <ostream>
+      <vector>
+      <ranges>
+      <stack>
+      <string>
+      <string_view>
+      <sstream>
+      <type_traits>
+      <stdexcept>
+      <tuple>
+      <unordered_map>
+      <variant>
+    )
+  endif()
 endfunction()
 
 
@@ -107,6 +112,7 @@ set_target_properties(
 	${TARGET_CROW_LIB}
 	PROPERTIES
 	CXX_STANDARD 23
+	C_STANDARD 17
 	CXX_COMPILER "clang"
 	C_COMPILER "clang"
 )
@@ -115,21 +121,38 @@ set_target_properties(
 cxx_configure_target(${TARGET_CROW})
 cxx_configure_target(${TARGET_CROW_LIB})
 
+set_target_properties(
+	${TARGET_CROW_STDCROW}
+	PROPERTIES
+	CXX_STANDARD 23
+	C_STANDARD 17
+	CXX_COMPILER "clang"
+	C_COMPILER "clang"
+	C_EXTENSIONS OFF
+)
+
 # We dont build static library with.
 target_compile_options(${TARGET_CROW_STDCROW} PRIVATE
 	${CMAKE_CXX_WARNING_FLAGS}
 	"-nostdlib"
 )
 
-# Set the flags for debugging.
-set(CMAKE_CXX_FLAGS_DEBUG
-	"-g3 -gdwarf"
+# TODO: Improve:
+# Define src/ as include directory.
+target_include_directories(
+  ${TARGET_CROW_LIB}
+  PUBLIC src/
+)
+
+target_include_directories(
+  ${TARGET_CROW_STDCROW}
+  PUBLIC src/
 )
 
 # Make it possible for tests to include sources from the project root.
 if(DEFINED CROW_BUILD_TESTS)
-target_include_directories(
-	${TARGET_CROW_TESTS}
-	PUBLIC ${CMAKE_SOURCE_DIR}/src
-)
+	target_include_directories(
+		${TARGET_CROW_TESTS}
+		PUBLIC ${CMAKE_SOURCE_DIR}/src
+	)
 endif()

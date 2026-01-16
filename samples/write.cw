@@ -1,7 +1,7 @@
 module write_sample
 
 // Standard library include.
-#include_once <core/core.cw>
+#include_once <core/linux/core.cw>
 
 func main() -> int {
   var path = "newfile.txt"
