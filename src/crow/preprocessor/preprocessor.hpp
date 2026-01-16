@@ -9,12 +9,17 @@
 // Absolute Includes:
 #include "crow/container/text_buffer.hpp"
 #include "crow/container/text_stream.hpp"
+#include "lib/stdtypes.hpp"
 
 namespace preprocessor {
 using container::TextBufferPtr;
 using container::TextStreamPtr;
 
+namespace fs = std::filesystem;
+
 using IncludedRegister = std::set<std::filesystem::path>;
+
+constexpr u8 MAX_INCLUDE_NESTING{255};
 
 struct IncludePack {
   bool m_is_lib;
@@ -25,15 +30,22 @@ class Preprocessor {
   private:
   TextStreamPtr m_text;
 
+  u16 m_nesting_count;
   IncludedRegister m_already_included;
+
 
   public:
   explicit Preprocessor(TextStreamPtr t_text);
 
-  auto get_include_path() -> IncludePack;
+  auto include_file(TextBufferPtr& t_buffer, const fs::path t_path) -> void;
+  auto get_include_path(TextStreamPtr t_text) -> IncludePack;
+  auto skip_whitespace(TextStreamPtr t_text);
 
-  auto handle_include_once(TextBufferPtr& t_buffer) -> void;
-  auto handle_include(TextBufferPtr& t_buffer) -> void;
+  auto handle_include_once(TextStreamPtr t_text, TextBufferPtr& t_buffer)
+    -> void;
+  auto handle_include(TextStreamPtr t_text, TextBufferPtr& t_buffer) -> void;
+  auto handle_preprocessor(TextStreamPtr t_text, TextBufferPtr& t_buffer)
+    -> void;
 
   auto preprocess() -> TextStreamPtr;
 

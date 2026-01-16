@@ -42,6 +42,7 @@ class TextBuffer : public TextStream {
   auto line() const -> std::string_view;
 
   auto eos() const -> bool override;
+  auto reset() -> void override;
 
   auto position() const -> TextPosition override;
 

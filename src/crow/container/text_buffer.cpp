@@ -1,8 +1,7 @@
 #include "text_buffer.hpp"
 
-namespace {
-constexpr std::size_t default_buffer_reserve_size = 1'024;
-}
+
+static constexpr std::size_t default_buffer_reserve_size{1'024};
 
 namespace container {
 // Methods:
@@ -75,17 +74,23 @@ auto TextBuffer::peek() const -> CharOpt
 
 auto TextBuffer::character() const -> char
 {
-  return m_buffer[m_lineno][m_columnno];
+  return m_buffer.at(m_lineno).at(m_columnno);
 }
 
 auto TextBuffer::line() const -> std::string_view
 {
-  return m_buffer[m_lineno];
+  return m_buffer.at(m_lineno);
 }
 
 auto TextBuffer::eos() const -> bool
 {
   return m_lineno >= m_buffer.size();
+}
+
+auto TextBuffer::reset() -> void
+{
+  m_lineno = 0;
+  m_columnno = 0;
 }
 
 //! This method is required for token creating in the Lexer, think about how to
