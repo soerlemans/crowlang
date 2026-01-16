@@ -37,9 +37,9 @@ auto CppBackend::prologue() -> std::string
   ss << "\n";
 
   // FIXME: Temporary input for printing purposes.
-  ss << "// Stdlibcrow Includes:\n";
-  ss << R"(#include "stdlibcrow/core/types.h")" << "\n";
-  ss << R"(#include "stdlibcrow/internal/defer.hpp")" << "\n\n";
+  ss << "// Stdcrow Includes:\n";
+  ss << R"(#include "stdcrow/core/core.h")" << "\n";
+  ss << R"(#include "stdcrow/internal/defer.hpp")" << "\n\n";
 
   // Loop through the interop backends and add the prologue from each backend.
   for(auto& ptr : m_interop_backends) {

@@ -14,7 +14,7 @@ func main() -> int {
   var msg = "Hello World!."
   let len = strlen(msg)
 
-  // write_str(fd, msg, len)
+  write_str(fd, msg, len)
 
   close(fd)
 

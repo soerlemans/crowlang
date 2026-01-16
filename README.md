@@ -1,6 +1,6 @@
-Crowlang
-========
-![Crowlang banner](assets/crowlang_banner.png)
+Hyla-lang
+=========
+![Hyla banner](assets/crowlang_banner.png)
 
 ![License](https://img.shields.io/github/license/soerlemans/crowlang)
 ![Tests](https://img.shields.io/github/actions/workflow/status/soerlemans/crowlang/.github/workflows/unit-tests.yml)
@@ -9,8 +9,8 @@ Crowlang
 This project is me experimenting with creating my own programming language.
 For this project I am using C++23.
 
-Crow's syntax is somewhat inspired by Swift, Golang and Rust.
-But in Crow expressions are not statements.
+Hyla's syntax is somewhat inspired by Swift, Golang and Rust.
+But in Hyla expressions are not statements.
 This allows us to write code without any need for semicolons.
 
 The main goal of the programming language is having seamless interoperability with other programming languages.

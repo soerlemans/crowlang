@@ -1,7 +1,11 @@
 module main
 
-func main() -> int {
-    println("Hello World!")
+// Standard library include.
+#include_once <core/core.cw>
 
-    return 0
+func main() -> int {
+  var msg = "Hello World!\n"
+  let len = strlen(msg)
+
+  return write_str(STDOUT, msg, len)
 }

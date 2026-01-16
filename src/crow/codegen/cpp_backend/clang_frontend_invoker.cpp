@@ -26,9 +26,10 @@ ClangFrontendInvoker::ClangFrontendInvoker(): m_compiler_flags{}, m_out{}
   // Add C++23 standard flag.
   add_flags("-std=c++23"sv);
 
-  // Always link against our standard library, it must be installed.
+  // Always link against our static library, it must be installed.
+  // add_flags("-nolibc"sv);
   add_flags("-nostdlib"sv);
-  add_flags("-L/usr/local/include/stdlibcrow/core/ -lstdlibcrow"sv);
+  add_flags("-lstdcrow"sv);
 }
 
 auto ClangFrontendInvoker::add_flags(const std::string_view t_str) -> void
@@ -42,7 +43,7 @@ auto ClangFrontendInvoker::add_flags(const std::string_view t_str) -> void
   lib::trim_whitespace(str_buf);
 
   // Add spaces passed around the passed flags, automatically.
-  m_compiler_flags << std::format(" {} ", str_buf);
+  m_compiler_flags << std::format(" {}", str_buf);
 }
 
 auto ClangFrontendInvoker::set_out(const std::string_view t_out) -> void
@@ -93,7 +94,7 @@ auto ClangFrontendInvoker::compile(const fs::path &t_source) -> void
 
   // List version of compiler used.
   // We use G++ at the moment as it supports more of C++23.
-  const auto cpp_compiler{"g++"sv};
+  const auto cpp_compiler{R"("${CXX:-g++}")"sv};
 
   const auto flags{m_compiler_flags.view()};
   const auto cmd{std::format("export SRC_STEM=\"{}\"; {} {} {} -o {}",

@@ -167,7 +167,7 @@ def install(ctx, mode='', parallel=True, lint=False):
 
     ctx.run(f'sudo mkdir -p {local_stdcrow}')
     ctx.run(f'sudo cp -rf ./src/stdcrow/* {local_stdcrow}')
-    ctx.run(f'sudo cp -f ./{mode}/libstdcrow.so {local_lib}')
+    ctx.run(f'sudo cp -f ./{mode}/libstdcrow.a {local_lib}')
 
     # TODO: Have CMake generate stdcrow.a.
     # TODO: Install shared stdcrow.a. 

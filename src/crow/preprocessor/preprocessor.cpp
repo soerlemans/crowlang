@@ -13,7 +13,7 @@
 
 using namespace std::string_view_literals;
 
-static const auto std_include_path{"/usr/local/include/stdlibcrow/"sv};
+static const auto std_include_path{"/usr/local/include/stdcrow/"sv};
 
 static const auto include_once{"include_once"sv};
 static const auto include{"include"sv};

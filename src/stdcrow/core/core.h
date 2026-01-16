@@ -27,8 +27,8 @@ int_t getppid();
 
 usize_t strlen(const char* t_str);
 
-int main(int t_argc, char* t_argv[]);
-void _start(int t_argc, char* t_argv[]);
+int_t main();
+void _start();
 
 #ifdef __cplusplus
 }

@@ -114,7 +114,12 @@ set_target_properties(
 # Configure compiler for targets:
 cxx_configure_target(${TARGET_CROW})
 cxx_configure_target(${TARGET_CROW_LIB})
-#cxx_configure_target(${TARGET_CROW_STDLIB})
+
+# We dont build static library with.
+target_compile_options(${TARGET_CROW_STDCROW} PRIVATE
+	${CMAKE_CXX_WARNING_FLAGS}
+	"-nostdlib"
+)
 
 # Set the flags for debugging.
 set(CMAKE_CXX_FLAGS_DEBUG

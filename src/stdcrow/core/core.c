@@ -98,14 +98,14 @@ int_t getpid()
     "syscall\n"
     : "=r"(pid)
     :
-    :
+    : "rax"
   );
   // clang-format on
 
   return pid;
 }
 
-void exit(int_t t_errc)
+void __attribute__((noreturn)) exit(int_t t_errc)
 {
   // clang-format off
   __asm__(
@@ -114,7 +114,7 @@ void exit(int_t t_errc)
     "syscall\n"
     :
     : "r"(t_errc)
-		: "%rdi" // clobbered registers.
+		: "rax", "rdi" // clobbered registers.
   );
   // clang-format on
 }
@@ -136,7 +136,7 @@ int_t getppid()
   return pid;
 }
 
-usize_t core_strlen(const char* t_str)
+usize_t strlen(const char* t_str)
 {
   const char* ptr = t_str;
   while(*ptr != '\0') {
@@ -146,11 +146,13 @@ usize_t core_strlen(const char* t_str)
   return (usize_t)(ptr - t_str);
 }
 
-void _start(int t_argc, char** t_argv)
+void _start()
 {
   // Perform pre main setup.
 
-  const int_t errc = main(t_argc, t_argv);
+  const int_t errc = main();
 
   exit(errc);
+
+  __builtin_unreachable();
 }
