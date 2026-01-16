@@ -217,14 +217,14 @@ def clean(ctx, objects=False):
 @task
 def format(ctx):
     'Clang-format all Ctx++ sources and headers.'
-    ctx.run(r'find src/ -iname "*.[ch]pp" -exec clang-format -i "{}" \;')
+    ctx.run(r"find src/ -name '*.[ch]pp' -name '*.ch' -exec clang-format -i '{}' \;")
     pass
 
 
 @task
 def header_guard(ctx):
     'Regenerate all heade guards to be unique.'
-    ctx.run(r'PROJECT_NAME=CROW find src/ -name "*.hpp" -exec ./tools/header_guard.awk {} \;')
+    ctx.run(r"PROJECT_NAME=CROW find src/ -name '*.hpp' -name '*.h' -exec ./tools/header_guard.awk {} \;")
     pass
 
 
