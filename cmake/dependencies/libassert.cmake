@@ -12,16 +12,16 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(libassert)
 
 target_link_libraries(
-	${TARGET_CROW_LIB}
+	${TARGET_ACRIS_LIB}
 	PUBLIC libassert::assert
 )
 
-# On windows copy libassert.dll to the same directory as the executable for crow.
+# On windows copy libassert.dll to the same directory as the executable for acris.
 if(WIN32)
   add_custom_command(
-    TARGET ${TARGET_CROW_LIB}
+    TARGET ${TARGET_ACRIS_LIB}
 		POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
     $<TARGET_FILE:libassert::assert>
-    $<TARGET_FILE_DIR:${TARGET_CROW_LIB}>
+    $<TARGET_FILE_DIR:${TARGET_ACRIS_LIB}>
   )
 endif()

@@ -1,17 +1,17 @@
 # Set the different CMake targets.
 
 # Define the possible targets/builds.
-set(TARGET_CROW_BIN "crow")    # Compiler binary.
-set(TARGET_CROW_LIB "crowlib") # Compiler library.
+set(TARGET_ACRIS_BIN "acris")    # Compiler binary.
+set(TARGET_ACRIS_LIB "acrislib") # Compiler library.
 
-set(TARGET_CROW_STDCROW "stdcrow") # Standard library for generated C++.
+set(TARGET_ACRIS_STDACRIS "stdacris") # Standard library for generated C++.
 
-set(TARGET_CROW_TESTS "crow_tests") # Unit test binary
+set(TARGET_ACRIS_TESTS "acris_tests") # Unit test binary
 
 # Conditionally set the main target:
-set(TARGET_CROW "crow")
+set(TARGET_ACRIS "acris")
 
 # Change the main target if we are building tests:
-if(DEFINED CROW_BUILD_TESTS)
-	set(TARGET_CROW ${TARGET_CROW_TESTS})
+if(DEFINED ACRIS_BUILD_TESTS)
+	set(TARGET_ACRIS ${TARGET_ACRIS_TESTS})
 endif()

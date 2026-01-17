@@ -1,5 +1,5 @@
-#ifndef CROW_LIB_MACROS_HPP
-#define CROW_LIB_MACROS_HPP
+#ifndef ACRIS_LIB_MACROS_HPP
+#define ACRIS_LIB_MACROS_HPP
 
 /*
  * Macros for common operations.
@@ -8,4 +8,4 @@
 #define CONCAT(a, b)       CONCAT_INNER(a, b)
 #define CONCAT_INNER(a, b) a##b
 
-#endif // CROW_LIB_MACROS_HPP
+#endif // ACRIS_LIB_MACROS_HPP

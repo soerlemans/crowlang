@@ -1,5 +1,5 @@
-#ifndef CROW_LIB_STDEXCEPT_INVALID_ARGUMENT_HPP
-#define CROW_LIB_STDEXCEPT_INVALID_ARGUMENT_HPP
+#ifndef ACRIS_LIB_STDEXCEPT_INVALID_ARGUMENT_HPP
+#define ACRIS_LIB_STDEXCEPT_INVALID_ARGUMENT_HPP
 
 // Local Includes:
 #include "exception.hpp"
@@ -20,4 +20,4 @@ inline auto throw_invalid_argument(Args&&... t_args) -> void
 }
 } // namespace lib::stdexcept
 
-#endif // CROW_LIB_STDEXCEPT_INVALID_ARGUMENT_HPP
+#endif // ACRIS_LIB_STDEXCEPT_INVALID_ARGUMENT_HPP

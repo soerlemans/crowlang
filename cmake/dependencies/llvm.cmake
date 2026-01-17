@@ -21,12 +21,12 @@ add_definitions(${LLVM_DEFINITIONS_LIST})
 
 # Link libraries:
 target_link_libraries(
-	${TARGET_CROW_LIB}
+	${TARGET_ACRIS_LIB}
 	PUBLIC LLVM-17
 )
 
 #target_link_libraries(
-#	${TARGET_CROW_LIB}
+#	${TARGET_ACRIS_LIB}
 #  lldCommon
 #  lldCOFF
 #  lldELF

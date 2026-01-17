@@ -1,5 +1,5 @@
-#ifndef CROW_LIB_STDEXCEPT_LOGIC_ERROR_HPP
-#define CROW_LIB_STDEXCEPT_LOGIC_ERROR_HPP
+#ifndef ACRIS_LIB_STDEXCEPT_LOGIC_ERROR_HPP
+#define ACRIS_LIB_STDEXCEPT_LOGIC_ERROR_HPP
 
 // Local Includes:
 #include "exception.hpp"
@@ -24,4 +24,4 @@ inline auto throw_logic_error(Args&&... t_args) -> void
 }
 } // namespace lib::stdexcept
 
-#endif // CROW_LIB_STDEXCEPT_LOGIC_ERROR_HPP
+#endif // ACRIS_LIB_STDEXCEPT_LOGIC_ERROR_HPP

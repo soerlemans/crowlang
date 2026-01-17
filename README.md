@@ -1,15 +1,12 @@
-Hyla-lang
-=========
-![Hyla banner](assets/crowlang_banner.png)
+Acris
+=====
+![License](https://img.shields.io/github/license/soerlemans/acris)
+![Tests](https://img.shields.io/github/actions/workflow/status/soerlemans/acris/.github/workflows/unit-tests.yml)
 
-![License](https://img.shields.io/github/license/soerlemans/crowlang)
-![Tests](https://img.shields.io/github/actions/workflow/status/soerlemans/crowlang/.github/workflows/unit-tests.yml)
+Home of the Acris programming language.
+Named after the genus Acris which is the name of cricket frogs.
 
-
-This project is me experimenting with creating my own programming language.
-For this project I am using C++23.
-
-Hyla's syntax is somewhat inspired by Swift, Golang and Rust.
+Acris syntax is somewhat inspired by Swift, Golang and Rust.
 But in Hyla expressions are not statements.
 This allows us to write code without any need for semicolons.
 
@@ -29,7 +26,7 @@ Here is a simple sample program.
 module main
 
 // Standard library includes:
-#include_once <core/core.cw>
+#include_once <core/core.ac>
 
 func main() -> int {
   defer {
@@ -42,7 +39,7 @@ func main() -> int {
 
 Which can be compiled using:
 ```shell
-crow --backend cpp --interop python samples/hello.cw
+acris --backend cpp --interop python samples/hello.ac
 ```
 Which will create an importable Python DLL.
 
@@ -66,7 +63,7 @@ func main() -> int {
 
 Compile using:
 ```shell
-crow --backend cpp samples/attribute.cw
+acris --backend cpp samples/attribute.ac
 ```
 
 This will generate a DLL which can be directly imported from Python.
@@ -84,7 +81,7 @@ Here is a list of the following, which is implemented:
  6. LLVM backend (partially implemented).
  7. C++ backend (fully implemented and generates from AST).
  8. C++ backend - Python interop.
- 9. Compiler flag configuration via CLI and TOML file (`crow.toml`).
+ 9. Compiler flag configuration via CLI and TOML file (`acris.toml`).
  10. Variables are implemented (`let` and `var` for constants and normal variables respectively).
  11. Arithmetic is implemented.
  12. Loops are implemented.
@@ -140,7 +137,7 @@ inv build --parallel
 
  - `assets/`: Non code related assets like images.
  - `cmake/`: Cmake sources that are needed to build the project.
- - `src/`: Sources of the Crow project.
- - `tests/`: Unit tests of the Crow project.
- - `samples/`: Crow sources that can be compiled to demonstrate the functionalities of Crow.
+ - `src/`: Sources of the Acris project.
+ - `tests/`: Unit tests of the Acris project.
+ - `samples/`: Acris source samples to learn and play around with.
  - `tools/`: Collection of tools and scripts, that aid development.

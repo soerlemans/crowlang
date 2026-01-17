@@ -1,5 +1,5 @@
-#ifndef CROW_LIB_ENUM2INT_HPP
-#define CROW_LIB_ENUM2INT_HPP
+#ifndef ACRIS_LIB_ENUM2INT_HPP
+#define ACRIS_LIB_ENUM2INT_HPP
 
 // STL Includes:
 #include <type_traits>
@@ -13,4 +13,4 @@ constexpr inline auto enum2int(const T t_value) -> std::underlying_type_t<T>
 }
 } // namespace lib
 
-#endif // CROW_LIB_ENUM2INT_HPP
+#endif // ACRIS_LIB_ENUM2INT_HPP

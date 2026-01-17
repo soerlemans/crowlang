@@ -1,5 +1,5 @@
-#ifndef CROW_LIB_STDEXCEPT_UNEXPECTED_MONOSTATE_HPP
-#define CROW_LIB_STDEXCEPT_UNEXPECTED_MONOSTATE_HPP
+#ifndef ACRIS_LIB_STDEXCEPT_UNEXPECTED_MONOSTATE_HPP
+#define ACRIS_LIB_STDEXCEPT_UNEXPECTED_MONOSTATE_HPP
 
 // Local Includes:
 #include "exception.hpp"
@@ -21,4 +21,4 @@ inline auto throw_unexpected_monostate(Args&&... t_args) -> void
 }
 } // namespace lib::stdexcept
 
-#endif // CROW_LIB_STDEXCEPT_UNEXPECTED_MONOSTATE_HPP
+#endif // ACRIS_LIB_STDEXCEPT_UNEXPECTED_MONOSTATE_HPP

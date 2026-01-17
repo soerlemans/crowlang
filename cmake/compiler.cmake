@@ -71,7 +71,7 @@ function(cxx_configure_target T_TARGET)
 
   # Github actions updates timestamp on checkout.
   # Always invalidating the PCH.
-  if(NOT DEFINED CROW_CI_BUILD)
+  if(NOT DEFINED ACRIS_CI_BUILD)
     # Precompile commonly used STL headers.
     target_precompile_headers(${T_TARGET} PRIVATE
       <any>
@@ -108,8 +108,8 @@ endfunction()
 
 # Set some compiler options:
 set_target_properties(
-	${TARGET_CROW}
-	${TARGET_CROW_LIB}
+	${TARGET_ACRIS}
+	${TARGET_ACRIS_LIB}
 	PROPERTIES
 	CXX_STANDARD 23
 	C_STANDARD 17
@@ -118,11 +118,11 @@ set_target_properties(
 )
 
 # Configure compiler for targets:
-cxx_configure_target(${TARGET_CROW})
-cxx_configure_target(${TARGET_CROW_LIB})
+cxx_configure_target(${TARGET_ACRIS})
+cxx_configure_target(${TARGET_ACRIS_LIB})
 
 set_target_properties(
-	${TARGET_CROW_STDCROW}
+	${TARGET_ACRIS_STDACRIS}
 	PROPERTIES
 	CXX_STANDARD 23
 	C_STANDARD 17
@@ -132,7 +132,7 @@ set_target_properties(
 )
 
 # We dont build static library with.
-target_compile_options(${TARGET_CROW_STDCROW} PRIVATE
+target_compile_options(${TARGET_ACRIS_STDACRIS} PRIVATE
 	${CMAKE_CXX_WARNING_FLAGS}
 	"-nostdlib"
 )
@@ -140,19 +140,19 @@ target_compile_options(${TARGET_CROW_STDCROW} PRIVATE
 # TODO: Improve:
 # Define src/ as include directory.
 target_include_directories(
-  ${TARGET_CROW_LIB}
+  ${TARGET_ACRIS_LIB}
   PUBLIC src/
 )
 
 target_include_directories(
-  ${TARGET_CROW_STDCROW}
+  ${TARGET_ACRIS_STDACRIS}
   PUBLIC src/
 )
 
 # Make it possible for tests to include sources from the project root.
-if(DEFINED CROW_BUILD_TESTS)
+if(DEFINED ACRIS_BUILD_TESTS)
 	target_include_directories(
-		${TARGET_CROW_TESTS}
+		${TARGET_ACRIS_TESTS}
 		PUBLIC ${CMAKE_SOURCE_DIR}/src
 	)
 endif()

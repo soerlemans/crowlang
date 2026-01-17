@@ -3,25 +3,25 @@ cmake_minimum_required(VERSION 3.22)
 
 # Define the project.
 project(
-  crow
+  acris
   VERSION 0.4.0
-  DESCRIPTION "Compiler for crowlang."
+  DESCRIPTION "Compiler for acris."
   LANGUAGES CXX C
 )
 
 # Set the target variables.
 include(cmake/targets.cmake)
 
-# Define the executable for the crow compiler.
-add_library(${TARGET_CROW_LIB} STATIC)
-add_library(${TARGET_CROW_STDCROW} STATIC)
-add_executable(${TARGET_CROW})
+# Define the executable for the acris compiler.
+add_library(${TARGET_ACRIS_LIB} STATIC)
+add_library(${TARGET_ACRIS_STDACRIS} STATIC)
+add_executable(${TARGET_ACRIS})
 
 # Configure include-what-you-use.
 #include(cmake/iwyu.cmake)
 
 set_target_properties(
-  ${TARGET_CROW}
+  ${TARGET_ACRIS}
   PROPERTIES
   EXPORT_COMPILE_COMMANDS ON
 )
@@ -46,11 +46,11 @@ include(cmake/dependencies.cmake)
 # Compile sources.
 add_subdirectory(src)
 target_link_libraries(
-  ${TARGET_CROW}
-  PUBLIC ${TARGET_CROW_LIB})
+  ${TARGET_ACRIS}
+  PUBLIC ${TARGET_ACRIS_LIB})
 
 # Build tests:
-if(DEFINED CROW_BUILD_TESTS)
+if(DEFINED ACRIS_BUILD_TESTS)
   include(cmake/dependencies/gtest.cmake)
 
   add_subdirectory(tests)

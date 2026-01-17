@@ -1,0 +1,14 @@
+module preprocessor_sample
+
+#include "samples/preprocess.ac"
+
+// Standard library include.
+#include_once <core/linux/core.ac>
+
+
+// Relative path include.
+// #include_once "test"
+
+func main() -> int {
+  return getpid()
+}

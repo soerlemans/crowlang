@@ -10,6 +10,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(tomlplusplus)
 
 target_link_libraries(
-	${TARGET_CROW_LIB}
+	${TARGET_ACRIS_LIB}
 	PUBLIC tomlplusplus::tomlplusplus
 )

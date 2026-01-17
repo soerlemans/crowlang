@@ -8,6 +8,6 @@ find_package(
 )
 
 target_link_libraries(
-	${TARGET_CROW_LIB}
+	${TARGET_ACRIS_LIB}
 	PUBLIC CLI11::CLI11
 )

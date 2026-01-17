@@ -1,5 +1,5 @@
-#ifndef CROW_LIB_CHECK_NULLPTR_HPP
-#define CROW_LIB_CHECK_NULLPTR_HPP
+#ifndef ACRIS_LIB_CHECK_NULLPTR_HPP
+#define ACRIS_LIB_CHECK_NULLPTR_HPP
 
 // STL Includes:
 #include <format>
@@ -29,4 +29,4 @@ constexpr inline auto check_nullptr(T t_ptr, const std::string t_msg) -> void
 }
 } // namespace lib
 
-#endif // CROW_LIB_CHECK_NULLPTR_HPP
+#endif // ACRIS_LIB_CHECK_NULLPTR_HPP

@@ -7,13 +7,13 @@
 // Library Includes:
 #include <gtest/gtest.h>
 
-// Crow Absolute Includes:
-#include "crow/ast/node/include.hpp"
-#include "crow/ast/visitor/ast_archive.hpp"
-#include "crow/ast/visitor/ast_printer.hpp"
-#include "crow/container/text_buffer.hpp"
-#include "crow/lexer/lexer.hpp"
-#include "crow/parser/crow/crow_parser.hpp"
+// Acris Absolute Includes:
+#include "acris/ast/node/include.hpp"
+#include "acris/ast/visitor/ast_archive.hpp"
+#include "acris/ast/visitor/ast_printer.hpp"
+#include "acris/container/text_buffer.hpp"
+#include "acris/lexer/lexer.hpp"
+#include "acris/parser/acris/acris_parser.hpp"
 
 /*!
  * @file
@@ -43,7 +43,7 @@ auto test_archive(const std::string_view t_program) -> void
   using ast::node::NodePtr;
   using container::TextBuffer;
   using lexer::Lexer;
-  using parser::crow::CrowParser;
+  using parser::acris::AcrisParser;
   using token::TokenStream;
 
   std::stringstream ss;
@@ -55,7 +55,7 @@ auto test_archive(const std::string_view t_program) -> void
   // Create AST from TextBuffer.
   Lexer lexer{stream_ptr};
   TokenStream tokenstream{lexer.tokenize()};
-  CrowParser parser{tokenstream};
+  AcrisParser parser{tokenstream};
 
   NodePtr ast{parser.parse()};
   NodePtr ast_new{};
