@@ -1,4 +1,3 @@
 README
 ======
-Contains the C code wrapper layer for making syscalls.
-
+Contains a thin layer C code for interacting with the OS, via syscalls.

@@ -89,7 +89,7 @@ def cmake_mode_args(t_mode: str) -> str:
 
         case BuildProfile.TEST:
             args += '-DCMAKE_BUILD_TYPE=Debug '
-            args += '-DCROW_BUILD_TESTS=TRUE '
+            args += '-DACRIS_BUILD_TESTS=TRUE '
             pass
 
         case _:
@@ -111,10 +111,10 @@ def cmake(t_ctx, t_mode: str, t_parallel: bool, t_lint=False, t_ci_build=False):
 
     # Perform static analysis if specified.
     if t_lint:
-        build_args += '-DCROW_CLANG_TIDY=TRUE '
+        build_args += '-DACRIS_CLANG_TIDY=TRUE '
 
     if t_ci_build:
-        build_args += '-DCROW_CI_BUILD=TRUE '
+        build_args += '-DACRIS_CI_BUILD=TRUE '
 
     # Always print version info.
     run(t_ctx, 'cmake --version')
@@ -158,29 +158,29 @@ def install(ctx, mode='', parallel=True, lint=False):
 
     print(f'\nGive password for installing to /usr/local/:')
     # Install binary to /usr/local/bin/
-    ctx.run(f'sudo cp -f ./{mode}/crow /usr/local/bin/crow')
+    ctx.run(f'sudo cp -f ./{mode}/acris /usr/local/bin/acris')
 
-    # Install lbicrow headers.
+    # Install lbiacris headers.
     # TODO: Automate this.
-    local_stdcrow = '/usr/local/include/stdcrow'
+    local_stdacris = '/usr/local/include/stdacris'
     local_lib = '/usr/local/lib'
 
-    ctx.run(f'sudo mkdir -p {local_stdcrow}')
-    ctx.run(f'sudo cp -rf ./src/stdcrow/* {local_stdcrow}')
-    ctx.run(f'sudo cp -f ./{mode}/libstdcrow.a {local_lib}')
+    ctx.run(f'sudo mkdir -p {local_stdacris}')
+    ctx.run(f'sudo cp -rf ./src/stdacris/* {local_stdacris}')
+    ctx.run(f'sudo cp -f ./{mode}/libstdacris.a {local_lib}')
 
-    # TODO: Have CMake generate stdcrow.a.
-    # TODO: Install shared stdcrow.a. 
-    # ctx.run(f'sudo mkdir -p /usr/local/lib/crow/')
-    #ctx.run(f'sudo cp -f ./{mode}/stdlibcrowlib.a /usr/local/lib/crow/')
+    # TODO: Have CMake generate stdacris.a.
+    # TODO: Install shared stdacris.a. 
+    # ctx.run(f'sudo mkdir -p /usr/local/lib/acris/')
+    #ctx.run(f'sudo cp -f ./{mode}/stdlibacrislib.a /usr/local/lib/acris/')
     pass
 
 
 def uninstall(ctx):
-    '''Uninstall crow from /usr/local/'''
-    ctx.run('sudo rm -f /usr/local/bin/crow')
-    ctx.run('sudo rm -rf /usr/local/include/stdcrow')
-    ctx.run('sudo rm -f /usr/local/lib/libstdcrow.so')
+    '''Uninstall acris from /usr/local/'''
+    ctx.run('sudo rm -f /usr/local/bin/acris')
+    ctx.run('sudo rm -rf /usr/local/include/stdacris')
+    ctx.run('sudo rm -f /usr/local/lib/libstdacris.so')
     pass
 
 
@@ -224,7 +224,7 @@ def format(ctx):
 @task
 def header_guard(ctx):
     'Regenerate all heade guards to be unique.'
-    ctx.run(r"PROJECT_NAME=CROW find src/ -name '*.hpp' -name '*.h' -exec ./tools/header_guard.awk {} \;")
+    ctx.run(r"PROJECT_NAME=ACRIS find src/ -name '*.hpp' -name '*.h' -exec ./tools/header_guard.awk {} \;")
     pass
 
 

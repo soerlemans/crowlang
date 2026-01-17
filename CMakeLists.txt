@@ -3,16 +3,16 @@ cmake_minimum_required(VERSION 3.22)
 
 # Define the project.
 project(
-  crow
+  acris
   VERSION 0.4.0
-  DESCRIPTION "Compiler for crowlang."
+  DESCRIPTION "Compiler for acrislang."
   LANGUAGES CXX C
 )
 
 # Set the target variables.
 include(cmake/targets.cmake)
 
-# Define the executable for the crow compiler.
+# Define the executable for the acris compiler.
 add_library(${TARGET_CROW_LIB} STATIC)
 add_library(${TARGET_CROW_STDCROW} STATIC)
 add_executable(${TARGET_CROW})
