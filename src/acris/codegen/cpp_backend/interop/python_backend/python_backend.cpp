@@ -39,9 +39,9 @@ auto PythonBackend::epilogue() -> std::string
   std::stringstream ss;
 
   // TODO: Set the module name based on package/module name or macro value.
-  ss << "PYBIND11_MODULE(acrislang_export, mod) {\n";
+  ss << "PYBIND11_MODULE(acris_export, mod) {\n";
   ss << "namespace py = pybind11;\n";
-  ss << R"(mod.doc() = "Acrislang program exported symbols.";)" << '\n';
+  ss << R"(mod.doc() = "Acris program exported symbols.";)" << '\n';
 
   for(const auto& export_symbol : m_symbols) {
     const auto& [id, type] = export_symbol;
@@ -56,7 +56,7 @@ auto PythonBackend::epilogue() -> std::string
 
       case ExportSymbolType::FUNCTION:
         ss << std::format(
-          R"(mod.def("{}", &{}, "Acrislang exported function.");)", id, id)
+          R"(mod.def("{}", &{}, "Acris exported function.");)", id, id)
            << '\n';
         break;
 

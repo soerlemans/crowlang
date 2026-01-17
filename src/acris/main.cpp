@@ -61,7 +61,7 @@ inline auto report_issue() -> void
   using rang::style;
 
   const std::string_view gh_issue_open{
-    "https://github.com/soerlemans/acrislang/issues/new/choose"};
+    "https://github.com/soerlemans/acris/issues/new/choose"};
 
   // clang-format off
   std::cerr << "\n";
@@ -71,7 +71,7 @@ inline auto report_issue() -> void
   std::cerr << style::reset;
 
   std::cerr << fg::blue;
-  std::cerr << "If you are seeing this message and are not a acrislang contributor.\n";
+  std::cerr << "If you are seeing this message and are not a acris contributor.\n";
   std::cerr << "Then please open a Github Issue.\n\n";
 
   std::cerr << "As this error is likely a result of unintended behavior.\n";

@@ -734,9 +734,9 @@ auto CppBackend::register_interop_backend(const InteropBackendType t_type)
 
       // Set the out file (SRC_STEM is set in ClangFrontendInvoker).
       // clang-format off
-      // m_inv.set_out("acrislang_${SRC_STEM:-cpython}_export$(python3-config --extension-suffix)");
+      // m_inv.set_out("acris_${SRC_STEM:-cpython}_export$(python3-config --extension-suffix)");
       // clang-format on
-      m_inv.set_out("acrislang_export$(python3-config "
+      m_inv.set_out("acris_export$(python3-config "
                     "--extension-suffix)");
       break;
 

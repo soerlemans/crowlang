@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.22)
 project(
   acris
   VERSION 0.4.0
-  DESCRIPTION "Compiler for acrislang."
+  DESCRIPTION "Compiler for acris."
   LANGUAGES CXX C
 )
 

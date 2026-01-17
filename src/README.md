@@ -2,9 +2,9 @@ README
 ======
 ## Project documentation
 
- - `crow` contains the actual compiler code.
+ - `acris` contains the actual compiler code.
  - `lib` contains useful utilities used project wide.
- - `stdcrow` contains the standard library of Acris used by the generated C++ code.
+ - `stdacris` contains the standard library of Acris used by the generated C++ code.
 
 ## About includes
 Here is an example of how includes should ordered for a file titled `header.cpp`.
@@ -24,7 +24,7 @@ Ignore the comments containing a `//~`, in the example below:
 
 //~ 4. Include headers in a parent directory.
 // Absolute Includes:
-#include "crow/container/text_position.hpp"
+#include "acris/container/text_position.hpp"
 
 //~ 5. Include headers in a parent directory in the AST code.
 // Relative AST Includes:
