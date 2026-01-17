@@ -1,7 +1,7 @@
 module error_sample
 
 // Standard library include.
-#include_once <core/linux/core.cw>
+#include_once <core/linux/core.ac>
 
 func main() -> int {
   var msg = "Error: Hello World!\n"
