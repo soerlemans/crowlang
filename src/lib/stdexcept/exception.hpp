@@ -1,5 +1,5 @@
-#ifndef CROW_LIB_STDEXCEPT_EXCEPTION_HPP
-#define CROW_LIB_STDEXCEPT_EXCEPTION_HPP
+#ifndef ACRIS_LIB_STDEXCEPT_EXCEPTION_HPP
+#define ACRIS_LIB_STDEXCEPT_EXCEPTION_HPP
 
 /*!
  * @file Exception.hpp
@@ -43,4 +43,4 @@ inline auto throw_exception(Args&&... t_args) -> void
 }
 } // namespace lib::stdexcept
 
-#endif // CROW_LIB_STDEXCEPT_EXCEPTION_HPP
+#endif // ACRIS_LIB_STDEXCEPT_EXCEPTION_HPP

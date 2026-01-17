@@ -1,5 +1,5 @@
-#ifndef CROW_LIB_OVERLOAD_HPP
-#define CROW_LIB_OVERLOAD_HPP
+#ifndef ACRIS_LIB_OVERLOAD_HPP
+#define ACRIS_LIB_OVERLOAD_HPP
 
 namespace lib {
 // Overload pattern:
@@ -16,4 +16,4 @@ template<class... Ts>
 Overload(Ts...) -> Overload<Ts...>;
 } // namespace lib
 
-#endif // CROW_LIB_OVERLOAD_HPP
+#endif // ACRIS_LIB_OVERLOAD_HPP

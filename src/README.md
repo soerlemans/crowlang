@@ -4,7 +4,7 @@ README
 
  - `crow` contains the actual compiler code.
  - `lib` contains useful utilities used project wide.
- - `stdcrow` contains the standard library of Crow used by the generated C++ code.
+ - `stdcrow` contains the standard library of Acris used by the generated C++ code.
 
 ## About includes
 Here is an example of how includes should ordered for a file titled `header.cpp`.

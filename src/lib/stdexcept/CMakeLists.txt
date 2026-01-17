@@ -1,5 +1,5 @@
 # Add source files.
-target_sources(${TARGET_CROW_LIB} PRIVATE
+target_sources(${TARGET_ACRIS_LIB} PRIVATE
 	exception.cpp
 	unexpected_nullptr.cpp
 	unexpected_monostate.cpp

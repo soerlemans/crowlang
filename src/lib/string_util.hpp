@@ -1,5 +1,5 @@
-#ifndef CROW_LIB_STRING_UTIL_HPP
-#define CROW_LIB_STRING_UTIL_HPP
+#ifndef ACRIS_LIB_STRING_UTIL_HPP
+#define ACRIS_LIB_STRING_UTIL_HPP
 
 // STL Includes:
 #include <cctype>
@@ -44,4 +44,4 @@ constexpr inline auto trim_whitespace(std::string& t_str) -> void
 }
 } // namespace lib
 
-#endif // CROW_LIB_STRING_UTIL_HPP
+#endif // ACRIS_LIB_STRING_UTIL_HPP

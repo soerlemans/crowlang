@@ -1,5 +1,5 @@
-#ifndef CROW_LIB_STDEXCEPT_BAD_ANY_CAST_HPP
-#define CROW_LIB_STDEXCEPT_BAD_ANY_CAST_HPP
+#ifndef ACRIS_LIB_STDEXCEPT_BAD_ANY_CAST_HPP
+#define ACRIS_LIB_STDEXCEPT_BAD_ANY_CAST_HPP
 
 // Local Includes:
 #include "exception.hpp"
@@ -19,4 +19,4 @@ auto throw_bad_any_cast(Args&&... t_args) -> void
   throw_exception<BadAnyCast>(std::forward<Args>(t_args)...);
 }
 } // namespace lib::stdexcept
-#endif // CROW_LIB_STDEXCEPT_BAD_ANY_CAST_HPP
+#endif // ACRIS_LIB_STDEXCEPT_BAD_ANY_CAST_HPP

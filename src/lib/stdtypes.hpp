@@ -1,5 +1,5 @@
-#ifndef CROW_LIB_STDTYPES_HPP
-#define CROW_LIB_STDTYPES_HPP
+#ifndef ACRIS_LIB_STDTYPES_HPP
+#define ACRIS_LIB_STDTYPES_HPP
 
 // STL Includes:
 #include <cstdint>
@@ -37,4 +37,4 @@ using f64 = double;
 static_assert(sizeof(f32) == 4, "f32 is not 32-bit on this platform!");
 static_assert(sizeof(f64) == 8, "f64 is not 64-bit on this platform!");
 
-#endif // CROW_LIB_STDTYPES_HPP
+#endif // ACRIS_LIB_STDTYPES_HPP
