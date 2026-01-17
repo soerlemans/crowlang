@@ -8,11 +8,11 @@
 #include <gtest/gtest.h>
 
 // Absolute Includes:
-#include "crow/ast/node/include.hpp"
-#include "crow/container/text_buffer.hpp"
-#include "crow/diagnostic/diagnostic.hpp"
-#include "crow/lexer/lexer.hpp"
-#include "crow/parser/crow/crow_parser.hpp"
+#include "acris/ast/node/include.hpp"
+#include "acris/container/text_buffer.hpp"
+#include "acris/diagnostic/diagnostic.hpp"
+#include "acris/lexer/lexer.hpp"
+#include "acris/parser/acris/acris_parser.hpp"
 #include "lib/stdexcept/stdexcept.hpp"
 
 /*!
@@ -24,17 +24,17 @@
 // Using:
 using namespace std::literals::string_view_literals;
 
-using parser::crow::CrowParser;
+using parser::acris::AcrisParser;
 
-using CrowExprs = std::vector<std::string_view>;
+using AcrisExprs = std::vector<std::string_view>;
 
 // Helper functions:
 namespace {
-auto prep_parser(const std::string_view t_program) -> CrowParser
+auto prep_parser(const std::string_view t_program) -> AcrisParser
 {
   using container::TextBuffer;
   using lexer::Lexer;
-  using parser::crow::CrowParser;
+  using parser::acris::AcrisParser;
   using token::TokenStream;
 
   // Write program.
@@ -43,7 +43,7 @@ auto prep_parser(const std::string_view t_program) -> CrowParser
 
   // Create AST from TextBuffer.
   Lexer lexer{stream_ptr};
-  CrowParser parser{lexer.tokenize()};
+  AcrisParser parser{lexer.tokenize()};
 
   return parser;
 }
@@ -80,22 +80,22 @@ inline auto report_uncaught_exception(std::string_view t_program) -> std::string
 } // namespace
 
 // Test Cases:
-TEST(TestCrowParser, BasicExpressions)
+TEST(TestAcrisParser, BasicExpressions)
 {
 }
 
-TEST(TestCrowParser, AdvancedExpressions)
+TEST(TestAcrisParser, AdvancedExpressions)
 {
 }
 
-TEST(TestCrowParser, BasicChainExpressions)
+TEST(TestAcrisParser, BasicChainExpressions)
 {
 }
 
-TEST(TestCrowParser, AdvancedChainExpressions)
+TEST(TestAcrisParser, AdvancedChainExpressions)
 {
 }
 
-TEST(TestCrowParser, BasicInvalidExpressions)
+TEST(TestAcrisParser, BasicInvalidExpressions)
 {
 }

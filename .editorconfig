@@ -1,8 +1,8 @@
 # This is the root of the .editorconfig configuration.
 root = true
 
-# Configure crow source
-[*.{cw}]
+# Configure acris source.
+[*.{ac}]
 charset = utf-8
 indent_style = space
 indent_size = 2

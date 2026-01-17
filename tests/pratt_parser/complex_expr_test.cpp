@@ -7,10 +7,10 @@
 // Library Includes:
 #include <catch2/catch_test_macros.hpp>
 
-// Crow Absolute Includes:
-#include "crow/ast/node/include.hpp"
-#include "crow/parser/pratt_parser/pratt_parser.hpp"
-#include "crow/lexer/lexer.hpp"
+// Acris Absolute Includes:
+#include "acris/ast/node/include.hpp"
+#include "acris/parser/pratt_parser/pratt_parser.hpp"
+#include "acris/lexer/lexer.hpp"
 
 /*!
  * @file

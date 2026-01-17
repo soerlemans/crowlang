@@ -1,4 +1,4 @@
-# Directory containg the crow compiler code.
+# Directory containg the acris compiler code.
 add_subdirectory(acris)
 
 # Utilities that are used project wide.
