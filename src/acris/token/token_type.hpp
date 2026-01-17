@@ -58,6 +58,7 @@ enum class TokenType {
   // Literals:
   INTEGER,
   FLOAT,
+  CHAR,
   STRING,
 
   // Braces:
