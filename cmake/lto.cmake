@@ -7,12 +7,12 @@ if( supported )
   message(STATUS "Enabling IPO/LTO.")
 
   set_property(
-    TARGET ${TARGET_CROW_LIB}
+    TARGET ${TARGET_ACRIS_LIB}
     PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE
   )
 
   set_property(
-    TARGET ${TARGET_CROW_BIN}
+    TARGET ${TARGET_ACRIS_BIN}
     PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE
   )
 else()

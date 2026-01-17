@@ -16,15 +16,15 @@ add_compile_definitions(CPPTRACE_UNWIND_WITH_UNWIND
 FetchContent_MakeAvailable(cpptrace)
 
 target_link_libraries(
-	${TARGET_CROW_LIB}
+	${TARGET_ACRIS_LIB}
 	PUBLIC cpptrace::cpptrace
 )
 
-# On windows copy cpptrace.dll to the same directory as the executable for crow.
+# On windows copy cpptrace.dll to the same directory as the executable for acris.
 if(WIN32)
   add_custom_command(
-    TARGET ${TARGET_CROW_LIB}
+    TARGET ${TARGET_ACRIS_LIB}
 		POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    $<TARGET_FILE:cpptrace> $<TARGET_FILE_DIR:${TARGET_CROW_LIB}>
+    $<TARGET_FILE:cpptrace> $<TARGET_FILE_DIR:${TARGET_ACRIS_LIB}>
   )
 endif()

@@ -14,6 +14,6 @@ include_directories(
 )
 
 target_link_libraries(
-  ${TARGET_CROW_LIB}
+  ${TARGET_ACRIS_LIB}
   PUBLIC ${Boost_LIBRARIES}
 )

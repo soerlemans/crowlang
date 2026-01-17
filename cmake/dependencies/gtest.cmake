@@ -1,7 +1,7 @@
 # Google test (C++ Unit testing framework):
 message(STATUS "[+] Fetching Gtest.")
 
-if(DEFINED CROW_BUILD_TESTS)
+if(DEFINED ACRIS_BUILD_TESTS)
 FetchContent_Declare(
   GTest
   GIT_REPOSITORY https://github.com/google/googletest.git
@@ -15,7 +15,7 @@ FetchContent_MakeAvailable(GTest)
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 target_link_libraries(
-	${TARGET_CROW_TESTS}
+	${TARGET_ACRIS_TESTS}
     PUBLIC GTest::gtest_main
 )
 endif()
