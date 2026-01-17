@@ -18,13 +18,13 @@ jobs:
       with:
         fetch-depth: 2
 
-    - name: Install Clang format version 19.
+    - name: Install Clang format.
       id: install-clang-format
       run: |
-        sudo apt update && sudo apt install clang-format-19
+        sudo apt update && sudo apt install clang-format-21
 
         echo -n "Clang-format version: "
-        clang-format-19 --version
+        clang-format-21 --version
 
     - name: Check formatting.
       id: check-format
@@ -34,7 +34,7 @@ jobs:
         while read LINE; do
           if [[ -f "$LINE" ]]
           then
-            if ! clang-format-19 --dry-run -Werror "$LINE"
+            if ! clang-format-21 --dry-run -Werror "$LINE"
             then
               echo "BEGIN $LINE"
               STATUS=1
