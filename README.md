@@ -81,7 +81,7 @@ Here is a list of the following, which is implemented:
  6. LLVM backend (partially implemented).
  7. C++ backend (fully implemented and generates from AST).
  8. C++ backend - Python interop.
- 9. Compiler flag configuration via CLI and TOML file (`crow.toml`).
+ 9. Compiler flag configuration via CLI and TOML file (`acris.toml`).
  10. Variables are implemented (`let` and `var` for constants and normal variables respectively).
  11. Arithmetic is implemented.
  12. Loops are implemented.
