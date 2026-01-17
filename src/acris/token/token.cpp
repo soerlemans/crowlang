@@ -25,11 +25,6 @@ auto Token::type() const -> TokenType
   return m_type;
 }
 
-auto Token::str() const -> std::string
-{
-  return get<std::string>();
-}
-
 auto Token::int_() const -> i64
 {
   return get<i64>();
@@ -38,6 +33,16 @@ auto Token::int_() const -> i64
 auto Token::float_() const -> f64
 {
   return get<f64>();
+}
+
+auto Token::char_() const -> char
+{
+  return get<char>();
+}
+
+auto Token::str() const -> std::string
+{
+  return get<std::string>();
 }
 
 auto Token::position() const -> const TextPosition&

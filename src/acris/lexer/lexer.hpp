@@ -55,6 +55,7 @@ class Lexer {
 
   // Literal lexing:
   auto literal_numeric() -> Token;
+  auto literal_char() -> Token;
   auto literal_string() -> Token;
 
   // Symbol lexing:

@@ -1,0 +1,7 @@
+module char_sample
+
+func main() -> int {
+  let ch = '\n'
+
+  return write_str(STDOUT, &ch, 1)
+}

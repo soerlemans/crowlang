@@ -21,7 +21,7 @@ using container::TextPosition;
 class Token;
 
 // Aliases:
-using TokenValue = std::variant<i64, f64, std::string>;
+using TokenValue = std::variant<i64, f64, char, std::string>;
 
 // Classes:
 class Token {
@@ -45,9 +45,10 @@ class Token {
     return std::get<T>(m_value);
   }
 
-  auto str() const -> std::string;
   auto int_() const -> i64;
   auto float_() const -> f64;
+  auto char_() const -> char;
+  auto str() const -> std::string;
 
   auto position() const -> const TextPosition&;
 

@@ -232,6 +232,7 @@ namespace symbols {
   };
 
   namespace none {
+    constexpr auto g_single_quote{'\''};
     constexpr auto g_double_quote{'"'};
     constexpr auto g_backslash{'\\'};
 

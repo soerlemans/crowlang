@@ -59,6 +59,7 @@ enum class NativeType {
   USIZE,
 
   // String:
+  CHAR,
   STRING,
 
   // Boolean:
@@ -79,16 +80,17 @@ const NativeTypeMap native_types = boost::assign::list_of<NativeTypeMap::relatio
   (TYPING_NTYPE_PAIR(I16))
   (TYPING_NTYPE_PAIR(I32))
   (TYPING_NTYPE_PAIR(I64))
-  (TYPING_NTYPE_PAIR(ISIZE))
+  ( "isz", NativeType::ISIZE)
 
   (TYPING_NTYPE_PAIR(UINT))
   (TYPING_NTYPE_PAIR(U8))
   (TYPING_NTYPE_PAIR(U16))
   (TYPING_NTYPE_PAIR(U32))
   (TYPING_NTYPE_PAIR(U64))
-  (TYPING_NTYPE_PAIR(USIZE))
+  ( "usz", NativeType::USIZE)
 
   // String:
+  (TYPING_NTYPE_PAIR(CHAR))
 	// Str is like a const char* type.
   ( "str", NativeType::STRING)
 

@@ -22,6 +22,58 @@
 // Macros:
 #define LOG_TOKEN(t_msg, t_str) DBG_INFO(t_msg, std::quoted(std::string{t_str}))
 
+// FIXME: This is duplicated now.
+static inline auto char2str(char t_ch) -> std::string
+{
+  std::stringstream ss{};
+
+  switch(t_ch) {
+    case '\0':
+      break;
+
+    case '\t':
+      ss << "\\t"; // Escape tab.
+      break;
+
+    case '\n':
+      ss << "\\n"; // Escape newline.
+      break;
+
+    case '\\':
+      ss << "\\";
+      break;
+
+    case '\'':
+      ss << "'";
+      break;
+
+    case '\v':
+      ss << "\\v"; // Escape vertical tab.
+      break;
+
+    case '\r':
+      ss << "\\r"; // Escape carriage return.
+      break;
+
+    case '\a':
+      ss << "\\a";
+      break;
+
+    case '\b':
+      ss << "\\b";
+      break;
+
+    case '\f':
+      break;
+
+    default:
+      ss << t_ch; // Append normal characters.
+      break;
+  }
+
+  return ss.str();
+}
+
 namespace lexer {
 // Using Statements:
 using token::TokenType;
@@ -338,12 +390,86 @@ auto Lexer::literal_numeric() -> Token
   return token;
 }
 
+auto Lexer::literal_char() -> Token
+{
+  using namespace token::reserved::symbols::none;
+
+  const auto position{text_position()};
+  char token_ch{'\0'};
+
+  m_text->next();
+  char ch{m_text->character()};
+  if(ch == g_backslash) {
+    m_text->next();
+    ch = m_text->character();
+
+    switch(ch) {
+      case '0':
+        token_ch = '\0';
+        break;
+
+      case '\\':
+        token_ch = '\\';
+        break;
+
+      case '\'':
+        token_ch = '\'';
+        break;
+
+
+      case 'a':
+        token_ch = '\a';
+        break;
+
+      case 'b':
+        token_ch = '\b';
+        break;
+
+      case 't':
+        token_ch = '\t';
+        break;
+
+      case 'n':
+        token_ch = '\n';
+        break;
+
+      case 'v':
+        token_ch = '\v';
+        break;
+
+      case 'f':
+        token_ch = '\f';
+        break;
+
+      case 'r':
+        token_ch = '\r';
+        break;
+
+      default: {
+        assert(false && "Unsupported char after '\\'.");
+        break;
+      }
+    }
+  } else {
+    token_ch = ch;
+  }
+
+  m_text->next();
+  ch = m_text->character();
+  if(ch != g_single_quote) {
+    // TODO: Error.
+  }
+
+  LOG_TOKEN("CHAR: ", char2str(token_ch));
+  return Token{TokenType::CHAR, token_ch, position};
+}
+
 auto Lexer::literal_string() -> Token
 {
   using namespace token::reserved::symbols::none;
 
   const auto position{text_position()};
-  std::stringstream ss;
+  std::stringstream ss{};
 
   bool quit{false};
   while(!quit && !m_text->eos()) {
@@ -363,6 +489,9 @@ auto Lexer::literal_string() -> Token
           ss << m_text->character();
           break;
       }
+    } else {
+      // SHould error here.
+      assert(false && "Cant reach EOS in a string literal.");
     }
   }
 
@@ -469,6 +598,8 @@ auto Lexer::tokenize() -> TokenStream
       m_ts.push_back(identifier());
     } else if(std::isdigit(ch)) {
       m_ts.push_back(literal_numeric());
+    } else if(ch == none::g_single_quote) {
+      m_ts.push_back(literal_char());
     } else if(ch == none::g_double_quote) {
       m_ts.push_back(literal_string());
     } else {
