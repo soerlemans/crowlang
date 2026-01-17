@@ -38,6 +38,7 @@ class TextBuffer : public TextStream {
 
   auto peek() const -> CharOpt override;
 
+  auto source() const -> std::string_view override;
   auto character() const -> char override;
   auto line() const -> std::string_view;
 
@@ -45,6 +46,7 @@ class TextBuffer : public TextStream {
   auto reset() -> void override;
 
   auto position() const -> TextPosition override;
+  auto end_position() const -> TextPosition override;
 
   friend auto operator<<(std::ostream& t_os, const TextBuffer& t_tb)
     -> std::ostream&;

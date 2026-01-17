@@ -13,6 +13,7 @@
 
 namespace preprocessor {
 using container::TextBufferPtr;
+using container::TextBuffer;
 using container::TextStreamPtr;
 
 namespace fs = std::filesystem;
@@ -36,6 +37,8 @@ class Preprocessor {
 
   public:
   explicit Preprocessor(TextStreamPtr t_text);
+
+	auto make_buffer() -> TextBufferPtr;
 
   auto include_file(TextBufferPtr& t_buffer, const fs::path t_path) -> void;
   auto get_include_path(TextStreamPtr t_text) -> IncludePack;

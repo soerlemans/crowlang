@@ -1,5 +1,8 @@
 #include "text_buffer.hpp"
 
+// STL Includes:
+#include <stdexcept>
+
 
 static constexpr std::size_t default_buffer_reserve_size{1'024};
 
@@ -72,6 +75,11 @@ auto TextBuffer::peek() const -> CharOpt
   return ch;
 }
 
+auto TextBuffer::source() const -> std::string_view
+{
+  return m_source;
+}
+
 auto TextBuffer::character() const -> char
 {
   return m_buffer.at(m_lineno).at(m_columnno);
@@ -98,6 +106,17 @@ auto TextBuffer::reset() -> void
 auto TextBuffer::position() const -> TextPosition
 {
   return TextPosition{m_source, line(), m_lineno, m_columnno};
+}
+
+auto TextBuffer::end_position() const -> TextPosition
+{
+  if(m_buffer.empty()) {
+    throw std::out_of_range{"Buffer is empty cant get end_position()."};
+  }
+
+  auto end_line{m_buffer.back()};
+
+  return TextPosition{m_source, end_line, m_lineno, m_columnno};
 }
 
 auto operator<<(std::ostream& t_os, const TextBuffer& t_tb) -> std::ostream&

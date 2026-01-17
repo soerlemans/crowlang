@@ -14,6 +14,9 @@ namespace diagnostic {
 // Using Statements:
 using container::TextPosition;
 
+// TODO: Maybe add an option to show the nested include?
+// So a user can trace back what kicked off recursive inclusion or similar?
+
 // Classes:
 /*!
  * Is thrown during the preprocessor step of compilation.

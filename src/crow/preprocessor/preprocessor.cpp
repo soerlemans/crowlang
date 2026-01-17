@@ -32,10 +32,16 @@ Preprocessor::Preprocessor(TextStreamPtr t_text)
   : m_text{t_text}, m_nesting_count{0}, m_already_included{}
 {}
 
+auto Preprocessor::make_buffer() -> TextBufferPtr
+{
+  const auto source_file{m_text->source()};
+
+  return std::make_shared<TextBuffer>(source_file);
+}
+
 auto Preprocessor::include_file(TextBufferPtr& t_buffer, const fs::path t_path)
   -> void
 {
-  using container::TextBuffer;
   using fs::exists;
 
   if(!exists(t_path)) {
@@ -58,9 +64,18 @@ auto Preprocessor::include_file(TextBufferPtr& t_buffer, const fs::path t_path)
 
     // Nested include directive.
     if(!line.empty() && line.front() == directive_start) {
-      auto buffer{std::make_shared<TextBuffer>()};
+      auto buffer{make_buffer()};
 
       m_nesting_count++;
+      if(m_nesting_count >= MAX_INCLUDE_NESTING) {
+        auto pos{t_buffer->end_position()};
+
+        throw PreprocessorError{
+          std::format("Exceeded maximum #include nesting count of {} includes.",
+                      MAX_INCLUDE_NESTING),
+          pos};
+      }
+
       handle_preprocessor(t_buffer, buffer);
       m_nesting_count--;
 
@@ -163,10 +178,10 @@ auto Preprocessor::handle_preprocessor(TextStreamPtr t_text,
                                        TextBufferPtr& t_buffer) -> void
 {
   if(m_nesting_count >= MAX_INCLUDE_NESTING) {
-    auto pos{t_text->position()};
+    auto pos{t_text->end_position()};
 
     throw PreprocessorError{
-      std::format("Exceeded max #include nesting count {}",
+      std::format("Exceeded maximum #include nesting count of {} includes.",
                   MAX_INCLUDE_NESTING),
       pos};
   }
@@ -207,9 +222,7 @@ auto Preprocessor::handle_preprocessor(TextStreamPtr t_text,
 
 auto Preprocessor::preprocess() -> TextStreamPtr
 {
-  using container::TextBuffer;
-
-  auto buffer{std::make_shared<TextBuffer>()};
+  auto buffer{make_buffer()};
 
   handle_preprocessor(m_text, buffer);
   DBG_INFO("buffer: ", *buffer);

@@ -30,6 +30,7 @@ class TextStream {
 
   virtual auto peek() const -> CharOpt = 0;
 
+  virtual auto source() const -> std::string_view = 0;
   virtual auto character() const -> char = 0;
   virtual auto line() const -> std::string_view = 0;
 
@@ -37,6 +38,7 @@ class TextStream {
   virtual auto reset() -> void = 0;
 
   virtual auto position() const -> TextPosition = 0;
+  virtual auto end_position() const -> TextPosition = 0;
 
   virtual ~TextStream() = default;
 };
