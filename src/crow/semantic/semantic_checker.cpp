@@ -441,11 +441,6 @@ auto SemanticChecker::visit(FunctionCall* t_fn_call) -> Any
   // not a function name
   const auto id{t_fn_call->identifier()};
 
-  // FIXME: Temporary whitelist for standard lib print and println:
-  if(id == "print" || id == "println") {
-    return {};
-  }
-
   const auto fn_data{get_symbol_data_from_env(id)};
   const auto args{get_resolved_result_type_list(t_fn_call->args())};
 
@@ -757,6 +752,23 @@ auto SemanticChecker::visit(AddressOf* t_addr_of) -> Any
   /// TODO: Maybe annotate the type data to the AST?
 
   return make_pointer(left);
+}
+
+auto SemanticChecker::visit(Dereference* t_deref) -> Any
+{
+  using types::symbol::make_pointer;
+
+  const auto left{get_symbol_data(t_deref->left())};
+
+  // Remove variable mapping.
+  const auto result_type{left.resolve_result_type()};
+
+  // TODO: Test to make sure if pointer type else error.
+
+  // Get underlying pointer.
+  const auto ptr{result_type.as_ptr()};
+
+  return ptr->m_type;
 }
 
 auto SemanticChecker::visit(UnaryPrefix* t_up) -> Any

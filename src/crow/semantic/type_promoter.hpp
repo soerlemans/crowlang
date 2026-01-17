@@ -35,7 +35,6 @@ class TypePromoter {
   private:
   TypeLadder m_float;
   TypeLadder m_int;
-  TypeLadder m_uint;
 
   protected:
   auto get_priority(const TypeLadder& t_ladder, NativeType t_type) const
@@ -53,9 +52,6 @@ class TypePromoter {
     -> NativeTypeOpt;
   auto promote_int(NativeType t_lhs, NativeType t_rhs,
                    PromotionMode t_mode = PromotionMode::PROMOTE_TO_LHS) const
-    -> NativeTypeOpt;
-  auto promote_uint(NativeType t_lhs, NativeType t_rhs,
-                    PromotionMode t_mode = PromotionMode::PROMOTE_TO_LHS) const
     -> NativeTypeOpt;
 
   /*!

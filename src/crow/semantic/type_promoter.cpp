@@ -39,9 +39,7 @@ auto TypePromoter::get_priority(const TypeLadder& t_ladder,
 }
 
 TypePromoter::TypePromoter()
-  : m_float{prealloc_map_size},
-    m_int{prealloc_map_size},
-    m_uint{prealloc_map_size}
+  : m_float{prealloc_map_size}, m_int{prealloc_map_size}
 {
   // Type precedence ladders.
 
@@ -51,19 +49,17 @@ TypePromoter::TypePromoter()
 
   // Integer:
   m_int.insert({NativeType::INT, 0});
-  m_int.insert({NativeType::I8, 1});
-  m_int.insert({NativeType::I16, 2});
-  m_int.insert({NativeType::I32, 3});
-  m_int.insert({NativeType::I64, 4});
-  m_int.insert({NativeType::ISIZE, 5});
-
-  // Unsigned Integer:
-  m_uint.insert({NativeType::UINT, 0});
-  m_uint.insert({NativeType::U8, 1});
-  m_uint.insert({NativeType::U16, 2});
-  m_uint.insert({NativeType::U32, 3});
-  m_uint.insert({NativeType::U64, 4});
-  m_uint.insert({NativeType::USIZE, 5});
+  m_int.insert({NativeType::UINT, 1});
+  m_int.insert({NativeType::I8, 2});
+  m_int.insert({NativeType::U8, 3});
+  m_int.insert({NativeType::I16, 4});
+  m_int.insert({NativeType::U16, 5});
+  m_int.insert({NativeType::I32, 6});
+  m_int.insert({NativeType::U32, 7});
+  m_int.insert({NativeType::I64, 8});
+  m_int.insert({NativeType::U64, 9});
+  m_int.insert({NativeType::ISIZE, 10});
+  m_int.insert({NativeType::USIZE, 11});
 }
 
 auto TypePromoter::promote_bool(const NativeType t_lhs) const -> NativeTypeOpt
@@ -71,10 +67,9 @@ auto TypePromoter::promote_bool(const NativeType t_lhs) const -> NativeTypeOpt
   NativeTypeOpt opt{};
 
   const auto integer{m_int.contains(t_lhs)};
-  const auto unsigned_integer{m_uint.contains(t_lhs)};
 
   // Only integers may be promoted to boolean's (implicitely).
-  if(integer || unsigned_integer) {
+  if(integer) {
     opt = NativeType::BOOL;
   }
 
@@ -131,31 +126,6 @@ auto TypePromoter::promote_int(const NativeType t_lhs, const NativeType t_rhs,
   return opt;
 }
 
-auto TypePromoter::promote_uint(const NativeType t_lhs, const NativeType t_rhs,
-                                const PromotionMode t_mode) const
-  -> NativeTypeOpt
-{
-  NativeTypeOpt opt{};
-
-  // TODO: Handle Int to UInt type promotion.
-  const auto lhs_priority{get_priority(m_uint, t_lhs)};
-  const auto rhs_priority{get_priority(m_uint, t_rhs)};
-
-  if(t_mode == PromotionMode::PROMOTE_TO_LHS) {
-    if(lhs_priority >= rhs_priority) {
-      opt = t_lhs;
-    } else {
-      // TODO: error.
-    }
-  } else if(t_mode == PromotionMode::ENFORCE_RHS) {
-    opt = t_rhs;
-  } else if(t_mode == PromotionMode::PEAK) {
-    opt = (lhs_priority > rhs_priority) ? t_lhs : t_rhs;
-  }
-
-  return opt;
-}
-
 auto TypePromoter::promote(const NativeType t_lhs, const NativeType t_rhs,
                            const PromotionMode t_mode) const -> NativeTypeOpt
 {
@@ -174,8 +144,6 @@ auto TypePromoter::promote(const NativeType t_lhs, const NativeType t_rhs,
 
   if(in_ladder(m_int)) {
     opt = promote_int(t_lhs, t_rhs, t_mode);
-  } else if(in_ladder(m_uint)) {
-    opt = promote_uint(t_lhs, t_rhs, t_mode);
   }
 
   return opt;

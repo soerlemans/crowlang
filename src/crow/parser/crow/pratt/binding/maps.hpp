@@ -31,11 +31,11 @@ class InfixMap : public BindingMap {
   InfixMap()
   {
     // Member access:
-    INSERT_BINDING(DOT, 15, 14);
-    INSERT_BINDING(ARROW, 15, 14);
+    INSERT_BINDING(DOT, 15, 14);   // Member Access.
+    INSERT_BINDING(ARROW, 15, 14); // Member Access via pointer.
 
     // INSERT_BINDING(PAREN_OPEN, 15, 14);
-    // INSERT_BINDING(BRACKET_OPEN, 15, 14);
+    // INSERT_BINDING(BRACKET_OPEN, 15, 14); // Array subscript.
 
     // Factor:
     INSERT_BINDING(ASTERISK, 12, 13);     // Multiplication

@@ -441,7 +441,7 @@ auto Lexer::tokenize() -> TokenStream
   using namespace token::reserved::symbols;
 
   while(!m_text->eos()) {
-    const auto ch{m_text->character()};
+    const auto ch{(unsigned char)m_text->character()};
 
     // Lexing loop:
     if(std::isspace(ch)) {

@@ -89,11 +89,8 @@ const NativeTypeMap native_types = boost::assign::list_of<NativeTypeMap::relatio
   (TYPING_NTYPE_PAIR(USIZE))
 
   // String:
-  // FIXME: Should String be a native type?
-  // This should probably be named STRING_VIEW or something else indicating.
-  // Or something else indicating that this is fact an immutable string.
-  // Like a (const char*).
-  (TYPING_NTYPE_PAIR(STRING))
+	// Str is like a const char* type.
+  ( "str", NativeType::STRING)
 
   // // Boolean:
   (TYPING_NTYPE_PAIR(BOOL))

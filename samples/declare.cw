@@ -1,8 +1,8 @@
 module declare_module
 
-declare let fwd_lvar: int
-declare var fwd_vvar: int
-declare func fwd_func() -> int
+decl let fwd_lvar: int
+decl var fwd_vvar: int
+decl func fwd_func() -> int
 
 func main() -> int {
   fwd_func()

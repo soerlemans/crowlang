@@ -7,6 +7,7 @@
 #include "assignment.hpp"
 #include "comparison.hpp"
 #include "decrement.hpp"
+#include "dereference.hpp"
 #include "increment.hpp"
 #include "logical.hpp"
 #include "ternary.hpp"

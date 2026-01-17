@@ -1,12 +1,14 @@
 #include "text_buffer.hpp"
 
-namespace {
-constexpr std::size_t default_buffer_reserve_size = 1'024;
-}
+// STL Includes:
+#include <stdexcept>
+
+
+static constexpr std::size_t default_buffer_reserve_size{1'024};
 
 namespace container {
 // Methods:
-TextBuffer::TextBuffer(): m_lineno{0}, m_columnno{0}
+TextBuffer::TextBuffer(): m_source{}, m_lineno{0}, m_columnno{0}
 {
   m_buffer.reserve(default_buffer_reserve_size);
 }
@@ -73,14 +75,19 @@ auto TextBuffer::peek() const -> CharOpt
   return ch;
 }
 
-auto TextBuffer::character() const -> char
+auto TextBuffer::source() const -> std::string_view
 {
-  return m_buffer[m_lineno][m_columnno];
+  return m_source;
 }
 
-auto TextBuffer::line() const -> std::string
+auto TextBuffer::character() const -> char
 {
-  return m_buffer[m_lineno];
+  return m_buffer.at(m_lineno).at(m_columnno);
+}
+
+auto TextBuffer::line() const -> std::string_view
+{
+  return m_buffer.at(m_lineno);
 }
 
 auto TextBuffer::eos() const -> bool
@@ -88,11 +95,28 @@ auto TextBuffer::eos() const -> bool
   return m_lineno >= m_buffer.size();
 }
 
+auto TextBuffer::reset() -> void
+{
+  m_lineno = 0;
+  m_columnno = 0;
+}
+
 //! This method is required for token creating in the Lexer, think about how to
 //! make this more elegant
 auto TextBuffer::position() const -> TextPosition
 {
   return TextPosition{m_source, line(), m_lineno, m_columnno};
+}
+
+auto TextBuffer::end_position() const -> TextPosition
+{
+  if(m_buffer.empty()) {
+    throw std::out_of_range{"Buffer is empty cant get end_position()."};
+  }
+
+  auto end_line{m_buffer.back()};
+
+  return TextPosition{m_source, end_line, m_lineno, m_columnno};
 }
 
 auto operator<<(std::ostream& t_os, const TextBuffer& t_tb) -> std::ostream&

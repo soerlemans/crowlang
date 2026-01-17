@@ -162,15 +162,15 @@ def install(ctx, mode='', parallel=True, lint=False):
 
     # Install lbicrow headers.
     # TODO: Automate this.
-    stdlibcrow_path = '/usr/local/include/stdlibcrow'
-    ctx.run(f'sudo mkdir -p {stdlibcrow_path}')
-    ctx.run(f'sudo cp -f ./src/stdlibcrow/*.hpp {stdlibcrow_path}')
+    local_stdcrow = '/usr/local/include/stdcrow'
+    local_lib = '/usr/local/lib'
 
-    ctx.run(f'sudo mkdir -p {stdlibcrow_path}/internal')
-    ctx.run(f'sudo cp -f ./src/stdlibcrow/internal/*.hpp {stdlibcrow_path}/internal')
+    ctx.run(f'sudo mkdir -p {local_stdcrow}')
+    ctx.run(f'sudo cp -rf ./src/stdcrow/* {local_stdcrow}')
+    ctx.run(f'sudo cp -f ./{mode}/libstdcrow.a {local_lib}')
 
-    # TODO: Have CMake generate stdlibcrow.a.
-    # TODO: Install shared stdlibcrow.a. 
+    # TODO: Have CMake generate stdcrow.a.
+    # TODO: Install shared stdcrow.a. 
     # ctx.run(f'sudo mkdir -p /usr/local/lib/crow/')
     #ctx.run(f'sudo cp -f ./{mode}/stdlibcrowlib.a /usr/local/lib/crow/')
     pass
@@ -179,7 +179,8 @@ def install(ctx, mode='', parallel=True, lint=False):
 def uninstall(ctx):
     '''Uninstall crow from /usr/local/'''
     ctx.run('sudo rm -f /usr/local/bin/crow')
-    ctx.run('sudo rm -rf /usr/local/include/stdlibcrow')
+    ctx.run('sudo rm -rf /usr/local/include/stdcrow')
+    ctx.run('sudo rm -f /usr/local/lib/libstdcrow.so')
     pass
 
 
@@ -216,14 +217,14 @@ def clean(ctx, objects=False):
 @task
 def format(ctx):
     'Clang-format all Ctx++ sources and headers.'
-    ctx.run(r'find src/ -iname "*.[ch]pp" -exec clang-format -i "{}" \;')
+    ctx.run(r"find src/ -name '*.[ch]pp' -name '*.ch' -exec clang-format -i '{}' \;")
     pass
 
 
 @task
 def header_guard(ctx):
     'Regenerate all heade guards to be unique.'
-    ctx.run(r'PROJECT_NAME=CROW find src/ -name "*.hpp" -exec ./tools/header_guard.awk {} \;')
+    ctx.run(r"PROJECT_NAME=CROW find src/ -name '*.hpp' -name '*.h' -exec ./tools/header_guard.awk {} \;")
     pass
 
 

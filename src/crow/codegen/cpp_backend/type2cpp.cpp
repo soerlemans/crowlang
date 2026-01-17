@@ -40,21 +40,21 @@ inline auto native_type2cpp(const NativeType t_type) -> std::string
   switch(t_type) {
     MATCH(VOID, "void");
 
-    MATCH(INT, "int");
-    MATCH(I8, "std::int8_t");
-    MATCH(I16, "std::int16_t");
-    MATCH(I32, "std::int32_t");
-    MATCH(I64, "std::int64_t");
-    MATCH(ISIZE, "std::intptr_t");
+    MATCH(INT, "int_t");
+    MATCH(I8, "i8_t");
+    MATCH(I16, "i16_t");
+    MATCH(I32, "i32_t");
+    MATCH(I64, "i64_t");
+    MATCH(ISIZE, "isize_t");
 
-    MATCH(UINT, "unsigned int");
-    MATCH(U8, "std::uint8_t");
-    MATCH(U16, "std::uint16_t");
-    MATCH(U32, "std::uint32_t");
-    MATCH(U64, "std::uint64_t");
-    MATCH(USIZE, "std::uintptr_t");
+    MATCH(UINT, "uint_t");
+    MATCH(U8, "u8_t");
+    MATCH(U16, "u16_t");
+    MATCH(U32, "u32_t");
+    MATCH(U64, "u64_t");
+    MATCH(USIZE, "usize_t");
 
-    // TODO: Add string literals.
+    MATCH(STRING, "const char*");
 
     MATCH(BOOL, "bool");
 

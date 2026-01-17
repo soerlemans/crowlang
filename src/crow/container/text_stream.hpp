@@ -21,6 +21,8 @@ using CharOpt = std::optional<char>;
 // Classes:
 class TextStream {
   public:
+  TextStream() = default;
+
   virtual auto next_line() const -> void = 0;
 
   virtual auto next() const -> void = 0;
@@ -28,11 +30,15 @@ class TextStream {
 
   virtual auto peek() const -> CharOpt = 0;
 
+  virtual auto source() const -> std::string_view = 0;
   virtual auto character() const -> char = 0;
+  virtual auto line() const -> std::string_view = 0;
 
   virtual auto eos() const -> bool = 0;
+  virtual auto reset() -> void = 0;
 
   virtual auto position() const -> TextPosition = 0;
+  virtual auto end_position() const -> TextPosition = 0;
 
   virtual ~TextStream() = default;
 };

@@ -90,6 +90,13 @@ auto SymbolData::is_struct() const -> bool
   return (struct_ptr != nullptr);
 }
 
+auto SymbolData::is_ptr() const -> bool
+{
+  const auto* ptr{std::get_if<PointerTypePtr>(this)};
+
+  return (ptr != nullptr);
+}
+
 auto SymbolData::is_mutable() const -> bool
 {
   using lib::Overload;
@@ -102,8 +109,7 @@ auto SymbolData::is_mutable() const -> bool
     return (t_data->m_mutability == Mutability::IMMUTABLE);
   }};
 
-  const auto immutable_types{[]([[maybe_unused]]
-                                const auto& t_data) {
+  const auto immutable_types{[]([[maybe_unused]] const auto& t_data) {
     return false;
   }};
 

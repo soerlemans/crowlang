@@ -177,6 +177,7 @@ class SemanticChecker : public NodeVisitor {
   auto visit(node::operators::Decrement* t_dec) -> Any override;
 
   auto visit(node::operators::AddressOf* t_addr_of) -> Any override;
+  auto visit(node::operators::Dereference* t_deref) -> Any override;
   auto visit(node::operators::UnaryPrefix* t_up) -> Any override;
 
   // Logical:
