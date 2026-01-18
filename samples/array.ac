@@ -1,0 +1,12 @@
+module array_sample
+
+#include_once <core/linux/core.ac>
+
+func main() -> int {
+  let array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+  array[0] = 10
+  array[4] = 50
+
+  return array[0]
+}

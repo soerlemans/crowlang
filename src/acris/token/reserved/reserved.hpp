@@ -120,8 +120,8 @@ namespace symbols {
   DEFINE_TERMINAL(g_paren_close,    ')', PAREN_CLOSE);
   DEFINE_TERMINAL(g_accolade_open,  '{', ACCOLADE_OPEN);
   DEFINE_TERMINAL(g_accolade_close, '}', ACCOLADE_CLOSE);
-  DEFINE_TERMINAL(g_brace_open,     '[', BRACE_OPEN);
-  DEFINE_TERMINAL(g_brace_close,    ']', BRACE_CLOSE);
+  DEFINE_TERMINAL(g_bracket_open,     '[', BRACKET_OPEN);
+  DEFINE_TERMINAL(g_bracket_close,    ']', BRACKET_CLOSE);
 
   // Arithmetic operators:
   DEFINE_TERMINAL(g_plus,         '+', PLUS);
@@ -177,8 +177,8 @@ namespace symbols {
     g_paren_close.pair(),
     g_accolade_open.pair(),
     g_accolade_close.pair(),
-    g_brace_open.pair(),
-    g_brace_close.pair(),
+    g_bracket_open.pair(),
+    g_bracket_close.pair(),
 
     g_assignment.pair(),
 

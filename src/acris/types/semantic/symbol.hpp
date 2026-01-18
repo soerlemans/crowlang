@@ -14,12 +14,14 @@ class SymbolData;
 struct StructType;
 struct FnType;
 struct PointerType;
+struct ArrayType;
 struct VarType;
 
 // Aliases:
 using StructTypePtr = std::shared_ptr<StructType>;
 using FnTypePtr = std ::shared_ptr<FnType>;
 using PointerTypePtr = std::shared_ptr<PointerType>;
+using ArrayTypePtr = std::shared_ptr<ArrayType>;
 using VarTypePtr = std::shared_ptr<VarType>;
 
 using SymbolDataList = std::list<SymbolData>;
@@ -31,6 +33,8 @@ auto operator<<(std::ostream& t_os, types::symbol::StructTypePtr t_struct)
 auto operator<<(std::ostream& t_os, types::symbol::FnTypePtr t_fn)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, types::symbol::PointerTypePtr t_ptr)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os, types::symbol::ArrayTypePtr t_arr)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, types::symbol::VarTypePtr t_var)
   -> std::ostream&;

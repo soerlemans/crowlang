@@ -42,5 +42,6 @@ REGISTER_ARCHIVEABLE_TYPE(ast::node::rvalue, Float);
 REGISTER_ARCHIVEABLE_TYPE(ast::node::rvalue, Char);
 REGISTER_ARCHIVEABLE_TYPE(ast::node::rvalue, String);
 REGISTER_ARCHIVEABLE_TYPE(ast::node::rvalue, Boolean);
+// REGISTER_ARCHIVEABLE_TYPE(ast::node::rvalue, ArrayExpr);
 
 #endif // ACRIS_ACRIS_AST_NODE_RVALUE_LITERAL_HPP

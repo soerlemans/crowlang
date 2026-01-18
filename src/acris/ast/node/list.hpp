@@ -34,6 +34,7 @@ class List : public NodeInterface {
   auto push_back(NodePtr&& t_ptr) -> void;
 
   auto empty() -> bool;
+  auto size() -> std::size_t;
 
   template<typename Archive>
   auto serialize(Archive& t_archive) -> void

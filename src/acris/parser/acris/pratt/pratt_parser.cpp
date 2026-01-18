@@ -78,6 +78,15 @@ auto PrattParser::literal() -> NodePtr
   } else if(next_if(TokenType::FALSE)) {
     PARSER_FOUND(TokenType::FALSE);
     node = make_node<Boolean>(false);
+
+  } else if(check(TokenType::BRACKET_OPEN)) { // Note uses check()
+    DBG_TRACE_PRINT(VERBOSE, "Found 'ARRAY EXPR'");
+
+    auto list{brackets([this] {
+      return m_delegate->expr_list_opt();
+    })};
+
+    node = make_node<ArrayExpr>(list);
   }
 
   return node;
@@ -594,10 +603,21 @@ auto PrattParser::lvalue_chain(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
       node = make_node<MemberAccess>(pos, std::move(t_lhs), std::move(rhs));
     }
 
-    // }else if(after_newlines(TokenType::BRACKET_OPEN)) {
-    // } else if(after_newlines(TokenType::PAREN_OPEN)) {
-    // TODO: Add for '[]' and '()'.
+  } else if(after_newlines(TokenType::BRACKET_OPEN)) {
+    PARSER_FOUND(TokenType::BRACKET_OPEN);
+    const auto token{get_token()};
+    next();
+
+    const auto array_subscript{expr()};
+    expect(TokenType::BRACKET_CLOSE);
+    // if(auto rhs{t_fn(token.type())}; rhs) {
+    //   node = make_node<ArrayAccess>(pos, std::move(t_lhs), std::move(rhs));
+    // }
+
+    // TODO: Figure out how to work this thing.
   }
+  // } else if(after_newlines(TokenType::PAREN_OPEN)) {}
+  // TODO: Add for '[]' and '()'.
 
   return node;
 }

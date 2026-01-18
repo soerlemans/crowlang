@@ -68,8 +68,8 @@ enum class TokenType {
   ACCOLADE_OPEN,
   ACCOLADE_CLOSE,
 
-  BRACE_OPEN,
-  BRACE_CLOSE,
+  BRACKET_OPEN,
+  BRACKET_CLOSE,
 
   // Arithmetic:
   PLUS,

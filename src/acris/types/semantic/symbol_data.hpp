@@ -26,8 +26,17 @@ using types::core::NativeTypeOpt;
 using types::core::TypeVariant;
 
 // Aliases:
-using Variant = std::variant<std::monostate, NativeType, StructTypePtr,
-                             FnTypePtr, PointerTypePtr, VarTypePtr>;
+// clang-format off
+using Variant = std::variant<
+	std::monostate,
+	NativeType,
+	StructTypePtr,
+	FnTypePtr,
+	PointerTypePtr,
+	ArrayTypePtr,
+	VarTypePtr
+>;
+// clang-format on
 
 // Classes:
 // FIXME: We probably should probably not inherit from Variant.
@@ -49,13 +58,17 @@ class SymbolData : public Variant {
   auto as_struct() const -> StructTypePtr;
   auto as_function() const -> FnTypePtr;
   auto as_ptr() const -> PointerTypePtr;
+  auto as_array() const -> ArrayTypePtr;
   auto as_var() const -> VarTypePtr;
 
-  //! Verify if a symbol is struct type.
+  //! Verify if a symbol is a struct type.
   auto is_struct() const -> bool;
 
-  //! Verify if a symbol is struct type.
+  //! Verify if a symbol is a pointer type.
   auto is_ptr() const -> bool;
+
+  //! Verify if a symbol is an array type.
+  auto is_array() const -> bool;
 
   //! Verify if a symbol is immutable.
   auto is_mutable() const -> bool;

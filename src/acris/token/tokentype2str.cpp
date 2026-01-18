@@ -76,8 +76,8 @@ auto tokentype2str(const token::TokenType t_type) -> std::string
     MATCH_STR(PAREN_CLOSE)
     MATCH_STR(ACCOLADE_OPEN)
     MATCH_STR(ACCOLADE_CLOSE)
-    MATCH_STR(BRACE_OPEN)
-    MATCH_STR(BRACE_CLOSE)
+    MATCH_STR(BRACKET_OPEN)
+    MATCH_STR(BRACKET_CLOSE)
 
     // Comments:
     MATCH_STR(LINE_COMMENT)

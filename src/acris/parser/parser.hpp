@@ -127,6 +127,15 @@ class Parser {
     return surround(TokenType::ACCOLADE_OPEN, TokenType::ACCOLADE_CLOSE, t_fn);
   }
 
+  
+  template<typename Fn>
+  inline auto brackets(const Fn t_fn)
+  {
+    DBG_TRACE_FN(VERBOSE);
+
+    return surround(TokenType::BRACKET_OPEN, TokenType::BRACKET_CLOSE, t_fn);
+  }
+
   auto list_of(ParseFn t_fn) -> ast::node::NodeListPtr;
 
   auto context() -> ParserContextPtr;

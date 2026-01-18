@@ -305,12 +305,20 @@ auto AstPrinter::visit(Char* t_ch) -> Any
   return {};
 }
 
-
 auto AstPrinter::visit(String* t_str) -> Any
 {
   COUNTG_INIT();
 
   print("String: ", t_str->get());
+
+  return {};
+}
+
+auto AstPrinter::visit(ArrayExpr* t_arr) -> Any
+{
+  COUNTG_INIT();
+
+  print("ArrayExpr: ", t_arr->get());
 
   return {};
 }

@@ -105,8 +105,9 @@ auto Parser::after_newlines(const TokenType t_type) -> bool
 
   bool found{false};
 
-  for(auto iter{m_ctx->m_token_stream.iter()};
-      iter != m_ctx->m_token_stream.end(); iter++) {
+  auto iter{m_ctx->m_token_stream.iter()};
+  auto end{m_ctx->m_token_stream.end()};
+  for(; iter != end; iter++) {
     if(iter->type() != TokenType::NEWLINE) {
       if(iter->type() == t_type) {
         found = true;
@@ -115,7 +116,7 @@ auto Parser::after_newlines(const TokenType t_type) -> bool
                         std::quoted(tokentype2str(t_type), '\''),
                         " after newlines");
 
-        // Update iterator
+        // Update iterator.
         m_ctx->m_token_stream.set(iter);
       }
 

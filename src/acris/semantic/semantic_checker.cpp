@@ -852,6 +852,12 @@ auto SemanticChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
   return SymbolData{NativeType::BOOL};
 }
 
+auto SemanticChecker::visit([[maybe_unused]] ArrayExpr* t_arr) -> Any
+{
+  // return SymbolData{NativeType::STRING};
+	return {};
+}
+
 // User Types:
 auto SemanticChecker::visit(Method* t_meth) -> Any
 {
@@ -999,12 +1005,15 @@ auto SemanticChecker::visit(MemberAccess* t_access) -> Any
 
   const auto lhs{get_resolved_result_type(left)};
 
+  // Check type of left side, check if operation on the right side is possible.
+	// Always return result of right side operation.
+
   // Evaluate chain expressions by setting an active access var.
 
   // dynamic_cast<MethodCall>(right);
   // const auto rhs{get_resolved_result_type(right)};
 
-  // return rhs;
+  // const auto rhs{get_resolved_result_type(right)};
   return SymbolData{NativeType::INT};
 }
 

@@ -205,11 +205,11 @@ def build(ctx, mode='build', parallel=True, lint=False, platform='', arch='', ci
 
 
 @task
-def clean(ctx, objects=False):
+def clean(ctx, keep_deps=False):
     'Cleans the build files.'
     for directory in BuildProfile:
         path = directory
-        path += '/CMakeFiles' if objects else ''
+        path += '/CMakeFiles' if keep_deps else ''
         path += '/*'
 
         print(f'@Invoke: Removing: {path}')
@@ -224,7 +224,7 @@ def clean(ctx, objects=False):
 @task
 def format(ctx):
     'Clang-format all Ctx++ sources and headers.'
-    ctx.run(r"find src/ -name '*.[ch]pp' -name '*.ch' -exec clang-format -i '{}' \;")
+    ctx.run(r"find src/ -name '*.[ch]pp' -name '*.[ch]' -exec clang-format -i '{}' \;")
     pass
 
 

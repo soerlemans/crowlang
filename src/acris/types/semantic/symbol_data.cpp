@@ -78,6 +78,11 @@ auto SymbolData::as_ptr() const -> PointerTypePtr
   return std::get<PointerTypePtr>(*this);
 }
 
+auto SymbolData::as_array() const -> ArrayTypePtr
+{
+  return std::get<ArrayTypePtr>(*this);
+}
+
 auto SymbolData::as_var() const -> VarTypePtr
 {
   return std::get<VarTypePtr>(*this);
@@ -93,6 +98,13 @@ auto SymbolData::is_struct() const -> bool
 auto SymbolData::is_ptr() const -> bool
 {
   const auto* ptr{std::get_if<PointerTypePtr>(this)};
+
+  return (ptr != nullptr);
+}
+
+auto SymbolData::is_array() const -> bool
+{
+  const auto* ptr{std::get_if<ArrayTypePtr>(this)};
 
   return (ptr != nullptr);
 }
@@ -205,8 +217,13 @@ auto SymbolData::operator==(const SymbolData& t_rhs) const -> bool
       } else if constexpr(std::is_same_v<L, NativeType>) {
         // NativeType is just a simple compare.
         return (t_l == t_r);
-      } else if constexpr(lib::IsAnyOf<L, StructTypePtr, FnTypePtr,
-                                       PointerTypePtr, VarTypePtr>) {
+				// clang-format off
+      } else if constexpr(
+				 lib::IsAnyOf<L,
+					 StructTypePtr, FnTypePtr,
+           PointerTypePtr, ArrayTypePtr, VarTypePtr
+				 >) {
+				// clang-format on
         if(t_l && t_r) {
           // Compare resolved pointers.
           return (*t_l == *t_r);

@@ -2,6 +2,7 @@
 
 // Absolute Includes:
 #include "acris/debug/log.hpp"
+#include "lib/stdexcept/stdexcept.hpp"
 
 // Using Statements:
 namespace types::symbol {
@@ -78,6 +79,29 @@ auto PointerType::type_variant() const -> TypeVariant
   using types::core::make_pointer;
 
   return {make_pointer(m_type.type_variant())};
+}
+
+// ArrayType:
+auto ArrayType::resolve_result_type() const -> SymbolData
+{
+  using types::symbol::make_array;
+
+  // Make sure to resolve underlying type.
+  return make_array(m_type.resolve_result_type(), m_size);
+}
+
+auto ArrayType::native_type() const -> NativeTypeOpt
+{
+  return {std::nullopt};
+}
+
+auto ArrayType::type_variant() const -> TypeVariant
+{
+  // using types::core::make_array;
+
+  // return {make_pointer(m_type.type_variant())};
+
+  TODO("Implement type_variant conversion for ArrayType.");
 }
 
 // VarType:

@@ -90,6 +90,7 @@ class NodeVisitor {
   virtual auto visit(node::rvalue::Integer* t_int) -> Any;
   virtual auto visit(node::rvalue::Char* t_ch) -> Any;
   virtual auto visit(node::rvalue::String* t_str) -> Any;
+  virtual auto visit(node::rvalue::ArrayExpr* t_arr) -> Any;
   virtual auto visit(node::rvalue::Boolean* t_bool) -> Any;
 
   // Builtin Types:
