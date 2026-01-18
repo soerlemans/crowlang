@@ -12,7 +12,7 @@ class Literal;
 // Aliases:
 using Integer = Literal<i64>;
 using Float = Literal<f64>;
-// using Float = Literal<double>; // Old.
+using Char = Literal<char>;
 using String = Literal<std::string>;
 using Boolean = Literal<bool>;
 } // namespace ast::node::rvalue

@@ -54,6 +54,7 @@ inline auto native_type2cpp(const NativeType t_type) -> std::string
     MATCH(U64, "u64_t");
     MATCH(USIZE, "usize_t");
 
+    MATCH(CHAR, "char");
     MATCH(STRING, "const char*");
 
     MATCH(BOOL, "bool");

@@ -68,6 +68,7 @@ auto tokentype2str(const token::TokenType t_type) -> std::string
     // Literals:
     MATCH_STR(INTEGER)
     MATCH_STR(FLOAT)
+    MATCH_STR(CHAR)
     MATCH_STR(STRING)
 
     // Braces:

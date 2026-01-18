@@ -296,6 +296,16 @@ auto AstPrinter::visit(Integer* t_int) -> Any
   return {};
 }
 
+auto AstPrinter::visit(Char* t_ch) -> Any
+{
+  COUNTG_INIT();
+
+  print("Char: ", t_ch->get());
+
+  return {};
+}
+
+
 auto AstPrinter::visit(String* t_str) -> Any
 {
   COUNTG_INIT();

@@ -29,6 +29,7 @@ static inline auto char2str(char t_ch) -> std::string
 
   switch(t_ch) {
     case '\0':
+      ss << "\\0"; // Escape tab.
       break;
 
     case '\t':

@@ -39,6 +39,7 @@ class Literal : public NodeInterface {
 // Cereal type registration:
 REGISTER_ARCHIVEABLE_TYPE(ast::node::rvalue, Integer);
 REGISTER_ARCHIVEABLE_TYPE(ast::node::rvalue, Float);
+REGISTER_ARCHIVEABLE_TYPE(ast::node::rvalue, Char);
 REGISTER_ARCHIVEABLE_TYPE(ast::node::rvalue, String);
 REGISTER_ARCHIVEABLE_TYPE(ast::node::rvalue, Boolean);
 
