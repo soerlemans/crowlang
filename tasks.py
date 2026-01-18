@@ -104,10 +104,16 @@ def cmake_mode_args(t_mode: str) -> str:
     return args
 
 
-def cmake(t_ctx, t_mode: str, t_parallel: bool, t_lint=False, t_ci_build=False):
+def cmake(t_ctx, t_mode: str, t_parallel: bool, t_platform='', t_arch='', t_lint=False, t_ci_build=False):
     'TODO: Document.'
     parallel_arg = cmake_parallel_arg(t_parallel)
     build_args = cmake_mode_args(t_mode)
+
+    if t_platform:
+        build_args += f'-DACRIS_STDLIB_PLATFORM={t_platform} '
+
+    if t_arch:
+        build_args += f'-DACRIS_STDLIB_ARCH={t_arch} '
 
     # Perform static analysis if specified.
     if t_lint:
@@ -180,20 +186,21 @@ def uninstall(ctx):
     '''Uninstall acris from /usr/local/'''
     ctx.run('sudo rm -f /usr/local/bin/acris')
     ctx.run('sudo rm -rf /usr/local/include/stdacris')
-    ctx.run('sudo rm -f /usr/local/lib/libstdacris.so')
+    ctx.run('sudo rm -f /usr/local/lib/libstdacris.a')
     pass
 
 
 # TODO: Shorten help string, possibly use a global?
 @task(help={'mode': '', 'parallel': 'Flag indicating concurrent builds.', 'lint': 'Perform static analysis on source code using clang-tidy'})
-def build(ctx, mode='build', parallel=True, lint=False, ci_build=False):
+def build(ctx, mode='build', parallel=True, lint=False, platform='', arch='', ci_build=False):
     'Build the project.'
     log('Building project.')
-    log_args(mode=mode, parallel=parallel, lint=lint, ci_build=ci_build)
+    log_args(mode=mode, parallel=parallel, platform=platform, arch=arch, lint=lint, ci_build=ci_build)
 
     enum_values = [ item.value for item in BuildProfile ]
     mode = mode if mode in enum_values else 'build'
-    cmake(ctx, mode, parallel, lint, ci_build)
+
+    cmake(ctx, mode, parallel, platform, arch, lint, ci_build)
     pass
 
 
