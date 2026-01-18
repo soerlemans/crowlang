@@ -38,7 +38,7 @@ auto CppBackend::prologue() -> std::string
 
   // FIXME: Temporary input for printing purposes.
   ss << "// Stdacris Includes:\n";
-  ss << R"(#include "stdacris/core/core.h")" << "\n";
+  ss << R"(#include "stdacris/core/linux/core.h")" << "\n";
   ss << R"(#include "stdacris/internal/defer.hpp")" << "\n\n";
 
   // Loop through the interop backends and add the prologue from each backend.
@@ -528,6 +528,14 @@ auto CppBackend::visit(Integer* t_int) -> Any
   const auto value{t_int->get()};
 
   return std::format("{}", value);
+}
+
+auto CppBackend::visit([[maybe_unused]] Char* t_ch) -> Any
+{
+  const auto value{t_ch->get()};
+
+	// We print chars as a hex for codegen.
+  return std::format("(char)(0x{:x})", value);
 }
 
 auto CppBackend::visit([[maybe_unused]] String* t_str) -> Any

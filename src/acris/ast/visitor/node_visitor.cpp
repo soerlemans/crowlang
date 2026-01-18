@@ -81,6 +81,7 @@ STUB(Import)
 STUB(ModuleDecl)
 STUB(Float)
 STUB(Integer)
+STUB(Char)
 STUB(String)
 STUB(Boolean)
 

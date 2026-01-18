@@ -61,6 +61,11 @@ auto PrattParser::literal() -> NodePtr
     PARSER_FOUND(TokenType::INTEGER, " literal: ", val);
     node = make_node<Integer>(val);
 
+  } else if(next_if(TokenType::CHAR)) {
+    const auto val{token.char_()};
+    PARSER_FOUND(TokenType::CHAR, " literal: ", val);
+    node = make_node<Char>(val);
+
   } else if(next_if(TokenType::STRING)) {
     const auto val{token.str()};
     PARSER_FOUND(TokenType::STRING, " literal: ", val);

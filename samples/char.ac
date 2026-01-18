@@ -1,7 +1,11 @@
 module char_sample
 
-func main() -> int {
-  let ch = '\n'
+#include_once <core/linux/core.ac>
 
-  return write_str(STDOUT, &ch, 1)
+func main() -> int {
+  let ch = '\0'
+  let ch2 = '\\'
+  let ch3 = '3'
+
+  // return write_str(STDOUT, &ch, 1)
 }

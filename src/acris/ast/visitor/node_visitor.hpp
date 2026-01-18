@@ -88,6 +88,7 @@ class NodeVisitor {
   // Rvalue:
   virtual auto visit(node::rvalue::Float* t_float) -> Any;
   virtual auto visit(node::rvalue::Integer* t_int) -> Any;
+  virtual auto visit(node::rvalue::Char* t_ch) -> Any;
   virtual auto visit(node::rvalue::String* t_str) -> Any;
   virtual auto visit(node::rvalue::Boolean* t_bool) -> Any;
 
