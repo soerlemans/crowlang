@@ -844,7 +844,7 @@ auto SemanticChecker::visit([[maybe_unused]] Char* t_ch) -> Any
 
 auto SemanticChecker::visit([[maybe_unused]] String* t_str) -> Any
 {
-  return SymbolData{NativeType::STRING};
+  return SymbolData{NativeType::CSTR};
 }
 
 auto SemanticChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any

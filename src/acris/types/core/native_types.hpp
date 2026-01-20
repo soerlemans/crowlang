@@ -60,7 +60,7 @@ enum class NativeType {
 
   // String:
   CHAR,
-  STRING,
+  CSTR,
 
   // Boolean:
   BOOL,
@@ -92,7 +92,7 @@ const NativeTypeMap native_types = boost::assign::list_of<NativeTypeMap::relatio
   // String:
   (TYPING_NTYPE_PAIR(CHAR))
 	// Str is like a const char* type.
-  ( "str", NativeType::STRING)
+  ( "cstr", NativeType::CSTR)
 
   // // Boolean:
   (TYPING_NTYPE_PAIR(BOOL))

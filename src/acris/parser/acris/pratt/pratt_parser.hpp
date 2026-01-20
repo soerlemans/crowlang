@@ -39,6 +39,7 @@ class PrattParser : public Parser {
   // Note these come from the binding submodule.
   PrefixMap m_prefix;
   InfixMap m_infix;
+  InfixMap m_postfix;
 
   public:
   explicit PrattParser(ParserContextPtr t_ctx, PrattParserDelegate* t_delegate);

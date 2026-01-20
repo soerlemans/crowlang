@@ -70,6 +70,17 @@ class InfixMap : public BindingMap {
     INSERT_BINDING(ASSIGNMENT, 2, 1);
   }
 };
+
+class PostfixMap : public BindingMap {
+  public:
+  PostfixMap()
+  {
+    // Dereference:
+    INSERT_BINDING(DOT, 15, 14);
+    INSERT_BINDING(BRACKET_OPEN, 15, 14);
+    INSERT_BINDING(PAREN_OPEN, 15, 14);
+  }
+};
 } // namespace parser::pratt::binding
 
 #endif // ACRIS_ACRIS_PARSER_ACRIS_PRATT_BINDING_MAPS_HPP

@@ -59,7 +59,7 @@ enum class TokenType {
   INTEGER,
   FLOAT,
   CHAR,
-  STRING,
+  STRING, // CString (Const String literal).
 
   // Braces:
   PAREN_OPEN,

@@ -904,7 +904,7 @@ auto MirBuilder::visit(String* t_str) -> Any
   const std::string value{t_str->get()};
 
   // Add the literal, which assigns an SSA var for it.
-  m_factory->add_literal(NativeType::STRING, {value});
+  m_factory->add_literal(NativeType::CSTR, {value});
 
   return {};
 }

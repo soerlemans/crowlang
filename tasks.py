@@ -224,7 +224,7 @@ def clean(ctx, keep_deps=False):
 @task
 def format(ctx):
     'Clang-format all Ctx++ sources and headers.'
-    ctx.run(r"find src/ -name '*.[ch]pp' -name '*.[ch]' -exec clang-format -i '{}' \;")
+    ctx.run(r"find src/ -name '*.[ch]pp' -or -name '*.[ch]' -exec clang-format -i '{}' \;")
     pass
 
 
