@@ -493,6 +493,68 @@ auto PrattParser::infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   return node;
 }
 
+// auto PrattParser::member_access(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
+// {
+//   DBG_TRACE_FN(VERBOSE);
+//   NodePtr node{};
+
+//   return node;
+// }
+
+auto PrattParser::subscript(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node{};
+
+  const auto pos{get_position()};
+
+  if(after_newlines(TokenType::BRACKET_OPEN)) {
+    PARSER_FOUND(TokenType::BRACKET_OPEN);
+    const auto token{get_token()};
+    next();
+
+    if(auto rhs{t_fn(token.type())}; rhs) {
+      node = make_node<Subscript>(pos, std::move(t_lhs), std::move(rhs));
+      expect(TokenType::BRACKET_CLOSE);
+
+    } else {
+      prev();
+    }
+  }
+
+  return node;
+}
+
+auto PrattParser::call(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node{};
+
+  return node;
+}
+
+auto PrattParser::postfix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node{};
+
+  if(t_lhs == nullptr) {
+    return nullptr;
+  }
+
+  // if(auto ptr{member_access(t_lhs, t_fn)}; ptr) {
+  //   node = std::move(ptr);
+  // } else
+
+  if(auto ptr{subscript(t_lhs, t_fn)}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{call(t_lhs, t_fn)}; ptr) {
+    node = std::move(ptr);
+  }
+
+  return node;
+}
+
 // Expressions:
 auto PrattParser::chain_expr(const int t_min_bp) -> NodePtr
 {
@@ -555,12 +617,28 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
       return rhs;
     }};
 
-    if(auto ptr{infix_chain(lhs, rhs_chain_fn)}; ptr) {
-      lhs = std::move(ptr);
-    }
+    // if(auto ptr{infix_chain(lhs, rhs_chain_fn)}; ptr) {
+    //   lhs = std::move(ptr);
+    // }
+
+    const auto rhs_postfix_fn{[&](const TokenType t_type) {
+      NodePtr rhs{};
+
+      const auto [lbp, rbp] = m_postfix.at(t_type);
+      if(lbp < t_min_bp) {
+        prev();
+      } else {
+        rhs = expr(rbp);
+        if(!rhs) {
+          throw_syntax_error("Postfix operations require a right hand side");
+        }
+      }
+
+      return rhs;
+    }};
 
     // Normal infix parsing.
-    const auto rhs_fn{[&](const TokenType t_type) {
+    const auto rhs_infix_fn{[&](const TokenType t_type) {
       NodePtr rhs{};
 
       const auto [lbp, rbp] = m_infix.at(t_type);
@@ -576,8 +654,13 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
       return rhs;
     }};
 
+    // Check for postfix to the prefix.
+    if(auto ptr{postfix(lhs, rhs_postfix_fn)}; ptr) {
+      lhs = std::move(ptr);
+    }
+
     // If we do not find the expression quit.
-    if(auto ptr{infix(lhs, rhs_fn)}; ptr) {
+    if(auto ptr{infix(lhs, rhs_infix_fn)}; ptr) {
       lhs = std::move(ptr);
     } else {
       break;

@@ -156,7 +156,7 @@ auto AstPrinter::visit(Arithmetic* t_arith) -> Any
   const auto str{t_arith->op2str()};
 
   print("Arithmetic");
-  print("| OP: ", str); // TODO: Make part of print_traits.
+  print("| Op: ", str); // TODO: Make part of print_traits.
   print_traits(t_arith);
 
   return {};
@@ -169,7 +169,7 @@ auto AstPrinter::visit(Assignment* t_assign) -> Any
   const auto str{t_assign->op2str()};
 
   print("Assignment");
-  print("| OP: ", str); // TODO: Make part of print_traits.
+  print("| Op: ", str); // TODO: Make part of print_traits.
   print_traits(t_assign);
 
   return {};
@@ -182,7 +182,7 @@ auto AstPrinter::visit(Comparison* t_comp) -> Any
   const auto str{t_comp->op2str()};
 
   print("Comparison");
-  print("| OP: ", str); // TODO: Make part of print_traits.
+  print("| Op: ", str); // TODO: Make part of print_traits.
   print_traits(t_comp);
 
   return {};
@@ -235,7 +235,7 @@ auto AstPrinter::visit(UnaryPrefix* t_up) -> Any
   const auto str{t_up->op2str()};
 
   print("UnaryPrefix");
-  print("| OP: ", str); // TODO: Make part of print_traits.
+  print("| Op: ", str); // TODO: Make part of print_traits.
   print_traits(t_up);
 
   return {};
@@ -318,7 +318,8 @@ auto AstPrinter::visit(ArrayExpr* t_arr) -> Any
 {
   COUNTG_INIT();
 
-  print("ArrayExpr: ", t_arr->get());
+  print("ArrayExpr");
+  print_traits(t_arr);
 
   return {};
 }
