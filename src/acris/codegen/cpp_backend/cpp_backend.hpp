@@ -146,6 +146,7 @@ class CppBackend : public NodeVisitor, public BackendInterface {
   auto visit(node::rvalue::Integer* t_int) -> Any override;
   auto visit(node::rvalue::Char* t_ch) -> Any override;
   auto visit(node::rvalue::String* t_str) -> Any override;
+  auto visit(node::rvalue::ArrayExpr* t_arr) -> Any override;
   auto visit(node::rvalue::Boolean* t_bool) -> Any override;
 
   // User Types:

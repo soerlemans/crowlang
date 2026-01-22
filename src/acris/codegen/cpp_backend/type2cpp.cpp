@@ -16,6 +16,7 @@
 
 namespace {
 // Using Declarations:
+using types::core::ArrayTypePtr;
 using types::core::FnTypePtr;
 using types::core::NativeType;
 using types::core::nativetype2str;
@@ -77,61 +78,96 @@ inline auto struct2cpp(const StructTypePtr& t_struct) -> std::string
   return t_struct->m_identifier;
 }
 
-inline auto fn2cpp(const FnTypePtr& t_type) -> std::string
+// TODO: Figure out how to deal with this one.
+inline auto fn2cpp([[maybe_unused]] const FnTypePtr& t_type,
+                   [[maybe_unused]] std::string_view t_identifier)
+  -> std::string
 {
   // TODO: Throw?
 
   return {};
 }
 
-inline auto pointer2cpp(const PointerTypePtr& t_ptr) -> std::string
+inline auto pointer2cpp(const PointerTypePtr& t_ptr,
+                        std::string_view t_identifier) -> std::string
 {
-  using codegen::cpp_backend::type_variant2cpp;
+  using codegen::cpp_backend::type_spec2cpp;
 
-  auto base_type{type_variant2cpp(t_ptr->m_type)};
+  auto base_type{type_spec2cpp({t_ptr->m_type, t_identifier})};
 
   return std::format("{}*", base_type);
 }
 
-// Could be used for decltype() or similar.
-inline auto var2cpp(const VarTypePtr& t_var) -> std::string
+inline auto array2cpp(const ArrayTypePtr& t_arr,
+                      std::string_view t_identifier = "") -> std::string
 {
-  using codegen::cpp_backend::type_variant2cpp;
+  using codegen::cpp_backend::type_spec2cpp;
 
-  auto base_type{type_variant2cpp(t_var->m_type)};
+  auto base_type{type_spec2cpp({t_arr->m_type, t_identifier})};
+  auto size{t_arr->m_size};
+
+  return std::format("{}[{}]", base_type, size);
+}
+
+// Could be used for decltype() or similar.
+inline auto var2cpp(const VarTypePtr& t_var, std::string_view t_identifier)
+  -> std::string
+{
+  using codegen::cpp_backend::type_spec2cpp;
+
+  auto base_type{type_spec2cpp({t_var->m_type, t_identifier})};
 
   return std::format("{}", base_type);
 }
-
 } // namespace
 
 namespace codegen::cpp_backend {
 // Using Statements:
 NODE_USING_ALL_NAMESPACES()
 
-auto type_variant2cpp(const TypeVariant& t_variant) -> std::string
+auto type_spec2cpp(const TypeSpec t_spec) -> std::string
 {
   using lib::Overload;
+
+  auto& [type, id] = t_spec;
 
   // clang-format off
   return std::visit(
 					Overload{
-						[](const NativeType t_native) {
-							return native_type2cpp(t_native);
+						[&](const NativeType t_native) {
+							std::ostringstream oss{};
+
+							oss << native_type2cpp(t_native);
+							if(!id.empty()) {
+								oss << " " << id;
+							}
+
+							return oss.str();
 						},
-						[](const StructTypePtr& t_struct) {
-							return struct2cpp(t_struct);
+						[&](const StructTypePtr& t_struct) {
+							std::ostringstream oss{};
+
+							oss << struct2cpp(t_struct);
+
+							if(!id.empty()) {
+								oss << " " << id;
+							}
+
+							return oss.str();
 						},
-						[](const FnTypePtr& t_fn) {
-							return fn2cpp(t_fn);
+						[&](const FnTypePtr& t_fn) {
+							return fn2cpp(t_fn, id);
 						},
-						[](const PointerTypePtr& t_ptr) {
-							return pointer2cpp(t_ptr);
+						[&](const PointerTypePtr& t_ptr) {
+							return pointer2cpp(t_ptr, id);
 						},
-						[](const VarTypePtr& t_var) {
-							return var2cpp(t_var);
+						[&](const ArrayTypePtr& t_arr) {
+							return array2cpp(t_arr, id);
+						},
+						[&](const VarTypePtr& t_var) {
+							return var2cpp(t_var, id);
 						}},
-					t_variant);
+					type);
 	// clang-format off
 }
 } // namespace codegen::cpp_backend

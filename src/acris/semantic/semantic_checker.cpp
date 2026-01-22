@@ -854,8 +854,33 @@ auto SemanticChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
 
 auto SemanticChecker::visit([[maybe_unused]] ArrayExpr* t_arr) -> Any
 {
-  // return SymbolData{NativeType::STRING};
-	return {};
+  using types::symbol::make_array;
+
+  SymbolData type{};
+  NodeListPtr list{t_arr->get()};
+
+	// TODO: Move to type validator.
+  if(!list->empty()) {
+    // We need to deduce type from the first elem.
+    auto iter{list->begin()};
+    type = get_symbol_data(*iter);
+
+    // Increment past first entry.
+    iter++;
+    for(; iter != list->end(); iter++) {
+      // TODO: Check if all elements are the same type.
+    }
+  } else {
+    using lib::stdexcept::throw_invalid_argument;
+
+    throw_invalid_argument("ArrayExpr literal list should contain entries.");
+  }
+
+  const auto size{list->size()};
+
+  auto symbol_data{make_array(type, size)};
+
+  return symbol_data;
 }
 
 // User Types:
@@ -1006,7 +1031,7 @@ auto SemanticChecker::visit(MemberAccess* t_access) -> Any
   const auto lhs{get_resolved_result_type(left)};
 
   // Check type of left side, check if operation on the right side is possible.
-	// Always return result of right side operation.
+  // Always return result of right side operation.
 
   // Evaluate chain expressions by setting an active access var.
 

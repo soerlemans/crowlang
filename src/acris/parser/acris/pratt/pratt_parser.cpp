@@ -514,6 +514,7 @@ auto PrattParser::subscript(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
     next();
 
     if(auto rhs{t_fn(token.type())}; rhs) {
+      DBG_TRACE_PRINT(VERBOSE, "Not ran.");
       node = make_node<Subscript>(pos, std::move(t_lhs), std::move(rhs));
       expect(TokenType::BRACKET_CLOSE);
 

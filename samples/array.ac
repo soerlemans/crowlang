@@ -3,12 +3,14 @@ module array_sample
 // #include_once <core/linux/core.ac>
 
 func main() -> int {
-  let array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  var array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-  array[0] = 10
-  array[4] = 50
+  // let tes_val = array[9]
 
-	let val = array[0] + array[3]
+  // array[0] = 10
+  // array[4] = 50
 
-  return array[0]
+	// let val = array[0] + array[3]
+
+  // return array[0]
 }

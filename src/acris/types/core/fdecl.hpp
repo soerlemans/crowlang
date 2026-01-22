@@ -13,6 +13,7 @@ enum class NativeType;
 struct StructType;
 struct FnType;
 struct PointerType;
+struct ArrayType;
 struct VarType;
 
 class TypeVariant;
@@ -21,6 +22,7 @@ class TypeVariant;
 using StructTypePtr = std::shared_ptr<StructType>;
 using FnTypePtr = std ::shared_ptr<FnType>;
 using PointerTypePtr = std::shared_ptr<PointerType>;
+using ArrayTypePtr = std::shared_ptr<ArrayType>;
 using VarTypePtr = std::shared_ptr<VarType>;
 
 using NativeTypeOpt = std::optional<NativeType>;

@@ -33,6 +33,9 @@ class List : public NodeInterface {
   auto push_front(NodePtr&& t_ptr) -> void;
   auto push_back(NodePtr&& t_ptr) -> void;
 
+	auto front() -> NodePtr;
+	auto back() -> NodePtr;
+
   auto empty() -> bool;
   auto size() -> std::size_t;
 

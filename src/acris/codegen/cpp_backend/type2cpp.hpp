@@ -11,10 +11,21 @@
 namespace codegen::cpp_backend {
 // Using Statements:
 using types::core::TypeVariant;
+
+// TODO: Improve API for converting a type specification into C++.
+// Currently the way for having to pass the identifier for arrays is awkward.
+/*!
+ * Some types in C++ make the identifier part of the type expression.
+ */
+struct TypeSpec {
+  const TypeVariant& m_type;
+  std::string_view m_identifier; //< Optionally empty.
+};
+
 /*!
  * Convert the @ref TypeVariant to an actual C++ type.
  */
-auto type_variant2cpp(const TypeVariant& t_variant) -> std::string;
+auto type_spec2cpp(const TypeSpec t_spec) -> std::string;
 } // namespace codegen::cpp_backend
 
 #endif // ACRIS_ACRIS_CODEGEN_CPP_BACKEND_TYPE2CPP_HPP

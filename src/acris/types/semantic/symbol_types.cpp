@@ -97,11 +97,9 @@ auto ArrayType::native_type() const -> NativeTypeOpt
 
 auto ArrayType::type_variant() const -> TypeVariant
 {
-  // using types::core::make_array;
+  using types::core::make_array;
 
-  // return {make_pointer(m_type.type_variant())};
-
-  TODO("Implement type_variant conversion for ArrayType.");
+  return make_array(m_type.type_variant(), m_size);
 }
 
 // VarType:
