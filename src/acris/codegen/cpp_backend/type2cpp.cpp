@@ -15,7 +15,8 @@
     break
 
 namespace {
-// Using Declarations:
+// Using:
+using codegen::cpp_backend::type_spec2cpp;
 using types::core::ArrayTypePtr;
 using types::core::FnTypePtr;
 using types::core::NativeType;
@@ -79,43 +80,36 @@ inline auto struct2cpp(const StructTypePtr& t_struct) -> std::string
 }
 
 // TODO: Figure out how to deal with this one.
-inline auto fn2cpp([[maybe_unused]] const FnTypePtr& t_type,
-                   [[maybe_unused]] std::string_view t_identifier)
-  -> std::string
+inline auto fn2cpp([[maybe_unused]] const FnTypePtr& t_type) -> std::string
 {
   // TODO: Throw?
 
   return {};
 }
 
-inline auto pointer2cpp(const PointerTypePtr& t_ptr,
-                        std::string_view t_identifier) -> std::string
+inline auto pointer2cpp(const PointerTypePtr& t_ptr) -> std::string
 {
-  using codegen::cpp_backend::type_spec2cpp;
-
-  auto base_type{type_spec2cpp({t_ptr->m_type, t_identifier})};
+  auto base_type{type_spec2cpp({t_ptr->m_type})};
 
   return std::format("{}*", base_type);
 }
 
-inline auto array2cpp(const ArrayTypePtr& t_arr,
-                      std::string_view t_identifier = "") -> std::string
+inline auto array2cpp(const ArrayTypePtr& t_arr) -> std::string
 {
   using codegen::cpp_backend::type_spec2cpp;
 
-  auto base_type{type_spec2cpp({t_arr->m_type, t_identifier})};
+  auto base_type{type_spec2cpp({t_arr->m_type})};
   auto size{t_arr->m_size};
 
-  return std::format("{}[{}]", base_type, size);
+  return std::format("stdlibacris::internal::Array<{} ,{}>", base_type, size);
 }
 
 // Could be used for decltype() or similar.
-inline auto var2cpp(const VarTypePtr& t_var, std::string_view t_identifier)
-  -> std::string
+inline auto var2cpp(const VarTypePtr& t_var) -> std::string
 {
   using codegen::cpp_backend::type_spec2cpp;
 
-  auto base_type{type_spec2cpp({t_var->m_type, t_identifier})};
+  auto base_type{type_spec2cpp({t_var->m_type})};
 
   return std::format("{}", base_type);
 }
@@ -129,43 +123,28 @@ auto type_spec2cpp(const TypeSpec t_spec) -> std::string
 {
   using lib::Overload;
 
-  auto& [type, id] = t_spec;
+  auto& [type] = t_spec;
 
   // clang-format off
   return std::visit(
 					Overload{
 						[&](const NativeType t_native) {
-							std::ostringstream oss{};
-
-							oss << native_type2cpp(t_native);
-							if(!id.empty()) {
-								oss << " " << id;
-							}
-
-							return oss.str();
+							return native_type2cpp(t_native);
 						},
 						[&](const StructTypePtr& t_struct) {
-							std::ostringstream oss{};
-
-							oss << struct2cpp(t_struct);
-
-							if(!id.empty()) {
-								oss << " " << id;
-							}
-
-							return oss.str();
+							return struct2cpp(t_struct);
 						},
 						[&](const FnTypePtr& t_fn) {
-							return fn2cpp(t_fn, id);
+							return fn2cpp(t_fn);
 						},
 						[&](const PointerTypePtr& t_ptr) {
-							return pointer2cpp(t_ptr, id);
+							return pointer2cpp(t_ptr);
 						},
 						[&](const ArrayTypePtr& t_arr) {
-							return array2cpp(t_arr, id);
+							return array2cpp(t_arr);
 						},
 						[&](const VarTypePtr& t_var) {
-							return var2cpp(t_var, id);
+							return var2cpp(t_var);
 						}},
 					type);
 	// clang-format off

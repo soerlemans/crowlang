@@ -39,7 +39,7 @@ auto CppBackend::prologue() -> std::string
   // FIXME: Temporary input for printing purposes.
   oss << "// Stdacris Includes:\n";
   oss << R"(#include "stdacris/core/linux/core.h")" << "\n";
-  oss << R"(#include "stdacris/internal/defer.hpp")" << "\n\n";
+  oss << R"(#include "stdacris/internal/internal.hpp")" << "\n\n";
 
   // Loop through the interop backends and add the prologue from each backend.
   for(auto& ptr : m_interop_backends) {
@@ -190,9 +190,9 @@ auto CppBackend::visit(Return* t_ret) -> Any
 auto CppBackend::visit(Parameter* t_param) -> Any
 {
   const auto id{t_param->identifier()};
-  const auto type{type_spec2cpp({t_param->get_type(), id})};
+  const auto type{type_spec2cpp({t_param->get_type()})};
 
-  return std::format("{}", type, id);
+  return std::format("{} {}", type, id);
 }
 
 auto CppBackend::visit(Function* t_fn) -> Any
@@ -291,11 +291,11 @@ auto CppBackend::visit(Let* t_let) -> Any
   const auto init_expr{resolve(t_let->init_expr(), false)};
 
   const auto type_variant{t_let->get_type()};
-  const auto decl_spec{type_spec2cpp({type_variant, id})};
+  const auto type{type_spec2cpp({type_variant})};
 
   const auto terminate_str{terminate()};
 
-  return std::format("const {} = {}{}", decl_spec, init_expr, terminate_str);
+  return std::format("const {} {} = {}{}", type, id, init_expr, terminate_str);
 }
 
 auto CppBackend::visit(Var* t_var) -> Any
@@ -304,11 +304,11 @@ auto CppBackend::visit(Var* t_var) -> Any
   const auto init_expr{resolve(t_var->init_expr(), false)};
 
   const auto type_variant{t_var->get_type()};
-  const auto decl_spec{type_spec2cpp({type_variant, id})};
+  const auto type{type_spec2cpp({type_variant})};
 
   const auto terminate_str{terminate()};
 
-  return std::format("{} = {}{}", decl_spec, init_expr, terminate_str);
+  return std::format("{} {} = {}{}", type, id, init_expr, terminate_str);
 }
 
 auto CppBackend::visit(Variable* t_var) -> Any

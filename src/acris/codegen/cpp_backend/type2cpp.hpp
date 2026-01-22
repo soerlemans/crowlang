@@ -19,7 +19,7 @@ using types::core::TypeVariant;
  */
 struct TypeSpec {
   const TypeVariant& m_type;
-  std::string_view m_identifier; //< Optionally empty.
+	// FIXME: This shit is stupid.
 };
 
 /*!
