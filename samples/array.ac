@@ -8,9 +8,9 @@ func main() -> int {
   let tes_val = array[9]
 
   array[0] = 10
-  array[4] = 50
+  // array[4] = 50
 
-	let val = array[0] + array[3]
+	// let val = array[0] + array[3]
 
-  return array[0]
+  // return array[0]
 }

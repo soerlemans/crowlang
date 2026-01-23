@@ -23,11 +23,10 @@ auto TypeParser::type_id() -> NodePtr
 
   const auto token{get_token()};
   if(next_if(TokenType::IDENTIFIER)) {
-    PARSER_FOUND(TokenType::IDENTIFIER);
-
     const auto pos{token.position()};
     const auto id{token.str()};
 
+    DBG_TRACE_PRINT(INFO, "TypeName: ", id);
     node = make_node<TypeName>(pos, id);
   }
 

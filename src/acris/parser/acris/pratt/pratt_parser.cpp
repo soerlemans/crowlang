@@ -283,6 +283,8 @@ auto PrattParser::prefix() -> NodePtr
     node = std::move(ptr);
   } else if(auto ptr{lvalue()}; ptr) {
     node = std::move(ptr);
+  } else if(auto ptr{m_delegate->self()}; ptr) {
+    node = std::move(ptr);
   }
 
   return node;
@@ -493,13 +495,27 @@ auto PrattParser::infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   return node;
 }
 
-// auto PrattParser::member_access(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
-// {
-//   DBG_TRACE_FN(VERBOSE);
-//   NodePtr node{};
+auto PrattParser::member_access(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
+{
+  DBG_TRACE_FN(VERBOSE);
+  NodePtr node{};
 
-//   return node;
-// }
+  const auto pos{get_position()};
+
+  if(after_newlines(TokenType::DOT)) {
+    PARSER_FOUND(TokenType::DOT);
+    const auto token{get_token()};
+    next();
+
+    if(auto rhs{t_fn(token.type())}; rhs) {
+      node = make_node<MemberAccess>(pos, std::move(t_lhs), std::move(rhs));
+    } else {
+      // TODO: Maybe error?
+    }
+  }
+
+  return node;
+}
 
 auto PrattParser::subscript(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 {
@@ -518,7 +534,7 @@ auto PrattParser::subscript(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
       expect(TokenType::BRACKET_CLOSE);
 
     } else {
-      prev();
+      // TODO: Maybe error?
     }
   }
 
@@ -546,7 +562,7 @@ auto PrattParser::call(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
       prev();
     }
   }
-	*/
+  */
 
   return node;
 }
@@ -560,11 +576,9 @@ auto PrattParser::postfix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
     return nullptr;
   }
 
-  // if(auto ptr{member_access(t_lhs, t_fn)}; ptr) {
-  //   node = std::move(ptr);
-  // } else
-
-  if(auto ptr{subscript(t_lhs, t_fn)}; ptr) {
+  if(auto ptr{member_access(t_lhs, t_fn)}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{subscript(t_lhs, t_fn)}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{call(t_lhs, t_fn)}; ptr) {
     node = std::move(ptr);
@@ -615,30 +629,7 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
 
   // Infix:
   while(!eos()) {
-    // Chain infix parsing.
-    const auto rhs_chain_fn{[&](const TokenType t_type) {
-      NodePtr rhs{};
-
-      // If we see a chain expression we need to defer into first parsing it.
-      // And then resume normal operation.
-      const auto [lbp, rbp] = m_infix.at(t_type);
-      if(lbp < t_min_bp) {
-        prev();
-      } else {
-        rhs = chain_expr(rbp);
-        if(!rhs) {
-          throw_syntax_error(
-            "Chain infix operations require a right hand side");
-        }
-      }
-
-      return rhs;
-    }};
-
-    // if(auto ptr{infix_chain(lhs, rhs_chain_fn)}; ptr) {
-    //   lhs = std::move(ptr);
-    // }
-
+    // Postfix parsing.
     const auto rhs_postfix_fn{[&](const TokenType t_type) {
       NodePtr rhs{};
 
@@ -655,7 +646,12 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
       return rhs;
     }};
 
-    // Normal infix parsing.
+    // Check for postfix to the prefix.
+    if(auto ptr{postfix(lhs, rhs_postfix_fn)}; ptr) {
+      lhs = std::move(ptr);
+    }
+
+    // Infix parsing.
     const auto rhs_infix_fn{[&](const TokenType t_type) {
       NodePtr rhs{};
 
@@ -671,11 +667,6 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
 
       return rhs;
     }};
-
-    // Check for postfix to the prefix.
-    if(auto ptr{postfix(lhs, rhs_postfix_fn)}; ptr) {
-      lhs = std::move(ptr);
-    }
 
     // If we do not find the expression quit.
     if(auto ptr{infix(lhs, rhs_infix_fn)}; ptr) {
