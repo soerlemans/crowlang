@@ -107,6 +107,17 @@ auto AstPrinter::visit(Variable* t_var) -> Any
   return {};
 }
 
+auto AstPrinter::visit(Subscript* t_subscript) -> Any
+{
+  COUNTG_INIT();
+
+  print("Subscript");
+  print_traits(t_subscript);
+
+  return {};
+}
+
+
 // Meta:
 auto AstPrinter::visit(Attribute* t_attr) -> Any
 {

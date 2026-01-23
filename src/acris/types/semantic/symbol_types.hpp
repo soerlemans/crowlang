@@ -83,7 +83,7 @@ struct PointerType {
 
 struct ArrayType {
   SymbolData m_type;
-	std::size_t m_size;
+  std::size_t m_size;
 
   auto resolve_result_type() const -> SymbolData;
 

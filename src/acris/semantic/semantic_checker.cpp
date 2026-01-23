@@ -558,6 +558,34 @@ auto SemanticChecker::visit(Variable* t_var) -> Any
   return {var_data};
 }
 
+auto SemanticChecker::visit(Subscript* t_subscript) -> Any
+{
+  SymbolData type{};
+
+  const auto var_data{get_symbol_data(t_subscript->left())};
+  const auto index_data{get_symbol_data(t_subscript->left())};
+
+  // TODO: Move to type validator.
+  // TODO: Check index data if numeric.
+  DBG_INFO("Subscript of type ", var_data);
+
+  auto result_data{var_data.resolve_result_type()};
+  if(result_data.is_array()) {
+    const auto array_ptr{result_data.as_array()};
+
+    type = array_ptr->m_type;
+  } else {
+    // TODO: Throw.
+  }
+
+  // Annotate AST.
+  m_annot_queue.push({t_subscript, type});
+
+  // return {var_data};
+
+  return type;
+}
+
 // Meta:
 auto SemanticChecker::visit(Attribute* t_attr) -> Any
 {
@@ -859,7 +887,7 @@ auto SemanticChecker::visit([[maybe_unused]] ArrayExpr* t_arr) -> Any
   SymbolData type{};
   NodeListPtr list{t_arr->get()};
 
-	// TODO: Move to type validator.
+  // TODO: Move to type validator.
   if(!list->empty()) {
     // We need to deduce type from the first elem.
     auto iter{list->begin()};

@@ -5,12 +5,12 @@ module array_sample
 func main() -> int {
   var array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-  // let tes_val = array[9]
+  let tes_val = array[9]
 
-  // array[0] = 10
-  // array[4] = 50
+  array[0] = 10
+  array[4] = 50
 
-	// let val = array[0] + array[3]
+	let val = array[0] + array[3]
 
-  // return array[0]
+  return array[0]
 }

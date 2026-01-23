@@ -318,6 +318,14 @@ auto CppBackend::visit(Variable* t_var) -> Any
   return std::format("{}", identifier);
 }
 
+auto CppBackend::visit(Subscript* t_subscript) -> Any
+{
+  const auto expr{resolve(t_subscript->left())};
+  const auto index_expr{resolve(t_subscript->right())};
+
+  return std::format("{}[{}]", expr, index_expr);
+}
+
 // Meta:
 auto CppBackend::visit(Attribute* t_attr) -> Any
 {

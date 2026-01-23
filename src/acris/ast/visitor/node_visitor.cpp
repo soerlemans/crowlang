@@ -57,6 +57,7 @@ STUB(ReturnType)
 STUB(Let)
 STUB(Var)
 STUB(Variable)
+STUB(Subscript)
 
 // Meta:
 STUB(Attribute)

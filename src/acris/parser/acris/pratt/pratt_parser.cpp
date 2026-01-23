@@ -514,7 +514,6 @@ auto PrattParser::subscript(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
     next();
 
     if(auto rhs{t_fn(token.type())}; rhs) {
-      DBG_TRACE_PRINT(VERBOSE, "Not ran.");
       node = make_node<Subscript>(pos, std::move(t_lhs), std::move(rhs));
       expect(TokenType::BRACKET_CLOSE);
 
@@ -530,6 +529,24 @@ auto PrattParser::call(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
+
+  const auto pos{get_position()};
+
+  /* TODO: Implement call node.
+  if(after_newlines(TokenType::PAREN_OPEN)) {
+    PARSER_FOUND(TokenType::PAREN_OPEN);
+    const auto token{get_token()};
+    next();
+
+    if(auto rhs{t_fn(token.type())}; rhs) {
+      node = make_node<Call>(pos, std::move(t_lhs), std::move(rhs));
+      expect(TokenType::PAREN_CLOSE);
+
+    } else {
+      prev();
+    }
+  }
+	*/
 
   return node;
 }
