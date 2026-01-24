@@ -46,7 +46,7 @@ namespace stdlibacris::internal {
 template<typename T, usize_t N>
 struct Array {
   T m_data[N];
-  static constexpr usize_t m_size = N;
+  static constexpr usize_t m_len = N;
 
   Array(std::initializer_list<T> t_list)
   {

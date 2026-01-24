@@ -68,8 +68,31 @@ namespace keywords {
   DEFINE_TERMINAL(g_return,   "return",   RETURN);
 
   // Literals:
-  DEFINE_TERMINAL(g_true,  "True",  TRUE);
-  DEFINE_TERMINAL(g_false, "False", FALSE);
+  DEFINE_TERMINAL(g_true,  "true",  TRUE);
+  DEFINE_TERMINAL(g_false, "false", FALSE);
+
+	// Primitives:
+  DEFINE_TERMINAL(g_void,  "void",  VOID);
+
+  DEFINE_TERMINAL(g_f32,  "f32",   F32);
+  DEFINE_TERMINAL(g_f64,  "f64",   F64);
+
+  DEFINE_TERMINAL(g_int, "int", INT);
+  DEFINE_TERMINAL(g_i8,  "i8",  I8);
+  DEFINE_TERMINAL(g_i16, "i16", I16);
+  DEFINE_TERMINAL(g_i32, "i32", I32);
+  DEFINE_TERMINAL(g_i64, "i64", I64);
+  DEFINE_TERMINAL(g_isz, "isz", ISIZE);
+
+  DEFINE_TERMINAL(g_uint, "uint", UINT);
+  DEFINE_TERMINAL(g_u8,   "u8",   U8);
+  DEFINE_TERMINAL(g_u16,  "u16",  U16);
+  DEFINE_TERMINAL(g_u32,  "u32",  U32);
+  DEFINE_TERMINAL(g_u64,  "u64",  U64);
+  DEFINE_TERMINAL(g_usz,  "usz",  USIZE);
+
+  DEFINE_TERMINAL(g_char, "char",  CHAR);
+  DEFINE_TERMINAL(g_cstr, "cstr",  CSTR);
 
   // FIXME: Make builtin types part of the lexer.
   // Currently we dont do this.
@@ -103,7 +126,13 @@ namespace keywords {
     g_if.pair(), g_else.pair(), g_elif.pair(),
     g_loop.pair(),
     g_break.pair(), g_continue.pair(), g_defer.pair(), g_return.pair(),
-    g_true.pair(), g_false.pair()
+    g_true.pair(), g_false.pair(),
+
+		g_void.pair(),
+		g_f32.pair(), g_f64.pair(),
+		g_int.pair(), g_i8.pair(), g_i16.pair(), g_i32.pair(), g_i64.pair(), g_isz.pair(),
+		g_uint.pair(), g_u8.pair(), g_u16.pair(), g_u32.pair(), g_u64.pair(), g_usz.pair(),
+		g_char.pair(), g_cstr.pair()
 };
 } // namespace keywords
 

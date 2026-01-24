@@ -307,7 +307,7 @@ auto Lexer::handle_hex() -> Token
   LOG_TOKEN("HEX: ", ss.str());
   const int number{(int)std::stoul(ss.str(), nullptr, 16)};
 
-  return Token(TokenType::INTEGER, number, position);
+  return Token(TokenType::INTEGER_LITERAL, number, position);
 }
 
 // t_str and t_dot have default arguments
@@ -336,10 +336,10 @@ auto Lexer::handle_float(const std::string_view t_str) -> Token
     }
   }
 
-  LOG_TOKEN("FLOAT: ", ss.str());
+  LOG_TOKEN("FLOAT_LITERAL: ", ss.str());
   const f64 number{std::stod(ss.str())};
 
-  return Token{TokenType::FLOAT, number, position};
+  return Token{TokenType::FLOAT_LITERAL, number, position};
 }
 
 auto Lexer::handle_integer() -> Token
@@ -370,10 +370,10 @@ auto Lexer::handle_integer() -> Token
     }
   }
 
-  LOG_TOKEN("INTEGER: ", ss.str());
+  LOG_TOKEN("INTEGER_LITERAL: ", ss.str());
   const int number{std::stoi(ss.str())};
 
-  return Token{TokenType::INTEGER, number, position};
+  return Token{TokenType::INTEGER_LITERAL, number, position};
 }
 
 auto Lexer::literal_numeric() -> Token
@@ -461,8 +461,8 @@ auto Lexer::literal_char() -> Token
     // TODO: Error.
   }
 
-  LOG_TOKEN("CHAR: ", char2str(token_ch));
-  return Token{TokenType::CHAR, token_ch, position};
+  LOG_TOKEN("CHAR_LITERAL: ", char2str(token_ch));
+  return Token{TokenType::CHAR_LITERAL, token_ch, position};
 }
 
 auto Lexer::literal_string() -> Token
@@ -496,8 +496,8 @@ auto Lexer::literal_string() -> Token
     }
   }
 
-  LOG_TOKEN("STRING: ", ss.str());
-  return Token{TokenType::STRING, ss.str(), position};
+  LOG_TOKEN("STRING_LITERAL: ", ss.str());
+  return Token{TokenType::STRING_LITERAL, ss.str(), position};
 }
 
 auto Lexer::is_multi_symbol() -> TokenTypeOpt

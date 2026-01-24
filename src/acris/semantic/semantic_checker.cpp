@@ -790,7 +790,9 @@ auto SemanticChecker::visit(AddressOf* t_addr_of) -> Any
 
   const auto left{get_symbol_data(t_addr_of->left())};
 
-  /// TODO: Maybe annotate the type data to the AST?
+  // TODO: Maybe annotate the type data to the AST?
+  // TODO: Treat & on arrays differently.
+	// & Will make an array a pointer making it an explicit conversion.
 
   return make_pointer(left);
 }

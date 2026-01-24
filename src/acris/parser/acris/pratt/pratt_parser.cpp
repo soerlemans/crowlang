@@ -51,24 +51,24 @@ auto PrattParser::literal() -> NodePtr
   NodePtr node{};
 
   const auto token{get_token()};
-  if(next_if(TokenType::FLOAT)) {
+  if(next_if(TokenType::FLOAT_LITERAL)) {
     const auto val{token.float_()};
-    PARSER_FOUND(TokenType::FLOAT, " literal: ", val);
+    PARSER_FOUND(TokenType::FLOAT_LITERAL, " literal: ", val);
     node = make_node<Float>(val);
 
-  } else if(next_if(TokenType::INTEGER)) {
+  } else if(next_if(TokenType::INTEGER_LITERAL)) {
     const auto val{token.int_()};
-    PARSER_FOUND(TokenType::INTEGER, " literal: ", val);
+    PARSER_FOUND(TokenType::INTEGER_LITERAL, " literal: ", val);
     node = make_node<Integer>(val);
 
-  } else if(next_if(TokenType::CHAR)) {
+  } else if(next_if(TokenType::CHAR_LITERAL)) {
     const auto val{token.char_()};
-    PARSER_FOUND(TokenType::CHAR, " literal: ", val);
+    PARSER_FOUND(TokenType::CHAR_LITERAL, " literal: ", val);
     node = make_node<Char>(val);
 
-  } else if(next_if(TokenType::STRING)) {
+  } else if(next_if(TokenType::STRING_LITERAL)) {
     const auto val{token.str()};
-    PARSER_FOUND(TokenType::STRING, " literal: ", val);
+    PARSER_FOUND(TokenType::STRING_LITERAL, " literal: ", val);
     node = make_node<String>(val);
 
   } else if(next_if(TokenType::TRUE)) {
@@ -79,7 +79,7 @@ auto PrattParser::literal() -> NodePtr
     PARSER_FOUND(TokenType::FALSE);
     node = make_node<Boolean>(false);
 
-  } else if(check(TokenType::BRACKET_OPEN)) { // Note uses check()
+  } else if(check(TokenType::BRACKET_OPEN)) { // Note uses check().
     DBG_TRACE_PRINT(VERBOSE, "Found 'ARRAY EXPR'");
 
     auto list{brackets([this] {
