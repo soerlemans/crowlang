@@ -7,10 +7,10 @@ func main() -> int {
 
   let tes_val = array[9]
 
-  array[0] = 10
-  // array[4] = 50
+  var sum: uint
+  loop var i = 0; i < 10; i++ {
+    sum += array[i]
+  }
 
-	// let val = array[0] + array[3]
-
-  // return array[0]
+  return sum
 }

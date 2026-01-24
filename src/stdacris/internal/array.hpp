@@ -48,7 +48,7 @@ struct Array {
   T m_data[N];
   usize_t m_size = N;
 
-  Array(std::initializer_list<T> t_list)
+  Array(std::initializer_list<T> t_list): m_data{}, m_size{t_list.size()}
   {
     // Deal with std::initializer_list.
     auto* iter{t_list.begin()};
@@ -58,8 +58,9 @@ struct Array {
 
     usize_t index{0};
     for(; iter != t_list.end(); iter++) {
-      m_data[m_size];
-      m_size++;
+      m_data[index] = *iter;
+
+      index++;
     }
   }
 

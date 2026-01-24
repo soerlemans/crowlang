@@ -757,7 +757,7 @@ auto SemanticChecker::visit(Increment* t_inc) -> Any
 
 auto SemanticChecker::visit(Decrement* t_dec) -> Any
 {
-  const auto left{t_inc->left()};
+  const auto left{t_dec->left()};
   const auto left_data{get_symbol_data(left)};
 
   // Return underlying type.

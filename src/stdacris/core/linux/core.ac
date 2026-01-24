@@ -15,6 +15,7 @@ let STDERR = 2
   decl func open(t_path: cstr, t_flags: i32, t_mode: u32) -> int
   decl func close(t_fd: int) -> int
   decl func getpid() -> int
+  decl func exit(t_code: int) -> int
   decl func getppid() -> int
 
   decl func strlen(t_str: cstr) -> usz
@@ -32,8 +33,21 @@ func eprint_str(t_str: cstr) -> isz {
   return write_str(STDERR, t_str, len)
 }
 
-// func println_str(t_str: cstr) -> usz {
-//   let len = strlen(t_str)
+func println_str(t_str: cstr) -> usz {
+  let len = strlen(t_str)
 
-//   return write_str(STDOUT, t_str, len)
+  return write_str(STDOUT, t_str, len)
+}
+
+// Not working yet.
+// func my_strlen(t_str: cstr) -> usz {
+//   var char: *char = t_str
+
+//   var len: usz = 0
+//   loop char != '\0' {
+//     len++
+//     char++
+//   }
+
+//   return len
 // }
