@@ -267,7 +267,9 @@ auto PrattParser::prefix() -> NodePtr
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};
 
-  if(auto ptr{grouping()}; ptr) {
+  if(auto ptr{m_delegate->self()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{grouping()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{address_of()}; ptr) {
     node = std::move(ptr);
@@ -282,8 +284,6 @@ auto PrattParser::prefix() -> NodePtr
   } else if(auto ptr{function_call()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{lvalue()}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{m_delegate->self()}; ptr) {
     node = std::move(ptr);
   }
 

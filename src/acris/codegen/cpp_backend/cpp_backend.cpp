@@ -288,27 +288,40 @@ auto CppBackend::visit([[maybe_unused]] ReturnType* t_rt) -> Any
 auto CppBackend::visit(Let* t_let) -> Any
 {
   const auto id{t_let->identifier()};
-  const auto init_expr{resolve(t_let->init_expr(), false)};
+  const auto init_expr{t_let->init_expr()};
 
   const auto type_variant{t_let->get_type()};
   const auto type{type_spec2cpp({type_variant})};
 
   const auto terminate_str{terminate()};
 
-  return std::format("const {} {} = {}{}", type, id, init_expr, terminate_str);
+  if(init_expr) {
+    const auto init_expr_str{resolve(init_expr, false)};
+
+    return std::format("const {} {} = {}{}", type, id, init_expr_str,
+                       terminate_str);
+  } else {
+    return std::format("const {} {}{{}}{}", type, id, terminate_str);
+  }
 }
 
 auto CppBackend::visit(Var* t_var) -> Any
 {
   const auto id{t_var->identifier()};
-  const auto init_expr{resolve(t_var->init_expr(), false)};
+  const auto init_expr{t_var->init_expr()};
 
   const auto type_variant{t_var->get_type()};
   const auto type{type_spec2cpp({type_variant})};
 
   const auto terminate_str{terminate()};
 
-  return std::format("{} {} = {}{}", type, id, init_expr, terminate_str);
+  if(init_expr) {
+    const auto init_expr_str{resolve(init_expr, false)};
+
+    return std::format("{} {} = {}{}", type, id, init_expr_str, terminate_str);
+  } else {
+    return std::format("{} {}{{}}{}", type, id, terminate_str);
+  }
 }
 
 auto CppBackend::visit(Variable* t_var) -> Any
