@@ -46,9 +46,9 @@ namespace stdlibacris::internal {
 template<typename T, usize_t N>
 struct Array {
   T m_data[N];
-  usize_t m_size = N;
+  static constexpr usize_t m_size = N;
 
-  Array(std::initializer_list<T> t_list): m_data{}, m_size{t_list.size()}
+  Array(std::initializer_list<T> t_list)
   {
     // Deal with std::initializer_list.
     auto* iter{t_list.begin()};
