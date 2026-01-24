@@ -28,42 +28,42 @@ NODE_USING_ALL_NAMESPACES()
 // Protected:
 auto CppBackend::prologue() -> std::string
 {
-  std::stringstream ss{};
+  std::ostringstream oss{};
 
   // Acris's native types often translate.
   // To C++ fixed width integers and floats.
-  ss << "// STL Includes:\n";
-  // ss << "#include <stdfloat>\n"; // TODO: Uncommnet when supported by clang.
-  ss << "\n";
+  oss << "// STL Includes:\n";
+  // oss << "#include <stdfloat>\n"; // TODO: Uncommnet when supported by clang.
+  oss << "\n";
 
   // FIXME: Temporary input for printing purposes.
-  ss << "// Stdacris Includes:\n";
-  ss << R"(#include "stdacris/core/linux/core.h")" << "\n";
-  ss << R"(#include "stdacris/internal/defer.hpp")" << "\n\n";
+  oss << "// Stdacris Includes:\n";
+  oss << R"(#include "stdacris/core/linux/core.h")" << "\n";
+  oss << R"(#include "stdacris/internal/internal.hpp")" << "\n\n";
 
   // Loop through the interop backends and add the prologue from each backend.
   for(auto& ptr : m_interop_backends) {
-    ss << ptr->prologue();
+    oss << ptr->prologue();
   }
 
-  ss << "\n\n";
+  oss << "\n\n";
 
-  ss << "// Aliases:\n";
-  ss << "namespace stdinternal = stdlibacris::internal;\n";
+  oss << "// Aliases:\n";
+  oss << "namespace stdinternal = stdlibacris::internal;\n";
 
-  return ss.str();
+  return oss.str();
 }
 
 auto CppBackend::epilogue() -> std::string
 {
-  std::stringstream ss{};
+  std::ostringstream oss{};
 
   // Loop through the interop backends and add the epilogue.
   for(auto& ptr : m_interop_backends) {
-    ss << ptr->epilogue();
+    oss << ptr->epilogue();
   }
 
-  return ss.str();
+  return oss.str();
 }
 
 auto CppBackend::should_terminate() -> bool
@@ -88,7 +88,7 @@ auto CppBackend::terminate() -> std::string_view
 // TODO: Add inline option for direct resolution.
 auto CppBackend::resolve(NodePtr t_ptr, const bool t_terminate) -> std::string
 {
-  std::stringstream ss{};
+  std::ostringstream oss{};
 
   if(t_ptr) {
     // Keep track of if the current node we are traversing should be terminated.
@@ -97,13 +97,13 @@ auto CppBackend::resolve(NodePtr t_ptr, const bool t_terminate) -> std::string
     m_terminate.pop();
 
     try {
-      ss << std::any_cast<std::string>(any);
+      oss << std::any_cast<std::string>(any);
     } catch(std::bad_any_cast& exception) {
       lib::stdexcept::throw_bad_any_cast(exception.what());
     }
   }
 
-  return ss.str();
+  return oss.str();
 }
 
 // Public:
@@ -120,18 +120,18 @@ auto CppBackend::visit(If* t_if) -> Any
   const auto then{resolve(t_if->then())};
   const auto alt{resolve(t_if->alt())};
 
-  std::stringstream ss{};
+  std::ostringstream oss{};
 
-  ss << std::format("if({} {}) {{\n", init_expr, cond) << then;
+  oss << std::format("if({} {}) {{\n", init_expr, cond) << then;
 
   // Dont create else branch if we dont have a statement for it.
   if(!alt.empty()) {
-    ss << "} else {\n" << alt;
+    oss << "} else {\n" << alt;
   }
 
-  ss << "}\n";
+  oss << "}\n";
 
-  return ss.str();
+  return oss.str();
 }
 
 auto CppBackend::visit(Loop* t_loop) -> Any
@@ -142,16 +142,16 @@ auto CppBackend::visit(Loop* t_loop) -> Any
   const auto post_expr{resolve(t_loop->expr(), false)};
   const auto body{resolve(t_loop->body())};
 
-  std::stringstream ss{};
+  std::ostringstream oss{};
 
   // clang-format off
-  ss << std::format("for({};{}; {} )", init_expr, cond, post_expr)
+  oss << std::format("for({};{}; {} )", init_expr, cond, post_expr)
      << "{\n"
      << body
      << "}\n";
   // clang-format on
 
-  return ss.str();
+  return oss.str();
 }
 
 auto CppBackend::visit([[maybe_unused]] Continue* t_continue) -> Any
@@ -166,17 +166,17 @@ auto CppBackend::visit([[maybe_unused]] Break* t_break) -> Any
 
 auto CppBackend::visit(Defer* t_defer) -> Any
 {
-  std::stringstream ss{};
+  std::ostringstream oss{};
 
   const auto body{resolve(t_defer->body())};
 
-  ss << std::format(
+  oss << std::format(
     "const stdinternal::Defer defer_object{}{{ [&](){{ {} }} }};\n",
     m_id_defer_count, body);
 
   m_id_defer_count++;
 
-  return ss.str();
+  return oss.str();
 }
 
 auto CppBackend::visit(Return* t_ret) -> Any
@@ -190,7 +190,7 @@ auto CppBackend::visit(Return* t_ret) -> Any
 auto CppBackend::visit(Parameter* t_param) -> Any
 {
   const auto id{t_param->identifier()};
-  const auto type{type_variant2cpp(t_param->get_type())};
+  const auto type{type_spec2cpp({t_param->get_type()})};
 
   return std::format("{} {}", type, id);
 }
@@ -202,9 +202,9 @@ auto CppBackend::visit(Function* t_fn) -> Any
   const auto identifier{t_fn->identifier()};
 
   const auto fn_type{t_fn->get_type().as_function()};
-  const auto ret_type{type_variant2cpp(fn_type->m_return_type)};
+  const auto ret_type{type_spec2cpp({fn_type->m_return_type})};
 
-  std::stringstream param_ss{};
+  std::ostringstream param_ss{};
 
   auto sep{""sv};
   const auto params{t_fn->params()};
@@ -214,20 +214,20 @@ auto CppBackend::visit(Function* t_fn) -> Any
     sep = ", ";
   }
 
-  std::stringstream ss{};
+  std::ostringstream oss{};
 
   // Attribute insertion:
   const auto attrs{t_fn->get_attributes()};
   for(const auto& attr : attrs) {
     if(attr.m_type == AttributeType::INLINE) {
-      ss << "inline\n";
+      oss << "inline\n";
     }
   }
 
   // clang-format off
 	// We use regular function syntax instead trailing return type.
 	// Cause trailing return
-  ss << std::format("{} {}({})\n", ret_type, identifier, param_ss.str())
+  oss << std::format("{} {}({})\n", ret_type, identifier, param_ss.str())
      << "{\n"
      << resolve(t_fn->body())
      << "}\n";
@@ -240,7 +240,7 @@ auto CppBackend::visit(Function* t_fn) -> Any
     ptr->register_function(identifier);
   }
 
-  return ss.str();
+  return oss.str();
 }
 
 auto CppBackend::visit(FunctionCall* t_call) -> Any
@@ -258,59 +258,70 @@ auto CppBackend::visit(FunctionCall* t_call) -> Any
   // Or if this function is being called without as a statement.
   // (I hope this is doable).
 
-  std::stringstream ss{};
+  std::ostringstream oss{};
   std::string_view sep{""};
 
   for(const auto& ptr : *args) {
     const auto argument{resolve(ptr, false)};
-    ss << sep << argument;
+    oss << sep << argument;
 
     sep = ", ";
   }
 
-  const auto arguments{ss.str()};
+  const auto arguments{oss.str()};
 
   return std::format("{}({}){}", identifier, arguments, terminate());
 }
 
 auto CppBackend::visit([[maybe_unused]] ReturnType* t_rt) -> Any
 {
-  std::stringstream ss{};
+  std::ostringstream oss{};
 
   // Currently we do not dynamically compute return types.
-  // So for now converting a type_variant2cpp() is good enough.
+  // So for now converting a type_spec2cpp({) is good enough.
 
-  return ss.str();
+  return oss.str();
 }
 
 // Lvalue:
 // TODO: Reduce code duplication between the Let and Var methods.
 auto CppBackend::visit(Let* t_let) -> Any
 {
-  const auto identifier{t_let->identifier()};
-  const auto init_expr{resolve(t_let->init_expr(), false)};
+  const auto id{t_let->identifier()};
+  const auto init_expr{t_let->init_expr()};
 
   const auto type_variant{t_let->get_type()};
-  const auto type{type_variant2cpp(type_variant)};
+  const auto type{type_spec2cpp({type_variant})};
 
   const auto terminate_str{terminate()};
 
-  return std::format("const {} {}{{ {} }}{}", type, identifier, init_expr,
-                     terminate_str);
+  if(init_expr) {
+    const auto init_expr_str{resolve(init_expr, false)};
+
+    return std::format("const {} {} = {}{}", type, id, init_expr_str,
+                       terminate_str);
+  } else {
+    return std::format("const {} {}{{}}{}", type, id, terminate_str);
+  }
 }
 
 auto CppBackend::visit(Var* t_var) -> Any
 {
-  const auto identifier{t_var->identifier()};
-  const auto init_expr{resolve(t_var->init_expr(), false)};
+  const auto id{t_var->identifier()};
+  const auto init_expr{t_var->init_expr()};
 
   const auto type_variant{t_var->get_type()};
-  const auto type{type_variant2cpp(type_variant)};
+  const auto type{type_spec2cpp({type_variant})};
 
   const auto terminate_str{terminate()};
 
-  return std::format("{} {}{{ {} }}{}", type, identifier, init_expr,
-                     terminate_str);
+  if(init_expr) {
+    const auto init_expr_str{resolve(init_expr, false)};
+
+    return std::format("{} {} = {}{}", type, id, init_expr_str, terminate_str);
+  } else {
+    return std::format("{} {}{{}}{}", type, id, terminate_str);
+  }
 }
 
 auto CppBackend::visit(Variable* t_var) -> Any
@@ -320,25 +331,34 @@ auto CppBackend::visit(Variable* t_var) -> Any
   return std::format("{}", identifier);
 }
 
+auto CppBackend::visit(Subscript* t_subscript) -> Any
+{
+  const auto expr{resolve(t_subscript->left())};
+  const auto index_expr{resolve(t_subscript->right())};
+
+  return std::format("{}[{}]", expr, index_expr);
+}
+
 // Meta:
 auto CppBackend::visit(Attribute* t_attr) -> Any
 {
   using node::node_traits::AttributeType;
 
-  std::stringstream ss{};
+  std::ostringstream oss{};
 
   const auto id{t_attr->identifier()};
   const auto params{t_attr->params()};
   const auto body{t_attr->body()};
 
   // TODO: This should probably be somewhere else.
-  // Also we should not allow the extern attribute, inside of function bodies.
+  // Also we should not allow the extern attribute, inside of function
+  // bodies.
   const auto attrs{t_attr->get_attributes()};
   for(const auto& attr : attrs) {
     switch(attr.m_type) {
       case AttributeType::EXTERN:
         // clang-format off
-      ss << R"(extern "C" {)" << "\n"
+      oss << R"(extern "C" {)" << "\n"
 				 << resolve(body)
 				 << "}\n";
         // clang-format on
@@ -346,12 +366,12 @@ auto CppBackend::visit(Attribute* t_attr) -> Any
 
       default:
         // Walk the body like normal.
-        ss << resolve(body);
+        oss << resolve(body);
         break;
     }
   }
 
-  return ss.str();
+  return oss.str();
 }
 
 auto CppBackend::visit(LetDecl* t_ldecl) -> Any
@@ -359,7 +379,7 @@ auto CppBackend::visit(LetDecl* t_ldecl) -> Any
   const auto identifier{t_ldecl->identifier()};
 
   const auto type_variant{t_ldecl->get_type()};
-  const auto type{type_variant2cpp(type_variant)};
+  const auto type{type_spec2cpp({type_variant})};
 
   return std::format("extern const {} {};\n", type, identifier);
 }
@@ -369,7 +389,7 @@ auto CppBackend::visit(VarDecl* t_vdecl) -> Any
   const auto identifier{t_vdecl->identifier()};
 
   const auto type_variant{t_vdecl->get_type()};
-  const auto type{type_variant2cpp(type_variant)};
+  const auto type{type_spec2cpp({type_variant})};
 
   return std::format("extern {} {};\n", type, identifier);
 }
@@ -379,9 +399,9 @@ auto CppBackend::visit(FunctionDecl* t_fdecl) -> Any
   const auto identifier{t_fdecl->identifier()};
 
   const auto fn_type{t_fdecl->get_type().as_function()};
-  const auto ret_type{type_variant2cpp(fn_type->m_return_type)};
+  const auto ret_type{type_spec2cpp({fn_type->m_return_type})};
 
-  std::stringstream param_ss{};
+  std::ostringstream param_ss{};
 
   auto sep{""sv};
   const auto params{t_fdecl->params()};
@@ -402,8 +422,8 @@ auto CppBackend::visit(Arithmetic* t_arith) -> Any
   const auto left{resolve(t_arith->left())};
   const auto right{resolve(t_arith->right())};
 
-  // We surround the sub expressions in parenthesis to enforce the precedence,
-  // Of Acris over C++.
+  // We surround the sub expressions in parenthesis to enforce the
+  // precedence, Of Acris over C++.
   return std::format("({}) {} ({})", left, op, right);
 }
 
@@ -534,7 +554,7 @@ auto CppBackend::visit([[maybe_unused]] Char* t_ch) -> Any
 {
   const auto value{t_ch->get()};
 
-	// We print chars as a hex for codegen.
+  // We print chars as a hex for codegen.
   return std::format("(char)(0x{:x})", value);
 }
 
@@ -543,6 +563,26 @@ auto CppBackend::visit([[maybe_unused]] String* t_str) -> Any
   const auto value{t_str->get()};
 
   return std::format("\"{}\"", value);
+}
+
+auto CppBackend::visit(ArrayExpr* t_arr) -> Any
+{
+  std::ostringstream oss{};
+
+  const auto list{t_arr->get()};
+
+  oss << '{';
+
+  std::string_view sep{};
+  for(NodePtr& elem : *list) {
+    oss << sep << resolve(elem);
+
+    sep = ", ";
+  }
+
+  oss << '}' << terminate();
+
+  return oss.str();
 }
 
 auto CppBackend::visit([[maybe_unused]] Boolean* t_bool) -> Any
@@ -561,9 +601,9 @@ auto CppBackend::visit(Method* t_meth) -> Any
   const auto receiver_type{t_meth->get_receiver()};
 
   const auto meth_type{t_meth->get_type().as_function()};
-  const auto ret_type{type_variant2cpp(meth_type->m_return_type)};
+  const auto ret_type{type_spec2cpp({meth_type->m_return_type})};
 
-  std::stringstream param_ss{};
+  std::ostringstream param_ss{};
 
   auto sep{""sv};
   const auto params{t_meth->params()};
@@ -573,18 +613,18 @@ auto CppBackend::visit(Method* t_meth) -> Any
     sep = ", ";
   }
 
-  std::stringstream ss{};
+  std::ostringstream oss{};
 
   // Attribute insertion:
   const auto attrs{t_meth->get_attributes()};
   for(const auto& attr : attrs) {
     if(attr.m_type == AttributeType::INLINE) {
-      ss << "inline\n";
+      oss << "inline\n";
     }
   }
 
   // clang-format off
-  ss << std::format("auto {}::{}({}) -> {}\n", receiver_type, identifier, param_ss.str(), ret_type)
+  oss << std::format("auto {}::{}({}) -> {}\n", receiver_type, identifier, param_ss.str(), ret_type)
      << "{\n"
      << resolve(t_meth->body())
      << "}\n";
@@ -597,7 +637,7 @@ auto CppBackend::visit(Method* t_meth) -> Any
   //   ptr->register_function(identifier);
   // }
 
-  return ss.str();
+  return oss.str();
 }
 
 auto CppBackend::visit(MethodCall* t_meth_call) -> Any
@@ -608,24 +648,24 @@ auto CppBackend::visit(MethodCall* t_meth_call) -> Any
   const auto args{t_meth_call->args()};
 
   // FIXME: This wont work for a raw function or method call.
-  // As when we assign it directly to a variable it will work but not else.
-  // As we need to append a semicolon.
+  // As when we assign it directly to a variable it will work but
+  // not else. As we need to append a semicolon.
 
-  // FIXME: Figure out a way to detect if this function call is inline.
-  // Or if this function is being called without as a statement.
-  // (I hope this is doable).
+  // FIXME: Figure out a way to detect if this function call is
+  // inline. Or if this function is being called without as a
+  // statement. (I hope this is doable).
 
-  std::stringstream ss{};
+  std::ostringstream oss{};
   std::string_view sep{""};
 
   for(const auto& ptr : *args) {
     const auto argument{resolve(ptr, false)};
-    ss << sep << argument;
+    oss << sep << argument;
 
     sep = ", ";
   }
 
-  const auto arguments{ss.str()};
+  const auto arguments{oss.str()};
 
   return std::format("{}({}){}", identifier, arguments, terminate());
 }
@@ -636,7 +676,7 @@ AST_VISITOR_STUB(CppBackend, Interface)
 auto CppBackend::visit(MemberDecl* t_member) -> Any
 {
   const auto identifier{t_member->identifier()};
-  const auto type{type_variant2cpp(t_member->get_type())};
+  const auto type{type_spec2cpp({t_member->get_type()})};
 
   return std::format("{} {};\n", type, identifier);
 }
@@ -649,36 +689,36 @@ auto CppBackend::visit(Struct* t_struct) -> Any
   const auto struct_type{t_struct->get_type().as_struct()};
   const auto& methods{struct_type->m_methods};
 
-  std::stringstream ss{};
+  std::ostringstream oss{};
 
-  ss << std::format("struct {} {{\n", identifier);
-  ss << resolve(members);
+  oss << std::format("struct {} {{\n", identifier);
+  oss << resolve(members);
 
 
-  ss << "// Methods:\n";
+  oss << "// Methods:\n";
 
   for(auto& [meth_identifier, method] : methods) {
     const auto meth_type{method.as_function()};
 
-    const auto ret_type{type_variant2cpp(meth_type->m_return_type)};
+    const auto ret_type{type_spec2cpp({meth_type->m_return_type})};
 
-    std::stringstream param_ss{};
+    std::ostringstream param_ss{};
 
     auto sep{""sv};
     const auto params{meth_type->m_params};
     for(const auto& param : params) {
-      param_ss << sep << type_variant2cpp(param);
+      param_ss << sep << type_spec2cpp({param});
 
       sep = ", ";
     }
 
-    ss << std::format("auto {}({}) -> {};\n", meth_identifier, param_ss.str(),
-                      ret_type);
+    oss << std::format("auto {}({}) -> {};\n", meth_identifier, param_ss.str(),
+                       ret_type);
   }
 
-  ss << "};\n";
+  oss << "};\n";
 
-  return ss.str();
+  return oss.str();
 }
 
 auto CppBackend::visit([[maybe_unused]] Self* t_self) -> Any
@@ -704,13 +744,13 @@ auto CppBackend::visit(MemberAccess* t_access) -> Any
 // Misc:
 auto CppBackend::visit(List* t_list) -> Any
 {
-  std::stringstream ss{};
+  std::ostringstream oss{};
 
   for(NodePtr& node : *t_list) {
-    ss << resolve(node);
+    oss << resolve(node);
   }
 
-  return ss.str();
+  return oss.str();
 }
 
 auto CppBackend::visit([[maybe_unused]] NodeInterface* t_node) -> Any
@@ -737,10 +777,12 @@ auto CppBackend::register_interop_backend(const InteropBackendType t_type)
       // Add compiler flags for compiling python3 support.
       m_inv.add_flags("-shared -fPIC $(python3 -m pybind11 --includes)");
 
-      // TODO: Find a cleaner way to utilize environment variables.
-      // Maybe register environment variables for later usage.
+      // TODO: Find a cleaner way to utilize environment
+      // variables. Maybe register environment variables for
+      // later usage.
 
-      // Set the out file (SRC_STEM is set in ClangFrontendInvoker).
+      // Set the out file (SRC_STEM is set in
+      // ClangFrontendInvoker).
       // clang-format off
       // m_inv.set_out("acris_${SRC_STEM:-cpython}_export$(python3-config --extension-suffix)");
       // clang-format on
@@ -757,17 +799,17 @@ auto CppBackend::register_interop_backend(const InteropBackendType t_type)
     case InteropBackendType::LUA_INTEROP_BACKEND:
       [[fallthrough]];
     case InteropBackendType::JS_INTEROP_BACKEND: {
-      const auto err_msg{std::format(
-        "Unsupported interopability backend \"{}\" for C++ backend.",
-        interopbackendtype2str(t_type))};
+      const auto err_msg{std::format("Unsupported interopability backend "
+                                     "\"{}\" for C++ backend.",
+                                     interopbackendtype2str(t_type))};
       throw std::invalid_argument{err_msg};
       break;
     }
 
     default: {
-      const auto err_msg{
-        std::format("Unknown interopability backend \"{}\" for C++ backend",
-                    interopbackendtype2str(t_type))};
+      const auto err_msg{std::format("Unknown interopability backend \"{}\" "
+                                     "for C++ backend",
+                                     interopbackendtype2str(t_type))};
       throw std::invalid_argument{err_msg};
       break;
     }
@@ -781,13 +823,14 @@ auto CppBackend::codegen(NodePtr t_ast, const fs::path& t_out) -> void
 {
   std::ofstream ofs{t_out};
 
-  // Generate header includes basic typedefinitions and similar.
+  // Generate header includes basic typedefinitions and
+  // similar.
   ofs << "// Prologue:\n";
   ofs << prologue() << '\n';
 
-  // Generate forward declarations, to make code position independent.
-  // ofs << "// Protoypes:\n";
-  // ofs << "// TODO: Implement." << '\n';
+  // Generate forward declarations, to make code position
+  // independent. ofs << "// Protoypes:\n"; ofs << "// TODO:
+  // Implement." << '\n';
 
   // Generate C++ code.
   ofs << "// C++ code:\n";

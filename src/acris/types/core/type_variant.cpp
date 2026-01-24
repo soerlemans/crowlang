@@ -27,6 +27,11 @@ auto TypeVariant::as_ptr() const -> PointerTypePtr
   return std::get<PointerTypePtr>(*this);
 }
 
+auto TypeVariant::as_array() const -> ArrayTypePtr
+{
+  return std::get<ArrayTypePtr>(*this);
+}
+
 auto TypeVariant::as_var() const -> VarTypePtr
 {
   return std::get<VarTypePtr>(*this);

@@ -23,6 +23,12 @@ auto PointerType::native_type() const -> core::NativeTypeOpt
   return m_type.native_type();
 }
 
+// ArrayType:
+auto ArrayType::native_type() const -> core::NativeTypeOpt
+{
+  return m_type.native_type();
+}
+
 // VarType:
 auto VarType::native_type() const -> core::NativeTypeOpt
 {
@@ -76,6 +82,20 @@ auto operator<<(std::ostream& t_os, types::core::PointerTypePtr t_ptr)
     t_os << t_ptr->m_type;
   } else {
     DBG_ERROR("(PointerTypePtr) nullptr!");
+
+    t_os << "nullptr";
+  }
+
+  return t_os;
+}
+
+auto operator<<(std::ostream& t_os, types::core::ArrayTypePtr t_ptr)
+  -> std::ostream&
+{
+  if(t_ptr) {
+    t_os << '[' << t_ptr->m_type << "; " << t_ptr->m_size << ']';
+  } else {
+    DBG_ERROR("(ArrayTypePtr) nullptr!");
 
     t_os << "nullptr";
   }

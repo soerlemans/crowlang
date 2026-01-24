@@ -77,6 +77,20 @@ auto operator<<(std::ostream& t_os, PointerTypePtr t_ptr) -> std::ostream&
   return t_os;
 }
 
+auto operator<<(std::ostream& t_os, ArrayTypePtr t_arr) -> std::ostream&
+{
+  if(t_arr) {
+    t_os << "[" << t_arr->m_type << "; " << t_arr->m_size << "]";
+  } else {
+    DBG_ERROR("(ArrayTypePtr) nullptr!");
+
+    t_os << "nullptr";
+  }
+
+  return t_os;
+}
+
+
 auto operator<<(std::ostream& t_os, VarTypePtr t_var) -> std::ostream&
 {
   if(t_var) {

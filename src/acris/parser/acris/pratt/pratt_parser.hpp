@@ -16,6 +16,7 @@
 namespace parser::pratt {
 // Using Statements:
 using binding::InfixMap;
+using binding::PostfixMap;
 using binding::PrefixMap;
 
 //! This type is used to get the right hand side of a binary expressions
@@ -39,6 +40,7 @@ class PrattParser : public Parser {
   // Note these come from the binding submodule.
   PrefixMap m_prefix;
   InfixMap m_infix;
+  PostfixMap m_postfix;
 
   public:
   explicit PrattParser(ParserContextPtr t_ctx, PrattParserDelegate* t_delegate);
@@ -80,6 +82,13 @@ class PrattParser : public Parser {
   virtual auto comparison(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
 
   virtual auto infix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
+
+  // Postfix parsing:
+  virtual auto member_access(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
+  virtual auto subscript(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
+  virtual auto call(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
+
+  virtual auto postfix(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr;
 
   // Expressions:
   //! Continues a chain expression not an entry.

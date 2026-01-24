@@ -57,6 +57,7 @@ STUB(ReturnType)
 STUB(Let)
 STUB(Var)
 STUB(Variable)
+STUB(Subscript)
 
 // Meta:
 STUB(Attribute)
@@ -83,6 +84,7 @@ STUB(Float)
 STUB(Integer)
 STUB(Char)
 STUB(String)
+STUB(ArrayExpr)
 STUB(Boolean)
 
 // Builtin Types:

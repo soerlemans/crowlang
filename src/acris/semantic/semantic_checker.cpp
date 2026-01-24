@@ -558,6 +558,34 @@ auto SemanticChecker::visit(Variable* t_var) -> Any
   return {var_data};
 }
 
+auto SemanticChecker::visit(Subscript* t_subscript) -> Any
+{
+  SymbolData type{};
+
+  const auto var_data{get_symbol_data(t_subscript->left())};
+  const auto index_data{get_symbol_data(t_subscript->left())};
+
+  // TODO: Move to type validator.
+  // TODO: Check index data if numeric.
+  DBG_INFO("Subscript of type ", var_data);
+
+  auto result_data{var_data.resolve_result_type()};
+  if(result_data.is_array()) {
+    const auto array_ptr{result_data.as_array()};
+
+    type = array_ptr->m_type;
+  } else {
+    // TODO: Throw.
+  }
+
+  // Annotate AST.
+  m_annot_queue.push({t_subscript, type});
+
+  // return {var_data};
+
+  return type;
+}
+
 // Meta:
 auto SemanticChecker::visit(Attribute* t_attr) -> Any
 {
@@ -844,12 +872,43 @@ auto SemanticChecker::visit([[maybe_unused]] Char* t_ch) -> Any
 
 auto SemanticChecker::visit([[maybe_unused]] String* t_str) -> Any
 {
-  return SymbolData{NativeType::STRING};
+  return SymbolData{NativeType::CSTR};
 }
 
 auto SemanticChecker::visit([[maybe_unused]] Boolean* t_bool) -> Any
 {
   return SymbolData{NativeType::BOOL};
+}
+
+auto SemanticChecker::visit([[maybe_unused]] ArrayExpr* t_arr) -> Any
+{
+  using types::symbol::make_array;
+
+  SymbolData type{};
+  NodeListPtr list{t_arr->get()};
+
+  // TODO: Move to type validator.
+  if(!list->empty()) {
+    // We need to deduce type from the first elem.
+    auto iter{list->begin()};
+    type = get_symbol_data(*iter);
+
+    // Increment past first entry.
+    iter++;
+    for(; iter != list->end(); iter++) {
+      // TODO: Check if all elements are the same type.
+    }
+  } else {
+    using lib::stdexcept::throw_invalid_argument;
+
+    throw_invalid_argument("ArrayExpr literal list should contain entries.");
+  }
+
+  const auto size{list->size()};
+
+  auto symbol_data{make_array(type, size)};
+
+  return symbol_data;
 }
 
 // User Types:
@@ -999,12 +1058,15 @@ auto SemanticChecker::visit(MemberAccess* t_access) -> Any
 
   const auto lhs{get_resolved_result_type(left)};
 
+  // Check type of left side, check if operation on the right side is possible.
+  // Always return result of right side operation.
+
   // Evaluate chain expressions by setting an active access var.
 
   // dynamic_cast<MethodCall>(right);
   // const auto rhs{get_resolved_result_type(right)};
 
-  // return rhs;
+  // const auto rhs{get_resolved_result_type(right)};
   return SymbolData{NativeType::INT};
 }
 

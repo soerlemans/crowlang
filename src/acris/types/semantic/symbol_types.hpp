@@ -81,6 +81,18 @@ struct PointerType {
   auto operator==(const PointerType&) const -> bool = default;
 };
 
+struct ArrayType {
+  SymbolData m_type;
+  std::size_t m_size;
+
+  auto resolve_result_type() const -> SymbolData;
+
+  auto native_type() const -> NativeTypeOpt;
+  auto type_variant() const -> TypeVariant;
+
+  auto operator==(const ArrayType&) const -> bool = default;
+};
+
 // TODO: Ignore m_const value when comparing
 struct VarType {
   Mutability m_mutability;
@@ -112,6 +124,12 @@ template<typename... Args>
 auto make_pointer(Args&&... t_args) -> SymbolData
 {
   return {std::make_shared<PointerType>(std::forward<Args>(t_args)...)};
+}
+
+template<typename... Args>
+auto make_array(Args&&... t_args) -> SymbolData
+{
+  return {std::make_shared<ArrayType>(std::forward<Args>(t_args)...)};
 }
 
 template<typename... Args>

@@ -266,7 +266,7 @@ auto AcrisParser::assignment() -> NodePtr
 
   PARSER_BACKTRACK_GUARD(node);
 
-  if(auto lhs{m_pratt.lvalue_expr()}; lhs) {
+  if(auto lhs{m_pratt.expr()}; lhs) {
     const auto pos{get_position()};
     const auto lambda{[&](const AssignmentOp t_op) {
       newline_opt();
@@ -323,8 +323,9 @@ auto AcrisParser::result_statement() -> NodePtr
     node = std::move(ptr);
   } else if(auto ptr{assignment()}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{m_pratt.method_call_expr()}; ptr) {
-    node = std::move(ptr);
+    // Breaks stuff now.
+    // } else if(auto ptr{m_pratt.method_call_expr()}; ptr) {
+    //   node = std::move(ptr);
   }
 
   // Terminate result statement.

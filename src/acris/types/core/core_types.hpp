@@ -38,6 +38,14 @@ struct PointerType {
   auto native_type() const -> core::NativeTypeOpt;
 };
 
+struct ArrayType {
+  TypeVariant m_type;
+	std::size_t m_size;
+
+  auto native_type() const -> core::NativeTypeOpt;
+};
+
+
 struct VarType {
   TypeVariant m_type;
 
@@ -68,6 +76,13 @@ inline auto make_pointer(Args&&... t_args) -> TypeVariant
 {
   return std::make_shared<PointerType>(std::forward<Args>(t_args)...);
 }
+
+template<typename... Args>
+inline auto make_array(Args&&... t_args) -> TypeVariant
+{
+  return std::make_shared<ArrayType>(std::forward<Args>(t_args)...);
+}
+
 } // namespace types::core
 
 // Functions:

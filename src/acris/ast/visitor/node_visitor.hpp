@@ -55,6 +55,7 @@ class NodeVisitor {
   virtual auto visit(node::lvalue::Let* t_let) -> Any;
   virtual auto visit(node::lvalue::Var* t_var) -> Any;
   virtual auto visit(node::lvalue::Variable* t_var) -> Any;
+  virtual auto visit(node::lvalue::Subscript* t_subscript) -> Any;
 
   // Meta:
   virtual auto visit(node::meta::Attribute* t_attr) -> Any;
@@ -90,6 +91,7 @@ class NodeVisitor {
   virtual auto visit(node::rvalue::Integer* t_int) -> Any;
   virtual auto visit(node::rvalue::Char* t_ch) -> Any;
   virtual auto visit(node::rvalue::String* t_str) -> Any;
+  virtual auto visit(node::rvalue::ArrayExpr* t_arr) -> Any;
   virtual auto visit(node::rvalue::Boolean* t_bool) -> Any;
 
   // Builtin Types:

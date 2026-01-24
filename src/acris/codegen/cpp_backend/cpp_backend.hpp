@@ -111,6 +111,7 @@ class CppBackend : public NodeVisitor, public BackendInterface {
   auto visit(node::lvalue::Let* t_let) -> Any override;
   auto visit(node::lvalue::Var* t_var) -> Any override;
   auto visit(node::lvalue::Variable* t_var) -> Any override;
+  auto visit(node::lvalue::Subscript* t_subscript) -> Any override;
 
   // Meta:
   auto visit(node::meta::Attribute* t_attr) -> Any override;
@@ -146,6 +147,7 @@ class CppBackend : public NodeVisitor, public BackendInterface {
   auto visit(node::rvalue::Integer* t_int) -> Any override;
   auto visit(node::rvalue::Char* t_ch) -> Any override;
   auto visit(node::rvalue::String* t_str) -> Any override;
+  auto visit(node::rvalue::ArrayExpr* t_arr) -> Any override;
   auto visit(node::rvalue::Boolean* t_bool) -> Any override;
 
   // User Types:
