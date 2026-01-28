@@ -11,9 +11,7 @@
 namespace ast::node::builtin_types {
 // Aliases:
 using container::TextPosition;
-using node_traits::Identifier;
 using node_traits::NodePosition;
-using node_traits::TypeData;
 using node_traits::UnaryOperator;
 
 // Classes:

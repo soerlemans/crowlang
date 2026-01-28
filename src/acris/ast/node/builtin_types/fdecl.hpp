@@ -3,6 +3,7 @@
 
 namespace ast::node::builtin_types {
 class Pointer;
+class Array;
 class TypeName;
 } // namespace ast::node::builtin_types
 

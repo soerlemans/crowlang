@@ -205,6 +205,7 @@ class AstPrinter : public NodeVisitor {
 
   // Builtin Types:
   auto visit(node::builtin_types::Pointer* t_ptr) -> Any override;
+  auto visit(node::builtin_types::Array* t_arr) -> Any override;
   auto visit(node::builtin_types::TypeName* t_type) -> Any override;
 
   // User Types:

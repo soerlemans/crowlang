@@ -76,6 +76,15 @@ auto TypeNodeEvaluator::visit(Pointer* t_ptr) -> Any
   return SymbolData{types::symbol::make_pointer(pointer_to)};
 }
 
+auto TypeNodeEvaluator::visit(Array* t_arr) -> Any
+{
+  const auto left{t_arr->left()};
+  const auto array_of{resolve(left)};
+  const auto array_size{t_arr->size()};
+
+  return SymbolData{types::symbol::make_array(array_of, array_size)};
+}
+
 auto TypeNodeEvaluator::visit(TypeName* t_type) -> Any
 {
   return SymbolData{str2type(t_type->identifier())};

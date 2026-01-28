@@ -49,21 +49,23 @@ auto TypeParser::type_array() -> NodePtr
     PARSER_FOUND(TokenType::BRACKET_OPEN);
 
     const auto pos{token.position()};
-    const auto target_type{type_id()};
+    auto target_type{type_id()};
 
     if(!target_type) {
-      throw_syntax_error("Expected a type expression after *.");
+      throw_syntax_error("Expected a type expression after [.");
     }
 
     expect(TokenType::SEMICOLON);
 
-    // TODO: In future accept compile time checking.
+    // TODO: In future accept compile time variables for size, figure that out.
+    // Possibly it should be a binary operator.
     const auto integer_literal{get_token()};
     expect(TokenType::INTEGER_LITERAL);
-    const auto val{integer_literal.int_()};
+    const auto array_size{integer_literal.int_()};
 
-    // TODO: For now we always expect a typename.
-    // node = make_node<Pointer>(pos, std::move(target_type));
+    expect(TokenType::BRACKET_CLOSE);
+
+    node = make_node<Array>(pos, std::move(target_type), (usz)array_size);
   }
 
   return node;
