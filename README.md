@@ -1,5 +1,5 @@
-Acris
-=====
+Acris 𓆏
+=======
 ![License](https://img.shields.io/github/license/soerlemans/acris)
 ![Tests](https://img.shields.io/github/actions/workflow/status/soerlemans/acris/.github/workflows/unit-tests.yml)
 
