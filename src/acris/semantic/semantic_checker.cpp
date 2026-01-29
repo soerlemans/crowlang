@@ -278,11 +278,6 @@ auto SemanticChecker::get_resolved_result_type(NodePtr t_ptr) -> SymbolData
   return get_symbol_data(t_ptr).resolve_result_type();
 }
 
-auto SemanticChecker::get_native_type(NodePtr t_ptr) -> NativeTypeOpt
-{
-  return get_symbol_data(t_ptr).native_type();
-}
-
 auto SemanticChecker::get_type_list(NodeListPtr t_list) -> SymbolDataList
 {
   SymbolDataList list;
@@ -733,8 +728,17 @@ auto SemanticChecker::visit(Comparison* t_comp) -> Any
 
 auto SemanticChecker::visit(Increment* t_inc) -> Any
 {
-  const auto opt{get_native_type(t_inc->left())};
+  const auto left{t_inc->left()};
+  const auto left_data{get_symbol_data(left)};
 
+  // Return underlying type.
+  if(left_data.is_ptr()) {
+    const auto ptr{left_data.as_ptr()};
+
+    return ptr->m_type;
+  }
+
+  const auto opt{left_data.native_type()};
   if(!opt) {
     // TODO: Add position
     throw_type_error("Trying to increment a non native type is illegal.");
@@ -753,8 +757,17 @@ auto SemanticChecker::visit(Increment* t_inc) -> Any
 
 auto SemanticChecker::visit(Decrement* t_dec) -> Any
 {
-  const auto opt{get_native_type(t_dec->left())};
+  const auto left{t_dec->left()};
+  const auto left_data{get_symbol_data(left)};
 
+  // Return underlying type.
+  if(left_data.is_ptr()) {
+    const auto ptr{left_data.as_ptr()};
+
+    return ptr->m_type;
+  }
+
+  const auto opt{left_data.native_type()};
   if(!opt) {
     // TODO: Add position
     throw_type_error("Trying to decrement a non native type is illegal.");
@@ -777,7 +790,9 @@ auto SemanticChecker::visit(AddressOf* t_addr_of) -> Any
 
   const auto left{get_symbol_data(t_addr_of->left())};
 
-  /// TODO: Maybe annotate the type data to the AST?
+  // TODO: Maybe annotate the type data to the AST?
+  // TODO: Treat & on arrays differently.
+	// & Will make an array a pointer making it an explicit conversion.
 
   return make_pointer(left);
 }

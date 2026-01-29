@@ -6,6 +6,9 @@
 #include <set>
 #include <string>
 
+// Absolute Includes
+#include "lib/stdtypes.hpp"
+
 // Local Includes:
 #include "symbol_data.hpp"
 
@@ -83,7 +86,7 @@ struct PointerType {
 
 struct ArrayType {
   SymbolData m_type;
-  std::size_t m_size;
+  usz m_size;
 
   auto resolve_result_type() const -> SymbolData;
 

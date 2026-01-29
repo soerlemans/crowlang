@@ -96,6 +96,7 @@ class NodeVisitor {
 
   // Builtin Types:
   virtual auto visit(node::builtin_types::Pointer* t_ptr) -> Any;
+  virtual auto visit(node::builtin_types::Array* t_array) -> Any;
   virtual auto visit(node::builtin_types::TypeName* t_type) -> Any;
 
   // User Types:

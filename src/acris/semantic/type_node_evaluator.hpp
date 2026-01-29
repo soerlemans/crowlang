@@ -32,6 +32,7 @@ class TypeNodeEvaluator : public NodeVisitor {
 
   // Builtin Types:
   virtual auto visit(node::builtin_types::Pointer* t_ptr) -> Any;
+  virtual auto visit(node::builtin_types::Array* t_arr) -> Any;
   virtual auto visit(node::builtin_types::TypeName* t_type) -> Any;
 
   virtual auto evaluate(NodePtr t_ast) -> SymbolData;

@@ -89,6 +89,7 @@ STUB(Boolean)
 
 // Builtin Types:
 STUB(Pointer)
+STUB(Array)
 STUB(TypeName)
 
 // User Types:

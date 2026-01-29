@@ -18,7 +18,7 @@ static const u64_t SYS_getpid = 39;
 static const u64_t SYS_exit = 60;
 static const u64_t SYS_getppid = 110;
 
-isize_t read(int_t t_fd, unsigned char* t_buf, usize_t t_count)
+isize_t read(int_t t_fd, u8_t* t_buf, usize_t t_count)
 {
   isize_t err = 0;
 
@@ -34,7 +34,7 @@ isize_t read(int_t t_fd, unsigned char* t_buf, usize_t t_count)
   return err;
 }
 
-isize_t write(int_t t_fd, const unsigned char* t_buf, usize_t t_count)
+isize_t write(int_t t_fd, const u8_t* t_buf, usize_t t_count)
 {
   isize_t err = 0;
 

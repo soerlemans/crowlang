@@ -56,10 +56,41 @@ enum class TokenType {
   RETURN,
 
   // Literals:
-  INTEGER,
-  FLOAT,
+  INTEGER_LITERAL,
+  FLOAT_LITERAL,
+  CHAR_LITERAL,
+  STRING_LITERAL, // CString (Const String literal).
+  BOOL_LITERAL,
+
+  // Logical:
+  TRUE,
+  FALSE,
+
+	// Primitves:
+  VOID,
+
+  //- Floats:
+  F32,
+  F64,
+
+  //- Integers:
+  INT,
+  I8,
+  I16,
+  I32,
+  I64,
+  ISIZE,
+
+  UINT,
+  U8,
+  U16,
+  U32,
+  U64,
+  USIZE,
+
+  //- String:
   CHAR,
-  STRING, // CString (Const String literal).
+  CSTR,
 
   // Braces:
   PAREN_OPEN,
@@ -100,10 +131,6 @@ enum class TokenType {
 
   GREATER_THAN,
   GREATER_THAN_EQUAL,
-
-  // Logical:
-  TRUE,
-  FALSE,
 
   NOT,
   AND,

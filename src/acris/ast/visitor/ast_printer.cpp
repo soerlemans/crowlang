@@ -117,7 +117,6 @@ auto AstPrinter::visit(Subscript* t_subscript) -> Any
   return {};
 }
 
-
 // Meta:
 auto AstPrinter::visit(Attribute* t_attr) -> Any
 {
@@ -351,6 +350,17 @@ auto AstPrinter::visit(Pointer* t_ptr) -> Any
 
   print("Pointer");
   print_traits(t_ptr);
+
+  return {};
+}
+
+auto AstPrinter::visit(Array* t_arr) -> Any
+{
+  COUNTG_INIT();
+
+  print("Array");
+  print_traits(t_arr);
+  print("| ArraySize: ", t_arr->size());
 
   return {};
 }

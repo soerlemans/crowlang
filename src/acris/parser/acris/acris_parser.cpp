@@ -874,7 +874,7 @@ auto AcrisParser::import_expr(Import& t_import) -> bool
   bool is_import_expr{true};
 
   const auto token{get_token()};
-  if(next_if(TokenType::STRING)) {
+  if(next_if(TokenType::STRING_LITERAL)) {
     auto str{token.str()};
     DBG_TRACE_PRINT(INFO, "Found: ", std::quoted(str));
 
@@ -883,7 +883,7 @@ auto AcrisParser::import_expr(Import& t_import) -> bool
     auto id{token.str()};
 
     expect(TokenType::ASSIGNMENT);
-    auto str{expect(TokenType::STRING).str()};
+    auto str{expect(TokenType::STRING_LITERAL).str()};
 
     DBG_TRACE_PRINT(INFO, "Found alias: ", id, " = ", std::quoted(str));
 
@@ -931,8 +931,8 @@ auto AcrisParser::import_() -> NodePtr
     PARSER_FOUND(TokenType::IMPORT);
 
     auto import_ptr{make_node<Import>()};
-    if(check(TokenType::STRING)) {
-      PARSER_FOUND(TokenType::STRING);
+    if(check(TokenType::STRING_LITERAL)) {
+      PARSER_FOUND(TokenType::STRING_LITERAL);
       const auto id{get_token()};
       next();
 
@@ -942,7 +942,7 @@ auto AcrisParser::import_() -> NodePtr
       import_list(*import_ptr);
       expect(TokenType::PAREN_CLOSE);
     } else {
-      throw_syntax_error("Expected string or an import list");
+      throw_syntax_error("Expected string_LITERAL or an import list");
     }
 
     node = std::move(import_ptr);

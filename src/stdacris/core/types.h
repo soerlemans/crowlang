@@ -36,6 +36,7 @@ typedef long isize_t;          // 8 bytes.
 typedef unsigned long usize_t; // 8 bytes.
 typedef unsigned int umode_t;  // 4 bytes.
 
+// TODO: Add ifdef which checks 32bit or 64 bit.
 core_assert(sizeof(isize_t) == 8, isize_t_is_8_bytes);
 core_assert(sizeof(usize_t) == 8, usize_t_is_8_bytes);
 core_assert(sizeof(umode_t) == 4, umode_t_is_4_bytes);
