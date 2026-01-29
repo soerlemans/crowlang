@@ -105,9 +105,9 @@ auto ClangFrontendInvoker::compile(const fs::path &t_source) -> void
   const auto status_code{std::system(cmd.c_str())};
 
   if(status_code == 0) {
-    DBG_NOTICE("Out file was generated!: ", out);
+    std::cout << std::format("Compiled {}!\n", out);
   } else {
-    DBG_CRITICAL(cpp_compiler, " Failed to compile.");
+    std::cerr << std::format("Failed to compile {}!\n", out);
 
     // TODO: Throw an exception. Or maybe not?
   }

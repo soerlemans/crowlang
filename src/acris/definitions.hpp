@@ -11,7 +11,7 @@
 #define ACRIS_PROJECT_VERSION_MINOR @acris_VERSION_MINOR @
 #define ACRIS_PROJECT_VERSION_PATCH @acris_VERSION_PATCH @
 
-#define ACRIS_PROJECT_VERSION "0.4.0"
+#define ACRIS_PROJECT_VERSION "0.1.0"
 
 //! Absolute path to the root of the acris project.
 #define ACRIS_PROJECT_ROOT_DIRECTORY "/home/hackerman/.bmarks/acris"

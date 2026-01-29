@@ -672,7 +672,7 @@ auto SemanticChecker::visit(FunctionDecl* t_fdecl) -> Any
 // Operators:
 auto SemanticChecker::visit(Arithmetic* t_arith) -> Any
 {
-  const auto op{t_arith->op()};
+  // const auto op{t_arith->op()};
   const auto lhs{get_symbol_data(t_arith->left())};
   const auto rhs{get_symbol_data(t_arith->right())};
   const auto pos{t_arith->position()};

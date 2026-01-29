@@ -150,7 +150,7 @@ auto TranslationUnit::semantic(NodePtr t_ast) -> void
   DBG_PRINTLN("</semantic>");
 }
 
-auto TranslationUnit::mir(NodePtr t_ast) -> ModulePtr
+auto TranslationUnit::mir([[maybe_unused]] NodePtr t_ast) -> ModulePtr
 {
   using mir::mir_builder::MirBuilder;
 

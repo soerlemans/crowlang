@@ -17,7 +17,7 @@ on:
 #      - 'tests/*'
 
 jobs:
- run-unit-tests:
+  run-unit-tests:
     runs-on: ubuntu-24.04
 
     steps:

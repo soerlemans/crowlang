@@ -9,7 +9,7 @@ on:
       - '**/*.hpp'
 
 jobs:
- clang-format-check:
+  clang-format-check:
     runs-on: ubuntu-24.04
 
     steps:

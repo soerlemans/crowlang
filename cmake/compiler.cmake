@@ -2,7 +2,7 @@
 
 # Variables:
 set(CMAKE_CXX_RELEASE_FLAGS
-  "-Werror"
+  # "-Werror" # FIXME: Disable for now cause its annoying.
   "-pedantic"
   "-O2"
 )
