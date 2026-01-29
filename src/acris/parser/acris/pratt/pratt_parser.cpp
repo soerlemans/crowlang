@@ -541,7 +541,8 @@ auto PrattParser::subscript(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
   return node;
 }
 
-auto PrattParser::call(NodePtr& t_lhs, const RhsFn& t_fn) -> NodePtr
+auto PrattParser::call([[maybe_unused]] NodePtr& t_lhs,
+                       [[maybe_unused]] const RhsFn& t_fn) -> NodePtr
 {
   DBG_TRACE_FN(VERBOSE);
   NodePtr node{};

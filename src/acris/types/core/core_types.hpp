@@ -40,11 +40,10 @@ struct PointerType {
 
 struct ArrayType {
   TypeVariant m_type;
-	std::size_t m_size;
+  std::size_t m_size;
 
   auto native_type() const -> core::NativeTypeOpt;
 };
-
 
 struct VarType {
   TypeVariant m_type;
@@ -91,6 +90,8 @@ auto operator<<(std::ostream& t_os, types::core::StructTypePtr t_struct)
 auto operator<<(std::ostream& t_os, types::core::FnTypePtr t_fn)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, types::core::PointerTypePtr t_var)
+  -> std::ostream&;
+auto operator<<(std::ostream& t_os, types::core::ArrayTypePtr t_ptr)
   -> std::ostream&;
 auto operator<<(std::ostream& t_os, types::core::VarTypePtr t_var)
   -> std::ostream&;

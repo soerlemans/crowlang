@@ -1,0 +1,82 @@
+name: Build a release.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+ run-unit-tests:
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Check out repository code.
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
+
+    - name: Install Pipx.
+      id: install-pipx
+      run: |
+        sudo apt update && sudo apt install pipx
+        sudo apt install -y pipx
+
+        pipx --version
+
+    - name: Install Invoke.
+      id: install-invoke
+      run: |
+        pipx install invoke
+
+    - name: Run setup.
+      id: invoke-setup
+      run: |
+        inv setup
+
+
+    - name: Build release.
+      id: build-release
+      run: |
+        inv build --mode=build --static --parallel --ci-build
+
+    - name: Prep release package
+      id: prep-release-package
+      run: |
+        cat <<- EOF > install.sh
+        #!/usr/bin/env
+
+        # Quit on error.
+        set -eu
+
+        echo "Give password for installing to /usr/local/:"
+
+        # Install binary to /usr/local/bin/
+        sudo cp -f ./acris /usr/local/bin/acris
+
+        # Install libacris headers.
+        readonly LOCAL_STDACRIS="/usr/local/include/stdacris"
+        readonly LOCAL_LIB="/usr/local/lib"
+
+        sudo mkdir -p "$LOCAL_STDACRIS"
+        sudo cp -rf ./src/stdacris/* "$LOCAL_STDACRIS" 
+        sudo cp -f ./libstdacris.a "$LOCAL_LIB" 
+
+        EOF
+
+        chmod +x install.sh
+
+        # Currently we only build for linux.
+        mv build/acris build/acris-${{ github.ref_name }}-linux-x86_64
+
+
+    - name: Upload compiler to github releases.
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          install.sh
+          LICENSE
+          build/acris-${{ github.ref_name }}-linux-x86_64
+          build/libstdacris.a
+          src/stdacris
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

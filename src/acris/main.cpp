@@ -177,7 +177,9 @@ auto main(const int t_argc, char* t_argv[]) -> int
     run(settings);
   } catch(CLI::ParseError& e) {
     const auto exit_code{cli_params.m_app.exit(e)};
-    std::cerr << std::format("CLI11 exit code: {}\n", exit_code);
+    if(exit_code != 0) {
+      std::cerr << std::format("CLI11 exit code: {}\n", exit_code);
+    }
 
     return ExitCode::CLI11_EXCEPTION;
   } catch(diagnostic::DiagnosticError& diag_err) {

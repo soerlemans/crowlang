@@ -9,6 +9,15 @@ project(
   LANGUAGES CXX C
 )
 
+if(NOT DEFINED ACRIS_STATIC_BUILD)
+	# Link dependencies as shared_libraries.
+  set(BUILD_SHARED_LIBS ON CACHE BOOL "Do build as shared libs." FORCE)
+else()
+	# Link dependencies statically.
+	message(STATUS "[+] Compiling project statically.")
+  set(BUILD_SHARED_LIBS OFF CACHE BOOL "Do not build as shared libs." FORCE)
+endif()
+
 # Set the target variables.
 include(cmake/targets.cmake)
 
