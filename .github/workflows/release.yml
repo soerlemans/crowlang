@@ -4,9 +4,11 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 jobs:
- run-unit-tests:
+  release-build:
+    if: github.event.sender.permissions.admin == true
     runs-on: ubuntu-24.04
 
     steps:
@@ -78,5 +80,6 @@ jobs:
           build/acris-${{ github.ref_name }}-linux-x86_64
           build/libstdacris.a
           src/stdacris
+        draft: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
