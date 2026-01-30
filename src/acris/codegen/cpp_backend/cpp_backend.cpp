@@ -298,10 +298,10 @@ auto CppBackend::visit(Let* t_let) -> Any
   if(init_expr) {
     const auto init_expr_str{resolve(init_expr, false)};
 
-    return std::format("const {} {} = {}{}", type, id, init_expr_str,
+    return std::format("{} const {} = {}{}", type, id, init_expr_str,
                        terminate_str);
   } else {
-    return std::format("const {} {}{{}}{}", type, id, terminate_str);
+    return std::format("{} const {}{{}}{}", type, id, terminate_str);
   }
 }
 

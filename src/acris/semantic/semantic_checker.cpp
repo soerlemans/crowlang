@@ -788,13 +788,15 @@ auto SemanticChecker::visit(AddressOf* t_addr_of) -> Any
 {
   using types::symbol::make_pointer;
 
-  const auto left{get_symbol_data(t_addr_of->left())};
-
   // TODO: Maybe annotate the type data to the AST?
   // TODO: Treat & on arrays differently.
-	// & Will make an array a pointer making it an explicit conversion.
+  // & Will make an array a pointer making it an explicit conversion.
 
-  return make_pointer(left);
+  const auto left{get_symbol_data(t_addr_of->left())};
+
+  const bool readonly{left.is_mutable() == false};
+
+  return make_pointer(left, 1, readonly);
 }
 
 auto SemanticChecker::visit(Dereference* t_deref) -> Any

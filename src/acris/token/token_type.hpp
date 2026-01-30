@@ -18,6 +18,11 @@ enum class TokenType {
   LET,
   VAR,
 
+	// Variable interaction specifiers.
+  READWRITE,
+  WRITEONLY,
+  READONLY,
+
   // Package:
   MODULE,
   IMPORT,
@@ -35,6 +40,7 @@ enum class TokenType {
   // User Types:
   ALIAS,
   ENUM,
+  UNION,
   STRUCT,
   SELF,
 
@@ -66,7 +72,7 @@ enum class TokenType {
   TRUE,
   FALSE,
 
-	// Primitves:
+  // Primitves:
   VOID,
 
   //- Floats:
