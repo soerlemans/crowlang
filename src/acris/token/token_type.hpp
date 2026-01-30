@@ -18,10 +18,10 @@ enum class TokenType {
   LET,
   VAR,
 
-	// Variable interaction specifiers.
-  READWRITE,
-  WRITEONLY,
+  // Variable interaction specifiers.
   READONLY,
+  WRITEONLY,
+  READWRITE,
 
   // Package:
   MODULE,
@@ -50,6 +50,7 @@ enum class TokenType {
   FUNCTION,
   METHOD,
   MATCH,
+  SWITCH,
   IF,
   ELSE,
   ELIF,

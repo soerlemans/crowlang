@@ -32,6 +32,7 @@ auto TypeParser::type_pointer() -> NodePtr
       indirection++;
     }
 
+    // Check if readonly is applied..
     bool readonly{false};
     if(next_if(TokenType::READONLY)) {
       readonly = true;
