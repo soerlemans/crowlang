@@ -793,10 +793,11 @@ auto SemanticChecker::visit(AddressOf* t_addr_of) -> Any
   // & Will make an array a pointer making it an explicit conversion.
 
   const auto left{get_symbol_data(t_addr_of->left())};
+  const auto resolved{left.resolve_result_type()};
 
   const bool readonly{left.is_mutable() == false};
 
-  return make_pointer(left, 1, readonly);
+  return make_pointer(resolved, 1, readonly);
 }
 
 auto SemanticChecker::visit(Dereference* t_deref) -> Any
